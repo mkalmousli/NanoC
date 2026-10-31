@@ -1,5 +1,7 @@
 #include "test.h"
 void test_terse(void) {
+    test_program("@f set(int *p) static void\n  *p=42\n@f main int\n"
+        "  n:=0\n  for ;;\n    set(&n)\n    break\n  n!=42\n", "", false);
     test_program("@f add(int a,b) int = a+b\n@f main int\n"
         "  total:=0\n  for i 0..10\n    total+=i\n  add(total,1)!=46\n", "", false);
     test_program("@f sign(int n) int\n  if n>0\n    1\n  elif n<0\n    -1\n  else\n    0\n"

@@ -10,6 +10,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <limits.h>
+#include <stdint.h>
 #ifndef PATH_MAX
 #define PATH_MAX 4096
 #endif
@@ -22,6 +23,14 @@ void b_walk(BPaths *, const char *, const char *);
 void b_paths_free(BPaths *);
 int b_run(char *const *);
 void b_compile(BOptions, bool);
+int b_path_order(const void *, const void *);
+void b_cc(BOptions, BPaths *, const char *, const char *, bool);
+void b_generate(const char *, const char *);
+bool b_equal(const char *, const char *);
+void b_fixed_point(const char *, const char *);
+void b_selfhost(BOptions);
+uint64_t b_fingerprint(void);
+void b_snapshot(void);
 void b_install(const char *);
 void b_uninstall(const char *);
 void b_remove(const char *);

@@ -33,6 +33,8 @@ Indent consistently (any width); tabs are rejected. Blank lines/comments are ign
   parentheses: `for int i=0;i<n;i++`. Use `break` / `continue` normally.
 - Conditions: `if`, `elif` / `else if`, `else`, `while`; use C operators.
 - Existing arrow/brace/indent-colon syntax stays compatible; new code can omit it.
+- Assembly: indented `@asm` instructions; `out`/`in`/`clobber`/`labels` sections.
+  Optional `volatile`/`inline`/`goto`; [assembly card](assembly.md), `--describe asm`.
 
 ## Macros: literal templates or executable programs
 
@@ -49,7 +51,7 @@ Templates substitute `$x`, `$($xs),*`, `$fresh(tmp)`, `$$` for a literal `$`.
 Template bodies are token text, not evaluator statements. `=` selects a program;
 its last expression returns text/tokens/numbers/bools, or it can emit code.
 Zero-argument definitions/calls may omit `()`: `@answer`. Other calls use parentheses.
-A final `$body:block` argument can be an indented body after the call: no `({ ... })`.
+A final `$body:block` argument can be an indented body after the call.
 
 ## CT / BT: indented small programs
 

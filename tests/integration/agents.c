@@ -3,7 +3,7 @@ void test_agents(void) {
     const char *describe[] = {"build/nanoc", "--describe", NULL};
     char *data = test_command(describe).out;
     CHECK(test_json(data));
-    CHECK(strstr(data, "\"implementation\":\"C11\"") && strstr(data, "implicitReturn"));
+    CHECK(strstr(data, "\"implementation\":\"NanoC\"") && strstr(data, "implicitReturn"));
     char *input = test_path("agent.nc"), *output = test_path("agent.c");
     test_write(input, "@fn add(a,b:int):int =\n  intent \"Add two C integers\"\n  a+b\n");
     test_write(output, "sentinel");

@@ -31,4 +31,5 @@ NcTokens nc_program_text(NcContext *, const char *, int);
 bool nc_meta_line(NcLayoutLine);
 bool nc_extension_line(NcLayoutLine);
 char *nc_native_parameters(NcContext *, NcTokens);
+char *nc_assembly(NcContext *, NcCursor *);
 #endif

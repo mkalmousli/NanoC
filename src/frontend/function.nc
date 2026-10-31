@@ -1,0 +1,46 @@
+#include "nanoc/layout.h"
+@f nc_function(NcContext *ctx, NcCursor *c, size_t depth) char *
+  int line = nc_line(c)
+  size_t previous = c->pos ? c->pos - 1 : 0
+  while previous && !nc_is(c->ts.v[previous], "@")
+    --previous
+  int indent = c->ts.v[previous].column - 1
+  char *id = nc_name(c)
+  char *args = nc_parameters(ctx, nc_group(c, "(", ")"))
+  char *returns = "void"
+  bool compact = false
+  if nc_eat(c, ":")
+    returns = nc_trim(ctx, nc_join(ctx, nc_until(c, "=")))
+    compact = true
+  else
+    if nc_eat(c, "->")
+      returns = nc_trim(ctx, nc_join(ctx, nc_until(c, "{")))
+    else
+      if nc_at(c, "=")
+        compact = true
+  if !*returns
+    nc_fail(ctx, line, "missing return type")
+  NcSymbol symbol = {id, args, returns, "", line}
+  NC_PUSH(ctx, ctx->symbols, symbol)
+  char *body
+  if !compact
+    body = nc_expand(ctx, nc_group(c, "{", "}"), depth)
+  else
+    nc_need(c, "=")
+    int header_line = c->ts.v[c->pos - 1].line
+    size_t next = c->pos
+    while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
+      ++next
+    if next < c->ts.n && c->ts.v[next].line == header_line
+      NcNode node = {.head = nc_logical_line(c)}
+      NcNodes nodes = {&node, 1, 1}
+      body = nc_emit_block(ctx, nodes, strcmp(returns, "void") != 0, 0)
+    else
+      NcLines lines = nc_body_lines(c, header_line, indent)
+      size_t i = 0
+      NcNodes nodes = nc_tree(ctx, lines, &i, lines.v[0].indent, 0)
+      if i != lines.n
+        nc_fail(ctx, lines.v[i].line, "inconsistent indentation")
+      body = nc_emit_block(ctx, nodes, strcmp(returns, "void") != 0, 0)
+    body = nc_expand(ctx, nc_lex(ctx, body, 1), depth)
+  nc_format(ctx, "%s %s(%s) {%s}", returns, id, args, body)

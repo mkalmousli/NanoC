@@ -1,10 +1,11 @@
 # Implementation map
 
-Pure C11; POSIX tools; no packages/runtime beyond libc. All source files <=100 lines.
+Self-hosted NanoC; C11 bootstrap/tools; POSIX host, libc only. Sources <=100 lines.
 
 | Directory | Owns |
 |---|---|
 | `include/nanoc` | Internal subsystem contracts (not a stable embedding ABI) |
+| `bootstrap` | Generated frozen C seed, including main and its own headers |
 | `src/frontend` | Tokens, cursors, declarations, native `@f`, recursive expansion |
 | `src/macros` | Templates, captures, program macros |
 | `src/eval` | Values, scopes, checked arithmetic, expressions, executable programs |
@@ -21,4 +22,6 @@ translation allocations and persistent pass state. Error checkpoints release all
 owned memory; arena accounting and budgets bound work. No-`@` input passes through.
 BT preparation precedes expansion; rewrite/again iterates without recursive passes.
 Output files use same-directory temporary files + rename. Host commands use argv;
-only explicit `sh` invokes a shell. Builtin signatures live in `src/meta/registry.c`.
+only explicit `sh` invokes a shell. Builtin signatures live in `src/meta/registry.nc`.
+Compiler modules are `.nc`, with indented functions and controls. C11 emitted by
+three generations must match; see [bootstrap card](bootstrap.md).

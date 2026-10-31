@@ -3,7 +3,10 @@
 #include "tools/build/process.c"
 #include "tools/build/walk.c"
 #include "tools/build/compile.c"
+#include "tools/build/bootstrap.c"
+#include "tools/build/fingerprint.c"
 #include "tools/build/copy.c"
+#include "tools/build/snapshot.c"
 #include "tools/build/install.c"
 #include "tools/build/lines.c"
 int main(int argc, char **argv) {
@@ -16,8 +19,9 @@ int main(int argc, char **argv) {
             prefix = argv[i];
         } else if (!strcmp(argv[i], "--sanitize")) opts.sanitize = true;
         else if (!strcmp(argv[i], "build") || !strcmp(argv[i], "test") || !strcmp(argv[i], "bench") ||
-                 !strcmp(argv[i], "clean") || !strcmp(argv[i], "install") || !strcmp(argv[i], "uninstall")) action = argv[i];
-        else b_die("usage: builder [build|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize]");
+                 !strcmp(argv[i], "clean") || !strcmp(argv[i], "install") || !strcmp(argv[i], "uninstall") ||
+                 !strcmp(argv[i], "bootstrap") || !strcmp(argv[i], "snapshot")) action = argv[i];
+        else b_die("usage: builder [build|bootstrap|snapshot|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize]");
     }
     if (!prefix && (!strcmp(action, "install") || !strcmp(action, "uninstall"))) {
         const char *home = getenv("HOME");
@@ -27,8 +31,12 @@ int main(int argc, char **argv) {
     }
     if (!strcmp(action, "clean")) { b_remove("build"); return 0; }
     if (!strcmp(action, "uninstall")) { b_uninstall(prefix); return 0; }
+    if (!strcmp(action, "bootstrap") || !strcmp(action, "snapshot")) {
+        if (unlink("build/config") && errno != ENOENT) b_die("cannot invalidate bootstrap cache");
+    }
     b_compile(opts, false);
-    if (!strcmp(action, "install")) b_install(prefix);
+    if (!strcmp(action, "snapshot")) { b_snapshot(); b_line_check(); }
+    else if (!strcmp(action, "install")) b_install(prefix);
     else if (!strcmp(action, "test") || !strcmp(action, "bench")) {
         b_line_check();
         b_compile(opts, true);

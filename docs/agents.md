@@ -27,3 +27,4 @@ cc -std=c11 -Wall -Wextra -Werror -pedantic-errors unit.c -o unit
 - `rewrite` converges on unchanged text. `again` forces a pass. For long transforms,
   explicitly raise budgets; 0 removes pass/step counts, other limits remain.
 - Preserve raw C/C++ for unsupported declarators; don't invent inference in C.
+- Assembly: `--describe asm`; indented instructions, explicit operands/clobbers.

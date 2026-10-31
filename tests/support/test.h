@@ -35,4 +35,6 @@ void test_meta(void);
 void test_build_programs(void);
 void test_terse(void);
 void test_terse_meta(void);
+void test_assembly(void);
+void test_bootstrap(void);
 #endif

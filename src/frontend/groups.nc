@@ -1,0 +1,47 @@
+#include "nanoc/core.h"
+@f nc_group(NcCursor *c, const char *open, const char *close) NcTokens
+  nc_need(c, open)
+  size_t start = c->pos
+  NcStrings stack = {0}
+  NC_PUSH(c->ctx, stack, (char *)close)
+  while c->pos < c->ts.n
+    NcToken t = c->ts.v[c->pos++]
+    if t.kind != NC_PUNCT
+      continue
+    const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL
+    if end
+      NC_PUSH(c->ctx, stack, (char *)end)
+    else
+      if nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
+        if !nc_is(t, stack.v[stack.n - 1])
+          nc_fail(c->ctx, t.line, "mismatched delimiter")
+        if !--stack.n
+          return nc_slice(c->ts, start, c->pos - 1)
+  nc_fail(c->ctx, nc_line(c), "unterminated '%s'", open)
+  (NcTokens){0}
+@f nc_until(NcCursor *c, const char *delimiter) NcTokens
+  NcTokens out = {0}
+  while !nc_end(c) && !nc_at(c, delimiter)
+    NcToken t = nc_take(c)
+    NC_PUSH(c->ctx, out, t)
+    if t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))
+      --c->pos
+      const char *open = nc_text(c->ctx, t)
+      const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}"
+      NcTokens body = nc_group(c, open, close)
+      for size_t i = 0; i < body.n; ++i
+        NC_PUSH(c->ctx, out, body.v[i])
+      NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT))
+    if c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE
+      NC_PUSH(c->ctx, out, c->ts.v[c->pos++])
+  out
+@f nc_split(NcContext *ctx, NcTokens ts, const char *delimiter) NcGroups
+  NcCursor c = {ctx, ts, 0}
+  NcGroups out = {0}
+  while !nc_end(&c)
+    NC_PUSH(ctx, out, nc_until(&c, delimiter))
+    if !nc_eat(&c, delimiter)
+      break
+    if nc_end(&c)
+      NC_PUSH(ctx, out, ((NcTokens){0}))
+  out

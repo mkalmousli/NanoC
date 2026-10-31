@@ -5,7 +5,8 @@ static const char *installed[] = {
     "share/nanoc/examples/hello.nc", "share/nanoc/examples/generic.nc",
     "share/nanoc/examples/compile_time.nc", "share/nanoc/examples/interop.nc",
     "share/nanoc/examples/meta.nc", "share/nanoc/examples/build.nc",
-    "share/nanoc/examples/compact.nc", "share/nanoc/install.manifest"
+    "share/nanoc/examples/compact.nc", "share/nanoc/docs/assembly.md",
+    "share/nanoc/docs/bootstrap.md", "share/nanoc/install.manifest"
 };
 enum { INSTALLED_COUNT = sizeof installed / sizeof installed[0] };
 static bool manifest(const char *prefix, bool owned[INSTALLED_COUNT]) {
