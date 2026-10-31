@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="NanoC is a compact, self-hosted language for C and C++ with indentation, macros, compile-time programs, and inline assembly.">
+  <meta name="theme-color" content="#11110f"><title>NanoC — less syntax, full control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="#top"><span class="mark">n<span>.</span></span> NanoC</a><nav><a href="#language">Language</a><a href="#prompts">Try it</a><a href="#source">Source</a></nav><a class="github" href="https://github.com/mkalmousli/NanoC">GitHub <span>↗</span></a></header>
+<main id="top">
+<section class="hero wrap"><div class="hero-copy"><div class="eyebrow"><i></i> C, with less ceremony</div><h1>Write closer<br>to the <em>idea.</em></h1><p class="lede">A compact, self-hosting language for building C and C++ programs. Indented blocks. Programmable macros. Compile-time code. Assembly when you need it.</p><div class="actions"><a class="button primary" href="#prompts">Explore the language <span>↓</span></a><a class="button quiet" href="https://github.com/mkalmousli/NanoC">View on GitHub ↗</a></div><div class="facts"><span>Transpiles to C / C++</span><b>·</b><span>63 NanoC compiler modules</span><b>·</b><span>No runtime</span></div></div>
+<div class="hero-code"><div class="window"><div class="windowbar"><div class="lights"><i></i><i></i><i></i></div><span>hello.nc</span><button class="copy" data-copy="hero">Copy</button></div><pre><code id="hero" class="language-nanoc">@f clamp(int n,lo,hi) int
+  if n &lt; lo
+    lo
+  elif n &gt; hi
+    hi
+  else
+    n
+
+@f main int
+  total:=0
+  for i 0..8
+    total+=clamp(i,2,6)
+  total!=32</code></pre><div class="code-foot"><span><i class="pulse"></i> COMPILES TO C</span><span>indentation defines scope</span></div></div><div class="hero-note">Same C operators. Native C and C++ interop.<br><span>Keep control. Lose the scaffolding.</span></div></div>
+<div class="hero-bottom"><span>01 / SMALL SURFACE</span><span>02 / OPEN EXTENSION POINTS</span><span>03 / YOUR C COMPILER</span></div></section>
+<section class="intro wrap" id="language"><div class="section-kicker">A language shaped around C</div><div class="intro-grid"><h2>Familiar ground.<br><em>Less typing.</em></h2><div><p>NanoC keeps C’s expressions, types, ABI, and toolchain. Its own syntax stays out of the way; when you need the underlying machine or compiler, it stays within reach.</p><a class="textlink" href="https://github.com/mkalmousli/NanoC/blob/main/docs/language.md">Read the compact language card ↗</a></div></div></section>
+<section class="features wrap"><article class="feature wide"><div class="feature-id">01 <span>LAYOUT</span></div><h3>Blocks from whitespace.<br>Types without arrows.</h3><pre><code class="language-nanoc">@f add(int a,b) int = a+b
+
+@f main int
+  result:=add(20,22)
+  result!=42</code></pre><p>Indented bodies and bare return types keep routine C functions compact. Generated output is ordinary C11 or C++17.</p></article><article class="feature"><div class="feature-id">02 <span>MACROS</span></div><h3>Shape syntax to fit.</h3><pre><code class="language-nanoc">@m twice($x)
+  (($x)*2)
+
+@f main int
+  @twice(21)!=42</code></pre><p>Token templates, captures, repetition, fresh identifiers, and executable program macros.</p></article><article class="feature accent"><div class="feature-id">03 <span>COMPILE TIME</span></div><h3>Generate from small programs.</h3><pre><code class="language-nanoc">@ct
+  for i 1..4
+    emit("@f item_"+str(i)+" int = "+str(i)+"\n")</code></pre><p>CT transforms code during expansion. BT can use host files and processes for builds.</p></article><article class="feature"><div class="feature-id">04 <span>ASSEMBLY</span></div><h3>Drop to the instruction.</h3><pre><code class="language-nanoc">@asm volatile
+  addl $1,%0
+  out "+r"(count)
+  clobber "cc"</code></pre><p>Indented instructions with explicit outputs, inputs, clobbers, and C jump labels.</p></article><article class="feature"><div class="feature-id">05 <span>BOOTSTRAP</span></div><h3>The compiler speaks NanoC.</h3><div class="big-stat">63<span> modules</span></div><p>A C seed starts the build. Two self-hosted stages follow; every emitted module must match byte for byte.</p><a class="textlink" href="https://github.com/mkalmousli/NanoC/blob/main/docs/bootstrap.md">How bootstrapping works ↗</a></article><article class="feature"><div class="feature-id">06 <span>BUILD TIME</span></div><h3>Automate the build itself.</h3><pre><code class="language-nanoc">@bt
+  write("build/generated.h", "#define READY 1\n")
+  run(["cc", "-c", "main.c"])</code></pre><p>Build time programs can read and write files, inspect the environment, and run host commands. Use --check to validate safely without host mutations.</p></article></section>
+<section class="prompt-section" id="prompts"><div class="wrap"><div class="section-kicker">Keep the prompt. Keep your context.</div><div class="prompt-head"><h2>Pick a starting point.</h2><p>Copy a prompt into your coding agent. Each one includes the context it needs to get useful work done in NanoC.</p></div><div class="prompt-layout"><div class="prompt-tabs" role="tablist" aria-label="Starter prompts"><button class="tab active" data-prompt="build" role="tab">Build something <span>01</span></button><button class="tab" data-prompt="macro" role="tab">Design a macro <span>02</span></button><button class="tab" data-prompt="ct" role="tab">Generate at compile time <span>03</span></button><button class="tab" data-prompt="asm" role="tab">Add assembly <span>04</span></button><button class="tab" data-prompt="bt" role="tab">Create a build step <span>05</span></button><button class="tab" data-prompt="interop" role="tab">Use C++ interop <span>06</span></button><button class="tab" data-prompt="contribute" role="tab">Explore the compiler <span>07</span></button></div><div class="prompt-card"><div class="prompt-card-top"><span id="prompt-label">YOUR FIRST PROGRAM</span><button class="copy light" id="prompt-copy">Copy prompt</button></div><pre id="prompt-text"></pre><div class="prompt-tip"><span>↳</span> Prompts include syntax and build context; edit the goal to fit your project.</div></div></div></div></section>
+<section class="source-section wrap" id="source"><div class="section-kicker">Readable by humans. Browseable by anyone.</div><div class="source-head"><div><h2>Explore the source.</h2><p>Browse the real compiler, examples, and documentation from GitHub. Select a file to read it with syntax highlighting.</p></div><a class="textlink" href="https://github.com/mkalmousli/NanoC/tree/main/src">Open repository ↗</a></div><div class="explorer"><aside class="file-rail"><div class="rail-top"><span>PROJECT FILES</span><span class="live-dot"></span></div><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Filter files…" aria-label="Filter source files"><kbd>/</kbd></label><div id="file-list" class="file-list"><div class="loading"><i></i>Loading project tree…</div></div><div class="rail-foot"><span id="file-count">Connecting to GitHub</span><span>main</span></div></aside><div class="code-pane"><div class="file-tab"><span class="file-icon">{ }</span><span id="selected-name">Choose a file</span><a id="raw-link" target="_blank" rel="noreferrer">View on GitHub ↗</a></div><div id="code-view" class="code-view"><div class="empty-code"><div class="empty-glyph">&lt;/&gt;</div><p>Pick a source file to inspect the compiler.</p></div></div></div></div><p class="source-note">Files are fetched directly from <a href="https://github.com/mkalmousli/NanoC">github.com/mkalmousli/NanoC</a>. If the GitHub API is unavailable, browse the repository there.</p></section>
+<section class="closing"><div class="wrap closing-inner"><div><div class="section-kicker">The output is yours.</div><h2>Your compiler.<br><em>Your call.</em></h2></div><div class="closing-right"><p>Start with a few lines. Keep the whole C ecosystem. Drop to assembly whenever you need full control.</p><a class="button primary" href="https://github.com/mkalmousli/NanoC">Get NanoC on GitHub <span>↗</span></a><span class="install">cc -std=c11 -O2 build.c -o builder</span></div></div></section>
+</main><footer class="footer wrap"><a class="brand" href="#top"><span class="mark">n<span>.</span></span> NanoC</a><span>Compact source. Ordinary C. Open source.</span><a href="https://github.com/mkalmousli/NanoC">Repository & source ↗</a></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script><script src="app.js"></script>
+</body></html>
