@@ -1,7 +1,8 @@
 # NanoC agent entry
 
 - Pure C11 compiler/tools; POSIX host. Every source file <=100 physical lines.
-- Preserve unmarked C/C++. New examples use `@f`, `@m`, C operators/braces, `=>`.
+- Preserve unmarked C/C++. New code uses `@f name(args) int`, bare types and
+  indentation: no arrows, block colons, braces, semicolons or final return markers.
 - Bootstrap: `cc -std=c11 -O2 build.c -o builder`; run `./builder test`.
 - Sanitizers: `CC=clang ./builder test --sanitize` (includes real musl C corpus).
 - Cheapest language lookup: `build/nanoc --describe syntax`.

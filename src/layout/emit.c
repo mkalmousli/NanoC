@@ -1,7 +1,15 @@
 #include "nanoc/layout.h"
 static bool lead(NcNode n, const char *s) {
     for (size_t i = 0; i < n.head.ts.n; ++i)
-        if (n.head.ts.v[i].kind != NC_SPACE) return nc_is(n.head.ts.v[i], s);
+        if (n.head.ts.v[i].kind != NC_SPACE) {
+            if (nc_is(n.head.ts.v[i], "else")) {
+                size_t next = i + 1;
+                while (next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE) ++next;
+                bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if");
+                return !strcmp(s, condition ? "elif" : "else");
+            }
+            return nc_is(n.head.ts.v[i], s);
+        }
     return false;
 }
 void nc_marker(NcContext *c, NcBuffer *b, int line) {
@@ -25,6 +33,13 @@ char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
         } else if (lead(node, "elif") || lead(node, "else")) nc_fail(c, node.head.line, "branch without matching if");
         bool returning = tail && last + 1 == nodes.n;
         if (!node.children.n) {
+            if (node.head.raw || nc_meta_line(node.head)) {
+                nc_marker(c, &out, node.head.line);
+                nc_add(c, &out, nc_join(c, node.head.ts));
+                nc_add(c, &out, "\n");
+                i = last + 1;
+                continue;
+            }
             if (returning && (lead(node, "let") || lead(node, "var") || lead(node, "intent") ||
                 lead(node, "break") || lead(node, "continue"))) nc_fail(c, node.head.line, "value function needs a final expression");
             nc_marker(c, &out, node.head.line);

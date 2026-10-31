@@ -20,7 +20,8 @@ cc -std=c11 -Wall -Wextra -Werror -pedantic-errors unit.c -o unit
   Prior BT effects are not rolled back.
   Diagnostics contain code, file, line, message, trace; logs are retained.
 - Codes: NC_SYNTAX, NC_LIMIT, NC_INPUT. Line 0 = unavailable. Schema v1 is additive.
-- `@f`/`@m`, braces, C operators, `=>` are canonical; don't generate indentation code.
+- Use `@f add(int a,b) int = a+b` or an indented final expression.
+  No arrows/braces/block colons/semicolons; `@f main int` omits empty `()`.
 - CT/macros generate/edit code; BT adds host files/commands. Functions, loops,
   reusable `eval(read(path))` libraries, persistent state and passes compose.
 - `rewrite` converges on unchanged text. `again` forces a pass. For long transforms,

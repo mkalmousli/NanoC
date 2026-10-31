@@ -1,72 +1,81 @@
 # NanoC language card
 
-Unmarked source is C/C++. New constructs start with `@`; literals/comments and
-preprocessor directives are opaque. C preprocessing/type checking happen later.
-
-| Construct | Form |
-|---|---|
-| Expression function | `@f add(int a,b)->int => a+b;` |
-| C body, short return | `@f main()->int { int n=3; => n-3; }` |
-| Template macro | `@m twice($x) { (($x)*2) }` then `@twice(3)` |
-| Program macro | `@m id($x) => quote { $x };` |
-| CT program | `@ct { n:=6*7; emit(quote { enum { answer=$n }; }); }` |
-| BT program | `@bt { write("gen.h", "#define ANSWER 42\n"); }` |
-
-`@f` uses C parameter spelling; following bare names share the previous full type.
-Omitted return type = void. `=>` in its body means return. Use ordinary C/C++ for
-complex declarators/prototypes. Legacy `@fn`, `@macro`, `@let`, `@for`, indentation
-syntax and `@name!(...)` remain accepted; new code need not use them.
-
-## Macros
-
-Captures: `$x`/`$x:tokens`, `$x:ident`, `$x:block`; final `$xs...` is variadic.
-Template substitution: `$x`, `$($xs),*`, `$(body)*`, `$fresh(tmp)`, `$$` for `$`.
-`$fresh` repeats the same name within one invocation; separate calls are distinct.
-Program macros bind bare names (`x`, `xs`); captures are token values, variadics
-are lists. They may nest loops/functions, emit code, or return text/tokens.
+Unmarked C/C++ is unchanged. `@` marks extensions; spaces delimit blocks.
+Indent consistently (any width); tabs are rejected. Blank lines/comments are ignored.
 
 ```c
-@m constants($xs...) => {
-  for(i:=0;i<len(xs);i++) {
-    name:=ident("v"+str(i)); value:=xs[i];
-    emit(quote { enum { $name=$value }; });
-  }
-}
-@constants(2,3,5)
+@f add(int a,b) int = a+b
+@f clamp(int x,lo,hi) int
+  if x<lo
+    lo
+  elif x>hi
+    hi
+  else
+    x
+@f main int
+  total:=0
+  for i 0..10
+    total+=clamp(i,2,7)
+  total!=45
 ```
 
-## Programs: same evaluator in CT, BT and program macros
+- Bare return type (`int`), no arrow. Omitted type = void. Empty `()` optional.
+- Inline body: `= expression`. Indented body: final expression returns implicitly;
+  a final exhaustive if/elif/else returns each branch's value. No return marker.
+- No braces, block colons, condition parentheses, or statement semicolons needed.
+  Parentheses/brackets keep multiline expressions together. Optional `;` separates
+  same-line expressions. C/C++ initializers and quoted tokens keep native punctuation.
+- Locals: `x:=42` infers C scalar literals, C++ uses auto for arbitrary expressions.
+  Otherwise spell the C type: `int x=call()`. Group parameters: `int a,b`.
+- Ranges: `for i 0..n` (exclusive upper bound, int default), `for i:Type 0..n`.
+  Bounds run once in the enclosing scope. `in` and `..<` are accepted too.
+  C++: `for x container` binds auto&&. Explicit C loops also work without outer
+  parentheses: `for int i=0;i<n;i++`. Use `break` / `continue` normally.
+- Conditions: `if`, `elif` / `else if`, `else`, `while`; use C operators.
+- Existing arrow/brace/indent-colon syntax stays compatible; new code can omit it.
 
-Values: int64, bool, text, tokens, lists. Statements: `x:=expr;`, `x=expr;`,
-`x+=expr;`, `x++;`, `if(cond){...} else {...}`, `while(cond){...}`,
-`for(i:=0;i<n;i++){...}`, `break;`, `continue;`, `f square(x)=>x*x;`.
-Functions also accept `{ ... => value; }`; recursion and lexical variables work.
-Operators: C arithmetic/comparison/boolean operators; `+` also joins matching
-text/tokens/lists. Lists: `[a,b]`, `xs[i]`. Strings: `\n \r \t \\ \"`.
-`quote { C tokens }` interpolates `$name`: text becomes a C string, tokens insert
-verbatim, integers/bools become constants. `ident(text)` builds an identifier.
-Use `eval(read("library.meta"))` for reusable program libraries in the root scope.
+## Macros: literal templates or executable programs
 
-## Stages / source editing
+```c
+@m twice($x)
+  (($x)*2)
+@m id($x) = x
+@m answer = 42
+@f result int = @twice(@id(@answer))
+```
 
-1. Direct BT blocks run first and are removed. Their emitted code prefixes input.
-2. Macros and CT run during expansion; generated constructs expand recursively.
-3. `rewrite(text)` schedules another pass only when text differs from `source()`;
-   `again()` forces another pass. `get(key,default)` / `put(key,value)` retain state.
+Captures: `$x` / `$x:tokens`, `$x:ident`, `$x:block`; last `$xs...` is a list.
+Templates substitute `$x`, `$($xs),*`, `$fresh(tmp)`, `$$` for a literal `$`.
+Template bodies are token text, not evaluator statements. `=` selects a program;
+its last expression returns text/tokens/numbers/bools, or it can emit code.
+Zero-argument definitions/calls may omit `()`: `@answer`. Other calls use parentheses.
+A final `$body:block` argument can be an indented body after the call: no `({ ... })`.
 
-BT rewrites apply before expansion; CT/macro rewrites restart from edited source.
-BT sees source with direct BT blocks blanked. Generated BT executes on expansion.
-Build chained edits in a local value, then call rewrite once. Example:
-`@ct { rewrite(rename(source(), "old_name", "new_name")); }` converges automatically.
-`rename` changes word tokens, preserving literals/comments/directives; `replace`
-edits raw text. `lex`, `slice`, `split`, `join`, `push` support custom transforms.
+## CT / BT: indented small programs
 
-All phases can read text/files/env. **Only BT** can write/mkdir/remove/run/exec/sh;
-these use host privileges. `run(argv[,cwd])` returns `[status,stdout,stderr]`;
-`exec` returns stdout or fails; `sh` explicitly uses `/bin/sh -c`. Capture is text.
-`--check` / `--no-effects` reject host mutations/commands; reads/transforms still run.
+```c
+@ct
+  f square(n) = n*n
+  for i 1..5
+    emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
+```
 
-Defaults: 32 passes, 1M steps, 16 MiB input/output, depth 128 (hard ceiling 512).
-`--max-passes 0 --max-steps 0` removes count limits, not memory/output/depth limits.
-Use `--describe NAME` for exact builtin calls. `log` goes to JSON report logs,
-or stderr in text mode; it never contaminates generated C.
+Values: int64, bool, text, tokens, lists. Bind `x:=expr`; assign `x=expr`;
+use `+=`, `++`, C operators, list indexing. Controls use indentation, e.g.
+`for i range(n)`, `for i:=0;i<n;i++`, `if cond`, `while cond`.
+Program functions use `f name(args) = expr` or an indented final expression.
+`quote(C tokens)` interpolates `$name`: text becomes a C string, tokens insert raw.
+`ident(text)` constructs names. Load program libraries with `eval(read(path))`.
+
+Direct BT runs first and is removed; its emitted code prefixes input. CT and
+macros expand recursively. `source()` reads the current snapshot; `rewrite(text)`
+repeats only on changed text; `again()` forces another pass. `get`/`put` retain state.
+BT edits apply before expansion; CT/macro edits restart from their edited source.
+`rename` edits identifier tokens; `replace` edits raw text. Generated BT runs on use.
+
+All phases may read files/env. Only BT may write/mkdir/remove/run/exec/sh, using
+host privileges. `run(argv[,cwd])` returns [status,out,err]; `exec` returns stdout
+or fails. `--check` / `--no-effects` reject host mutations and commands.
+Defaults: 32 passes, 1M steps, 16 MiB input/output, depth 128 (ceiling 512).
+`--max-passes 0 --max-steps 0` removes count limits, not other resource limits.
+Fetch builtin signatures with `--describe NAME`. Logs stay out of generated C.

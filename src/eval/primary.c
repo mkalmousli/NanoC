@@ -27,7 +27,10 @@ NcValue nc_primary(NcExpr *e, bool active) {
     } else if (t.kind == NC_WORD) {
         if (nc_is(t, "true")) out = nc_boolean(true);
         else if (nc_is(t, "false")) out = nc_boolean(false);
-        else if (nc_is(t, "quote")) out = nc_quotation(e, nc_group(&e->c, "{", "}"), active);
+        else if (nc_is(t, "quote")) {
+            bool paren = nc_at(&e->c, "(");
+            out = nc_quotation(e, nc_group(&e->c, paren ? "(" : "{", paren ? ")" : "}"), active);
+        }
         else if (nc_at(&e->c, "(")) {
             NcGroups groups = nc_split(c, nc_group(&e->c, "(", ")"), ",");
             NcValues args = {0};

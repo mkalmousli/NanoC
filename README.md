@@ -1,13 +1,18 @@
-# NanoC 0.4
+# NanoC 0.5
 
 Compact C/C++ source + programmable macros, CT and BT. Pure C11 implementation.
 Ordinary C/C++ passes through; generated programs have no NanoC runtime.
 
 ```c
-@m twice($x) { (($x)*2) }
-@f add(int a,b)->int => a+b;
-@f main()->int { => @twice(add(2,3)) != 10; }
+@m twice($x)
+  (($x)*2)
+@f add(int a,b) int = a+b
+@f main int
+  @twice(add(2,3))!=10
 ```
+
+Bare types, spaces and indentation replace arrows, braces, colons, semicolons,
+and final return markers. Empty parameter lists can be omitted on definitions.
 
 ```sh
 cc -std=c11 -O2 build.c -o builder

@@ -1,4 +1,5 @@
 #include "nanoc/meta.h"
+#include "nanoc/layout.h"
 typedef struct { NcTokens *v; size_t n, cap; } Programs;
 char *nc_build_stage(NcContext *ctx, const char *source) {
     if (!strstr(source, "bt")) { ctx->source = source; return (char *)source; }
@@ -14,21 +15,21 @@ char *nc_build_stage(NcContext *ctx, const char *source) {
             while (next < ts.n && ts.v[next].kind == NC_SPACE) ++next;
             if (next < ts.n && nc_is(ts.v[next], "bt")) {
                 c.pos = next + 1;
-                NC_PUSH(ctx, programs, nc_group(&c, "{", "}"));
+                NC_PUSH(ctx, programs, nc_meta_body(&c, nc_header(&c), true, false));
                 for (size_t i = start; i < c.pos; ++i)
                     for (size_t j = 0; j < ts.v[i].n; ++j) nc_add(ctx, &bare, ts.v[i].s[j] == '\n' ? "\n" : " ");
                 continue;
             }
             if (next < ts.n && (nc_is(ts.v[next], "m") || nc_is(ts.v[next], "macro"))) {
                 c.pos = next + 1;
+                NcHeader header = nc_header(&c);
                 (void)nc_name(&c);
-                (void)nc_group(&c, "(", ")");
-                bool program = nc_eat(&c, "=>");
-                if (program && !nc_at(&c, "{")) { (void)nc_until(&c, ";"); nc_need(&c, ";"); }
-                else (void)nc_group(&c, "{", "}");
+                if (nc_header_at(&c, "(", header.line)) (void)nc_group(&c, "(", ")");
+                bool program;
+                (void)nc_macro_body(&c, header, &program);
             } else if (next < ts.n && nc_is(ts.v[next], "ct")) {
                 c.pos = next + 1;
-                (void)nc_group(&c, "{", "}");
+                (void)nc_meta_body(&c, nc_header(&c), true, false);
             }
         }
         for (size_t i = start; i < c.pos; ++i) nc_addn(ctx, &bare, ts.v[i].s, ts.v[i].n);

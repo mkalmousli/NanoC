@@ -1,0 +1,39 @@
+#include "test.h"
+void test_terse(void) {
+    test_program("@f add(int a,b) int = a+b\n@f main int\n"
+        "  total:=0\n  for i 0..10\n    total+=i\n  add(total,1)!=46\n", "", false);
+    test_program("@f sign(int n) int\n  if n>0\n    1\n  elif n<0\n    -1\n  else\n    0\n"
+        "@f main() int = sign(-3)!=-1 || sign(0)!=0 || sign(5)!=1\n", "", false);
+    test_program("@f sign(int n) int\n  if n>0\n    1\n  else if n<0\n    -1\n  else\n    0\n"
+        "@f main int = sign(-3)!=-1 || sign(0)!=0 || sign(5)!=1\n", "", false);
+    test_program("#include <stdio.h>\n@f greet\n  puts(\"ok\")\n"
+        "int main(void){greet();return 0;}\n", "ok\n", false);
+    test_program("@f add(int a,b) int =\n  (\n    a+b\n  )\n"
+        "@f inc(int *p)\n  (*p)++\n@f main int\n  x:=2\n  inc(&x)\n  add(x,4)!=7\n", "", false);
+    test_program("@m zero\n  0\n@m maxfn($name,$type)\n  @f $name($type a,b) $type\n    a>b?a:b\n"
+        "@maxfn(big,int)\n@f main int = big(@zero,@zero())!=0\n", "", false);
+    test_program("@m square($x) =\n  quote(($x)*($x))\n@m id($x) = x\n"
+        "@f main int = @id(@square(7))!=49\n", "", false);
+    test_program("@m answer = 42\n@f main int = @answer!=42\n", "", false);
+    test_program("@m answer=42; @f value int=@answer; @f main int=value()!=42;\n", "", false);
+    test_program("@f main int\n  @ct\n    f constant\n      6*7\n    n:=constant()\n"
+        "    emit(quote(int answer=$n;))\n  answer!=42\n", "", false);
+    test_program("#include <vector>\n@f count(const std::vector<int>& xs) int = (int)xs.size()\n"
+        "@f main int\n  xs:=std::vector<int>(3,2)\n  count(xs)!=3\n", "", true);
+    test_program("@f count int\n  int x=0\n  => sizeof x\n"
+        "@f main int = count()!=(int)sizeof(int)\n", "", false);
+    test_program("@f main int\n  sum:=0\n  for int i=0;i<4;i++\n    sum+=i\n  sum!=6\n", "", false);
+    test_program("#include <vector>\n@f main int\n  xs:=std::vector<int>(3,2)\n  sum:=0\n"
+        "  for x xs\n    sum+=x\n  sum!=6\n", "", true);
+    test_program("#include <vector>\n@f main int\n  bits:=std::vector<bool>(3)\n"
+        "  for bit bits\n    bit=true\n  !bits[0] || !bits[1] || !bits[2]\n", "", true);
+    test_program("@m repeat($n,$body:block)\n  for(int $fresh(i)=0;$fresh(i)<$n;$fresh(i)++) $body\n"
+        "@m scope($body:block)\n  $body\n@m three=3\n@f main int\n  count:=0\n  @repeat(@three)\n"
+        "    @scope\n      count++\n  count!=3\n", "", false);
+    test_reject("@f main int\n0\n", "indented function body", 0, 0, 0);
+    test_reject("@f main int\n  x:=0\n    x\n", "unexpected indentation", 0, 0, 0);
+    test_reject("@f main int\n  if 1\n    0\n", "exhaustive", 0, 0, 0);
+    test_reject("@f main int\n  else if 1\n    0\n", "matching if", 0, 0, 0);
+    test_reject("@f main int\n\t0\n", "spaces for indentation", 0, 0, 0);
+    puts("[OK] bare return types, optional empty parentheses, punctuation-free function/control layout");
+}

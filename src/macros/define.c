@@ -1,12 +1,15 @@
 #include "nanoc/macro.h"
+#include "nanoc/layout.h"
 void nc_define_macro(NcContext *ctx, NcCursor *c) {
+    NcHeader header = nc_header(c);
     char *name = nc_name(c);
     if (!strcmp(name, "fn") || !strcmp(name, "let") || !strcmp(name, "for") ||
         !strcmp(name, "macro") || !strcmp(name, "ct") || !strcmp(name, "m") ||
         !strcmp(name, "f") || !strcmp(name, "bt")) nc_fail(ctx, nc_line(c), "reserved extension name");
     if (nc_get(&ctx->macros, name)) nc_fail(ctx, nc_line(c), "duplicate macro: %s", name);
     NcMacro *m = nc_alloc(ctx, sizeof *m);
-    NcGroups args = nc_split(ctx, nc_group(c, "(", ")"), ",");
+    NcGroups args = {0};
+    if (nc_header_at(c, "(", header.line)) args = nc_split(ctx, nc_group(c, "(", ")"), ",");
     NcMap names = {0};
     for (size_t i = 0; i < args.n; ++i) {
         NcCursor a = {ctx, args.v[i], 0};
@@ -23,12 +26,6 @@ void nc_define_macro(NcContext *ctx, NcCursor *c) {
             nc_fail(ctx, nc_line(&a), "variadic parameter must be last");
         NC_PUSH(ctx, m->params, p);
     }
-    m->program = nc_eat(c, "=>");
-    if (m->program && !nc_at(c, "{")) {
-        int line = nc_line(c);
-        char *expr = nc_join(ctx, nc_until(c, ";"));
-        nc_need(c, ";");
-        m->body = nc_lex(ctx, nc_format(ctx, "return %s;", expr), line);
-    } else m->body = nc_group(c, "{", "}");
+    m->body = nc_macro_body(c, header, &m->program);
     nc_put(ctx, &ctx->macros, name, m);
 }

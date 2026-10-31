@@ -1,4 +1,5 @@
 #include "nanoc/macro.h"
+#include "nanoc/layout.h"
 static void validate(NcContext *ctx, NcParam p, NcTokens ts) {
     NcCursor c = {ctx, ts, 0};
     if (!strcmp(p.kind, "ident")) (void)nc_name(&c);
@@ -12,8 +13,14 @@ static void validate(NcContext *ctx, NcParam p, NcTokens ts) {
 char *nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t depth) {
     NcMacro *m = nc_get(&ctx->macros, name);
     if (!m) nc_fail(ctx, nc_line(c), "unknown extension: @%s", name);
-    (void)nc_eat(c, "!");
-    NcGroups args = nc_split(ctx, nc_group(c, "(", ")"), ",");
+    int line = c->pos ? c->ts.v[c->pos - 1].line : nc_line(c);
+    int indent = nc_header(c).indent;
+    bool bang = nc_header_eat(c, "!", line);
+    NcGroups args = {0};
+    bool block_only = m->params.n == 1 && !strcmp(m->params.v[0].kind, "block") && !m->params.v[0].variadic;
+    if (bang || (m->params.n && !block_only) || nc_header_at(c, "(", line))
+        args = nc_split(ctx, nc_group(c, "(", ")"), ",");
+    nc_block_argument(ctx, c, m, &args, c->pos ? c->ts.v[c->pos - 1].line : line, indent);
     bool variadic = m->params.n && m->params.v[m->params.n - 1].variadic;
     size_t fixed = m->params.n - (size_t)variadic;
     if (args.n < fixed || (!variadic && args.n != fixed)) nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name);

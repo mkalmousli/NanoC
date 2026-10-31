@@ -7,7 +7,8 @@ void nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) {
     if (nc_get(&m->functions, name)) nc_fail(ctx, nc_line(c), "duplicate compile-time function: %s", name);
     NcCtFunction *f = nc_alloc(ctx, sizeof *f);
     f->closure = env;
-    NcGroups params = nc_split(ctx, nc_group(c, "(", ")"), ",");
+    NcGroups params = {0};
+    if (nc_at(c, "(")) params = nc_split(ctx, nc_group(c, "(", ")"), ",");
     NcMap names = {0};
     for (size_t i = 0; i < params.n; ++i) {
         NcCursor p = {ctx, params.v[i], 0};

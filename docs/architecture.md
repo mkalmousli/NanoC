@@ -11,7 +11,7 @@ Pure C11; POSIX tools; no packages/runtime beyond libc. All source files <=100 l
 | `src/meta` | Builtin registry, source passes, text/list edits, BT host operations |
 | `src/support` | Aligned arenas, maps, buffers, diagnostics, atomic files |
 | `src/cli` | Options, compact catalogs, JSON/text reporting |
-| `src/layout` | Compatibility with earlier indentation syntax |
+| `src/layout` | Indented runtime/meta bodies, short controls, implicit returns |
 | `tools/build` | Modules included by standalone `build.c` |
 | `tests/unit`, `tests/integration` | Compiler behavior, real C, CLI/ABI/BT/install |
 | `tests/fixtures`, `tests/corpus` | Legacy cases and licensed upstream C sources |

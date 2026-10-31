@@ -33,7 +33,16 @@ char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
         if (tail) nc_fail(c, line.line, "value function needs a final expression");
         return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, true), line.line)));
     }
+    for (size_t i = 0; i < ts.n; ++i) if (ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")) {
+        if (tail) nc_fail(c, line.line, "value function needs a final expression");
+        NcTokens normalized = {0};
+        for (size_t j = 0; j < ts.n; ++j)
+            NC_PUSH(c, normalized, nc_is(ts.v[j], ":=") ? nc_token("=", ts.v[j].line, NC_PUNCT) : ts.v[j]);
+        char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), true);
+        return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)));
+    }
     char *code = nc_trim(c, nc_words(c, ts));
+    if (!strcmp(first, "=>")) return nc_format(c, "return %s;", nc_trim(c, code + 2));
     if (!strcmp(first, "return") || !strcmp(first, "break") || !strcmp(first, "continue") ||
         !strcmp(first, "goto") || !strcmp(first, "throw")) return nc_format(c, "%s;", code);
     if (items.v[0].kind == NC_DIRECTIVE) return nc_join(c, ts);

@@ -1,14 +1,11 @@
 #include <stdio.h>
-@ct {
-  f square(n)=>n*n;
-  for(i:=1;i<5;i++) {
-    name:=ident("square_"+str(i)); value:=square(i);
-    emit(quote { enum { $name=$value }; });
-  }
-}
-@f main()->int {
-  int sum=0;
-  for(int i=0;i<4;i++) sum+=i;
-  printf("sum=%d, square_4=%d\n",sum,square_4);
-  => 0;
-}
+@ct
+  f square(n) = n*n
+  for i 1..5
+    emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
+@f main int
+  sum:=0
+  for i 0..4
+    sum+=i
+  printf("sum=%d, square_4=%d\n",sum,square_4())
+  0

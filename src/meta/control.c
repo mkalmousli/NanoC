@@ -1,4 +1,5 @@
 #include "nanoc/meta.h"
+#include "nanoc/layout.h"
 NcValue nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) {
     NcContext *c = m->ctx;
     if (!strcmp(name, "source") || !strcmp(name, "again") || !strcmp(name, "pass")) {
@@ -35,7 +36,7 @@ NcValue nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) {
     else if (!strcmp(name, "eval")) {
         nc_depth(c, m->depth + 1, line, "eval");
         ++m->depth;
-        NcFlow flow = nc_run(m, nc_lex(c, text, line), m->root, m->depth);
+        NcFlow flow = nc_run(m, nc_program_text(c, text, line), m->root, m->depth);
         --m->depth;
         if (flow.breaking || flow.continuing) nc_fail(c, line, "loop control outside eval loop");
         return flow.value;

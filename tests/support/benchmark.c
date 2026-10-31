@@ -29,7 +29,7 @@ void test_benchmark(void) {
         for (int i = 0; i < 10000; ++i) {
             const char *formats[] = {"int f%d(int x){return x+%d;}\n", "@fn f%d(x:int)->int{return x+%d;}\n",
                 "@fn f%d(x:int):int = x+%d\n", "int f%d(int x){return @twice!(x+%d);}\n",
-                "@f f%d(int x)->int => x+%d;\n"};
+                "@f f%d(int x) int = x+%d\n"};
             nc_printf(test_state.mem, &source, formats[k], i, i);
         }
         size_t size = 0;

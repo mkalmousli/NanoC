@@ -1,8 +1,24 @@
 #include "nanoc/eval.h"
+static void skip_conditional(NcCursor *c, size_t depth) {
+    nc_depth(c->ctx, depth, nc_line(c), "conditional");
+    nc_need(c, "if");
+    (void)nc_group(c, "(", ")");
+    (void)nc_group(c, "{", "}");
+    if (nc_eat(c, "else")) {
+        if (nc_at(c, "if")) skip_conditional(c, depth + 1);
+        else (void)nc_group(c, "{", "}");
+    }
+}
 NcFlow nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth) {
     NcTokens cond = nc_group(c, "(", ")");
     NcTokens yes = nc_group(c, "{", "}"), no = {0};
-    if (nc_eat(c, "else")) no = nc_group(c, "{", "}");
+    if (nc_eat(c, "else")) {
+        if (nc_at(c, "if")) {
+            size_t start = c->pos;
+            skip_conditional(c, depth + 1);
+            no = nc_slice(c->ts, start, c->pos);
+        } else no = nc_group(c, "{", "}");
+    }
     bool choose = nc_truth(nc_eval(m, cond, env, depth, true));
     return nc_run(m, choose ? yes : no, nc_env(m->ctx, env), depth + 1);
 }

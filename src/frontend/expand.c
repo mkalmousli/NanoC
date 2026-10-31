@@ -16,8 +16,8 @@ char *nc_expand(NcContext *ctx, NcTokens ts, size_t depth) {
             char *frame = nc_format(ctx, "while expanding @%s at %s:%d", name, ctx->file, t.line);
             ctx->frames[ctx->frame_count++] = frame;
             if (!strcmp(name, "macro") || !strcmp(name, "m")) nc_define_macro(ctx, &c);
-            else if (!strcmp(name, "ct")) generated = nc_compile_time(ctx, nc_group(&c, "{", "}"), depth + 1);
-            else if (!strcmp(name, "bt")) generated = nc_program(ctx, nc_group(&c, "{", "}"), NULL, NC_BT, depth + 1);
+            else if (!strcmp(name, "ct")) generated = nc_compile_time(ctx, nc_meta_body(&c, nc_header(&c), true, false), depth + 1);
+            else if (!strcmp(name, "bt")) generated = nc_program(ctx, nc_meta_body(&c, nc_header(&c), true, false), NULL, NC_BT, depth + 1);
             else if (!strcmp(name, "f")) generated = nc_native_function(ctx, &c, depth + 1);
             else if (!strcmp(name, "fn") || !strcmp(name, "let") || !strcmp(name, "for"))
                 generated = nc_shorthand(ctx, &c, name, depth + 1);

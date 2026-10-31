@@ -33,4 +33,6 @@ void test_interop(void);
 void test_benchmark(void);
 void test_meta(void);
 void test_build_programs(void);
+void test_terse(void);
+void test_terse_meta(void);
 #endif

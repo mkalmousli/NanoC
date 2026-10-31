@@ -18,6 +18,8 @@ int main(int argc, char **argv) {
         test_generated();
         test_meta();
         test_build_programs();
+        test_terse();
+        test_terse_meta();
         test_cli();
         test_agents();
         test_install();
