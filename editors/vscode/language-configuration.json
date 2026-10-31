@@ -1,0 +1,1 @@
+{"comments":{"lineComment":"//","blockComment":["/*","*/"]},"brackets":[["(",")"],["[","]"],["{","}"]],"autoClosingPairs":[{"open":"(","close":")"},{"open":"[","close":"]"},{"open":"{","close":"}"},{"open":"\"","close":"\""},{"open":"'","close":"'"}],"indentationRules":{"increaseIndentPattern":"^\\s*(@f|@m|@ct|@bt|@asm|if|elif|else|for|while)\\b.*$"}}

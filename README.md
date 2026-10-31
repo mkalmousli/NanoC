@@ -55,3 +55,6 @@ C seed, including `main`, so a C compiler alone can build the self-hosted compil
 Host: POSIX. Targets: C11 / `--lang c++` for C++17. Test prerequisites: GCC/Clang,
 C++ frontends, ASan/UBSan runtimes, `sha256sum`. Bench additionally uses GNU time.
 Every source file <=100 lines. Tests are offline; [musl provenance](tests/corpus/README.md).
+
+Syntax highlighting: open `.nc` files in VS Code with `editors/vscode`, or source
+`editors/vim/nanoc.vim` in Vim. The TextMate grammar includes C and NanoC syntax.

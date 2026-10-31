@@ -1,0 +1,18 @@
+{
+  "scopeName":"source.nanoc",
+  "patterns":[{"include":"#comments"},{"include":"#strings"},{"include":"#nanoc"},{"include":"source.c"}],
+  "repository":{
+    "comments":{"patterns":[{"name":"comment.line.nanoc","match":"//.*$"},{"name":"comment.block.nanoc","begin":"/\\*","end":"\\*/"}]},
+    "strings":{"patterns":[{"name":"string.quoted.double.nanoc","begin":"\"","end":"\"","patterns":[{"name":"constant.character.escape.nanoc","match":"\\\\."}]},{"name":"string.quoted.single.nanoc","begin":"'","end":"'"}]},
+    "nanoc":{"patterns":[
+      {"name":"keyword.control.directive.nanoc","match":"@(f|fn|m|macro|ct|bt|asm)\\b"},
+      {"name":"entity.name.function.macro.nanoc","match":"@[A-Za-z_][A-Za-z_0-9]*"},
+      {"name":"variable.parameter.macro.nanoc","match":"\\$\\$|\\$[A-Za-z_][A-Za-z_0-9]*(?::[A-Za-z_]+|\\.\\.\\.)?"},
+      {"name":"keyword.control.nanoc","match":"\\b(if|elif|else|for|while|break|continue|return|goto)\\b"},
+      {"name":"storage.type.nanoc","match":"\\b(void|bool|char|short|int|long|float|double|signed|unsigned|auto|const|volatile|static|struct|union|enum|typedef|size_t|int[0-9]+_t|uint[0-9]+_t)\\b"},
+      {"name":"constant.language.nanoc","match":"\\b(true|false|nullptr|NULL)\\b"},
+      {"name":"constant.numeric.nanoc","match":"\\b(0[xX][0-9a-fA-F]+|[0-9]+)([uUlL]+)?\\b"},
+      {"name":"keyword.operator.nanoc","match":":=|=>|->|\\.\\.|\\+\\+|--|==|!=|<=|>=|&&|\\|\\||[+*/%=&|^!~<>?:-]"}
+    ]}
+  }
+}

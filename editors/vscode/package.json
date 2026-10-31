@@ -1,0 +1,11 @@
+{
+  "name": "nanoc-language",
+  "displayName": "NanoC Language",
+  "version": "0.1.0",
+  "publisher": "mkalmousli",
+  "engines": {"vscode": ">=1.75.0"},
+  "contributes": {
+    "languages": [{"id":"nanoc","aliases":["NanoC"],"extensions":[".nc"],"configuration":"./language-configuration.json"}],
+    "grammars": [{"language":"nanoc","scopeName":"source.nanoc","path":"./syntaxes/nanoc.tmLanguage.json","embeddedLanguages":{"source.c":"c"}}]
+  }
+}
