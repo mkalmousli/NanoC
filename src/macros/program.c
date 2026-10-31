@@ -1,0 +1,18 @@
+#include "nanoc/macro.h"
+#include "nanoc/eval.h"
+char *nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth) {
+    NcEnv *env = nc_env(ctx, NULL);
+    for (size_t i = 0; i < macro->params.n; ++i) {
+        NcParam p = macro->params.v[i];
+        NcGroups *values = nc_get(&b->values, p.name);
+        NcValue value;
+        if (p.variadic) {
+            NcValues items = {0};
+            for (size_t j = 0; j < values->n; ++j)
+                NC_PUSH(ctx, items, nc_value_text(NC_CODE, nc_join(ctx, values->v[j])));
+            value = nc_list(items);
+        } else value = nc_value_text(NC_CODE, nc_join(ctx, values->v[0]));
+        nc_bind(ctx, env, p.name, value);
+    }
+    return nc_program(ctx, macro->body, env, NC_MACRO, depth);
+}

@@ -1,0 +1,1 @@
+@ct { fn f(){ return f(); } f(); }

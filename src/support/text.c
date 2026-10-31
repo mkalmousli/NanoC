@@ -1,0 +1,45 @@
+#include "nanoc/core.h"
+char *nc_trim(NcContext *c, const char *s) {
+    while (isspace((unsigned char)*s)) ++s;
+    size_t n = strlen(s);
+    while (n && isspace((unsigned char)s[n - 1])) --n;
+    return nc_string(c, s, n);
+}
+bool nc_identifier(const char *s) {
+    if (!isalpha((unsigned char)*s) && *s != '_') return false;
+    for (++s; *s; ++s) if (!isalnum((unsigned char)*s) && *s != '_') return false;
+    return true;
+}
+char *nc_quote(NcContext *c, const char *s) {
+    NcBuffer b = {0};
+    nc_add(c, &b, "\"");
+    for (; *s; ++s) {
+        unsigned char ch = (unsigned char)*s;
+        if (ch == '\\' || ch == '"') nc_printf(c, &b, "\\%c", ch);
+        else if (ch == '\n') nc_add(c, &b, "\\n");
+        else if (ch == '\r') nc_add(c, &b, "\\r");
+        else if (ch == '\t') nc_add(c, &b, "\\t");
+        else if (ch < 32 || ch >= 127) nc_printf(c, &b, "\\%03o", ch);
+        else nc_addn(c, &b, s, 1);
+    }
+    nc_add(c, &b, "\"");
+    return b.v;
+}
+char *nc_unquote(NcContext *c, const char *s, int line) {
+    NcBuffer b = {0};
+    size_t len = strlen(s);
+    for (size_t i = 1; i + 1 < len; ++i) {
+        char ch = s[i];
+        if (ch == '\\') {
+            if (++i + 1 >= len) nc_fail(c, line, "incomplete string escape");
+            ch = s[i];
+            if (ch == 'n') ch = '\n';
+            else if (ch == 'r') ch = '\r';
+            else if (ch == 't') ch = '\t';
+            else if (ch != '\\' && ch != '"') nc_fail(c, line, "unsupported compile-time string escape");
+        }
+        nc_addn(c, &b, &ch, 1);
+    }
+    nc_add(c, &b, "");
+    return b.v;
+}

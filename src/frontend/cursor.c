@@ -1,0 +1,31 @@
+#include "nanoc/core.h"
+void nc_skip(NcCursor *c) {
+    while (c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE) ++c->pos;
+}
+bool nc_end(NcCursor *c) { nc_skip(c); return c->pos == c->ts.n; }
+bool nc_at(NcCursor *c, const char *s) {
+    nc_skip(c);
+    return c->pos < c->ts.n && nc_is(c->ts.v[c->pos], s);
+}
+int nc_line(const NcCursor *c) {
+    if (c->pos < c->ts.n) return c->ts.v[c->pos].line;
+    return c->ts.n ? c->ts.v[c->ts.n - 1].line : 1;
+}
+NcToken nc_take(NcCursor *c) {
+    if (nc_end(c)) nc_fail(c->ctx, nc_line(c), "unexpected end of input");
+    return c->ts.v[c->pos++];
+}
+bool nc_eat(NcCursor *c, const char *s) {
+    if (!nc_at(c, s)) return false;
+    ++c->pos;
+    return true;
+}
+void nc_need(NcCursor *c, const char *s) {
+    NcToken t = nc_take(c);
+    if (!nc_is(t, s)) nc_fail(c->ctx, t.line, "expected '%s', got '%.*s'", s, (int)t.n, t.s);
+}
+char *nc_name(NcCursor *c) {
+    NcToken t = nc_take(c);
+    if (t.kind != NC_WORD) nc_fail(c->ctx, t.line, "expected identifier");
+    return nc_text(c->ctx, t);
+}

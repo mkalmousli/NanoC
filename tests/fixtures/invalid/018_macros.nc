@@ -1,0 +1,1 @@
+@macro x($a:block){} @x!(hi)

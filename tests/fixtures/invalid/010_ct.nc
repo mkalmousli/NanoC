@@ -1,0 +1,1 @@
+@ct { let xs=[1]; for i in range(20) { xs=[xs,xs]; } str(xs); }

@@ -1,0 +1,25 @@
+#include "nanoc/eval.h"
+NcEnv *nc_env(NcContext *c, NcEnv *parent) {
+    NcEnv *e = nc_alloc(c, sizeof *e);
+    e->parent = parent;
+    return e;
+}
+void nc_bind(NcContext *c, NcEnv *e, const char *name, NcValue value) {
+    NcValue *p = nc_alloc(c, sizeof *p);
+    *p = value;
+    nc_put(c, &e->values, name, p);
+}
+NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) {
+    for (; e; e = e->parent) {
+        NcValue *p = nc_get(&e->values, name);
+        if (p) return *p;
+    }
+    nc_fail(c, line, "unknown compile-time variable: %s", name);
+}
+void nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line) {
+    for (; e; e = e->parent) {
+        NcValue *p = nc_get(&e->values, name);
+        if (p) { *p = value; return; }
+    }
+    nc_fail(c, line, "unknown compile-time variable: %s", name);
+}
