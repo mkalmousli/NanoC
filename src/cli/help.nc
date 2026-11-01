@@ -11,6 +11,7 @@
     "  --describe [topic]  Small JSON card; topics: syntax, asm, builtins, builtin name\n"
     "  --no-effects        Disable BT host writes/commands (implied by --check)\n"
     "  --prototypes        Print prototypes of non-static functions\n"
+    "  --std LEVEL         c89, c99, c11 or c17: restrict generated C features\n"
     "  --emit MODE         normal (readable C, default) or mini (smallest C)\n"
     "  --line-directives   Emit #line markers mapping C back to NanoC lines\n"
     "  --max-depth N       Expansion/evaluation nesting (default 128; safety cap 512)\n"

@@ -1,10 +1,10 @@
 // Small file and process helpers for manage.
 #include "nanoc/manage.h"
-#include <errno.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
+@use errno
+@use sys/stat
+@use unistd
+@use stdlib
+@use string
 // Tells if a path exists.
 @f nc_exists(const char *path) bool
   struct stat st
@@ -17,7 +17,7 @@
   const char *p = path
   while *p
     const char *end = strchr(p, ':')
-    size_t n = end ? (size_t)(end - p) : strlen(p)
+    usize n = end ? (usize)(end - p) : strlen(p)
     snprintf(out, PATH_MAX, "%.*s/%s", (int)n, n ? p : ".", name)
     if access(out, X_OK) == 0
       return true

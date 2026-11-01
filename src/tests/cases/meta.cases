@@ -1,0 +1,66 @@
+suite native syntax, executable macros, token editing, programs and rewrite passes
+case @m twice($x){(($x)*2)}
+  nanoc
+    @m twice($x){(($x)*2)}
+    @f add(int a,b)->int => a+b;
+    @f main()->int { int x=@twice(add(2,3)); if(x!=10){=>1;} =>0; }
+
+case @m enums($prefix:ident,$items...) => {for(i:=0;i
+  nanoc
+    @m enums($prefix:ident,$items...) => {for(i:=0;i<len(items);i++){n:=ident(str(prefix)+str(i));v:=items[i];emit(quote{enum{$n=$v};});}}
+    @enums(value,2,3,5)
+    @m id($x)=>quote{$x};
+    @f main()->int => @id(value2)!=5;
+
+case @ct { f square(x)=>x*x; total:=0;for(i:=0;i<10;i
+  nanoc
+    @ct { f square(x)=>x*x; total:=0;for(i:=0;i<10;i++){if(i==1){continue;}if(i==5){break;}total+=square(i);}assert(total==29);xs:=split("a,b,c",",");xs=push(xs,"d");assert(join(slice(xs,1,3),"-")=="b-c");assert(slice("abcd",1,3)=="bc");assert(find("abcd","bc")==1);words:=lex("int /*comment*/ x = 3;");assert(str(words[1])=="x");assert(replace("aaaa","aa","b")=="bb");eval("f triple(x)=>x*3;");assert(triple(14)==42);emit(quote{enum{total=$total};});}
+    @f main()->int=>total!=29;
+
+case @m id($x){$x}
+  nanoc
+    @m id($x){$x}
+    @ct {key:="PLACE"+"HOLDER";if(contains(source(),key)){rewrite(replace(source(),key,"41"));}}
+    @f main()->int=>@id(PLACEHOLDER)!=41;
+
+case @ct {n:=get("n",0);put("n",n+1);if(n<2){again();
+  nanoc
+    @ct {n:=get("n",0);put("n",n+1);if(n<2){again();}emit(quote{enum{n=$n};});}
+    @f main()->int=>n!=2;
+
+case @ct {rewrite(rename(source(),"old","renamed"));}
+  nanoc
+    @ct {rewrite(rename(source(),"old","renamed"));}
+    int old=42; const char *message="old"; // old stays in comments
+    @f main()->int=>renamed!=42 || message[0]!='o';
+
+case #include <vector>
+  nanoc
+    #include <vector>
+    @f count(const std::vector<int>& xs)->int=>(int)xs.size();
+    @f main()->int {std::vector<int> xs{1,2,3};=>count(xs)!=3;}
+  cpp
+
+case @f main()->int {@ct {f square(x)=>x*x; n:=square
+  nanoc
+    @f main()->int {@ct {f square(x)=>x*x; n:=square(7);emit(quote{int n=$n;});}@m finish($x){=>$x;} @finish(n!=49)}
+
+reject pass limit
+  nanoc
+    @ct {again();}
+
+reject loop control
+  nanoc
+    @ct {break;}
+
+reject slice bounds
+  nanoc
+    @ct {slice("x",-1);}
+
+reject must not be empty
+  nanoc
+    @ct {replace("x","","y");}
+
+reject require @bt
+  nanoc
+    @ct {run(["true"]);}

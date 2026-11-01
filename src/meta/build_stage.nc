@@ -1,6 +1,6 @@
 // Selects the BT build stage.
 #include "nanoc/nanoc.h"
-typedef struct { NcTokens *v; size_t n, cap; } Programs;
+@s Programs v:*NcTokens; n,cap:usize
 // Runs BT code in the build stage.
 @f nc_build_stage(NcContext *ctx, const char *source) char *
   if !strstr(source, "bt")
@@ -11,17 +11,17 @@ typedef struct { NcTokens *v; size_t n, cap; } Programs;
   NcBuffer bare = {0}
   Programs programs = {0}
   while c.pos < ts.n
-    size_t start = c.pos
+    usize start = c.pos
     NcToken t = ts.v[c.pos++]
     if t.kind == NC_PUNCT && nc_is(t, "@")
-      size_t next = c.pos
+      usize next = c.pos
       while next < ts.n && ts.v[next].kind == NC_SPACE
         ++next
       if next < ts.n && nc_is(ts.v[next], "bt")
         c.pos = next + 1
         NC_PUSH(ctx, programs, nc_meta_body(&c, nc_header(&c), true, false))
-        for size_t i = start; i < c.pos; ++i
-          for size_t j = 0; j < ts.v[i].n; ++j
+        for usize i = start; i < c.pos; ++i
+          for usize j = 0; j < ts.v[i].n; ++j
             nc_add(ctx, &bare, ts.v[i].s[j] == '\n' ? "\n" : " ")
         continue
       if next < ts.n && (nc_is(ts.v[next], "m") || nc_is(ts.v[next], "macro"))
@@ -38,7 +38,7 @@ typedef struct { NcTokens *v; size_t n, cap; } Programs;
       elif next < ts.n && nc_is(ts.v[next], "ct")
         c.pos = next + 1
         (void)nc_meta_body(&c, nc_header(&c), true, false)
-    for size_t i = start; i < c.pos; ++i
+    for usize i = start; i < c.pos; ++i
       nc_addn(ctx, &bare, ts.v[i].s, ts.v[i].n)
   if !programs.n
     ctx->source = source
@@ -46,7 +46,7 @@ typedef struct { NcTokens *v; size_t n, cap; } Programs;
   nc_add(ctx, &bare, "")
   ctx->source = bare.v
   NcBuffer prelude = {0}
-  for size_t i = 0; i < programs.n; ++i
+  for usize i = 0; i < programs.n; ++i
     if ctx->frame_count == 256
       nc_fail(ctx, 1, "build depth limit exceeded")
     char *frame = nc_format(ctx, "while executing @bt at %s:%d", ctx->file,

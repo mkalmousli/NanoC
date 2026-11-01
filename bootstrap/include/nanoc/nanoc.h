@@ -1,6 +1,7 @@
 #ifndef NC_NANOC_H
 #define NC_NANOC_H
 // Base types and limits.
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -11,25 +12,87 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <ctype.h>
+
 typedef struct NcContext NcContext;
 typedef struct NcAllocation NcAllocation;
-typedef struct { const char *key; void *value; } NcEntry;
-typedef struct { NcEntry *v; size_t n, cap; } NcMap;
-typedef struct { char *v; size_t n, cap; } NcBuffer;
-typedef struct { char **v; size_t n, cap; } NcStrings;
+
+typedef struct NcEntry NcEntry;
+struct NcEntry {
+    const char * key;
+    void *value;
+};
+
+typedef struct NcMap NcMap;
+struct NcMap {
+    NcEntry *v;
+    size_t n,cap;
+};
+
+typedef struct NcBuffer NcBuffer;
+struct NcBuffer {
+    char *v;
+    size_t n,cap;
+};
+
+typedef struct NcStrings NcStrings;
+struct NcStrings {
+    char * *v;
+    size_t n,cap;
+};
+
 #define NC_PUSH(c, a, x) do { \
     if ((a).n == (a).cap) (a).v = nc_grow(c, (a).v, (a).n, &(a).cap, sizeof *(a).v); \
     (a).v[(a).n++] = (x); \
 } while (0)
 // Token and cursor types.
-typedef enum { NC_SPACE, NC_WORD, NC_NUMBER, NC_LITERAL, NC_PUNCT, NC_DIRECTIVE } NcKind;
-typedef struct { const char *s; size_t n; int line, column; NcKind kind; } NcToken;
-typedef struct { NcToken *v; size_t n, cap; } NcTokens;
-typedef struct { NcTokens *v; size_t n, cap; } NcGroups;
-typedef struct { NcContext *ctx; NcTokens ts; size_t pos; } NcCursor;
+typedef enum {
+    NC_SPACE,
+    NC_WORD,
+    NC_NUMBER,
+    NC_LITERAL,
+    NC_PUNCT,
+    NC_DIRECTIVE
+} NcKind;
+
+typedef struct NcToken NcToken;
+struct NcToken {
+    const char * s;
+    size_t n;
+    int line,column;
+    NcKind kind;
+};
+
+typedef struct NcTokens NcTokens;
+struct NcTokens {
+    NcToken *v;
+    size_t n,cap;
+};
+
+typedef struct NcGroups NcGroups;
+struct NcGroups {
+    NcTokens *v;
+    size_t n,cap;
+};
+
+typedef struct NcCursor NcCursor;
+struct NcCursor {
+    NcContext *ctx;
+    NcTokens ts;
+    size_t pos;
+};
 // The compile context.
-typedef struct { char *name, *params, *returns, *intent; int line; } NcSymbol;
-typedef struct { NcSymbol *v; size_t n, cap; } NcSymbols;
+typedef struct NcSymbol NcSymbol;
+struct NcSymbol {
+    char *name, *params, *returns, *intent;
+    int line;
+};
+
+typedef struct NcSymbols NcSymbols;
+struct NcSymbols {
+    NcSymbol *v;
+    size_t n,cap;
+};
+
 struct NcContext {
     const char *file;
     bool cpp;
@@ -47,21 +110,67 @@ struct NcContext {
     const char *code;
     int error_line;
     char *frames[256];
+    char *ret_type, *defers;
     size_t frame_count;
 };
 // Macro types.
-typedef struct { char *name, *kind; bool variadic; } NcParam;
-typedef struct { NcParam *v; size_t n, cap; } NcParams;
-typedef struct { NcParams params; NcTokens body; bool program; } NcMacro;
-typedef struct { NcMap values, fresh; char *variadic; } NcBindings;
+typedef struct NcParam NcParam;
+struct NcParam {
+    char *name, *kind;
+    bool variadic;
+};
+
+typedef struct NcParams NcParams;
+struct NcParams {
+    NcParam *v;
+    size_t n,cap;
+};
+
+typedef struct NcMacro NcMacro;
+struct NcMacro {
+    NcParams params;
+    NcTokens body;
+    bool program;
+};
+
+typedef struct NcBindings NcBindings;
+struct NcBindings {
+    NcMap values,fresh;
+    char *variadic;
+};
 // Layout tree types.
-typedef struct { NcTokens ts; int indent, line; bool raw; } NcLayoutLine;
-typedef struct { NcLayoutLine *v; size_t n, cap; } NcLines;
+typedef struct NcLayoutLine NcLayoutLine;
+struct NcLayoutLine {
+    NcTokens ts;
+    int indent,line;
+    bool raw;
+};
+
+typedef struct NcLines NcLines;
+struct NcLines {
+    NcLayoutLine *v;
+    size_t n,cap;
+};
+
 typedef struct NcNode NcNode;
-typedef struct { NcNode *v; size_t n, cap; } NcNodes;
-struct NcNode { NcLayoutLine head; NcNodes children; };
-typedef struct { int line, indent; } NcHeader;
+
+typedef struct NcNodes NcNodes;
+struct NcNodes {
+    NcNode *v;
+    size_t n,cap;
+};
+
+struct NcNode {
+    NcLayoutLine head;
+    NcNodes children;
+};
+
+typedef struct NcHeader NcHeader;
+struct NcHeader {
+    int line,indent;
+};
 // State of the pretty C printer.
+
 typedef struct {
     NcContext *c;
     NcBuffer out;
@@ -73,25 +182,98 @@ typedef struct {
     bool cases[256], dos[256], ctl[256];
 } NcPretty;
 // Evaluator types.
-typedef enum { NC_INT, NC_BOOL, NC_STRING, NC_CODE, NC_LIST } NcValueKind;
+typedef enum {
+    NC_INT,
+    NC_BOOL,
+    NC_STRING,
+    NC_CODE,
+    NC_LIST
+} NcValueKind;
+
 typedef struct NcValue NcValue;
-struct NcValue { NcValueKind kind; int64_t n; char *text; NcValue *items; size_t count, height; };
-typedef struct { NcValue *v; size_t n, cap; } NcValues;
-typedef struct NcEnv { struct NcEnv *parent; NcMap values; } NcEnv;
-typedef struct { NcStrings params; NcTokens body; NcEnv *closure; } NcCtFunction;
-typedef enum { NC_CT, NC_BT, NC_MACRO } NcPhase;
-typedef struct { NcContext *ctx; NcMap functions; NcBuffer output; NcEnv *root; NcPhase phase; size_t depth; } NcMachine;
-typedef struct { bool returning; NcValue value; bool breaking, continuing; } NcFlow;
-typedef struct { NcCursor c; NcMachine *m; NcEnv *env; size_t depth; } NcExpr;
+struct NcValue {
+    NcValueKind kind;
+    int64_t n;
+    char *text;
+    NcValue *items;
+    size_t count, height;
+};
+
+typedef struct NcValues NcValues;
+struct NcValues {
+    NcValue *v;
+    size_t n,cap;
+};
+
+typedef struct NcEnv {
+    struct NcEnv *parent;
+    NcMap values;
+} NcEnv;
+
+typedef struct NcCtFunction NcCtFunction;
+struct NcCtFunction {
+    NcStrings params;
+    NcTokens body;
+    NcEnv *closure;
+};
+
+typedef enum {
+    NC_CT,
+    NC_BT,
+    NC_MACRO
+} NcPhase;
+
+typedef struct NcMachine NcMachine;
+struct NcMachine {
+    NcContext *ctx;
+    NcMap functions;
+    NcBuffer output;
+    NcEnv *root;
+    NcPhase phase;
+    size_t depth;
+};
+
+typedef struct NcFlow NcFlow;
+struct NcFlow {
+    bool returning;
+    NcValue value;
+    bool breaking,continuing;
+};
+
+typedef struct NcExpr NcExpr;
+struct NcExpr {
+    NcCursor c;
+    NcMachine *m;
+    NcEnv *env;
+    size_t depth;
+};
 // Builtin catalog types.
 typedef NcValue (*NcBuiltinFn)(NcMachine *, const char *, NcValues, int);
-typedef struct { const char *name, *signature, *phase; NcBuiltinFn function; } NcSpec;
+
+typedef struct NcSpec NcSpec;
+struct NcSpec {
+    const char *name, *signature, *phase;
+    NcBuiltinFn function;
+};
+
 extern const NcSpec nc_specs[];
 extern const size_t nc_spec_count;
 // CLI option types.
+
 #define NC_VERSION "0.6.0"
-typedef struct { char *input, *output, *action; bool check, json, prototypes; } NcOptions;
-typedef struct { FILE *out; int depth; bool more[32]; } NcJson;
+
+typedef struct NcOptions NcOptions;
+struct NcOptions {
+    char *input, *output, *action;
+    bool check,json,prototypes;
+};
+
+typedef struct NcJson NcJson;
+struct NcJson {
+    FILE *out;
+    int depth;
+    bool more[32];
+};
 char *nc_read(NcContext *c, const char *path);
 void nc_write(NcContext *c, const char *path, const char *contents);
 void nc_init(NcContext *c, const char *file);
@@ -123,6 +305,9 @@ bool nc_header_at(const NcCursor *c, const char *s, int line);
 bool nc_header_eat(NcCursor *c, const char *s, int line);
 NcTokens nc_line_expression(NcCursor *c);
 NcNodes nc_indented_nodes(NcCursor *c, NcHeader header, bool program);
+char *nc_defer_return(NcContext *c, char *s);
+void nc_emit_defer(NcContext *c, NcBuffer *out, NcNodes nodes, size_t at, bool tail, size_t depth);
+char *nc_say(NcContext *c, const char *args, int line);
 NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail);
 NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program);
 bool nc_is_ret(NcContext *c, NcTokens items);
@@ -227,6 +412,7 @@ char *nc_transpile(NcContext *ctx, const char *input);
 void nc_alias(NcToken *t);
 NcTokens nc_aliased(NcContext *c, NcTokens ts);
 char *nc_function(NcContext *ctx, NcCursor *c, size_t depth);
+char *nc_raw(NcContext *ctx, NcCursor *c);
 char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth);
 NcTokens nc_group(NcCursor *c, const char *open, const char *close);
 NcTokens nc_until(NcCursor *c, const char *delimiter);
@@ -253,6 +439,7 @@ NcToken nc_take(NcCursor *c);
 bool nc_eat(NcCursor *c, const char *s);
 void nc_need(NcCursor *c, const char *s);
 char *nc_name(NcCursor *c);
+char *nc_record(NcContext *ctx, NcCursor *c, char kind);
 char *nc_assembly(NcContext *ctx, NcCursor *c);
 size_t nc_literal_start(const char *s, size_t i, bool cpp);
 size_t nc_literal_end(NcContext *c, const char *s, size_t i, int line);

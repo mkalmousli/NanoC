@@ -2,7 +2,7 @@
 #include "nanoc/nanoc.h"
 #include <unistd.h>
 #include <sys/stat.h>
-typedef struct { int status; char *out, *err; } TestResult;
-typedef struct { NcContext *mem; char *dir; size_t assertions; } TestState;
+@s TestResult status:i32; char *out, *err
+@s TestState mem:*NcContext; dir:*char; assertions:usize
 extern TestState test_state;
 #define CHECK(x) test_check((x), #x, __FILE__, __LINE__)

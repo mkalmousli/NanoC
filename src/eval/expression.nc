@@ -43,7 +43,7 @@
   --e->depth
   out
 // Evaluates an expression.
-@f nc_eval(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth, bool active) NcValue
+@f nc_eval(NcMachine *m, NcTokens ts, NcEnv *env, usize depth, bool active) NcValue
   nc_depth(m->ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time")
   NcExpr e = {{m->ctx, ts, 0}, m, env, depth}
   NcValue out = nc_expression(&e, 0, active)

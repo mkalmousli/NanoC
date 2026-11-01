@@ -1,7 +1,7 @@
 // Statement execution for CT/BT code.
 #include "nanoc/nanoc.h"
 // Runs a statement sequence.
-@f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) NcFlow
+@f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, usize depth) NcFlow
   NcContext *ctx = m->ctx
   nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time")
   NcCursor c = {ctx, ts, 0}
@@ -9,7 +9,7 @@
   while !nc_end(&c)
     NcToken t = nc_take(&c)
     nc_step(ctx, t.line)
-    size_t next = c.pos
+    usize next = c.pos
     while next < ts.n && ts.v[next].kind == NC_SPACE
       ++next
     bool define_f = nc_is(t, "f") && next < ts.n && ts.v[next].kind == NC_WORD
@@ -46,6 +46,6 @@
       nc_need(&c, ";")
   out
 // Expands a compile-time block.
-@f nc_compile_time(NcContext *ctx, NcTokens ts, size_t depth) char *
+@f nc_compile_time(NcContext *ctx, NcTokens ts, usize depth) char *
   nc_expand(ctx, nc_lex(ctx, nc_program(ctx, ts, NULL, NC_CT, depth), ts.n ? ts.v[0].line : 1),
     depth)

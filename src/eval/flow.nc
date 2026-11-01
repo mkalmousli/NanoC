@@ -1,7 +1,7 @@
 // Conditionals and loops in meta code.
 #include "nanoc/nanoc.h"
 // Skips an if/elif/else chain.
-@f skip_conditional(NcCursor *c, size_t depth) static void
+@f skip_conditional(NcCursor *c, usize depth) static void
   nc_depth(c->ctx, depth, nc_line(c), "conditional")
   nc_need(c, "if")
   (void)nc_group(c, "(", ")")
@@ -12,12 +12,12 @@
     else
       (void)nc_group(c, "{", "}")
 // Runs an if/elif/else chain.
-@f nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth) NcFlow
+@f nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, usize depth) NcFlow
   NcTokens cond = nc_group(c, "(", ")")
   NcTokens yes = nc_group(c, "{", "}"), no = {0}
   if nc_eat(c, "else")
     if nc_at(c, "if")
-      size_t start = c->pos
+      usize start = c->pos
       skip_conditional(c, depth + 1)
       no = nc_slice(c->ts, start, c->pos)
     else
@@ -25,7 +25,7 @@
   bool choose = nc_truth(nc_eval(m, cond, env, depth, true))
   nc_run(m, choose ? yes : no, nc_env(m->ctx, env), depth + 1)
 // Runs a for or while loop.
-@f nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *name) NcFlow
+@f nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, const char *name) NcFlow
   NcContext *ctx = m->ctx
   NcFlow out = {0}
   if !strcmp(name, "for") && nc_at(c, "(")
@@ -46,7 +46,7 @@
     NcValue values = nc_eval(m, input, env, depth, true)
     if values.kind != NC_LIST
       nc_fail(ctx, nc_line(c), "for requires a list")
-    for size_t i = 0; i < values.count; ++i
+    for usize i = 0; i < values.count; ++i
       NcEnv *scope = nc_env(ctx, env)
       nc_bind(ctx, scope, id, values.items[i])
       out = nc_run(m, body, scope, depth + 1)

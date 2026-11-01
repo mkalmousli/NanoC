@@ -1,10 +1,10 @@
 // Assignment statements in the evaluator.
 #include "nanoc/nanoc.h"
 // Runs name = expr when present.
-@f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken name) bool
+@f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, NcToken name) bool
   if name.kind != NC_WORD
     return false
-  size_t saved = c->pos
+  usize saved = c->pos
   if nc_end(c)
     c->pos = saved
     return false

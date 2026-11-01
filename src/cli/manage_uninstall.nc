@@ -1,8 +1,8 @@
 // The uninstall command.
 #include "nanoc/manage.h"
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+@use stdlib
+@use string
+@use unistd
 // Removes empty parent directories.
 @f mg_prune(const char *prefix, const char *path) static void
   char dir[PATH_MAX]

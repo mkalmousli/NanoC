@@ -1,6 +1,6 @@
 #include "test.h"
-#include <time.h>
-#include <errno.h>
+@use time
+@use errno
 @f seconds(struct timespec start) static double
   struct timespec end
   CHECK(clock_gettime(CLOCK_MONOTONIC, &end) == 0)

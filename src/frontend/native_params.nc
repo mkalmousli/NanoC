@@ -7,7 +7,7 @@
     return ctx->cpp ? "" : "void"
   char *type = NULL
   NcBuffer out = {0}
-  for size_t i = 0; i < groups.n; ++i
+  for usize i = 0; i < groups.n; ++i
     NcTokens part = nc_significant(ctx, groups.v[i])
     if !part.n
       nc_fail(ctx, 1, "empty function parameter")
@@ -20,7 +20,7 @@
     if name.kind != NC_WORD
       nc_fail(ctx, name.line, "use a typedef or ordinary C for complex parameters")
     if part.n > 1
-      size_t last = groups.v[i].n
+      usize last = groups.v[i].n
       while last && groups.v[i].v[last - 1].kind == NC_SPACE
         --last
       type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, nc_slice(groups.v[i], 0, last - 1))))

@@ -5,7 +5,7 @@
   if *s != '('
     return false
   int depth = 0
-  for size_t i = 0; s[i]; ++i
+  for usize i = 0; s[i]; ++i
     if s[i] == '"' || s[i] == '\''
       char quote = s[i++]
       while s[i] && s[i] != quote
@@ -23,7 +23,7 @@
 // Rewrites a control statement.
 @f nc_control(NcContext *ctx, NcTokens ts, int line) char *
   char *source = nc_trim(ctx, nc_words(ctx, ts))
-  size_t len = strlen(source)
+  usize len = strlen(source)
   if !len
     nc_fail(ctx, line, "empty control header")
   char *header = nc_trim(ctx, nc_string(ctx, source, source[len - 1] == ':' ? len - 1 : len))
@@ -49,7 +49,7 @@
   if !strcmp(name, "for")
     if nc_at(&c, "(")
       return nc_format(ctx, "for %s", rest)
-    for size_t i = c.pos; i < c.ts.n; ++i
+    for usize i = c.pos; i < c.ts.n; ++i
       if nc_is(c.ts.v[i], ";")
         return nc_format(ctx, "for (%s)", rest)
     char *id = nc_name(&c), *type = "int"
@@ -59,14 +59,14 @@
     (void)nc_eat(&c, "in")
     char *bounds = nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))
     bool range = false
-    for size_t i = c.pos; i < c.ts.n; ++i
+    for usize i = c.pos; i < c.ts.n; ++i
       if nc_is(c.ts.v[i], "..")
         range = true
     if ctx->cpp && !range
       return nc_format(ctx, "for (%s%s %s : %s)", typed ? type : "auto", typed ? "&" : "&&", id,
         bounds)
     NcBuffer out = {0}
-    for size_t i = 0; bounds[i]; ++i
+    for usize i = 0; bounds[i]; ++i
       if !strncmp(bounds + i, "..<", 3)
         nc_add(ctx, &out, "..")
         i += 2

@@ -4,6 +4,8 @@
 #include "nanoc/nanoc.h"
 
 // Rewrites a word token such as i32 or f64 to its C type; other tokens are unchanged.
+int nc_std;
+
 void nc_alias(NcToken *t) {
     static const char *const map[][2] = {{"i8", "signed char"}, {"i16", "short"}, {"i32", "int"},
             {"i64", "long long"}, {"u8", "unsigned char"}, {"u16", "unsigned short"}, {"u32",
@@ -15,6 +17,11 @@ void nc_alias(NcToken *t) {
     }
     for (size_t k = 0; k < sizeof map / sizeof *map; ++k) {
         if (strlen(map[k][0]) == t->n && !strncmp(t->s, map[k][0], t->n)) {
+            if (nc_std == 89 && strstr(map[k][1], "long long")) {
+                t->s = map[k][1][0] == 'u' ? "unsigned long" : "long";
+                t->n = strlen(t->s);
+                return;
+            }
             t->s = map[k][1];
             t->n = strlen(map[k][1]);
             return;

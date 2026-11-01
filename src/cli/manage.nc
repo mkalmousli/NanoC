@@ -1,7 +1,7 @@
 // The manage subcommand dispatcher.
 #include "nanoc/manage.h"
-#include <stdlib.h>
-#include <string.h>
+@use stdlib
+@use string
 // Dispatches manage subcommands.
 @f nc_manage(int argc, char **argv) int
   if argc < 2

@@ -84,6 +84,9 @@ char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
         }
     }
     char *code = nc_trim(c, nc_words(c, ts));
+    if (!strcmp(first, "say") && items.n > 1) {
+        return nc_say(c, nc_trim(c, code + 3), line.line);
+    }
     if (nc_is_ret(c, items)) {
         code = nc_trim(c, nc_format(c, "return %s", code + 3));
         first = "return";

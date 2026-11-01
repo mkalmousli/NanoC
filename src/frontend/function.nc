@@ -1,9 +1,9 @@
 // The @f function form.
 #include "nanoc/nanoc.h"
 // Expands a @f function.
-@f nc_function(NcContext *ctx, NcCursor *c, size_t depth) char *
+@f nc_function(NcContext *ctx, NcCursor *c, usize depth) char *
   int line = nc_line(c)
-  size_t previous = c->pos ? c->pos - 1 : 0
+  usize previous = c->pos ? c->pos - 1 : 0
   while previous && !nc_is(c->ts.v[previous], "@")
     --previous
   int indent = c->ts.v[previous].column - 1
@@ -28,7 +28,7 @@
   else
     nc_need(c, "=")
     int header_line = c->ts.v[c->pos - 1].line
-    size_t next = c->pos
+    usize next = c->pos
     while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
       ++next
     if next < c->ts.n && c->ts.v[next].line == header_line
@@ -38,7 +38,7 @@
       body = nc_emit_block(ctx, nodes, strcmp(returns, "void") != 0, 0)
     else
       NcLines lines = nc_body_lines(c, header_line, indent)
-      size_t i = 0
+      usize i = 0
       NcNodes nodes = nc_tree(ctx, lines, &i, lines.v[0].indent, 0)
       if i != lines.n
         nc_fail(ctx, lines.v[i].line, "inconsistent indentation")

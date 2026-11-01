@@ -7,7 +7,7 @@
   if items.n == 1
     return true
   char *next = nc_text(c, items.v[1])
-  size_t n = strlen(next)
+  usize n = strlen(next)
   if next[0] == '=' || next[n - 1] == '='
     return false
   strcmp(next, ".") && strcmp(next, "->") && strcmp(next, "[") && strcmp(next, "++") && strcmp(next,
@@ -19,7 +19,7 @@
   if !items.n
     return ""
   if nc_is(items.v[items.n - 1], ";")
-    size_t last = ts.n
+    usize last = ts.n
     while last && ts.v[last - 1].kind == NC_SPACE
       --last
     ts.n = last - 1
@@ -41,7 +41,7 @@
     declaration = true
   elif (items.n > 1 && items.v[0].kind == NC_WORD
     && (nc_is(items.v[1], ":") || nc_is(items.v[1], ",")))
-    for size_t i = 0; i < items.n; ++i
+    for usize i = 0; i < items.n; ++i
       if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":"))
         && (i + 1 == items.n || !nc_is(items.v[i + 1], ":")))
         declaration = true
@@ -49,17 +49,19 @@
     if tail
       nc_fail(c, line.line, "value function needs a final expression")
     return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, true), line.line)))
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     if ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")
       if tail
         nc_fail(c, line.line, "value function needs a final expression")
       NcTokens normalized = {0}
-      for size_t j = 0; j < ts.n; ++j
+      for usize j = 0; j < ts.n; ++j
         NC_PUSH(c, normalized,
           nc_is(ts.v[j], ":=") ? nc_token("=", ts.v[j].line, NC_PUNCT) : ts.v[j])
       char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), true)
       return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)))
   char *code = nc_trim(c, nc_words(c, ts))
+  if !strcmp(first, "say") && items.n > 1
+    return nc_say(c, nc_trim(c, code + 3), line.line)
   if nc_is_ret(c, items)
     code = nc_trim(c, nc_format(c, "return %s", code + 3))
     first = "return"
@@ -72,7 +74,7 @@
     return nc_join(c, ts)
   if tail
     const char *decls[] = {"int", "char", "void", "float", "double", "struct", "typedef", "static"}
-    for size_t i = 0; i < 8; ++i
+    for usize i = 0; i < 8; ++i
       if !strcmp(first, decls[i])
         nc_fail(c, line.line, "value function needs a final expression")
     return nc_format(c, "return %s;", code)

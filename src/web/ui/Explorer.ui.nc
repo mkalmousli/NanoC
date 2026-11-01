@@ -1,5 +1,5 @@
 Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</em>"]
-  Sub Every NanoC file of the compiler beside the C it generates, compiled live in your browser. Press <kbd>/</kbd> to search.
+  Sub Every NanoC file of the compiler beside the C it generates, pre-translated when the site is built. Press <kbd>/</kbd> to search.
   div
     css
       display:grid
@@ -99,13 +99,6 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
     let files = []
     let current = null
     const openDirs = new Set(['src', 'src/frontend'])
-    let worker, seq = 0, killer
-    function spawn()
-      worker = new Worker('worker.js')
-      worker.onmessage = e =>
-        if (e.data.id !== seq) return
-        clearTimeout(killer)
-        showC(e.data)
     function buildTree(paths)
       const root = { dirs: {}, files: [] }
       for (const p of paths)
@@ -153,12 +146,12 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
     function showC(r)
       const view = A.cview
       if (!r.ok)
-        view.innerHTML = '<div class="empty-code">No C preview: ' + (r.err ? r.err.split('\n')[0].replace(/[<&]/g, '') : 'this file needs build-time (@bt) host access, which the browser build does not have') + '.</div>'
+        view.innerHTML = '<div class="empty-code">No C preview: ' + 'this file needs build-time (@bt) host access, so it has no standalone C' + '.</div>'
         A.cstat.textContent = ''
         return
       show(view, r.out, 'c')
       const c = lines(r.out)
-      A.cstat.textContent = c + ' lines · ' + Math.round(r.ms < 1 ? 1 : r.ms) + ' ms'
+      A.cstat.textContent = c + ' lines'
       A.ratio.textContent = c && ncLines ? (ncLines <= c ? Math.round((1 - ncLines / c) * 100) + '% fewer lines than C' : 'longer than its C') : ''
     async function open(path)
       current = path
@@ -166,7 +159,7 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
       A.name.textContent = path
       A.raw.href = REPO + '/blob/main/' + path
       A.ncview.innerHTML = '<div class="loading">Loading…</div>'
-      A.cview.innerHTML = '<div class="loading">Compiling in your browser…</div>'
+      A.cview.innerHTML = '<div class="loading">Loading…</div>'
       A.ratio.textContent = ''
       try
         let r = await fetch('source/' + path)
@@ -177,14 +170,10 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
         ncLines = lines(text)
         A.ncstat.textContent = ncLines + ' lines'
         show(A.ncview, text, 'nanoc')
-        const id = ++seq
-        clearTimeout(killer)
-        killer = setTimeout(() =>
-          worker.terminate()
-          spawn()
-          showC({ ok: false, err: 'timed out', out: '', ms: 5000 })
-        , 5000)
-        worker.postMessage({ id, src: text })
+        const cr = await fetch('c/' + path)
+        if (current !== path) return
+        const cout = cr.ok ? await cr.text() : ''
+        showC({ ok: cout.length > 0, out: cout })
       catch
         A.ncview.innerHTML = '<div class="empty-code">Could not load this file. <a href="' + REPO + '">Open the repository ↗</a></div>'
     A.search.oninput = render
@@ -193,7 +182,6 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
         e.preventDefault()
         A.search.focus()
     )
-    spawn()
     fetch('files.json').then(r =>
       if (!r.ok) throw Error(String(r.status))
       return r.json()

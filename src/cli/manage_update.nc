@@ -1,9 +1,9 @@
 // The update command.
 #include "nanoc/manage.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+@use stdio
+@use stdlib
+@use string
+@use unistd
 // Runs a shell step, with label.
 @f nc_update_cmd(const char *cmd, const char *what) static int
   printf("  %s\n", what)

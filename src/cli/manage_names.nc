@@ -2,12 +2,12 @@
 #include "nanoc/nanoc.h"
 #include "nanoc/manage.h"
 // Gets the name of editor i.
-@f nc_editor_name(size_t i) const char *
+@f nc_editor_name(usize i) const char *
   static const char *ids[] = {"vscode", "vim", "neovim", "emacs", "micro", "nano", "sublime", NULL}
   ids[i]
 // Tells if an editor name exists.
 @f nc_known_editor(const char *name) bool
-  for size_t i = 0; nc_editor_name(i); ++i
+  for usize i = 0; nc_editor_name(i); ++i
     if !strcmp(name, nc_editor_name(i))
       return true
   false

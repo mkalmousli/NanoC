@@ -14,7 +14,7 @@
   if nc_at(c, "(")
     params = nc_split(ctx, nc_group(c, "(", ")"), ",")
   NcMap names = {0}
-  for size_t i = 0; i < params.n; ++i
+  for usize i = 0; i < params.n; ++i
     NcCursor p = {ctx, params.v[i], 0}
     char *id = nc_name(&p)
     if !nc_end(&p) || nc_get(&names, id)
@@ -30,7 +30,7 @@
     f->body = nc_group(c, "{", "}")
   nc_put(ctx, &m->functions, name, f)
 // Calls a meta function.
-@f nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int line) NcValue
+@f nc_call(NcMachine *m, const char *name, NcValues args, usize depth, int line) NcValue
   NcContext *c = m->ctx
   nc_depth(c, depth, line, "compile-time")
   NcCtFunction *f = nc_get(&m->functions, name)
@@ -39,7 +39,7 @@
   if args.n != f->params.n
     nc_fail(c, line, "wrong argument count for %s", name)
   NcEnv *env = nc_env(c, f->closure)
-  for size_t i = 0; i < args.n; ++i
+  for usize i = 0; i < args.n; ++i
     nc_bind(c, env, f->params.v[i], args.v[i])
   if c->frame_count == 256
     nc_fail(c, line, "compile-time depth limit exceeded")

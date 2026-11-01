@@ -1,12 +1,12 @@
 #include "test.h"
-#include <dirent.h>
+@use dirent
 @f modules(const char *root) static size_t
   DIR *dir = opendir(root)
   CHECK(dir != NULL)
   struct dirent *entry
   size_t count = 0
   while (entry = readdir(dir)) != nil
-    if !strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..") || !strcmp(entry->d_name, "assets")
+    if !strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..") || !strcmp(entry->d_name, "assets") || !strcmp(entry->d_name, "cases")
       continue
     char *path = nc_format(test_state.mem, "%s/%s", root, entry->d_name)
     struct stat st

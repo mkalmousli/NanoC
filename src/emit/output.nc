@@ -1,12 +1,12 @@
 // Low-level output for the pretty C printer.
 #include "nanoc/nanoc.h"
 // Writes text, indenting at the start of a line.
-@f nc_pp_put(NcPretty *p, const char *s, size_t n) void
+@f nc_pp_put(NcPretty *p, const char *s, usize n) void
   if p->bol
-    size_t width = (size_t)(p->ind > 0 ? p->ind : 0) * 4
+    usize width = (usize)(p->ind > 0 ? p->ind : 0) * 4
     if p->cont
       width += 8
-    for size_t i = 0; i < width; ++i
+    for usize i = 0; i < width; ++i
       nc_add(p->c, &p->out, " ")
     p->col = width
     p->bol = false
@@ -34,7 +34,7 @@
     nc_add(p->c, &p->out, "\n")
 // Writes a preprocessor directive on its own line.
 @f nc_pp_directive(NcPretty *p, NcToken t) void
-  size_t n = t.n
+  usize n = t.n
   while n && isspace((unsigned char)t.s[n - 1])
     --n
   bool marker = !strncmp(t.s, "#line", 5)

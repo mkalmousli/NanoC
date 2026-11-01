@@ -15,11 +15,11 @@
 @f nc_mini(NcContext *c, const char *text) char *
   NcTokens ts = nc_lex(c, text, 1)
   NcBuffer out = {0}
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     NcToken t = ts.v[i]
     if t.kind == NC_SPACE
       continue
-    size_t n = t.n
+    usize n = t.n
     if t.kind == NC_DIRECTIVE
       while n && isspace((unsigned char)t.s[n - 1])
         --n

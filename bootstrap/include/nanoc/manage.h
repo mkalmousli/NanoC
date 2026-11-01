@@ -1,8 +1,11 @@
 #ifndef NC_MANAGE_H
 #define NC_MANAGE_H
 // Manage command types.
+
 #define _XOPEN_SOURCE 700
+
 /* Paths are bounded by PATH_MAX; snprintf truncation is handled by callers. */
+
 #pragma GCC diagnostic ignored "-Wformat-truncation"
 #include <stdio.h>
 #include <stdbool.h>
@@ -11,7 +14,12 @@
 #ifndef PATH_MAX
 #define PATH_MAX 4096
 #endif
-typedef struct { const char *src; char dst[PATH_MAX]; } NcTarget;
+
+typedef struct NcTarget NcTarget;
+struct NcTarget {
+    const char * src;
+    char dst[PATH_MAX];
+};
 int nc_uninstall_command(int argc, char **argv, const char *prefix);
 bool nc_exists(const char *path);
 bool nc_have_command(const char *name);

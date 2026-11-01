@@ -2,7 +2,7 @@
 #include "nanoc/nanoc.h"
 // Separator between a type and a name: none after "*".
 @f nc_sep(const char *type) const char *
-  size_t n = strlen(type)
+  usize n = strlen(type)
   n && type[n - 1] == '*' ? "" : " "
 // Parses a typed declaration.
 @f nc_typed(NcContext *ctx, NcTokens input, bool initialized) char *
@@ -13,7 +13,7 @@
   if !*type
     nc_fail(ctx, nc_line(&c), "expected C type")
   NcTokens types = nc_lex(ctx, type, input.n ? input.v[0].line : 1)
-  for size_t i = 0; i < types.n; ++i
+  for usize i = 0; i < types.n; ++i
     NcToken t = types.v[i]
     if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",") || nc_is(t, ";") || nc_is(t, "{")
       || nc_is(t, "}"))
@@ -29,7 +29,7 @@
   if !names.n
     nc_fail(ctx, nc_line(&c), "missing declaration name")
   NcBuffer out = {0}
-  for size_t i = 0; i < names.n; ++i
+  for usize i = 0; i < names.n; ++i
     NcCursor name = {ctx, names.v[i], 0}
     char *id = nc_name(&name)
     if !nc_end(&name)
@@ -45,11 +45,11 @@
   NcGroups parts = nc_split(ctx, ts, ",")
   NcTokens pending = {0}
   NcBuffer out = {0}
-  for size_t i = 0; i < parts.n; ++i
+  for usize i = 0; i < parts.n; ++i
     if pending.n
       NC_PUSH(ctx, pending, nc_token(",", 1, NC_PUNCT))
     bool colon = false
-    for size_t j = 0; j < parts.v[i].n; ++j
+    for usize j = 0; j < parts.v[i].n; ++j
       NcToken t = parts.v[i].v[j]
       NC_PUSH(ctx, pending, t)
       if nc_is(t, ":")

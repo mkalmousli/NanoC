@@ -2,7 +2,7 @@
 #include "nanoc/nanoc.h"
 // Tells if a line extends C.
 @f nc_extension_line(NcLayoutLine line) bool
-  size_t i = 0
+  usize i = 0
   while i < line.ts.n && line.ts.v[i].kind == NC_SPACE
     ++i
   if i == line.ts.n || !nc_is(line.ts.v[i++], "@")
@@ -12,7 +12,7 @@
   i < line.ts.n && line.ts.v[i].kind == NC_WORD
 // Tells if a line is meta.
 @f nc_meta_line(NcLayoutLine line) bool
-  size_t i = 0
+  usize i = 0
   while i < line.ts.n && line.ts.v[i].kind == NC_SPACE
     ++i
   if i == line.ts.n || !nc_is(line.ts.v[i++], "@")
@@ -26,7 +26,7 @@
 // Marks lines before tree building.
 @f nc_prepare_lines(NcContext *ctx, NcLines input, bool program) NcLines
   NcLines out = {0}
-  for size_t i = 0; i < input.n; ++i
+  for usize i = 0; i < input.n; ++i
     NcLayoutLine line = input.v[i]
     bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent
     bool ext = block && nc_extension_line(line)
@@ -52,13 +52,13 @@
       && ts.v[1].kind == NC_WORD)
     bool expression = false
     if function
-      for size_t j = 0; j < ts.n; ++j
+      for usize j = 0; j < ts.n; ++j
         if nc_is(ts.v[j], "=") || nc_is(ts.v[j], "=>")
           expression = true
     if ((control || (function && !expression)) && !nc_is(last, ":")
       && (block || (!nc_is(last, "}") && !nc_is(last, ";"))))
       NcTokens copy = {0}
-      for size_t j = 0; j < line.ts.n; ++j
+      for usize j = 0; j < line.ts.n; ++j
         NC_PUSH(ctx, copy, line.ts.v[j])
       NC_PUSH(ctx, copy, nc_token(":", line.line, NC_PUNCT))
       line.ts = copy

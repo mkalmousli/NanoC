@@ -3,7 +3,7 @@
 // Takes a bracketed group.
 @f nc_group(NcCursor *c, const char *open, const char *close) NcTokens
   nc_need(c, open)
-  size_t start = c->pos
+  usize start = c->pos
   NcStrings stack = {0}
   NC_PUSH(c->ctx, stack, (char *)close)
   while c->pos < c->ts.n
@@ -31,7 +31,7 @@
       const char *open = nc_text(c->ctx, t)
       const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}"
       NcTokens body = nc_group(c, open, close)
-      for size_t i = 0; i < body.n; ++i
+      for usize i = 0; i < body.n; ++i
         NC_PUSH(c->ctx, out, body.v[i])
       NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT))
     if c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE

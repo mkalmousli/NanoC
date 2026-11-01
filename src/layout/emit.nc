@@ -2,10 +2,10 @@
 #include "nanoc/nanoc.h"
 // Tells if the node starts with s.
 @f lead(NcNode n, const char *s) static bool
-  for size_t i = 0; i < n.head.ts.n; ++i
+  for usize i = 0; i < n.head.ts.n; ++i
     if n.head.ts.v[i].kind != NC_SPACE
       if nc_is(n.head.ts.v[i], "else")
-        size_t next = i + 1
+        usize next = i + 1
         while next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE
           ++next
         bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if")
@@ -19,16 +19,16 @@
   else
     nc_add(c, b, "\n")
 // Emits a block of nodes as C.
-@f nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) char *
+@f nc_emit_block(NcContext *c, NcNodes nodes, bool tail, usize depth) char *
   nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout")
   if !nodes.n && tail
     nc_fail(c, 1, "value function needs a final expression")
   NcBuffer out = {0}
-  size_t i = 0
+  usize i = 0
   while i < nodes.n
     NcNode node = nodes.v[i]
     nc_step(c, node.head.line)
-    size_t last = i
+    usize last = i
     if lead(node, "if") && node.children.n
       while (last + 1 < nodes.n
         && (lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1], "else")))
@@ -39,6 +39,9 @@
           nc_fail(c, nodes.v[last].head.line, "branch needs ':' and an indented block")
     elif lead(node, "elif") || lead(node, "else")
       nc_fail(c, node.head.line, "branch without matching if")
+    if lead(node, "defer") && !node.children.n
+      nc_emit_defer(c, &out, nodes, i, tail, depth)
+      break
     bool returning = tail && last + 1 == nodes.n
     if !node.children.n
       if node.head.raw || nc_meta_line(node.head)
@@ -53,11 +56,11 @@
           || lead(node, "continue")))
         nc_fail(c, node.head.line, "value function needs a final expression")
       nc_marker(c, &out, node.head.line)
-      nc_add(c, &out, nc_statement(c, node.head, returning))
+      nc_add(c, &out, nc_defer_return(c, nc_statement(c, node.head, returning)))
     else
       if returning && (!lead(node, "if") || !lead(nodes.v[last], "else"))
         nc_fail(c, node.head.line, "value function needs a final expression or exhaustive if/else")
-      for size_t branch = i; branch <= last; ++branch
+      for usize branch = i; branch <= last; ++branch
         NcNode n = nodes.v[branch]
         nc_marker(c, &out, n.head.line)
         nc_printf(c, &out, "%s {", nc_control(c, n.head.ts, n.head.line))

@@ -1,6 +1,6 @@
 // The compile context.
-typedef struct { char *name, *params, *returns, *intent; int line; } NcSymbol;
-typedef struct { NcSymbol *v; size_t n, cap; } NcSymbols;
+@s NcSymbol char *name, *params, *returns, *intent; line:i32
+@s NcSymbols v:*NcSymbol; n,cap:usize
 struct NcContext {
     const char *file;
     bool cpp;
@@ -18,5 +18,6 @@ struct NcContext {
     const char *code;
     int error_line;
     char *frames[256];
+    char *ret_type, *defers;
     size_t frame_count;
 };

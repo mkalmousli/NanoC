@@ -21,7 +21,7 @@
       nc_end(&c) ? "()" : nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
   if nc_at(&c, "(")
     return nc_format(ctx, "for %s", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
-  for size_t i = c.pos; i < sig.n; ++i
+  for usize i = c.pos; i < sig.n; ++i
     if nc_is(sig.v[i], ";")
       return nc_format(ctx, "for (%s)", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
   char *id = nc_name(&c)

@@ -1,6 +1,6 @@
 // Type inference for := declarations.
 #include "nanoc/nanoc.h"
-#include <errno.h>
+@use errno
 // Rewrites := with a typeof.
 @f nc_infer(NcContext *c, NcTokens ts, int line) char *
   NcTokens items = nc_significant(c, ts)
@@ -34,7 +34,7 @@
   nc_need(&c, "=")
   NcTokens init = nc_slice(ts, c.pos, ts.n)
   bool colon = false
-  for size_t i = 0; i < names.n; ++i
+  for usize i = 0; i < names.n; ++i
     if nc_is(names.v[i], ":")
       colon = true
   char *type = colon ? "" : nc_format(ctx, ":%s", nc_infer(ctx, init, line))

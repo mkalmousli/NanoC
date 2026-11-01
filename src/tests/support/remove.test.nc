@@ -1,5 +1,5 @@
 #include "test.h"
-#include <dirent.h>
+@use dirent
 @f test_remove(const char *path) void
   struct stat st
   if lstat(path, &st)

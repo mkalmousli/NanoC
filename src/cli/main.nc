@@ -45,7 +45,7 @@
       else
         nc_write(c, o.output, generated)
       if !o.json
-        for size_t i = 0; i < c->logs.n; ++i
+        for usize i = 0; i < c->logs.n; ++i
           fprintf(stderr, "%s\n", c->logs.v[i])
   if ferror(stdout)
     code = 1

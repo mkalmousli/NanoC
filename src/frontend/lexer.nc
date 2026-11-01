@@ -3,11 +3,11 @@
 // Splits text into tokens.
 @f nc_lex(NcContext *c, const char *s, int line) NcTokens
   NcTokens out = {0}
-  size_t i = 0
+  usize i = 0
   int column = 1
   bool bol = true
   while s[i]
-    size_t start = i
+    usize start = i
     NcToken t = {s + i, 0, line, column, NC_PUNCT}
     unsigned char ch = (unsigned char)s[i]
     if isspace(ch)
@@ -22,7 +22,7 @@
       const char *end = strstr(s + i + 2, "*/")
       if !end
         nc_fail(c, line, "unterminated comment")
-      i = (size_t)(end - s) + 2
+      i = (usize)(end - s) + 2
     elif ch == '#' && bol
       t.kind = NC_DIRECTIVE
       i = nc_line_end(s, i)
@@ -55,7 +55,7 @@
           break
     t.n = i - start
     bool newline = false
-    for size_t n = start; n < i; ++n
+    for usize n = start; n < i; ++n
       if s[n] == '\n'
         ++line
         column = 1

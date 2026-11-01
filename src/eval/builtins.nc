@@ -1,7 +1,7 @@
 // Dispatch of builtin calls.
 #include "nanoc/nanoc.h"
 // Checks the argument count.
-@f nc_arity(NcContext *c, NcValues args, size_t n, int line) void
+@f nc_arity(NcContext *c, NcValues args, usize n, int line) void
   if args.n != n
     nc_fail(c, line, "wrong builtin argument count")
 // Calls the builtin by name.

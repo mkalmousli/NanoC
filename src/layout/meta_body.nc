@@ -2,14 +2,14 @@
 #include "nanoc/nanoc.h"
 // Reads a @bt or @ct body.
 @f nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) NcTokens
-  size_t next = c->pos
+  usize next = c->pos
   while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
     ++next
   if next < c->ts.n && nc_is(c->ts.v[next], "{")
     return nc_group(c, "{", "}")
   (void)nc_header_eat(c, ":", header.line)
   if !program
-    size_t start = c->pos
+    usize start = c->pos
     (void)nc_body_lines(c, header.line, header.indent)
     return nc_slice(c->ts, start, c->pos)
   NcNodes nodes = nc_indented_nodes(c, header, true)

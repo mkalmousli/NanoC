@@ -31,8 +31,14 @@ char *nc_expand(NcContext *ctx, NcTokens ts, size_t depth) {
                         depth + 1);
             } else if (!strcmp(name, "f")) {
                 generated = nc_native_function(ctx, &c, depth + 1);
-            } else if (!strcmp(name, "inc") && !nc_get(&ctx->macros, name)) {
+            } else if ((!strcmp(name, "inc") || !strcmp(name, "use")) && !nc_get(&ctx->macros,
+                    name)) {
                 generated = nc_include(ctx, &c);
+            } else if (strlen(name) == 1 && strchr("seu", name[0]) && !nc_get(&ctx->macros,
+                    name)) {
+                generated = nc_record(ctx, &c, name[0]);
+            } else if (!strcmp(name, "c")) {
+                generated = nc_raw(ctx, &c);
             } else if (!strcmp(name, "asm")) {
                 generated = nc_assembly(ctx, &c);
             } else if (!strcmp(name, "fn") || !strcmp(name, "let") || !strcmp(name, "for")) {

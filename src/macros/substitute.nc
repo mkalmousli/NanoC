@@ -1,7 +1,7 @@
 // Substitutes macro arguments.
 #include "nanoc/nanoc.h"
 // Substitutes macro parameters.
-@f nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index) char *
+@f nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, usize depth, usize index) char *
   nc_depth(ctx, depth, 1, "substitution")
   NcCursor c = {ctx, ts, 0}
   NcBuffer out = {0}
@@ -23,7 +23,7 @@
       if index != SIZE_MAX
         nc_fail(ctx, t.line, "nested repetitions are not supported")
       NcGroups *values = nc_get(&b->values, b->variadic)
-      for size_t i = 0; i < values->n; ++i
+      for usize i = 0; i < values->n; ++i
         if i
           nc_add(ctx, &out, separator)
         nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i))
@@ -44,7 +44,7 @@
         NcGroups *values = nc_get(&b->values, name)
         if !values
           nc_fail(ctx, t.line, "unknown macro capture: $%s", name)
-        size_t n = b->variadic && !strcmp(name, b->variadic) ? index : 0
+        usize n = b->variadic && !strcmp(name, b->variadic) ? index : 0
         if n == SIZE_MAX
           nc_fail(ctx, t.line, "variadic capture requires repetition")
         if n >= values->n

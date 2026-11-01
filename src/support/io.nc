@@ -1,8 +1,8 @@
 // Whole-file read and write.
 #include "nanoc/nanoc.h"
-#include <sys/stat.h>
-#include <unistd.h>
-#include <errno.h>
+@use sys/stat
+@use unistd
+@use errno
 // Reads a whole file.
 @f nc_read(NcContext *c, const char *path) char *
   struct stat st
@@ -15,7 +15,7 @@
     nc_fail(c, 0, "cannot read %s: %s", path, strerror(errno))
   NcBuffer b = {0}
   char block[8192]
-  size_t n
+  usize n
   while (n = fread(block, 1, sizeof block, f)) != 0
     if b.n > c->max_output || n > c->max_output - b.n
       fclose(f)
@@ -35,7 +35,7 @@
   int fd = mkstemp(temporary)
   if fd < 0
     nc_fail(c, 0, "cannot create output %s: %s", path, strerror(errno))
-  size_t n = strlen(contents), done = 0
+  usize n = strlen(contents), done = 0
   bool bad = false
   while done < n
     ssize_t written = write(fd, contents + done, n - done)
@@ -44,7 +44,7 @@
     if written <= 0
       bad = true
       break
-    done += (size_t)written
+    done += (usize)written
   if close(fd)
     bad = true
   if !bad && !rename(temporary, path)

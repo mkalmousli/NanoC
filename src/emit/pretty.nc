@@ -10,7 +10,7 @@
     p->last_dir = false
     p->space = true
     p->comment = true
-    size_t n = t.n
+    usize n = t.n
     while n && isspace((unsigned char)t.s[n - 1])
       --n
     nc_pp_put(p, t.s, n)
@@ -20,8 +20,8 @@
       else
         nc_pp_end(p)
     return
-  size_t lines = 0
-  for size_t i = 0; i < t.n; ++i
+  usize lines = 0
+  for usize i = 0; i < t.n; ++i
     lines += t.s[i] == '\n'
   p->space = true
   if lines > 1 && !p->top && !p->paren && p->stmt && !p->comment
@@ -113,7 +113,7 @@
   p->bol = true
   p->stmt = true
   NcTokens ts = nc_lex(c, text, 1)
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     if ts.v[i].kind == NC_SPACE
       space(p, ts.v[i])
     else

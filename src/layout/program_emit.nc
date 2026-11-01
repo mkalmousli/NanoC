@@ -19,7 +19,7 @@
     if nc_is(sig.v[0], statements[i])
       return false
   int level = 0
-  for size_t i = 0; i < sig.n; ++i
+  for usize i = 0; i < sig.n; ++i
     NcToken t = sig.v[i]
     if nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")
       ++level
@@ -36,16 +36,16 @@
     "break") && !nc_is(sig.v[0], "continue") && !nc_is(sig.v[0], "let") && !nc_is(sig.v[0],
     "if") && !nc_is(sig.v[0], "for") && !nc_is(sig.v[0], "while")
 // Emits nodes as program text.
-@f nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) char *
+@f nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, usize depth) char *
   nc_depth(ctx, depth, nodes.n ? nodes.v[0].head.line : 1, "program layout")
   NcBuffer out = {0}
   int line = nodes.n ? nodes.v[0].head.line : 1
-  for size_t i = 0; i < nodes.n; ++i
+  for usize i = 0; i < nodes.n; ++i
     NcNode n = nodes.v[i]
     while line < n.head.line
       nc_add(ctx, &out, "\n")
       ++line
-    size_t start = out.n
+    usize start = out.n
     if !n.children.n
       NcTokens ts = n.head.ts
       char *text = nc_trim(ctx, nc_join(ctx, ts))
@@ -64,12 +64,12 @@
       for int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad
         nc_add(ctx, &out, "\n")
       char *body = nc_emit_program(ctx, n.children, function || last, depth + 1)
-      size_t size = strlen(body)
+      usize size = strlen(body)
       if size && body[size - 1] == '\n'
         --size
       nc_addn(ctx, &out, body, size)
       nc_add(ctx, &out, "}\n")
-    for size_t j = start; j < out.n; ++j
+    for usize j = start; j < out.n; ++j
       if out.v[j] == '\n'
         ++line
     nc_check(ctx, out.n, n.head.line)

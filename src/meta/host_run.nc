@@ -1,9 +1,9 @@
 // Runs host processes for BT.
 #include "nanoc/nanoc.h"
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <errno.h>
+@use sys/wait
+@use sys/stat
+@use unistd
+@use errno
 // Runs a host command, captures it.
 @f nc_host_run(NcMachine *m, NcValues a, int line) NcValue
   NcContext *c = m->ctx
@@ -13,7 +13,7 @@
     nc_fail(c, line, "command requires a nonempty argument list")
   NcValue list = a.v[0]
   char **argv = nc_alloc(c, (list.count + 1) * sizeof *argv)
-  for size_t i = 0; i < list.count; ++i
+  for usize i = 0; i < list.count; ++i
     argv[i] = (char *)nc_meta_text(c, list.items[i], line)
   const char *cwd = a.n == 2 ? nc_meta_text(c, a.v[1], line) : NULL
   char out_path[32]
@@ -57,21 +57,21 @@
   char *stderr_text = NULL
   if (valid && so.st_size >= 0 && se.st_size >= 0 && (uintmax_t)so.st_size <= c->max_output
     && (uintmax_t)se.st_size <= c->max_output)
-    stdout_text = nc_alloc(c, (size_t)so.st_size + 1)
-    stderr_text = nc_alloc(c, (size_t)se.st_size + 1)
+    stdout_text = nc_alloc(c, (usize)so.st_size + 1)
+    stderr_text = nc_alloc(c, (usize)se.st_size + 1)
     valid = lseek(out, 0, SEEK_SET) >= 0 && lseek(err, 0, SEEK_SET) >= 0
-    size_t sizes[] = {(size_t)so.st_size, (size_t)se.st_size}
+    usize sizes[] = {(usize)so.st_size, (usize)se.st_size}
     int fds[] = {out, err}
     char *texts[] = {stdout_text, stderr_text}
-    for size_t i = 0; valid && i < 2; ++i
-      for size_t n = 0; n < sizes[i];
+    for usize i = 0; valid && i < 2; ++i
+      for usize n = 0; n < sizes[i];
         ssize_t got = read(fds[i], texts[i] + n, sizes[i] - n)
         if got < 0 && errno == EINTR
           continue
         if got <= 0
           valid = false
           break
-        n += (size_t)got
+        n += (usize)got
   else
     valid = false
   close(out)
@@ -80,7 +80,7 @@
   unlink(err_path)
   if !valid
     nc_fail(c, line, "command capture failed or output limit exceeded")
-  if strlen(stdout_text) != (size_t)so.st_size || strlen(stderr_text) != (size_t)se.st_size
+  if strlen(stdout_text) != (usize)so.st_size || strlen(stderr_text) != (usize)se.st_size
     nc_fail(c, line, "command output must be text (NUL byte found)")
   NcValues result = {0}
   NC_PUSH(c, result, nc_integer(WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status)))

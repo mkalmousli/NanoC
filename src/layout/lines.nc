@@ -2,14 +2,14 @@
 #include "nanoc/nanoc.h"
 // Reads one logical line.
 @f nc_logical_line(NcCursor *c) NcLayoutLine
-  size_t whitespace = c->pos
+  usize whitespace = c->pos
   nc_skip(c)
   if c->pos == c->ts.n
     nc_fail(c->ctx, nc_line(c), "expected a logical line")
   NcLayoutLine out = {.indent = c->ts.v[c->pos].column - 1, .line = nc_line(c)}
-  for size_t i = whitespace; i < c->pos; ++i
+  for usize i = whitespace; i < c->pos; ++i
     NcToken t = c->ts.v[i]
-    size_t tail = t.n
+    usize tail = t.n
     while tail && t.s[tail - 1] != '\n'
       --tail
     if memchr(t.s + tail, '\t', t.n - tail)
@@ -43,7 +43,7 @@
 @f nc_body_lines(NcCursor *c, int header_line, int indent) NcLines
   NcLines out = {0}
   for ;;
-    size_t next = c->pos
+    usize next = c->pos
     while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
       ++next
     if next == c->ts.n

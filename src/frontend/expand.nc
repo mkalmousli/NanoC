@@ -1,7 +1,7 @@
 // Expansion driver: macros, @ct, @bt.
 #include "nanoc/nanoc.h"
 // Expands tokens until stable.
-@f nc_expand(NcContext *ctx, NcTokens ts, size_t depth) char *
+@f nc_expand(NcContext *ctx, NcTokens ts, usize depth) char *
   nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "expansion")
   nc_names(ctx, ts)
   NcCursor c = {ctx, ts, 0}
@@ -16,7 +16,7 @@
       if ctx->frame_count == 256
         nc_fail(ctx, t.line, "expansion depth limit exceeded")
       char *frame = nc_format(ctx, "while expanding @%s at %s:%d", name, ctx->file, t.line)
-      size_t at = ctx->frame_count++
+      usize at = ctx->frame_count++
       ctx->frames[at] = frame
       if !strcmp(name, "macro") || !strcmp(name, "m")
         nc_define_macro(ctx, &c)
@@ -27,8 +27,12 @@
           depth + 1)
       elif !strcmp(name, "f")
         generated = nc_native_function(ctx, &c, depth + 1)
-      elif !strcmp(name, "inc") && !nc_get(&ctx->macros, name)
+      elif (!strcmp(name, "inc") || !strcmp(name, "use")) && !nc_get(&ctx->macros, name)
         generated = nc_include(ctx, &c)
+      elif strlen(name) == 1 && strchr("seu", name[0]) && !nc_get(&ctx->macros, name)
+        generated = nc_record(ctx, &c, name[0])
+      elif !strcmp(name, "c")
+        generated = nc_raw(ctx, &c)
       elif !strcmp(name, "asm")
         generated = nc_assembly(ctx, &c)
       elif !strcmp(name, "fn") || !strcmp(name, "let") || !strcmp(name, "for")

@@ -6,14 +6,14 @@
   nc_arity(c, a, (!strcmp(name, "replace") || !strcmp(name, "rename")) ? 3 : 2, line)
   const char *text = nc_meta_text(c, a.v[0], line)
   const char *needle = nc_meta_text(c, a.v[1], line)
-  size_t n = strlen(needle)
+  usize n = strlen(needle)
   if !strcmp(name, "rename")
     const char *to = nc_meta_text(c, a.v[2], line)
     if !nc_identifier(needle) || !nc_identifier(to)
       nc_fail(c, line, "rename expects identifier names")
     NcTokens ts = nc_lex(c, text, line)
     NcBuffer out = {0}
-    for size_t i = 0; i < ts.n; ++i
+    for usize i = 0; i < ts.n; ++i
       NcToken t = ts.v[i]
       nc_step(c, line)
       if t.kind == NC_WORD && nc_is(t, needle)
@@ -35,7 +35,7 @@
       nc_step(c, line)
       const char *found = strstr(text, needle)
       NC_PUSH(c, list,
-        nc_value_text(NC_STRING, nc_string(c, text, found ? (size_t)(found - text) : strlen(text))))
+        nc_value_text(NC_STRING, nc_string(c, text, found ? (usize)(found - text) : strlen(text))))
       nc_check(c, list.n * 8, line)
       if !found
         break
@@ -46,7 +46,7 @@
   for ;;
     nc_step(c, line)
     const char *found = strstr(text, needle)
-    nc_addn(c, &out, text, found ? (size_t)(found - text) : strlen(text))
+    nc_addn(c, &out, text, found ? (usize)(found - text) : strlen(text))
     if found
       nc_add(c, &out, replacement)
     nc_check(c, out.n, line)

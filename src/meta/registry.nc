@@ -30,13 +30,13 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
 @f nc_builtin_known(const char *name) bool
-  for size_t i = 0; i < nc_spec_count; ++i
+  for usize i = 0; i < nc_spec_count; ++i
     if !strcmp(name, nc_specs[i].name)
       return true
   false
 // Calls a registered builtin.
 @f nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) NcValue
-  for size_t i = 0; i < nc_spec_count; ++i
+  for usize i = 0; i < nc_spec_count; ++i
     const NcSpec *s = &nc_specs[i]
     if !strcmp(name, s->name) && s->function
       return s->function(m, name, args, line)

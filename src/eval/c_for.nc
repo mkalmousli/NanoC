@@ -4,7 +4,7 @@
 @f statement(NcContext *c, NcTokens ts) static NcTokens
   nc_lex(c, nc_format(c, "%s;", nc_join(c, ts)), ts.n ? ts.v[0].line : 1)
 // Runs a C-style for loop.
-@f nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth) NcFlow
+@f nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, usize depth) NcFlow
   NcContext *ctx = m->ctx
   NcGroups parts = nc_split(ctx, nc_group(c, "(", ")"), ";")
   if parts.n != 3

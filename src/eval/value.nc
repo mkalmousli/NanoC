@@ -1,6 +1,6 @@
 // Values of the meta language.
 #include "nanoc/nanoc.h"
-#include <inttypes.h>
+@use inttypes
 // Makes an integer value.
 @f nc_integer(int64_t n) NcValue
   (NcValue){.kind = NC_INT, .n = n}
@@ -13,7 +13,7 @@
 // Makes a list value.
 @f nc_list(NcValues items) NcValue
   NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1}
-  for size_t i = 0; i < items.n; ++i
+  for usize i = 0; i < items.n; ++i
     if items.v[i].height + 1 > v.height
       v.height = items.v[i].height + 1
   v
@@ -30,7 +30,7 @@
     nc_fail(c, line, "expected an integer")
   v.n
 // Renders a value as text.
-@f nc_display(NcContext *c, NcValue v, size_t depth, int line) char *
+@f nc_display(NcContext *c, NcValue v, usize depth, int line) char *
   nc_depth(c, depth, line, "value")
   if v.kind == NC_INT
     return nc_format(c, "%" PRId64, v.n)
@@ -40,7 +40,7 @@
     return v.text
   NcBuffer b = {0}
   nc_add(c, &b, "[")
-  for size_t i = 0; i < v.count; ++i
+  for usize i = 0; i < v.count; ++i
     if i
       nc_add(c, &b, ", ")
     nc_add(c, &b, nc_display(c, v.items[i], depth + 1, line))
@@ -57,7 +57,7 @@
     return v.n ? "1" : "0"
   nc_display(c, v, 0, line)
 // Compares two values.
-@f nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line) bool
+@f nc_equal(NcContext *c, NcValue a, NcValue b, usize depth, int line) bool
   nc_depth(c, depth, line, "value")
   if a.kind != b.kind
     return false
@@ -67,7 +67,7 @@
     return !strcmp(a.text, b.text)
   if a.count != b.count
     return false
-  for size_t i = 0; i < a.count; ++i
+  for usize i = 0; i < a.count; ++i
     if !nc_equal(c, a.items[i], b.items[i], depth + 1, line)
       return false
   true

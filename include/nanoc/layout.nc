@@ -1,10 +1,10 @@
 // Layout tree types.
-typedef struct { NcTokens ts; int indent, line; bool raw; } NcLayoutLine;
-typedef struct { NcLayoutLine *v; size_t n, cap; } NcLines;
+@s NcLayoutLine ts:NcTokens; indent,line:i32; raw:bool
+@s NcLines v:*NcLayoutLine; n,cap:usize
 typedef struct NcNode NcNode;
-typedef struct { NcNode *v; size_t n, cap; } NcNodes;
+@s NcNodes v:*NcNode; n,cap:usize
 struct NcNode { NcLayoutLine head; NcNodes children; };
-typedef struct { int line, indent; } NcHeader;
+@s NcHeader line,indent:i32
 // State of the pretty C printer.
 typedef struct {
     NcContext *c;

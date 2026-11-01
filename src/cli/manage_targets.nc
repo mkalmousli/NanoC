@@ -1,8 +1,8 @@
 // Editor config locations on this host.
 #include "nanoc/manage.h"
-#include <stdlib.h>
-#include <string.h>
-#include <sys/utsname.h>
+@use stdlib
+@use string
+@use sys/utsname
 // Finds the user home directory.
 @f mg_home(char *out) bool
   const char *home = getenv("HOME")

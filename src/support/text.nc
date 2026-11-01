@@ -4,7 +4,7 @@
 @f nc_trim(NcContext *c, const char *s) char *
   while isspace((unsigned char)*s)
     ++s
-  size_t n = strlen(s)
+  usize n = strlen(s)
   while n && isspace((unsigned char)s[n - 1])
     --n
   nc_string(c, s, n)
@@ -39,8 +39,8 @@
 // Removes quotes from a literal.
 @f nc_unquote(NcContext *c, const char *s, int line) char *
   NcBuffer b = {0}
-  size_t len = strlen(s)
-  for size_t i = 1; i + 1 < len; ++i
+  usize len = strlen(s)
+  for usize i = 1; i + 1 < len; ++i
     char ch = s[i]
     if ch == '\\'
       if ++i + 1 >= len

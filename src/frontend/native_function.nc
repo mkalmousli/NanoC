@@ -2,7 +2,7 @@
 #include "nanoc/nanoc.h"
 // Reads a function return type.
 @f return_type(NcCursor *c, int line) static NcTokens
-  size_t start = c->pos
+  usize start = c->pos
   while (nc_same_line(c, line) && !nc_header_at(c, "=>", line) && !nc_header_at(c, "=", line)
     && !nc_header_at(c, "{", line))
     (void)nc_take(c)
@@ -13,7 +13,7 @@
     return body
   NcTokens ts = nc_lex(ctx, body, line)
   NcBuffer b = {0}
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     NcToken t = ts.v[i]
     if t.kind == NC_PUNCT && nc_is(t, "=>")
       nc_add(ctx, &b, "return ")
@@ -22,7 +22,7 @@
   nc_add(ctx, &b, "")
   b.v
 // Expands a native function.
-@f nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) char *
+@f nc_native_function(NcContext *ctx, NcCursor *c, usize depth) char *
   NcHeader header = nc_header(c)
   int definition_line = header.line
   char *name = nc_name(c)
@@ -43,13 +43,15 @@
   bool value = !nc_is(result.v[result.n - 1], "void")
   NC_PUSH(ctx, ctx->symbols, ((NcSymbol){name, params, type, "", definition_line}))
   char *body
+  ctx->ret_type = type
+  ctx->defers = NULL
   if nc_header_eat(c, "=>", header.line)
     char *expr = nc_join(ctx, nc_aliased(ctx, nc_until(c, ";")))
     nc_need(c, ";")
     body = nc_format(ctx, "%s%s;", value ? "return " : "", expr)
   else
     bool expression = nc_header_eat(c, "=", header.line)
-    size_t next = c->pos
+    usize next = c->pos
     while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
       ++next
     if expression && nc_same_line(c, header.line)

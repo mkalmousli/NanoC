@@ -11,8 +11,8 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
   c->max_passes = 32
   c->effects = true
 // Allocates tracked memory.
-@f nc_alloc(NcContext *c, size_t size) void *
-  size_t align = _Alignof(max_align_t)
+@f nc_alloc(NcContext *c, usize size) void *
+  usize align = _Alignof(max_align_t)
   if size > SIZE_MAX - align
     nc_fail(c, 0, "allocation limit exceeded")
   size = (size + align - 1) / align * align
@@ -23,7 +23,7 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
     void *data = (unsigned char *)(p + 1) + p->used
     p->used += size
     return data
-  size_t capacity = size > 65536 ? size : 65536
+  usize capacity = size > 65536 ? size : 65536
   if capacity > SIZE_MAX - sizeof *p
     nc_fail(c, 0, "allocation limit exceeded")
   size_t charged = capacity + sizeof *p
@@ -48,8 +48,8 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
     c->allocations = p->next
     free(p)
 // Grows an array by one.
-@f nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) void *
-  size_t next = *cap ? *cap * 2 : 8
+@f nc_grow(NcContext *c, const void *old, usize n, usize *cap, usize width) void *
+  usize next = *cap ? *cap * 2 : 8
   if next < *cap || next > SIZE_MAX / width
     nc_fail(c, 0, "allocation limit exceeded")
   void *p = nc_alloc(c, next * width)

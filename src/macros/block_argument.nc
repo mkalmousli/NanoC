@@ -10,7 +10,7 @@
   if last.variadic || strcmp(last.kind, "block")
     return
   NcHeader header = {line, indent}
-  size_t next = c->pos
+  usize next = c->pos
   while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
     ++next
   if next == c->ts.n || c->ts.v[next].line <= line || c->ts.v[next].column - 1 <= header.indent

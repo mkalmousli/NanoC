@@ -4,11 +4,11 @@
 @f logs(NcJson *w, NcContext *c) static void
   jw_key(w, "logs")
   jw_open(w, '[')
-  for size_t i = 0; i < c->logs.n; ++i
+  for usize i = 0; i < c->logs.n; ++i
     jw_str(w, c->logs.v[i])
   jw_close(w, ']')
 // Prints a diagnostic report.
-@f nc_report(FILE *out, NcContext *c, size_t bytes) void
+@f nc_report(FILE *out, NcContext *c, usize bytes) void
   NcJson w
   jw_start(&w, out)
   jw_open(&w, '{')
@@ -20,7 +20,7 @@
   jw_ki(&w, "generatedBytes", (long)bytes)
   jw_key(&w, "symbols")
   jw_open(&w, '[')
-  for size_t i = 0; i < c->symbols.n; ++i
+  for usize i = 0; i < c->symbols.n; ++i
     NcSymbol s = c->symbols.v[i]
     jw_open(&w, '{')
     jw_ks(&w, "name", s.name)
@@ -52,7 +52,7 @@
   jw_ks(&w, "message", c->detail)
   jw_key(&w, "trace")
   jw_open(&w, '[')
-  for size_t i = c->frame_count; i; --i
+  for usize i = c->frame_count; i; --i
     jw_str(&w, c->frames[i - 1])
   jw_close(&w, ']')
   jw_close(&w, '}')

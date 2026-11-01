@@ -1,7 +1,7 @@
 #include "test.h"
-#include <errno.h>
-#include <sys/wait.h>
-#include <fcntl.h>
+@use errno
+@use sys/wait
+@use fcntl
 @f test_run(const char *const *args) TestResult
   char *out_path = test_path("stdout-XXXXXX"), *err_path = test_path("stderr-XXXXXX")
   int out = mkstemp(out_path), err = mkstemp(err_path)

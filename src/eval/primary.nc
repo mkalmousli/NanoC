@@ -1,7 +1,7 @@
 // Primary expressions: literals, calls, lists.
 #include "nanoc/nanoc.h"
-#include <errno.h>
-#include <inttypes.h>
+@use errno
+@use inttypes
 // Evaluates a primary expression.
 @f nc_primary(NcExpr *e, bool active) NcValue
   NcContext *c = e->m->ctx
@@ -25,7 +25,7 @@
     else
       NcGroups groups = nc_split(c, nc_group(&e->c, "[", "]"), ",")
       NcValues list = {0}
-      for size_t i = 0; i < groups.n; ++i
+      for usize i = 0; i < groups.n; ++i
         NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       out = nc_list(list)
   elif t.kind == NC_WORD
@@ -39,7 +39,7 @@
     elif nc_at(&e->c, "(")
       NcGroups groups = nc_split(c, nc_group(&e->c, "(", ")"), ",")
       NcValues args = {0}
-      for size_t i = 0; i < groups.n; ++i
+      for usize i = 0; i < groups.n; ++i
         NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       if active
         out = nc_call(e->m, nc_text(c, t), args, e->depth + 1, t.line)
@@ -52,7 +52,7 @@
     if !active
       continue
     int64_t n = nc_numeric(c, index, t.line)
-    size_t size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0
+    usize size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0
     if n < 0 || (uint64_t)n >= size
       nc_fail(c, t.line, "invalid compile-time index")
     if out.kind == NC_LIST

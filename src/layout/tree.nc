@@ -1,7 +1,7 @@
 // Builds the indentation tree.
 #include "nanoc/nanoc.h"
 // Builds the tree from lines.
-@f nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth) NcNodes
+@f nc_tree(NcContext *c, NcLines lines, usize *i, int indent, usize depth) NcNodes
   nc_depth(c, depth, lines.v[*i].line, "layout")
   NcNodes out = {0}
   while *i < lines.n && lines.v[*i].indent >= indent

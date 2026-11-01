@@ -1,0 +1,10 @@
+// The @c block: indented lines are copied to the C output untouched.
+#include "nanoc/nanoc.h"
+// Expands an indented @c block to its verbatim lines.
+@f nc_raw(NcContext *ctx, NcCursor *c) char *
+  NcHeader h = nc_header(c)
+  NcLines lines = nc_body_lines(c, h.line, h.indent)
+  NcBuffer out = {0}
+  for size_t i = 0; i < lines.n; ++i
+    nc_printf(ctx, &out, "%s\n", nc_join(ctx, lines.v[i].ts))
+  out.v

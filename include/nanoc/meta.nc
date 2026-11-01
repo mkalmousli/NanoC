@@ -1,5 +1,5 @@
 // Builtin catalog types.
 typedef NcValue (*NcBuiltinFn)(NcMachine *, const char *, NcValues, int);
-typedef struct { const char *name, *signature, *phase; NcBuiltinFn function; } NcSpec;
+@s NcSpec const char *name, *signature, *phase; function:NcBuiltinFn
 extern const NcSpec nc_specs[];
 extern const size_t nc_spec_count;

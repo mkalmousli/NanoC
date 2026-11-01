@@ -119,6 +119,129 @@ int main(void) {
 }
 ```
 
+## One-line structs, enums, unions
+
+`@s` declares a struct, `@u` a union and `@e` an enum, each with its typedef. Fields are `names:type` (`*T` for pointers), inline separated by `;` or as an indented block.
+
+```nanoc
+@s Point x,y:f64
+@s Node
+  val:i32
+  next:*Node
+@e Color red,green=5,blue
+@f main int
+  Point p={1,2}
+  Node n={3,NULL}
+  Color c=blue
+  p.x+p.y!=3 || n.val!=3 || c!=6
+```
+
+```c
+typedef struct Point Point;
+struct Point {
+    double x,y;
+};
+
+typedef struct Node Node;
+struct Node {
+    int val;
+    Node *next;
+};
+
+typedef enum {
+    red,
+    green=5,
+    blue
+} Color;
+
+int main(void) {
+    Point p={1,2};
+    Node n={3,NULL};
+    Color c=blue;
+    return p.x+p.y!=3 || n.val!=3 || c!=6;
+}
+```
+
+## Printing, imports and escape hatch
+
+`say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `@use stdio` is `#include <stdio.h>`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
+
+```nanoc
+@use stdio
+@c
+  static int twice(int x) { return x*2; }
+@f main int
+  say "twice", twice(21), 1.5
+  0
+```
+
+```c
+#include <stdio.h>
+
+static int twice(int x) {
+    return x*2;
+}
+
+int main(void) {
+    {
+        fputs("twice", stdout);
+        putchar(' ');
+        printf(_Generic((twice(21)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), twice(21));
+        putchar(' ');
+        printf(_Generic((1.5), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), 1.5);
+        putchar('\n');
+    }
+    return 0;
+}
+```
+
+## Cleanup that cannot be forgotten
+
+`defer stmt` runs the statement when its block ends and before every `ret` after it, last deferred first. A returned value is computed before the cleanup runs.
+
+```nanoc
+@use stdio
+@f work(int fail) int
+  puts("open")
+  defer puts("close")
+  if fail
+    ret 7
+  3
+@f main int = work(1)!=7
+```
+
+```c
+#include <stdio.h>
+
+int work(int fail) {
+    puts("open");
+    {
+        if (fail) {
+            {
+                int nanoc_ret_1 = (7);
+                puts("close");
+                return nanoc_ret_1;
+            }
+        }
+        {
+            int nanoc_ret_2 = (3);
+            puts("close");
+            return nanoc_ret_2;
+        }
+    }
+}
+
+int main(void) {
+    return work(1)!=7;
+}
+```
+
 ## Inference and ranges
 
 `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.
@@ -151,7 +274,7 @@ int main(void) {
 ```
 
 - Spell the type when you need it: `int x=call()`. C++ uses `auto` for `:=`.
-- Typed range: `for i:size_t 0..n`. Bounds are evaluated once.
+- Typed range: `for i:usize 0..n`. Bounds are evaluated once.
 - Plain C loops still work: `for int i=0;i<n;i++`. `loop` is `for (;;)`, `unless c` is `if !(c)`, `until c` is `while !(c)`.
 - C++ iterates containers: `for value values`.
 - Shortcuts: `nil` is NULL, `and`/`or`/`not` are `&&`/`||`/`!`, `@inc stdio, "mine.h", <sys/x.h>` includes headers (bare names become `<name.h>`).

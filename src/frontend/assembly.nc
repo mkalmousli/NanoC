@@ -8,7 +8,7 @@
   const char *names[] = {"volatile", "inline", "goto"}
   while nc_same_line(c, header.line)
     char *name = nc_name(c)
-    size_t i = 0
+    usize i = 0
     while i < 3 && strcmp(name, names[i])
       ++i
     if i == 3 || seen[i]
@@ -22,7 +22,7 @@
   const char *keys[] = {"out", "in", "clobber", "labels"}
   int last = -1
   bool instructions = false
-  for size_t i = 0; i < lines.n; ++i
+  for usize i = 0; i < lines.n; ++i
     NcLayoutLine line = lines.v[i]
     nc_step(ctx, line.line)
     if line.indent != lines.v[0].indent

@@ -42,6 +42,8 @@
       if len(split(f,"."))==2
         exec([compiler,f,"-o","build/site-stat.c"])
         out=read("build/site-stat.c")
+        exec(["sh","-c","mkdir -p \"$(dirname \"$1\")\"","sh","_site/c/"+f])
+        write("_site/c/"+f,out)
       nl:=0
       for l split(src,"\n")
         if len(l)>0

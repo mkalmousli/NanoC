@@ -10,26 +10,26 @@
 @f nc_token(const char *s, int line, NcKind kind) NcToken
   (NcToken){s, strlen(s), line, 1, kind}
 // Takes a sub-range of tokens.
-@f nc_slice(NcTokens ts, size_t a, size_t b) NcTokens
+@f nc_slice(NcTokens ts, usize a, usize b) NcTokens
   (NcTokens){ts.v ? ts.v + a : NULL, b - a, b - a}
 // Concatenates token text.
 @f nc_join(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     nc_addn(c, &b, ts.v[i].s, ts.v[i].n)
   nc_add(c, &b, "")
   b.v
 // Drops whitespace tokens.
 @f nc_significant(NcContext *c, NcTokens ts) NcTokens
   NcTokens out = {0}
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     if ts.v[i].kind != NC_SPACE
       NC_PUSH(c, out, ts.v[i])
   out
 // Joins tokens as spaced words.
 @f nc_words(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     NcToken t = ts.v[i]
     nc_alias(&t)
     const char *s = NULL
@@ -54,6 +54,6 @@
   b.v
 // Records identifier tokens.
 @f nc_names(NcContext *c, NcTokens ts) void
-  for size_t i = 0; i < ts.n; ++i
+  for usize i = 0; i < ts.n; ++i
     if ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])
       nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)

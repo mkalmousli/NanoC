@@ -1,5 +1,5 @@
 // Macro types.
-typedef struct { char *name, *kind; bool variadic; } NcParam;
-typedef struct { NcParam *v; size_t n, cap; } NcParams;
-typedef struct { NcParams params; NcTokens body; bool program; } NcMacro;
-typedef struct { NcMap values, fresh; char *variadic; } NcBindings;
+@s NcParam char *name, *kind; variadic:bool
+@s NcParams v:*NcParam; n,cap:usize
+@s NcMacro params:NcParams; body:NcTokens; program:bool
+@s NcBindings values,fresh:NcMap; variadic:*char

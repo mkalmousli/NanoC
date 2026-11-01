@@ -1,7 +1,7 @@
 // Shorthand forms such as fn.
 #include "nanoc/nanoc.h"
 // Expands shorthand forms.
-@f nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) char *
+@f nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, usize depth) char *
   if !strcmp(name, "fn")
     return nc_function(ctx, c, depth)
   if !strcmp(name, "let")
