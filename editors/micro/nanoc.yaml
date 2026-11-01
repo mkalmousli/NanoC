@@ -1,4 +1,4 @@
-# NanoC syntax for micro. Install with: sh editors/install.sh micro
+# NanoC syntax for micro. Install with: nanoc editor install micro
 filetype: nanoc
 
 detect:

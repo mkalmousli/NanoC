@@ -11,7 +11,7 @@ Prism.languages.insertBefore('nanoc', 'keyword', {
 Prism.highlightAll();
 
 const REPO = 'https://github.com/mkalmousli/NanoC';
-const RAW = 'https://raw.githubusercontent.com/mkalmousli/NanoC/main/';
+const RAW = 'source/'; // copied into the site by tools/site/site.nc
 const $ = s => document.querySelector(s);
 
 // ---- copy buttons on every code block ----

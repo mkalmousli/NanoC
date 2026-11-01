@@ -1,6 +1,6 @@
 %YAML 1.2
 ---
-# NanoC syntax for Sublime Text 4. Install with: sh editors/install.sh sublime
+# NanoC syntax for Sublime Text 4. Install with: nanoc editor install sublime
 name: NanoC
 file_extensions: [nc]
 scope: source.nanoc

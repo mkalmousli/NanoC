@@ -1,4 +1,4 @@
-# NanoC syntax for GNU nano. Install with: sh editors/install.sh nano
+# NanoC syntax for GNU nano. Install with: nanoc editor install nano
 syntax "nanoc" "\.nc$"
 color brightmagenta "@(f|fn|m|macro|ct|bt|asm)\b"
 color brightcyan "@[A-Za-z_][A-Za-z0-9_]*"

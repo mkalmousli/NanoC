@@ -31,7 +31,7 @@ void b_fixed_point(const char *, const char *);
 void b_selfhost(BOptions);
 uint64_t b_fingerprint(void);
 void b_snapshot(void);
-void b_install(const char *);
+void b_install(const char *, bool);
 void b_uninstall(const char *);
 void b_remove(const char *);
 void b_copy(const char *, const char *);

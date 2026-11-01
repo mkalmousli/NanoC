@@ -232,13 +232,13 @@
   <p class="kicker">Install in one line</p>
   <h2>Works on any <em>POSIX host.</em></h2>
   <div class="cmds" style="margin-top:40px">
-    <div><h4>Install</h4><pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh | sh</code></pre></div>
-    <div><h4>Update</h4><pre><code class="language-bash">nanoc update</code></pre></div>
+    <div><h4>Install</h4><pre><code class="language-bash">git clone --depth 1 https://github.com/mkalmousli/NanoC &amp;&amp; cd NanoC &amp;&amp; cc -std=c11 -O2 build.c -o builder &amp;&amp; ./builder install</code></pre></div>
+    <div><h4>Update</h4><pre><code class="language-bash">nanoc update</code></pre><p class="method" style="margin-top:10px">Fetches the latest source, rebuilds and reinstalls.</p></div>
     <div><h4>Uninstall</h4><pre><code class="language-bash">nanoc uninstall</code></pre><p class="method" style="margin-top:10px">Asks first. <code>nanoc uninstall --yes</code> skips the prompt.</p></div>
     <div><h4>Editors</h4><pre><code class="language-bash">nanoc editor list
 nanoc editor install vim</code></pre></div>
   </div>
-  <p class="method">Needs a C11 compiler (<code>cc</code>, <code>gcc</code> or <code>clang</code>). Installs to <code>~/.local</code> by default; add <code>--prefix DIR</code> to change it. Installs only the files it creates.</p>
+  <p class="method">Needs git and a C11 compiler (<code>cc</code>, <code>gcc</code> or <code>clang</code>). Installs to <code>~/.local</code> by default; <code>--prefix DIR</code> changes it, <code>--no-editors</code> skips editor setup. Installs only the files it creates.</p>
 </section>
 
 <section id="editors" class="wrap">

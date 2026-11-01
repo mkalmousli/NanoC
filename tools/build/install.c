@@ -7,7 +7,6 @@ static const char *installed[] = {
     "share/nanoc/examples/meta.nc", "share/nanoc/examples/build.nc",
     "share/nanoc/examples/compact.nc", "share/nanoc/docs/assembly.md",
     "share/nanoc/docs/bootstrap.md",
-    "share/nanoc/install.sh",
     "share/nanoc/editors/vscode/package.json", "share/nanoc/editors/vscode/language-configuration.json",
     "share/nanoc/editors/vscode/syntaxes/nanoc.tmLanguage.json",
     "share/nanoc/editors/vscode/icon.png", "share/nanoc/editors/vscode/README.md",
@@ -35,7 +34,22 @@ static bool manifest(const char *prefix, bool owned[INSTALLED_COUNT]) {
     if (ferror(f) || fclose(f)) b_die("cannot read install manifest");
     return true;
 }
-void b_install(const char *prefix) {
+static void progress(size_t done, size_t total) {
+    enum { WIDTH = 30 };
+    size_t fill = done * WIDTH / total;
+    printf("\r  Installing [");
+    for (size_t i = 0; i < WIDTH; ++i) putchar(i < fill ? '#' : '-');
+    printf("] %3zu%%", done * 100 / total);
+    fflush(stdout);
+}
+static void setup_editors(const char *prefix) {
+    char nanoc[PATH_MAX], cmd[PATH_MAX * 2];
+    b_path(nanoc, prefix, "bin/nanoc");
+    snprintf(cmd, sizeof cmd, "'%s' editor install", nanoc);
+    printf("  Setting up detected editors\n");
+    if (system(cmd)) printf("  ! some editors could not be configured (run: nanoc editor list)\n");
+}
+void b_install(const char *prefix, bool editors) {
     bool owned[INSTALLED_COUNT] = {0};
     (void)manifest(prefix, owned);
     char path[PATH_MAX];
@@ -44,15 +58,23 @@ void b_install(const char *prefix) {
         if (b_exists(path) && !owned[i]) b_die("refusing to overwrite unmanaged installation file");
     }
     for (size_t i = 0; i + 1 < INSTALLED_COUNT; ++i) {
+        progress(i + 1, INSTALLED_COUNT - 1);
         b_path(path, prefix, installed[i]);
         b_copy(i ? installed[i] + 12 : "build/nanoc", path);
     }
+    printf("\n");
     b_path(path, prefix, installed[INSTALLED_COUNT - 1]);
     FILE *f = fopen(path, "wb");
     if (!f) b_die("cannot create install manifest");
     for (size_t i = 0; i < INSTALLED_COUNT; ++i) if (fprintf(f, "%s\n", installed[i]) < 0) b_die("cannot write manifest");
     if (fclose(f)) b_die("cannot write manifest");
-    printf("Installed to %s\n", prefix);
+    printf("  Installed NanoC to %s\n", prefix);
+    if (editors) setup_editors(prefix);
+    const char *env = getenv("PATH");
+    char bin[PATH_MAX];
+    b_path(bin, prefix, "bin");
+    if (!env || !strstr(env, bin)) printf("  Add to PATH: export PATH=\"%s:$PATH\"\n", bin);
+    printf("  Try: nanoc --help   nanoc editor list   nanoc update\n");
 }
 void b_uninstall(const char *prefix) {
     bool owned[INSTALLED_COUNT] = {0};

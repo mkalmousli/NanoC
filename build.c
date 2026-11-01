@@ -10,6 +10,7 @@
 #include "tools/build/install.c"
 #include "tools/build/lines.c"
 int main(int argc, char **argv) {
+    bool no_editors = false;
     BOptions opts = {.cc = getenv("CC") ? getenv("CC") : "cc"};
     const char *action = "build", *prefix = NULL;
     char default_prefix[PATH_MAX];
@@ -18,10 +19,11 @@ int main(int argc, char **argv) {
             if (++i == argc) b_die("missing --prefix value");
             prefix = argv[i];
         } else if (!strcmp(argv[i], "--sanitize")) opts.sanitize = true;
+        else if (!strcmp(argv[i], "--no-editors")) no_editors = true;
         else if (!strcmp(argv[i], "build") || !strcmp(argv[i], "test") || !strcmp(argv[i], "bench") ||
                  !strcmp(argv[i], "clean") || !strcmp(argv[i], "install") || !strcmp(argv[i], "uninstall") ||
                  !strcmp(argv[i], "bootstrap") || !strcmp(argv[i], "snapshot")) action = argv[i];
-        else b_die("usage: builder [build|bootstrap|snapshot|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize]");
+        else b_die("usage: builder [build|bootstrap|snapshot|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize] [--no-editors]");
     }
     if (!prefix && (!strcmp(action, "install") || !strcmp(action, "uninstall"))) {
         const char *home = getenv("HOME");
@@ -36,7 +38,7 @@ int main(int argc, char **argv) {
     }
     b_compile(opts, false);
     if (!strcmp(action, "snapshot")) { b_snapshot(); b_line_check(); }
-    else if (!strcmp(action, "install")) b_install(prefix);
+    else if (!strcmp(action, "install")) b_install(prefix, !no_editors);
     else if (!strcmp(action, "test") || !strcmp(action, "bench")) {
         b_line_check();
         b_compile(opts, true);

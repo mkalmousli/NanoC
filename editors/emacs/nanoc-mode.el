@@ -1,5 +1,5 @@
 ;;; nanoc-mode.el --- Major mode for NanoC sources -*- lexical-binding: t; -*-
-;; Install with: sh editors/install.sh emacs
+;; Install with: nanoc editor install emacs
 ;;; Code:
 (defconst nanoc-font-lock
   `((,(regexp-opt '("@f" "@fn" "@m" "@macro" "@ct" "@bt" "@asm") 'symbols) . font-lock-keyword-face)

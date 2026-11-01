@@ -21,18 +21,17 @@
 ## Quick start
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh | sh
+git clone --depth 1 https://github.com/mkalmousli/NanoC && cd NanoC && cc -std=c11 -O2 build.c -o builder && ./builder install
 ```
 
-Needs a POSIX shell and a C11 compiler (`cc`, `gcc` or `clang`). Installs `nanoc` to `~/.local/bin` and sets up the editors it detects.
+Needs git and a C11 compiler (`cc`, `gcc` or `clang`). Installs `nanoc` to `~/.local/bin` and sets up the editors it detects. Add `--no-editors` to skip editors, or `--prefix DIR` to change the location.
 
 | Task | Command |
 |---|---|
-| Install | `curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh \| sh` |
+| Install | `git clone --depth 1 https://github.com/mkalmousli/NanoC && cd NanoC && cc -std=c11 -O2 build.c -o builder && ./builder install` |
 | Update | `nanoc update` |
 | Uninstall | `nanoc uninstall` (asks first; `--yes` skips) |
-| Install from a checkout | `git clone https://github.com/mkalmousli/NanoC && cd NanoC && sh install.sh` |
-| Custom location | add `--prefix DIR` to the installer; `--no-editors` skips editor setup |
+| Custom location | `./builder install --prefix DIR` |
 | Editor syntax | `nanoc editor install vim` (see [Editors](#editors)) |
 
 Installs only the files it created; it refuses to overwrite unrelated files.
