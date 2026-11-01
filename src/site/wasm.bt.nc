@@ -48,5 +48,5 @@
         link=push(link,o)
       r:=run(link)
       log("wasm link: "+str(r[0])+" "+r[2])
-  sz:=replace(exec(["sh","-c","echo $(( $(stat -c %s _site/nanoc.wasm) / 1024 ))"]),"\n","")
+  sz:=replace(exec(["sh","-c","echo $(( $(stat -c %s _site/nanoc.wasm 2>/dev/null || echo 0) / 1024 ))"]),"\n","")
   write("build/blocks/wasm-size.html",sz+" KB")

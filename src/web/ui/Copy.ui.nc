@@ -1,7 +1,5 @@
-html
-  button.~copy#$id [type=button] Copy
-css
-  .~copy
+button [type=button] Copy
+  css
     position:absolute
     top:10px
     right:10px
@@ -12,4 +10,6 @@ css
     font:600 11px var(--mono)
     padding:6px 10px
     cursor:pointer
-  .~copy:hover | color:var(--ink);border-color:var(--lime)
+    &:hover | color:var(--ink);border-color:var(--lime)
+  on click
+    copyText(el.parentElement.querySelector('pre').innerText, el)

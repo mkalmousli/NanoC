@@ -16,6 +16,9 @@ Self-hosted NanoC; C11 bootstrap; POSIX host, libc only. Sources <= 200 lines.
 | src/layout | Indented runtime/meta bodies, short controls, implicit returns |
 | src/emit | Pretty and mini C emitters |
 | src/dsl | Shared generator DSLs (JSON, Markdown, files) for `*.bt.nc` programs |
+| src/dsl/ui.bt.nc, src/web/ui, src/web/pages | Website widgets: one tree per widget with element-level `css`, `js` and `on` blocks; classes and script ids are generated, `[as=name]` reaches an element as `A.name` |
+| src/content/*.doc.nc | Prose, tables and runnable examples written once; rendered to `docs/*.md` and the website, with C produced by the live compiler |
+| src/wasm | The compiler's browser build (freestanding shim), also written in NanoC |
 | src/*.bt.nc, src/site, src/docs | Build-time generators: headers, editors, docs, website |
 | build.c, src/build.bt.nc | `build.c` compiles the C seed; the build workflow is NanoC |
 | src/tests, tests/ | NanoC test sources (built to C by ./builder test); corpus and fixtures data. Compiler behavior, real C, CLI/ABI/BT/install; `tests/corpus` is licensed upstream C |

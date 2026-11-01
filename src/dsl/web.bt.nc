@@ -31,6 +31,23 @@ f trim(s)
   while z>a && (slice(s,z-1,z)==" " || slice(s,z-1,z)=="\t" || slice(s,z-1,z)=="\r")
     z-=1
   slice(s,a,z)
+// Lines of a block with their common indentation removed.
+f dedent(ls)
+  m:=-1
+  for l ls
+    if len(trim(l))>0 && (m<0 || indent_of(l)<m)
+      m=indent_of(l)
+  r:=[]
+  for l ls
+    if len(trim(l))>0
+      r=push(r,slice(l,m,len(l)))
+  r
+// Lines after index i that belong to it (indented deeper than ind): the end index.
+f subtree_end(ls, i, ind)
+  k:=i+1
+  while k<len(ls) && (len(trim(ls[k]))==0 || indent_of(ls[k])>ind)
+    k+=1
+  k
 f deeper(ls, i) = i+1<len(ls) && ls[i+1][0]>ls[i][0]
 f css(text)
   ls:=meaningful(text)
@@ -111,7 +128,7 @@ f attr_text(a)
     p:=find(w,"=")
     if p<0
       r+=" "+w
-    elif slice(w,p+1,p+2)=="\""
+    elif p+1<len(w) && slice(w,p+1,p+2)=="\""
       r+=" "+w
     else
       r+=" "+slice(w,0,p)+"=\""+slice(w,p+1,len(w))+"\""
@@ -183,7 +200,8 @@ f html(text)
     if i+1<len(ls)
       nxt=ls[i+1][0]
     if starts(t,"|")
-      buf+=slice(t,2,len(t))
+      if len(t)>2
+        buf+=slice(t,2,len(t))
       if tight>0
         if i+1<len(ls) && starts(ls[i+1][1],"|")
           buf+="\n"

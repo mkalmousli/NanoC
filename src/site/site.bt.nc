@@ -71,4 +71,4 @@
   exec(["mkdir","-p","build/blocks"])
   exec([compiler,"src/docs.bt.nc","-o","build/docs.c"])
   for step ["examples","wasm","pages"]
-    exec([compiler,"--max-steps","0","src/site/"+step+".bt.nc","-o","build/site-"+step+".c"])
+    exec([compiler,"--max-steps","0","--max-output","268435456","src/site/"+step+".bt.nc","-o","build/site-"+step+".c"])

@@ -1,8 +1,8 @@
-html
-  section#$id.~wrap
-    p.~kicker $kicker
-    h2 $title
-    Slot
-css
-  .~kicker | font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin:0 0 16px;display:flex;gap:10px;align-items:center
-  .~kicker:before | content:"";width:22px;height:2px;background:var(--lime)
+section#$id
+  css | width:min(1120px,calc(100% - 48px));margin:0 auto
+  css
+    @media(max-width:700px)
+      width:calc(100% - 36px)
+  Kicker $kicker
+  h2 $title
+  Slot
