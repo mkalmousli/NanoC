@@ -48,16 +48,17 @@ $('#prompt-copy').onclick = e => copyText(PROMPT, e.currentTarget);
 
 // ---- compiler stats, from docs/stats.json (regenerate: sh tools/site/stats.sh) ----
 const pct = (a, b) => Math.round((1 - a / b) * 100);
+const signed = (a, b) => { const p = pct(a, b); return (p >= 0 ? '−' : '+') + Math.abs(p) + '%'; };
 const fmt = n => n.toLocaleString('en-US');
 fetch('stats.json').then(r => r.json()).then(s => {
   const set = (k, v) => document.querySelectorAll(`[data-stat="${k}"]`).forEach(el => (el.textContent = v));
-  set('lines-saved', '−' + pct(s.nc.lines, s.c.lines) + '%');
-  set('bytes-saved', '−' + pct(s.nc.bytes, s.c.bytes) + '%');
+  set('lines-saved', signed(s.nc.lines, s.c.lines));
+  set('bytes-saved', signed(s.nc.bytes, s.c.bytes));
   set('nc-lines', fmt(s.nc.lines));
   set('c-lines', fmt(s.c.lines));
   set('files', s.files);
   set('generated', s.generated);
-  set('badge', '−' + pct(s.nc.lines, s.c.lines) + '% lines vs C');
+  set('badge', signed(s.nc.lines, s.c.lines) + ' lines vs C');
   const max = Math.max(...s.areas.map(a => a.c));
   $('#areas').replaceChildren(...s.areas.sort((a, b) => b.c - a.c).map(a => {
     const row = document.createElement('div');

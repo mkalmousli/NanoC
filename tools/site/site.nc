@@ -2,6 +2,7 @@
 // (the explorer reads them), a file index and NanoC-vs-C compiler stats.
 // From the repository root, after `cc -std=c11 build.c -o builder && ./builder build`:
 //   build/nanoc tools/site/site.nc -o build/site.c
+// It then runs examples.nc, wasm.nc and pages.nc (same folder) to finish the job.
 @bt
   exec(["rm","-rf","_site"])
   mkdir("_site")
@@ -60,20 +61,6 @@
     rows=push(rows,"{\"name\":\""+a+"\",\"files\":"+str(get("files:"+a,0))+",\"nc\":"+str(get("nc:"+a,0))+",\"c\":"+str(get("c:"+a,0))+"}")
   write("_site/stats.json","{\"generated\":\""+today+"\",\"files\":"+str(len(ncFiles))+",\"nc\":{\"lines\":"+str(tn)+",\"bytes\":"+str(tb)+"},\"c\":{\"lines\":"+str(tc)+",\"bytes\":"+str(tcb)+"},\"areas\":["+join(rows,",")+"]}\n")
   log("stats: "+str(tn)+" nanoc lines, "+str(tc)+" c lines")
-  ex:=[]
-  for f tracked
-    if len(f)>9
-      if slice(f,0,9)=="examples/"
-        if slice(f,len(f)-3,len(f))==".nc"
-          ex=push(ex,f)
-  exRows:=[]
-  for f ex
-    src:=read(f)
-    r:=run([compiler,f,"-o","build/site-ex.c"])
-    if r[0]==0
-      out:=read("build/site-ex.c")
-      nj:=replace(replace(replace(replace(src,"\\","\\\\"),"\"","\\\""),"\t","\\t"),"\n","\\n")
-      cj:=replace(replace(replace(replace(out,"\\","\\\\"),"\"","\\\""),"\t","\\t"),"\n","\\n")
-      exRows=push(exRows,"{\"name\":\""+f+"\",\"nc\":\""+nj+"\",\"c\":\""+cj+"\"}")
-  write("_site/examples.json","["+join(exRows,",")+"]\n")
-  log("examples: "+str(len(ex)))
+  exec(["mkdir","-p","build/blocks"])
+  for step ["examples","wasm","pages"]
+    exec([compiler,"tools/site/"+step+".nc","-o","build/site-"+step+".c"])

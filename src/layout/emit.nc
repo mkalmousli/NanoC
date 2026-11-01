@@ -11,7 +11,10 @@
       return nc_is(n.head.ts.v[i], s)
   false
 @f nc_marker(NcContext *c, NcBuffer *b, int line) void
-  nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file))
+  if c->lines
+    nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file))
+  else
+    nc_add(c, b, "\n")
 @f nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) char *
   nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout")
   if !nodes.n && tail

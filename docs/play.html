@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NanoC playground: transpile in your browser</title>
+<meta name="description" content="Edit NanoC and watch the real compiler, running as WebAssembly, produce C as you type.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+{{nav}}
+<main class="compare play">
+  <p class="eyebrow">Playground</p>
+  <h1>The real compiler, <em>in your tab</em></h1>
+  <p class="lede">This is not a mock-up: the NanoC compiler is compiled to WebAssembly ({{wasm-size}}) and runs here, offline, as you type. Pick an example or write your own; the C appears on the right.</p>
+  <div class="ex-tabs" id="tabs" role="tablist"></div>
+  <div class="ex-stats" id="stats"></div>
+  <div class="panes">
+    <section class="pane"><div class="pane-head"><span>NanoC <small>(edit me)</small></span><span><button class="copy" id="share" type="button">Share link</button> <button class="copy" id="copy-nc" type="button">Copy</button></span></div>
+      <div class="editor"><pre aria-hidden="true"><code id="hl" class="language-nanoc"></code></pre><textarea id="src" spellcheck="false" autocomplete="off" aria-label="NanoC source"></textarea></div></section>
+    <section class="pane"><div class="pane-head"><span>C <small>(live output)</small></span><button class="copy" id="copy-c" type="button">Copy</button></div><pre><code id="out" class="language-c"></code></pre></section>
+  </div>
+  <div class="ex-error" id="err" hidden></div>
+  <p class="build">Take it home: <code>nanoc file.nc -o out.c &amp;&amp; cc out.c -o prog</code>. Build-time (<code>@bt</code>) file and process access is disabled in the browser.</p>
+</main>
+{{footer}}
+{{prism}}
+<script src="play.js"></script>
+</body>
+</html>

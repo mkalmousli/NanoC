@@ -8,7 +8,7 @@ struct NcContext {
     bool cpp;
     size_t max_depth, max_steps, max_output, steps, serial, allocated;
     size_t max_passes, pass;
-    bool effects, again;
+    bool effects, again, lines;
     const char *source, *next_source;
     NcMap state;
     NcStrings logs;

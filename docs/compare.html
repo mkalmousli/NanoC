@@ -10,10 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
 </head>
 <body>
-<header class="top"><div class="top-in">
-  <a class="brand" href="index.html"><img src="logo.svg" width="26" height="26" alt=""> NanoC</a>
-  <nav><a href="index.html">Home</a><a href="index.html#guide">Guide</a><a href="index.html#install">Install</a></nav>
-</div></header>
+{{nav}}
 <main class="compare">
   <p class="eyebrow">Compare</p>
   <h1>Same program, two languages</h1>
@@ -24,11 +21,11 @@
     <section class="pane"><div class="pane-head"><span>NanoC <small>(what you write)</small></span><button class="copy" id="copy-nc" type="button">Copy</button></div><pre><code id="nc-code" class="language-nanoc"></code></pre></section>
     <section class="pane"><div class="pane-head"><span>C <small>(what cc builds)</small></span><button class="copy" id="copy-c" type="button">Copy</button></div><pre><code id="c-code" class="language-c"></code></pre></section>
   </div>
-  <p class="build">Build any example yourself: <code>nanoc examples/hello.nc -o out.c &amp;&amp; cc out.c -o hello</code></p>
+  <p class="build"><a href="play.html">Edit any of these live in the playground →</a> Or build one yourself: <code>nanoc examples/hello.nc -o out.c &amp;&amp; cc out.c -o hello</code></p>
   <div class="ex-error" id="ex-error" hidden></div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js"></script>
+{{footer}}
+{{prism}}
 <script src="compare.js"></script>
 </body>
 </html>

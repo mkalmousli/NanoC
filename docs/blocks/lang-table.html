@@ -1,0 +1,12 @@
+<div class="table-wrap"><table class="vs">
+<thead><tr><th></th><th>C</th><th>Zig</th><th>Rust</th><th>Nim</th><th class="us">NanoC</th></tr></thead>
+<tbody>
+<tr><th>Compiles to</th><td>machine code</td><td>machine code</td><td>machine code</td><td>C, C++ or JS</td><td class="us">plain C11 or C++17</td></tr>
+<tr><th>Block syntax</th><td>braces</td><td>braces</td><td>braces</td><td>indentation</td><td class="us">indentation</td></tr>
+<tr><th>Compile-time code</th><td>preprocessor text</td><td><code>comptime</code></td><td><code>macro_rules!</code>, proc macros</td><td>templates, macros</td><td class="us">macros and <code>@ct</code> programs, rewritten until stable</td></tr>
+<tr><th>Build-time code</th><td>Make, CMake…</td><td><code>build.zig</code></td><td><code>build.rs</code></td><td>nimscript</td><td class="us"><code>@bt</code> in the same file</td></tr>
+<tr><th>Existing C</th><td>native</td><td><code>@cImport</code></td><td>FFI / bindgen</td><td><code>importc</code></td><td class="us">unmarked C is kept as-is</td></tr>
+<tr><th>Runtime / deps</th><td>none</td><td>none</td><td>std, crates</td><td>GC or ARC</td><td class="us">none: it is just C</td></tr>
+<tr><th>Inspect the output</th><td>n/a</td><td>assembly / LLVM IR</td><td>MIR / assembly</td><td>generated C</td><td class="us">generated C, with <code>#line</code> back to your source</td></tr>
+</tbody></table></div>
+<p class="method">Qualitative and simplified: each language does much more than this table shows. NanoC's pitch is narrow: keep C's output and ecosystem, lose the ceremony.</p>

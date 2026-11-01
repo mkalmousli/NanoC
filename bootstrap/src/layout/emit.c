@@ -17,7 +17,12 @@ static bool lead(NcNode n, const char * s) {
     return 0;
 }
 void nc_marker(NcContext * c, NcBuffer * b, int line) {
-    nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file));
+    if (c->lines) {
+        nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file));
+    }
+    else {
+        nc_add(c, b, "\n");
+    }
 }
 char * nc_emit_block(NcContext * c, NcNodes nodes, bool tail, size_t depth) {
     nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout");
