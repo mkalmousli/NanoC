@@ -1,60 +1,114 @@
-# NanoC 0.6
+<p align="center">
+  <img src="docs/logo.svg" width="96" height="96" alt="NanoC logo">
+</p>
 
-Compact C/C++ source + programmable macros, CT, BT and assembly. Self-hosted in NanoC.
-Ordinary C/C++ passes through; generated programs have no NanoC runtime.
+<h1 align="center">NanoC</h1>
+
+<p align="center">
+  <b>Less syntax, full control.</b> A compact, self-hosted language that generates plain C11 or C++17.<br>
+  Indented blocks, programmable macros, compile-time and build-time code, inline assembly.
+</p>
+
+<p align="center">
+  <a href="https://mkalmousli.github.io/NanoC/">Website</a> ·
+  <a href="docs/language.md">Language card</a> ·
+  <a href="docs/architecture.md">Architecture</a> ·
+  <a href="editors/">Editors</a>
+</p>
+
+---
+
+## Quick start
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh | sh
+```
+
+Needs a POSIX shell and a C11 compiler (`cc`, `gcc` or `clang`). Installs `nanoc` to `~/.local/bin`.
+
+| Task | Command |
+|---|---|
+| Install | `curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh \| sh` |
+| Uninstall | `curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh \| sh -s -- uninstall` |
+| Install from a checkout | `git clone https://github.com/mkalmousli/NanoC && cd NanoC && sh install.sh install` |
+| Uninstall from a checkout | `sh install.sh uninstall` (or `./builder uninstall`) |
+| Custom location | add `--prefix DIR` to any of the above |
+| Editor syntax | `sh install.sh editor vim` (see [Editors](#editors)) |
+
+Installs only the files it created; it refuses to overwrite unrelated files.
+
+## The language
 
 ```c
 @m twice($x)
   (($x)*2)
+
 @f add(int a,b) int = a+b
+
 @f main int
   @twice(add(2,3))!=10
 ```
 
-Bare types, spaces and indentation replace arrows, braces, colons, semicolons,
-and final return markers. Empty parameter lists can be omitted on definitions.
+- **Layout:** indentation defines blocks; bare return types; `:=` inference; no braces, colons or semicolons.
+- **Macros:** `@m` token templates with `$` captures, repetition and `$fresh(name)`.
+- **Compile time:** `@ct` programs generate code during expansion (`emit`, `quote`, loops).
+- **Build time:** `@bt` programs read/write files and run host commands. `--check` validates without side effects.
+- **Assembly:** indented `@asm` with explicit outputs, inputs, clobbers and jump labels. Instructions are forwarded to your target's assembler.
+- **Interop:** C headers and C++17 APIs work unchanged (`--lang c++`).
+- **Agent-friendly:** `nanoc --describe syntax|builtins|asm`, `nanoc file.nc --check --diagnostics json`.
 
-Assembly uses indentation too (x86 example):
+Output is ordinary C with no NanoC runtime. Full reference: [language card](docs/language.md) or `nanoc --describe syntax`.
 
-```c
-@f main int
-  n:=7
-  @asm
-    addl $5,%0
-    out "+r"(n)
-    clobber "cc"
-  n!=12
-```
+## Runs wherever C runs
 
-Direct instructions, registers, memory operands and jump labels; GCC/Clang backend.
-Fetch `nanoc --describe asm` or the [assembly card](docs/assembly.md).
+- **Host:** Linux, macOS, BSD, WSL, MSYS2 (POSIX shell and a C11 compiler).
+- **Output:** portable C11, or C++17 with `--lang c++`; compile it with whatever toolchain targets your machine.
+- **Assembly** is the only target-specific part: it is passed to GCC/Clang inline asm for the architecture you build for.
 
-```sh
-cc -std=c11 -O2 build.c -o builder
-./builder bootstrap                  # C seed -> NanoC -> NanoC; compare output
-./builder test                       # GCC + Clang, real C, sanitizers
-./build/nanoc examples/hello.nc -o build/hello.c
-cc -std=c11 -O2 build/hello.c -o build/hello
-./builder install --prefix "$HOME/.local"
-./builder uninstall --prefix "$HOME/.local"
-```
+## Editors
+
+Syntax highlighting with one command each. Remove with `--uninstall` (e.g. `sh editors/install.sh vim --uninstall`).
+
+| Editor | Command | Installs to |
+|---|---|---|
+| VS Code, VSCodium, Cursor | `sh install.sh editor vscode` | extension folder under `~/.vscode`, `~/.vscode-oss`, `~/.cursor` |
+| Vim | `sh install.sh editor vim` | `~/.vim/syntax`, `~/.vim/ftdetect` |
+| Neovim | `sh install.sh editor neovim` | `$XDG_CONFIG_HOME/nvim` |
+| Emacs | `sh install.sh editor emacs` | `~/.emacs.d/lisp` (prints the `require` line) |
+| micro | `sh install.sh editor micro` | `$XDG_CONFIG_HOME/micro/syntax` |
+| GNU nano | `sh install.sh editor nano` | `~/.nano/nanoc.nanorc` (prints the `include` line) |
+| Sublime Text 4 | `sh install.sh editor sublime` | `Packages/User` |
+
+List them with `sh install.sh editors`. Helix, Kate and JetBrains are not covered yet.
+
+## Repository map
 
 | Need | Read/fetch |
 |---|---|
 | Syntax + phases | [Language card](docs/language.md) or `nanoc --describe syntax` |
 | One builtin | `nanoc --describe replace` (substitute its name) |
 | Full builtin catalog | `nanoc --describe builtins` |
+| Assembly | [Assembly card](docs/assembly.md) or `nanoc --describe asm` |
 | Agent repair protocol | [Agent card](docs/agents.md) |
 | Source layout | [Architecture](docs/architecture.md) |
 | Bootstrap / refresh C seed | [Bootstrap card](docs/bootstrap.md); `./builder snapshot` |
 | Performance | `./builder bench`; [measurement notes](docs/benchmarks.md) |
 
-Build/test/bench/clean/install/uninstall are C tools; `CC` selects an executable.
-All compiler implementation lives in `src/**/*.nc`. `bootstrap/` keeps a generated
-C seed, including `main`, so a C compiler alone can build the self-hosted compiler.
-Host: POSIX. Targets: C11 / `--lang c++` for C++17. Test prerequisites: GCC/Clang,
-C++ frontends, ASan/UBSan runtimes, `sha256sum`. Bench additionally uses GNU time.
-Every source file <=100 lines. Tests are offline; [musl provenance](tests/corpus/README.md).
+## Build from source
 
-Syntax highlighting: open `.nc` files in VS Code with `editors/vscode`, or source
-`editors/vim/nanoc.vim` in Vim. The TextMate grammar includes C and NanoC syntax.
+```sh
+cc -std=c11 -O2 build.c -o builder
+./builder bootstrap                  # C seed -> NanoC -> NanoC; outputs must match byte for byte
+./builder test                       # GCC + Clang, real C, sanitizers
+CC=clang ./builder test --sanitize   # ASan/UBSan, including a real musl C corpus
+./build/nanoc examples/hello.nc -o build/hello.c
+```
+
+`CC` selects the C compiler. Test prerequisites: GCC or Clang, C++ frontends, ASan/UBSan runtimes, `sha256sum`.
+
+## Project
+
+- All compiler code lives in `src/**/*.nc`; every source file is at most 100 lines.
+- `bootstrap/` keeps a generated C seed, so a C compiler alone builds the self-hosted compiler.
+- Tests are offline. Corpus provenance: [tests/corpus](tests/corpus/README.md).
+- Website: `docs/` (GitHub Pages). Regenerate its file index with `sh tools/site/files.sh`.

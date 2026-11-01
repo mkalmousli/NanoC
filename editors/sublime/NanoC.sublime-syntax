@@ -1,0 +1,47 @@
+%YAML 1.2
+---
+# NanoC syntax for Sublime Text 4. Install with: sh editors/install.sh sublime
+name: NanoC
+file_extensions: [nc]
+scope: source.nanoc
+contexts:
+  main:
+    - match: '//.*$'
+      scope: comment.line.double-slash.nanoc
+    - match: '/\*'
+      scope: punctuation.definition.comment.begin.nanoc
+      push: block_comment
+    - match: '"'
+      scope: punctuation.definition.string.begin.nanoc
+      push: string
+    - match: "'(\\\\.|[^'\\\\])'"
+      scope: string.quoted.single.nanoc
+    - match: '@(f|fn|m|macro|ct|bt|asm)\b'
+      scope: keyword.control.directive.nanoc
+    - match: '@[A-Za-z_]\w*'
+      scope: entity.name.function.macro.nanoc
+    - match: '\$\$|\$[A-Za-z_]\w*(?::[A-Za-z_]+|\.\.\.)?'
+      scope: variable.parameter.capture.nanoc
+    - match: '\b(if|elif|else|for|while|break|continue|return|goto)\b'
+      scope: keyword.control.nanoc
+    - match: '\b(emit|quote|ident|fresh|rewrite|again|source|eval|assert|fail)\b'
+      scope: support.function.builtin.nanoc
+    - match: '\b(void|bool|char|short|int|long|float|double|signed|unsigned|auto|const|volatile|static|struct|union|enum|typedef|size_t)\b'
+      scope: storage.type.nanoc
+    - match: '\b(true|false|NULL|nullptr)\b'
+      scope: constant.language.nanoc
+    - match: '\b(0[xX][0-9a-fA-F]+|[0-9]+(\.[0-9]+)?)\b'
+      scope: constant.numeric.nanoc
+    - match: ':='
+      scope: keyword.operator.inferred.nanoc
+  block_comment:
+    - meta_scope: comment.block.nanoc
+    - match: '\*/'
+      pop: true
+  string:
+    - meta_scope: string.quoted.double.nanoc
+    - match: '\\.'
+      scope: constant.character.escape.nanoc
+    - match: '"'
+      scope: punctuation.definition.string.end.nanoc
+      pop: true
