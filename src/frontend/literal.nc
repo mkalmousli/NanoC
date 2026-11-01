@@ -1,5 +1,4 @@
 // String, char and raw literal scanning.
-@use "nanoc/nanoc"
 // Finds where a literal starts.
 @f nc_literal_start(cstr s, usize i, bool cpp) usize
   if s[i] == '"' || s[i] == '\'' then return 1

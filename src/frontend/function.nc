@@ -1,5 +1,4 @@
 // The @f function form.
-@use "nanoc/nanoc"
 // Expands a @f function.
 @f nc_function(NcContext *ctx, NcCursor *c, usize depth) char *
   int line = nc_line(c)

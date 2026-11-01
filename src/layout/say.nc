@@ -1,5 +1,4 @@
 // The say statement: prints its arguments separated by spaces, then a newline.
-@use "nanoc/nanoc"
 extern int nc_std;
 // Expands "say a, b" to printf calls whose formats follow the C types (needs C11 _Generic).
 @f nc_say(NcContext *c, cstr args, int line) char *

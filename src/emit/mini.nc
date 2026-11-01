@@ -1,5 +1,4 @@
 // Mini emitter: smallest valid C for fast compiles.
-@use "nanoc/nanoc"
 // Tells if a character can continue an identifier.
 @f wordy(char ch) static bool = isalnum((unsigned char)ch) || ch == '_' || (unsigned char)ch >= 128
 // Tells if two adjacent characters must stay apart.

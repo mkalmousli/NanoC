@@ -1,5 +1,4 @@
 // Variable scopes of the evaluator.
-@use "nanoc/nanoc"
 // Creates a child scope.
 @f nc_env(NcContext *c, NcEnv *parent) NcEnv *
   NcEnv *e = nc_alloc(c, sizeof *e)

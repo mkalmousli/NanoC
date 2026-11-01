@@ -1,5 +1,4 @@
 // User functions in meta code.
-@use "nanoc/nanoc"
 // Defines a meta function.
 @f nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) void
   NcContext *ctx = m->ctx

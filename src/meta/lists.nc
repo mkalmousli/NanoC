@@ -1,5 +1,4 @@
 // List and slice builtins.
-@use "nanoc/nanoc"
 // Runs list builtins.
 @f nc_meta_lists(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx

@@ -1,5 +1,5 @@
 // Editor names and their install targets.
-@use "nanoc/nanoc", "nanoc/manage"
+@use "nanoc/manage"
 // Gets the name of editor i.
 @f nc_editor_name(usize i) cstr 
   static const char *ids[] = {"vscode", "vim", "neovim", "emacs", "micro", "nano", "sublime", NULL}

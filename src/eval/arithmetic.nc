@@ -1,5 +1,4 @@
 // Checked 64-bit integer arithmetic.
-@use "nanoc/nanoc"
 // Applies an operator, checking overflow.
 @f nc_arithmetic(NcContext *c, cstr op, int64_t x, int64_t y, int line) int64_t
   bool overflow = false

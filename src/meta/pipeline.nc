@@ -1,5 +1,4 @@
 // The full compile pipeline.
-@use "nanoc/nanoc"
 // Runs the whole compile pipeline.
 @f nc_pipeline(NcContext *ctx, cstr input) char *
   cstr current = input

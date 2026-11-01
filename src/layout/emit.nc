@@ -1,5 +1,4 @@
 // Emits a layout tree as C.
-@use "nanoc/nanoc"
 // Tells if the node starts with s.
 @f lead(NcNode n, cstr s) static bool
   for i:usize in 0..n.head.ts.n

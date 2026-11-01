@@ -1,5 +1,4 @@
 // Trim, quote and identifier helpers.
-@use "nanoc/nanoc"
 // Trims whitespace.
 @f nc_trim(NcContext *c, cstr s) char *
   while isspace((u8)*s)

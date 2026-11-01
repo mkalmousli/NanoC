@@ -1,5 +1,4 @@
 // Process builtins: exec, run, sh.
-@use "nanoc/nanoc"
 // Runs process builtins.
 @f nc_meta_process(NcMachine *m, cstr name, NcValues a, int line) NcValue
   nc_effect(m, line)

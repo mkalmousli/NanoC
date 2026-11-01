@@ -1,5 +1,4 @@
 // Runs a whole meta program.
-@use "nanoc/nanoc"
 // Runs a meta program body.
 @f nc_program(NcContext *ctx, NcTokens ts, NcEnv *env, NcPhase phase, usize depth) char *
   NcMachine m = {.ctx = ctx, .root = env ? env : nc_env(ctx, nil), .phase = phase, .depth = depth}

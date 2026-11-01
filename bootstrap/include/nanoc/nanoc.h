@@ -433,6 +433,8 @@ char *nc_join(NcContext *c, NcTokens ts);
 NcTokens nc_significant(NcContext *c, NcTokens ts);
 char *nc_words(NcContext *c, NcTokens ts);
 void nc_names(NcContext *c, NcTokens ts);
+char *prelude_file(NcContext *ctx, const char *file);
+char *nc_prelude(NcContext *ctx);
 NcTokens nc_lex(NcContext *c, const char *s, int line);
 char *nc_native_parameters(NcContext *ctx, NcTokens ts);
 char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth);

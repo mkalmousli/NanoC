@@ -1,5 +1,4 @@
 // Diagnostic reports built with the JSON writer.
-@use "nanoc/nanoc"
 // Writes the compiler logs as an array under "logs".
 @f logs(NcJson *w, NcContext *c) static void
   jw_key(w, "logs")

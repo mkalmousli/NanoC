@@ -1,5 +1,4 @@
 // Shorthand forms such as fn.
-@use "nanoc/nanoc"
 // Expands shorthand forms.
 @f nc_shorthand(NcContext *ctx, NcCursor *c, cstr name, usize depth) char *
   if !strcmp(name, "fn") then return nc_function(ctx, c, depth)

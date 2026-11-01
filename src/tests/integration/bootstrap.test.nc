@@ -5,7 +5,7 @@
   struct dirent *entry
   size_t count = 0
   while (entry = readdir(dir)) != nil
-    if !strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..") || !strcmp(entry->d_name, "assets") || !strcmp(entry->d_name, "cases")
+    if entry->d_name[0] == '.' || !strcmp(entry->d_name, "assets") || !strcmp(entry->d_name, "cases")
       continue
     char *path = nc_format(test_state.mem, "%s/%s", root, entry->d_name)
     struct stat st

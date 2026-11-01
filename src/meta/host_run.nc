@@ -1,5 +1,5 @@
 // Runs host processes for BT.
-@use "nanoc/nanoc", sys/wait, sys/stat, unistd, errno
+@use sys/wait, sys/stat, unistd, errno
 // Runs a host command, captures it.
 @f nc_host_run(NcMachine *m, NcValues a, int line) NcValue
   NcContext *c = m->ctx

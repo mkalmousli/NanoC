@@ -1,5 +1,4 @@
 // Growable text buffers.
-@use "nanoc/nanoc"
 // Appends n bytes.
 @f nc_addn(NcContext *c, NcBuffer *b, cstr s, usize n) void
   if n > SIZE_MAX - b->n - 1 then nc_fail(c, 0, "output limit exceeded")

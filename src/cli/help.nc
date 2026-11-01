@@ -1,5 +1,4 @@
 // Text shown by --help.
-@use "nanoc/nanoc"
 // Prints the usage text.
 @f nc_help(FILE *out) void
   fputs(

@@ -1,5 +1,4 @@
 // One-line blocks: `if c then ret x` and `else stmt` become a header plus an indented body.
-@use "nanoc/nanoc"
 // Tells if a word starts a block that may take an inline body.
 @f inline_head(NcToken t) bool
   cstr k[] = {"if", "elif", "else", "while", "for", "unless", "until"}

@@ -1,5 +1,4 @@
 // Typed declarations with inference.
-@use "nanoc/nanoc"
 // Separator between a type and a name: none after "*".
 @f nc_sep(cstr type) cstr 
   usize n = strlen(type)

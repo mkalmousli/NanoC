@@ -1,6 +1,6 @@
 extern int nc_std;
 // Command-line option parsing.
-@use "nanoc/nanoc", errno
+@use errno
 // Parses a positive count option.
 @f positive(NcContext *c, cstr s) static usize
   char *end

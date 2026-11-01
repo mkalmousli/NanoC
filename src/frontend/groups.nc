@@ -1,5 +1,4 @@
 // Bracketed and delimited token groups.
-@use "nanoc/nanoc"
 // Takes a bracketed group.
 @f nc_group(NcCursor *c, cstr open, cstr close) NcTokens
   nc_need(c, open)

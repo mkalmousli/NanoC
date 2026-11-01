@@ -1,5 +1,4 @@
 // Token predicates and text helpers.
-@use "nanoc/nanoc"
 // Tells if a token has the text.
 @f nc_is(NcToken t, cstr s) bool = t.n == strlen(s) and !memcmp(t.s, s, t.n)
 // Copies a token as text.

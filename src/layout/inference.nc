@@ -1,5 +1,5 @@
 // Type inference for := declarations.
-@use "nanoc/nanoc", errno
+@use errno
 // Rewrites := with a typeof.
 @f nc_infer(NcContext *c, NcTokens ts, int line) char *
   NcTokens items = nc_significant(c, ts)

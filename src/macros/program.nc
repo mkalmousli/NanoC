@@ -1,5 +1,4 @@
 // Macro bodies written as programs.
-@use "nanoc/nanoc"
 // Runs a program-style macro.
 @f nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, usize depth) char *
   NcEnv *env = nc_env(ctx, nil)

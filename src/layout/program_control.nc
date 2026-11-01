@@ -1,5 +1,4 @@
 // Control headers inside programs.
-@use "nanoc/nanoc"
 // Rewrites a program control header.
 @f nc_program_control(NcContext *ctx, NcTokens ts, int line) char *
   NcTokens sig = nc_significant(ctx, ts)

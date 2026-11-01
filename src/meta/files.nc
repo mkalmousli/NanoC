@@ -1,5 +1,5 @@
 // File builtins: read, write, mkdir.
-@use "nanoc/nanoc", sys/stat, errno
+@use sys/stat, errno
 // Creates the parent directories.
 @f directories(NcContext *c, cstr path, int line) static void
   char *copy = nc_string(c, path, strlen(path))

@@ -1,5 +1,4 @@
 // Pretty printer: readable, indented C.
-@use "nanoc/nanoc"
 // Handles whitespace and comments between tokens.
 @f space(NcPretty *p, NcToken t) static void
   if t.s[0] == '/'

@@ -1,5 +1,4 @@
 // Dispatch of builtin calls.
-@use "nanoc/nanoc"
 // Checks the argument count.
 @f nc_arity(NcContext *c, NcValues args, usize n, int line) void
   if args.n != n then nc_fail(c, line, "wrong builtin argument count")

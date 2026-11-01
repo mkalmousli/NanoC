@@ -1,5 +1,4 @@
 // The @asm inline assembly form.
-@use "nanoc/nanoc"
 // Expands an asm block to C.
 @f nc_assembly(NcContext *ctx, NcCursor *c) char *
   NcHeader header = nc_header(c)

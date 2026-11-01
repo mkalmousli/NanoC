@@ -1,5 +1,5 @@
 // Primary expressions: literals, calls, lists.
-@use "nanoc/nanoc", errno, inttypes
+@use errno, inttypes
 // Evaluates a primary expression.
 @f nc_primary(NcExpr *e, bool active) NcValue
   NcContext *c = e->m->ctx

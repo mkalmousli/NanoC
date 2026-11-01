@@ -1,5 +1,4 @@
 // Control builtins: error, log, emit.
-@use "nanoc/nanoc"
 // Runs control builtins.
 @f nc_meta_control(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx

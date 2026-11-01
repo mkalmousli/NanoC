@@ -1,5 +1,4 @@
 // Bodies of @bt, @ct and @m blocks.
-@use "nanoc/nanoc"
 // Reads a @bt or @ct body.
 @f nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) NcTokens
   usize next = c->pos

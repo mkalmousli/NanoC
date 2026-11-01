@@ -1,5 +1,4 @@
 // Short numeric type names that lex to plain C type words, valid in every C compiler.
-@use "nanoc/nanoc"
 // Rewrites a word token such as i32 or f64 to its C type; other tokens are unchanged.
 int nc_std;
 @f nc_alias(NcToken *t) void

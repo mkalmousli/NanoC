@@ -1,5 +1,4 @@
 // Statement lines to C.
-@use "nanoc/nanoc"
 // Tells if the statement starts with the ret keyword.
 @f nc_is_ret(NcContext *c, NcTokens items) bool
   if !nc_is(items.v[0], "ret") then return false

@@ -1,5 +1,4 @@
 // Prepares lines before the tree is built.
-@use "nanoc/nanoc"
 // Tells if a line extends C.
 @f nc_extension_line(NcLayoutLine line) bool
   usize i = 0

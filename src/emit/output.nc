@@ -1,5 +1,4 @@
 // Low-level output for the pretty C printer.
-@use "nanoc/nanoc"
 // Writes text, indenting at the start of a line.
 @f nc_pp_put(NcPretty *p, cstr s, usize n) void
   if p->bol

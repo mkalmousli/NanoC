@@ -1,5 +1,4 @@
 // Builtin catalog and metadata.
-@use "nanoc/nanoc"
 const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"str", "str(value)", "all", NULL}, {"tokens", "tokens(text)", "all", NULL},
   {"ident", "ident(text)", "all", NULL}, {"fresh", "fresh(hint)", "all", NULL},

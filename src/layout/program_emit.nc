@@ -1,5 +1,4 @@
 // Emits meta programs as text.
-@use "nanoc/nanoc"
 // Tells if the node starts with word.
 @f starts(NcContext *c, NcNode n, cstr word) static bool
   NcTokens ts = nc_significant(c, n.head.ts)

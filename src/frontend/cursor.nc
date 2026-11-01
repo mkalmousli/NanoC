@@ -1,5 +1,4 @@
 // Token cursor helpers for the parsers.
-@use "nanoc/nanoc"
 // Skips whitespace tokens.
 @f nc_skip(NcCursor *c) void
   while c->pos < c->ts.n and c->ts.v[c->pos].kind == NC_SPACE

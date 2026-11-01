@@ -1,5 +1,4 @@
 // Streaming JSON writer: callers describe structure, punctuation and escaping happen here.
-@use "nanoc/nanoc"
 // Starts a writer on a stream.
 @f jw_start(NcJson *w, FILE *out) void
   w->out = out

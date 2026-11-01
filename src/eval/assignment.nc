@@ -1,5 +1,4 @@
 // Assignment statements in the evaluator.
-@use "nanoc/nanoc"
 // Runs name = expr when present.
 @f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, NcToken name) bool
   if name.kind != NC_WORD then return false

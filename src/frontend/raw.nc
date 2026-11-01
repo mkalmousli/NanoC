@@ -1,5 +1,4 @@
 // The @c block: indented lines are copied to the C output untouched.
-@use "nanoc/nanoc"
 // Expands an indented @c block to its verbatim lines.
 @f nc_raw(NcContext *ctx, NcCursor *c) char *
   NcHeader h = nc_header(c)

@@ -1,5 +1,4 @@
 // Compact @s struct, @u union and @e enum declarations.
-@use "nanoc/nanoc"
 // Rest of the current line as tokens, up to a newline.
 @f rest_of_line(NcCursor *c) static NcTokens
   NcTokens ts = {0}

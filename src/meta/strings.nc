@@ -1,5 +1,4 @@
 // String builtins.
-@use "nanoc/nanoc"
 // Runs string builtins.
 @f nc_meta_strings(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx

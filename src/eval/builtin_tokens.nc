@@ -1,5 +1,4 @@
 // Builtins that work on token lists.
-@use "nanoc/nanoc"
 // Runs token-list builtins.
 @f nc_builtin_tokens(NcMachine *m, cstr name, NcValue v, int line) NcValue
   NcContext *c = m->ctx

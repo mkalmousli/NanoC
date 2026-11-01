@@ -1,5 +1,4 @@
 // Binary operators and precedence.
-@use "nanoc/nanoc"
 // Gets the binding power of an operator.
 @f nc_precedence(NcToken t) int
   if nc_is(t, "||") then return 1

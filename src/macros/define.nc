@@ -1,5 +1,4 @@
 // Parses @m macro definitions.
-@use "nanoc/nanoc"
 // Defines a macro.
 @f nc_define_macro(NcContext *ctx, NcCursor *c) void
   NcHeader header = nc_header(c)

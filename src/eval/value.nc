@@ -1,5 +1,5 @@
 // Values of the meta language.
-@use "nanoc/nanoc", inttypes
+@use inttypes
 // Makes an integer value.
 @f nc_integer(int64_t n) NcValue = (NcValue){.kind = NC_INT, .n = n}
 // Makes a boolean value.

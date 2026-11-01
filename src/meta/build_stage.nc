@@ -1,5 +1,4 @@
 // Selects the BT build stage.
-@use "nanoc/nanoc"
 @s Programs v:*NcTokens; n,cap:usize
 // Runs BT code in the build stage.
 @f nc_build_stage(NcContext *ctx, cstr source) char *

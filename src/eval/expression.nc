@@ -1,5 +1,4 @@
 // Expression parsing and evaluation.
-@use "nanoc/nanoc"
 // Parses with operator precedence.
 @f nc_expression(NcExpr *e, int minimum, bool active) NcValue
   ++e->depth

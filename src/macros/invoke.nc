@@ -1,5 +1,4 @@
 // Macro invocation and checking.
-@use "nanoc/nanoc"
 // Checks an argument fits its kind.
 @f validate(NcContext *ctx, NcParam p, NcTokens ts) static void
   NcCursor c = {ctx, ts, 0}

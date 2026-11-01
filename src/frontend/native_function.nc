@@ -1,5 +1,4 @@
 // Native function headers and returns.
-@use "nanoc/nanoc"
 // Reads a function return type.
 @f return_type(NcCursor *c, int line) static NcTokens
   usize start = c->pos

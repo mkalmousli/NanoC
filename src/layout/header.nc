@@ -1,5 +1,4 @@
 // Statement header lookahead.
-@use "nanoc/nanoc"
 // Finds the statement header.
 @f nc_header(const NcCursor *c) NcHeader
   usize i = c->pos ? c->pos - 1 : 0

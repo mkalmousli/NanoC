@@ -1,5 +1,4 @@
 // C-style for loops in meta code.
-@use "nanoc/nanoc"
 // Runs one for-loop clause.
 @f statement(NcContext *c, NcTokens ts) static NcTokens = nc_lex(c, nc_format(c, "%s;", nc_join(c, ts)), ts.n ? ts.v[0].line : 1)
 // Runs a C-style for loop.

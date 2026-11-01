@@ -1,5 +1,4 @@
 // Native function parameter lists.
-@use "nanoc/nanoc"
 // Reads native parameters.
 @f nc_native_parameters(NcContext *ctx, NcTokens ts) char *
   NcGroups groups = nc_split(ctx, ts, ",")

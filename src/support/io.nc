@@ -1,5 +1,5 @@
 // Whole-file read and write.
-@use "nanoc/nanoc", sys/stat, unistd, errno
+@use sys/stat, unistd, errno
 // Reads a whole file.
 @f nc_read(NcContext *c, cstr path) char *
   struct stat st

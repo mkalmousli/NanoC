@@ -1,5 +1,4 @@
 // Substitutes macro arguments.
-@use "nanoc/nanoc"
 // Substitutes macro parameters.
 @f nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, usize depth, usize index) char *
   nc_depth(ctx, depth, 1, "substitution")

@@ -1,5 +1,4 @@
 // Splits tokens into logical lines.
-@use "nanoc/nanoc"
 // Reads one logical line.
 @f nc_logical_line(NcCursor *c) NcLayoutLine
   usize whitespace = c->pos

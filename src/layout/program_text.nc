@@ -1,5 +1,4 @@
 // Meta program source assembly.
-@use "nanoc/nanoc"
 // Lexes program text to tokens.
 @f nc_program_text(NcContext *ctx, cstr text, int line) NcTokens
   NcCursor c = {ctx, nc_lex(ctx, text, line), 0}

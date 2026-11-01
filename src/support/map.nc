@@ -1,5 +1,4 @@
 // Hash map of tokens and fresh names.
-@use "nanoc/nanoc"
 // Hashes a string (FNV-1a).
 @f hash(cstr s) static usize
   usize h = 2166136261u

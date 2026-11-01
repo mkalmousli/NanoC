@@ -1,5 +1,4 @@
 // Arena allocation for one compile.
-@use "nanoc/nanoc"
 struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t align; };
 // Sets up a context.
 @f nc_init(NcContext *c, cstr file) void

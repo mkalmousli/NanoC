@@ -1,5 +1,4 @@
 // Control statements: if, for, while.
-@use "nanoc/nanoc"
 // Tells if one parenthesis pair spans all of s.
 @f enclosed(cstr s) static bool
   if *s != '(' then return false

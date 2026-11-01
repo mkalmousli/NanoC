@@ -1,5 +1,4 @@
 // The @use (alias @inc) shorthand for #include.
-@use "nanoc/nanoc"
 // Bundles that expand to several headers.
 @f bundle(cstr item) static cstr 
   const char *names[][2] = {{"std", "stdio,stdlib,string"}, {"libc", "stdio,stdlib,string,stdbool,stdint,stddef,ctype"},

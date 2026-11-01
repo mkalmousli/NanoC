@@ -1,5 +1,4 @@
 // Statement execution for CT/BT code.
-@use "nanoc/nanoc"
 // Runs a statement sequence.
 @f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, usize depth) NcFlow
   NcContext *ctx = m->ctx

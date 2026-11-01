@@ -1,5 +1,4 @@
 // Expansion driver: macros, @ct, @bt.
-@use "nanoc/nanoc"
 // Expands tokens until stable.
 @f nc_expand(NcContext *ctx, NcTokens ts, usize depth) char *
   nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "expansion")
@@ -44,5 +43,7 @@
     ctx->source = input
     return ctx->mini ? nc_mini(ctx, input) : (char *)input
   char *output = nc_pipeline(ctx, input)
+  char *prelude = nc_prelude(ctx)
+  if *prelude and !strstr(output, prelude) then output = nc_format(ctx, "%s%s", prelude, output)
   if ctx->need_stdio && !strstr(output, "<stdio.h>") then output = nc_format(ctx, "#include <stdio.h>\n%s", output)
   strcmp(output, input) or ctx->mini ? nc_style(ctx, output) : output

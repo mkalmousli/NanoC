@@ -1,5 +1,4 @@
 // Errors and execution limits.
-@use "nanoc/nanoc"
 // Reports an error and stops.
 @f nc_fail(NcContext *c, int line, cstr format, ...) _Noreturn void
   va_list args

@@ -1,5 +1,4 @@
 // Turns source text into tokens.
-@use "nanoc/nanoc"
 // Splits text into tokens.
 @f nc_lex(NcContext *c, cstr s, int line) NcTokens
   NcTokens out = {0}

@@ -1,5 +1,4 @@
 // Conditionals and loops in meta code.
-@use "nanoc/nanoc"
 // Skips an if/elif/else chain.
 @f skip_conditional(NcCursor *c, usize depth) static void
   nc_depth(c->ctx, depth, nc_line(c), "conditional")

@@ -1,5 +1,4 @@
 // Brace handling for the pretty C printer.
-@use "nanoc/nanoc"
 // Tells if the previous token is the word s.
 @f nc_pp_prev_is(NcPretty *p, cstr s) bool = p->has_prev and p->prev.kind == NC_WORD and nc_is(p->prev, s)
 // Tells if the previous token is the punctuation s.
