@@ -17,7 +17,7 @@ map:=[["Syntax + phases",link("Language card","docs/language.md")+" or "+c("nano
 tasks:=[["Install",c(INSTALL)],["Update",c("nanoc update")],["Uninstall",c("nanoc uninstall")+" (asks first; `--yes` skips)"],
   ["Custom location",c("./builder install --prefix DIR")],["Editor syntax",c("nanoc editor install vim")+" (see [Editors](#editors))"]]
 page("README.md",[
-  "<p align=\"center\"><img src=\"docs/logo.svg\" width=\"96\" height=\"96\" alt=\"NanoC logo\"></p>\n\n<h1 align=\"center\">NanoC</h1>\n\n<p align=\"center\"><b>Less syntax, full control.</b> A compact, self-hosted language that generates plain C11 or C++17.<br>Indented blocks, programmable macros, compile-time and build-time code, inline assembly.</p>\n\n<p align=\"center\"><a href=\""+SITE+"\">Website</a> · <a href=\"docs/language.md\">Language card</a> · <a href=\"docs/architecture.md\">Architecture</a> · <a href=\"src/editors.bt.nc\">Editors</a></p>",
+  "<p align=\"center\"><img src=\"src/assets/logo.svg\" width=\"96\" height=\"96\" alt=\"NanoC logo\"></p>\n\n<h1 align=\"center\">NanoC</h1>\n\n<p align=\"center\"><b>Less syntax, full control.</b> A compact, self-hosted language that generates plain C11 or C++17.<br>Indented blocks, programmable macros, compile-time and build-time code, inline assembly.</p>\n\n<p align=\"center\"><a href=\""+SITE+"\">Website</a> · <a href=\"docs/language.md\">Language card</a> · <a href=\"docs/architecture.md\">Architecture</a> · <a href=\"src/editors.bt.nc\">Editors</a></p>",
   h(2,"Quick start"),
   code("sh",[INSTALL]),
   "Needs git and a C11 compiler (`cc`, `gcc` or `clang`). Installs `nanoc` to `~/.local/bin` and sets up the editors it detects. Add `--no-editors` to skip editors, or `--prefix DIR` to change the location.",

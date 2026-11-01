@@ -15,7 +15,7 @@ dirs:=[["include/nanoc","Internal subsystem contracts, written in NanoC (types o
   ["src/layout","Indented runtime/meta bodies, short controls, implicit returns"],["src/emit","Pretty and mini C emitters"],
   ["src/dsl","Shared generator DSLs (JSON, Markdown, files) for `*.bt.nc` programs"],
   ["src/*.bt.nc, src/site, src/docs","Build-time generators: headers, editors, docs, website"],
-  ["build.c, src/build.bt.nc","`build.c` compiles the C seed; the build workflow is NanoC"],["tests","Compiler behavior, real C, CLI/ABI/BT/install; `tests/corpus` is licensed upstream C"]]
+  ["build.c, src/build.bt.nc","`build.c` compiles the C seed; the build workflow is NanoC"],["src/tests, tests/","NanoC test sources (built to C by ./builder test); corpus and fixtures data. Compiler behavior, real C, CLI/ABI/BT/install; `tests/corpus` is licensed upstream C"]]
 page("docs/architecture.md",[h(1,"Implementation map"),
   "Self-hosted NanoC; C11 bootstrap; POSIX host, libc only. Sources <= "+LIMIT+" lines.",
   tbl(["Directory","Owns"],dirs),

@@ -18,7 +18,7 @@ Self-hosted NanoC; C11 bootstrap; POSIX host, libc only. Sources <= 200 lines.
 | src/dsl | Shared generator DSLs (JSON, Markdown, files) for `*.bt.nc` programs |
 | src/*.bt.nc, src/site, src/docs | Build-time generators: headers, editors, docs, website |
 | build.c, src/build.bt.nc | `build.c` compiles the C seed; the build workflow is NanoC |
-| tests | Compiler behavior, real C, CLI/ABI/BT/install; `tests/corpus` is licensed upstream C |
+| src/tests, tests/ | NanoC test sources (built to C by ./builder test); corpus and fixtures data. Compiler behavior, real C, CLI/ABI/BT/install; `tests/corpus` is licensed upstream C |
 
 Tokens are immutable source slices; lookahead copies indices. A context owns translation allocations and persistent pass state. Error checkpoints release all owned memory; arena accounting and budgets bound work. No-`@` input passes through. Output files use same-directory temporary files + rename. Host commands use argv; only explicit `sh` invokes a shell. Builtin signatures live in `src/meta/registry.nc`.
 

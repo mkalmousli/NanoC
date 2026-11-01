@@ -7,6 +7,7 @@
   exec(["rm","-rf","_site"])
   mkdir("_site")
   exec(["cp","-r","docs/.","_site/"])
+  exec(["cp","src/assets/logo.svg","src/assets/favicon.svg","_site/"])
   eval(read("src/dsl/gen.bt.nc"))
   write("_site/.nojekyll","")
   exec(["git","checkout-index","-a","--prefix=_site/source/"])

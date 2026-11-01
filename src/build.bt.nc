@@ -27,7 +27,7 @@
       san=" -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=all -fno-omit-frame-pointer -fno-pie -no-pie"
     else
       san=" -O2"
-    ok(CC+" -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Wpedantic -Werror "+inc+" -Itests/support"+san+" "+srcs+" -o "+out)
+    ok(CC+" -std=c11 -D_POSIX_C_SOURCE=200809L -Wall -Wextra -Wpedantic -Werror "+inc+""+san+" "+srcs+" -o "+out)
   f cfiles(dir) = files("find "+dir+" -name '*.c' | sort")
   f modules = files("find src -name '*.nc' ! -name '*.*.nc' | sort")
   f generate(compiler,stage)
@@ -71,8 +71,18 @@
       fail("over 200 physical lines:\n"+bad)
   f test(bench)
     lines()
-    srcs:=replace(ok("find build/stage2/src tests/support tests/unit tests/integration -name '*.c' ! -name main.c ! -name corpus_driver.c | sort")+" tests/main.c","\n"," ")
-    cc("build/tests",srcs,"-Ibuild/include")
+    T:="build/tests-c"
+    ok("rm -rf "+T+"; mkdir -p "+T)
+    h:=ok("build/nanoc src/tests/test.h.nc")
+    for t split(ok("find src/tests -name '*.test.nc' | sort"),"\n")
+      if t!=""
+        c:=T+"/"+replace(slice(t,find(t,"tests/")+6,len(t)),".test.nc",".c")
+        ok("mkdir -p $(dirname "+c+"); build/nanoc "+t+" -o "+c)
+        if !contains(t,"/main.") && !contains(t,"corpus_driver")
+          h+=ok("build/nanoc --prototypes "+t)
+    write(T+"/test.h","#ifndef NC_TEST_H\n#define NC_TEST_H\n"+h+"#endif\n")
+    srcs:=replace(ok("find build/stage2/src "+T+" -name '*.c' ! -name main.c ! -name corpus_driver.c | sort")+" "+T+"/main.c","\n"," ")
+    cc("build/tests",srcs,"-Ibuild/include -I"+T)
     r:=sh("ASAN_OPTIONS=${ASAN_OPTIONS}:detect_leaks=0 build/tests "+bench)
     log(r[1]+r[2])
     if r[0]!=0

@@ -13,8 +13,21 @@
   if lk[0]==0
     ld:=replace(lk[1],"\n","")
     objs:=[]
-    srcs:=split(exec(["git","ls-files","-co","--exclude-standard","bootstrap/src","web/wasm"]),"\n")
     mkdir("build/wasm")
+    shimc:=[]
+    for f split(exec(["git","ls-files","-co","--exclude-standard","src/wasm"]),"\n")
+      if len(f)>8
+        if slice(f,len(f)-8,len(f))==".wasm.nc"
+          c:="build/wasm/"+replace(slice(f,9,len(f)-8),"/","_")+".c"
+          exec(["build/nanoc",f,"-o",c])
+          shimc=push(shimc,c)
+        elif slice(f,len(f)-5,len(f))==".h.nc"
+          h:="build/wasm/include/"+slice(f,17,len(f)-5)+".h"
+          exec(["sh","-c","mkdir -p $(dirname "+h+")"])
+          exec(["build/nanoc",f,"-o",h])
+    srcs:=split(exec(["git","ls-files","-co","--exclude-standard","bootstrap/src"]),"\n")
+    for c shimc
+      srcs=push(srcs,c)
     ok:=true
     for f srcs
       if len(f)>2
@@ -24,7 +37,7 @@
               if !contains(f,"host_run")
                 if !contains(f,"meta/files.c")
                   o:="build/wasm/"+replace(f,"/","_")+".o"
-                  r:=run(["clang","--target=wasm32","-O2","-ffreestanding","-nostdlib","-Iweb/wasm/include","-Ibootstrap/include","-c",f,"-o",o])
+                  r:=run(["clang","--target=wasm32","-O2","-ffreestanding","-nostdlib","-Ibuild/wasm/include","-Ibootstrap/include","-c",f,"-o",o])
                   if r[0]!=0
                     ok=false
                     log(r[2])
