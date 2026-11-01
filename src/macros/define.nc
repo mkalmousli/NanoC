@@ -21,11 +21,9 @@
     if (!nc_end(&a)
       || (strcmp(p.kind, "tokens") && strcmp(p.kind, "ident") && strcmp(p.kind, "block")))
       nc_fail(ctx, nc_line(&a), "expected ident, tokens, or block parameter")
-    if nc_get(&names, p.name) || !strcmp(p.name, "fresh")
-      nc_fail(ctx, nc_line(&a), "duplicate or reserved parameter")
+    if nc_get(&names, p.name) || !strcmp(p.name, "fresh") then nc_fail(ctx, nc_line(&a), "duplicate or reserved parameter")
     nc_put(ctx, &names, p.name, (void *)1)
-    if m->params.n and m->params.v[m->params.n - 1].variadic
-      nc_fail(ctx, nc_line(&a), "variadic parameter must be last")
+    if m->params.n and m->params.v[m->params.n - 1].variadic then nc_fail(ctx, nc_line(&a), "variadic parameter must be last")
     NC_PUSH(ctx, m->params, p)
   m->body = nc_macro_body(c, header, &m->program)
   nc_put(ctx, &ctx->macros, name, m)

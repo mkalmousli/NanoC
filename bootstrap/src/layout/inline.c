@@ -62,14 +62,35 @@ int inline_split(NcTokens ts) {
     return -1;
 }
 
+// Finds a depth-zero `else` word inside an inline body, or -1 for none.
+
+int inline_else(NcTokens ts) {
+    int depth = 0;
+    {
+        size_t nanoc_start_5 = (0);
+        size_t nanoc_end_6 = (ts.n);
+        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
+            NcToken t = ts.v[i];
+            if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
+                ++depth;
+            } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
+                --depth;
+            } else if (! depth && i > 0 && nc_is(t, "else")) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
 // Splits lines such as `if a then b` into `if a` and an indented `b`.
 
 NcLines nc_split_inline(NcContext *ctx, NcLines input) {
     NcLines out = {0};
     {
-        size_t nanoc_start_5 = (0);
-        size_t nanoc_end_6 = (input.n);
-        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
+        size_t nanoc_start_7 = (0);
+        size_t nanoc_end_8 = (input.n);
+        for (size_t i = nanoc_start_7; i < nanoc_end_8; ++i) {
             NcLayoutLine line = input.v[i];
             bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent;
             int at = block ? -1 : inline_split(line.ts);
@@ -87,7 +108,19 @@ NcLines nc_split_inline(NcContext *ctx, NcLines input) {
             body.ts = nc_slice(line.ts, cut, line.ts.n);
             body.indent += 2;
             NC_PUSH(ctx, out, head);
+            int e = inline_else(body.ts);
+            if (e < 0) {
+                NC_PUSH(ctx, out, body);
+                continue;
+            }
+            NcLayoutLine alt = line, rest = body;
+            rest.ts = nc_slice(body.ts, e + 1, body.ts.n);
+            body.ts = nc_slice(body.ts, 0, e);
+            alt.ts = nc_slice(line.ts, 0, 0);
+            NC_PUSH(ctx, alt.ts, nc_token("else", line.line, NC_WORD));
             NC_PUSH(ctx, out, body);
+            NC_PUSH(ctx, out, alt);
+            NC_PUSH(ctx, out, rest);
         }
     }
     return out;

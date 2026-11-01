@@ -15,8 +15,7 @@
     if not overflow then return x * y
   elif !strcmp(op, "/") || !strcmp(op, "%")
     if not y then nc_fail(c, line, "division by zero")
-    if x == INT64_MIN and y == -1 then overflow = true
-    else return *op == '/' ? x / y : x % y
+    if x == INT64_MIN and y == -1 then overflow = true else return *op == '/' ? x / y : x % y
   if overflow then nc_fail(c, line, "compile-time integer overflow")
   nc_fail(c, line, "unknown operator: %s", op)
   (int64_t){0}

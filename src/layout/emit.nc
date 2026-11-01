@@ -14,8 +14,7 @@
   false
 // Starts a new C line (and #line).
 @f nc_marker(NcContext *c, NcBuffer *b, int line) void
-  if c->lines then nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file))
-  else nc_add(c, b, "\n")
+  if c->lines then nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file)) else nc_add(c, b, "\n")
 // Emits a block of nodes as C.
 @f nc_emit_block(NcContext *c, NcNodes nodes, bool tail, usize depth) char *
   nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout")
@@ -31,10 +30,8 @@
         && (lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1], "else")))
         if lead(nodes.v[last], "else") then nc_fail(c, nodes.v[last + 1].head.line, "branch after else")
         ++last
-        if !nodes.v[last].children.n
-          nc_fail(c, nodes.v[last].head.line, "branch needs ':' and an indented block")
-    elif lead(node, "elif") || lead(node, "else")
-      nc_fail(c, node.head.line, "branch without matching if")
+        if !nodes.v[last].children.n then nc_fail(c, nodes.v[last].head.line, "branch needs ':' and an indented block")
+    elif lead(node, "elif") || lead(node, "else") then nc_fail(c, node.head.line, "branch without matching if")
     if lead(node, "defer") && !node.children.n
       nc_emit_defer(c, &out, nodes, i, tail, depth)
       break

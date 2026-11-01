@@ -14,8 +14,7 @@
   NcBuffer b = {0}
   for i:usize in 0..ts.n
     NcToken t = ts.v[i]
-    if t.kind == NC_PUNCT && nc_is(t, "=>") then nc_add(ctx, &b, "return ")
-    else nc_addn(ctx, &b, t.s, t.n)
+    if t.kind == NC_PUNCT && nc_is(t, "=>") then nc_add(ctx, &b, "return ") else nc_addn(ctx, &b, t.s, t.n)
   nc_add(ctx, &b, "")
   b.v
 // Expands a native function.
@@ -51,9 +50,8 @@
     while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
       ++next
     if expression and nc_same_line(c, header.line)
-      body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_aliased(ctx, nc_line_expression(c))))
-    elif next < c->ts.n && nc_is(c->ts.v[next], "{")
-      body = nc_join(ctx, nc_aliased(ctx, nc_group(c, "{", "}")))
+      body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_words(ctx, nc_line_expression(c)))
+    elif next < c->ts.n && nc_is(c->ts.v[next], "{") then body = nc_join(ctx, nc_aliased(ctx, nc_group(c, "{", "}")))
     else body = nc_emit_block(ctx, nc_indented_nodes(c, header, false), value, 0)
   char *expanded = nc_expand(ctx, nc_lex(ctx, body, header.line), depth)
   nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name, params,

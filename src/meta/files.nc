@@ -8,8 +8,7 @@
     if *p && *p != '/' then continue
     char last = *p
     *p = 0
-    if mkdir(copy, 0755) and errno != EEXIST
-      nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
+    if mkdir(copy, 0755) and errno != EEXIST then nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
     *p = last
     if not last then break
 // Runs file builtins.

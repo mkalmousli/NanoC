@@ -1,8 +1,7 @@
 // Records which editor files were installed.
 @use "nanoc/manage", stdlib, string, unistd
 // Gets the install manifest path.
-@f mg_manifest(cstr prefix, char *out) static void
-  snprintf(out, PATH_MAX, "%s/share/nanoc/editors.manifest", prefix)
+@f mg_manifest(cstr prefix, char *out) static void = snprintf(out, PATH_MAX, "%s/share/nanoc/editors.manifest", prefix)
 // Tells if an editor is present.
 @f mg_detected(cstr name) bool
   char home[PATH_MAX]
@@ -56,8 +55,7 @@
   usize len = strlen(name)
   while fgets(line, sizeof line, in)
     line[strcspn(line, "\n")] = 0
-    if !strncmp(line, name, len) && line[len] == ' ' then remove(line + len + 1)
-    else fputs(line, out)
+    if !strncmp(line, name, len) && line[len] == ' ' then remove(line + len + 1) else fputs(line, out)
   fclose(in)
   fclose(out)
   rename(tmp, path)

@@ -30,8 +30,7 @@
     cstr many = bundle(item)
     if many
       NcGroups parts = nc_split(ctx, nc_lex(ctx, many, nc_line(c)), ",")
-      for k:usize in 0..parts.n
-        nc_add(ctx, &out, include_line(ctx, nc_trim(ctx, nc_join(ctx, parts.v[k]))))
+      for k:usize in 0..parts.n then nc_add(ctx, &out, include_line(ctx, nc_trim(ctx, nc_join(ctx, parts.v[k]))))
     else nc_add(ctx, &out, include_line(ctx, item))
   nc_add(ctx, &out, "")
   out.v

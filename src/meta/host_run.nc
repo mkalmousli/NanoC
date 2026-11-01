@@ -4,8 +4,7 @@
 @f nc_host_run(NcMachine *m, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if a.n != 1 and a.n != 2 then nc_fail(c, line, "run/exec expects argv[,cwd]")
-  if a.v[0].kind != NC_LIST or !a.v[0].count
-    nc_fail(c, line, "command requires a nonempty argument list")
+  if a.v[0].kind != NC_LIST or !a.v[0].count then nc_fail(c, line, "command requires a nonempty argument list")
   NcValue list = a.v[0]
   char **argv = nc_alloc(c, (list.count + 1) * sizeof *argv)
   for i:usize in 0..list.count then argv[i] = (char *)nc_meta_text(c, list.items[i], line)

@@ -17,8 +17,7 @@
     if ch == '"' || ch == '\\'
       fputc('\\', w->out)
       fputc(ch, w->out)
-    elif ch < 32 then fprintf(w->out, "\\u%04x", ch)
-    else fputc(ch, w->out)
+    elif ch < 32 then fprintf(w->out, "\\u%04x", ch) else fputc(ch, w->out)
   fputc('"', w->out)
 // Opens an object or array (open is '{' or '[').
 @f jw_open(NcJson *w, char open) void

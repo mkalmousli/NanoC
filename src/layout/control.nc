@@ -14,8 +14,7 @@
     elif s[i] == ')' && --depth == 0 then return !s[i + 1]
   false
 // Wraps a condition in parentheses unless already wrapped.
-@f paren(NcContext *ctx, cstr s) static char *
-  enclosed(s) ? nc_format(ctx, "%s", s) : nc_format(ctx, "(%s)", s)
+@f paren(NcContext *ctx, cstr s) static char * = enclosed(s) ? nc_format(ctx, "%s", s) : nc_format(ctx, "(%s)", s)
 // Rewrites a control statement.
 @f nc_control(NcContext *ctx, NcTokens ts, int line) char *
   char *source = nc_trim(ctx, nc_words(ctx, ts))
@@ -33,8 +32,7 @@
     return nc_format(ctx, "%s (!(%s))", name[1] == 'n' && name[2] == 'l' ? "if" : "while", rest)
   if !strcmp(name, "loop") then return nc_format(ctx, "for (;;)")
   if !strcmp(name, "else")
-    if nc_eat(&c, "if")
-      return nc_format(ctx, "else if %s", paren(ctx, nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))))
+    if nc_eat(&c, "if") then return nc_format(ctx, "else if %s", paren(ctx, nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))))
     if *rest then nc_fail(ctx, line, "else takes no condition")
     return "else"
   if !strcmp(name, "for")

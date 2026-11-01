@@ -6,8 +6,7 @@ extern int nc_std;
   char *end
   errno = 0
   unsigned i64 n = strtoull(s, &end, 10)
-  if !*s || *s == '-' || *end || errno || !n || n > SIZE_MAX
-    nc_fail(c, 0, "expected a positive integer: %s", s)
+  if !*s || *s == '-' || *end || errno || !n || n > SIZE_MAX then nc_fail(c, 0, "expected a positive integer: %s", s)
   (usize)n
 // Parses the command line.
 @f nc_options(NcContext *c, int argc, char **argv) NcOptions
@@ -24,8 +23,7 @@ extern int nc_std;
         !strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives")
         || !strcmp(arg, "--prototypes")))
       if !strcmp(arg, "--prototypes") then o.prototypes = true
-      elif !strcmp(arg, "--line-directives") then c->lines = true
-      else c->effects = false
+      elif !strcmp(arg, "--line-directives") then c->lines = true else c->effects = false
     elif (!positional
       && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg, "--describe")))
       o.action = arg
@@ -39,8 +37,7 @@ extern int nc_std;
       char *value = argv[i]
       if !strcmp(arg, "-o") then o.output = value
       elif !strcmp(arg, "--emit")
-        if strcmp(value, "normal") && strcmp(value, "mini")
-          nc_fail(c, 0, "--emit requires normal or mini")
+        if strcmp(value, "normal") && strcmp(value, "mini") then nc_fail(c, 0, "--emit requires normal or mini")
         c->mini = !strcmp(value, "mini")
       elif !strcmp(arg, "--std")
         nc_std = !strcmp(value, "c89") ? 89 : !strcmp(value, "c99") ? 99 : !strcmp(value, "c11") ? 11 : !strcmp(value, "c17") ? 17 : 0

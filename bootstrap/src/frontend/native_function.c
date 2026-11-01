@@ -74,8 +74,7 @@ char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
             ++next;
         }
         if (expression && nc_same_line(c, header.line)) {
-            body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_aliased(ctx,
-                    nc_line_expression(c))));
+            body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_words(ctx, nc_line_expression(c)));
         } else if (next < c->ts.n && nc_is(c->ts.v[next], "{")) {
             body = nc_join(ctx, nc_aliased(ctx, nc_group(c, "{", "}")));
         } else {

@@ -24,8 +24,7 @@
   if !strcmp(first, "intent")
     if items.n != 2 || items.v[1].kind != NC_LITERAL || items.v[1].s[0] != '"'
       nc_fail(c, line.line, "intent requires one string literal")
-    if c->symbols.n
-      c->symbols.v[c->symbols.n - 1].intent = nc_unquote(c, nc_text(c, items.v[1]), line.line)
+    if c->symbols.n then c->symbols.v[c->symbols.n - 1].intent = nc_unquote(c, nc_text(c, items.v[1]), line.line)
     return ""
   NcCursor cursor = {c, ts, 0}
   bool declaration = false

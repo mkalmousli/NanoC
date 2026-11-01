@@ -22,8 +22,7 @@
   if !mg_home(home) then return false
   struct utsname u
   uname(&u)
-  if !strcmp(u.sysname, "Darwin")
-    snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User", home)
+  if !strcmp(u.sysname, "Darwin") then snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User", home)
   else snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home)
   true
 // Adds a file to the targets.

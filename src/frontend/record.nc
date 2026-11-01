@@ -13,8 +13,7 @@
 @f field_text(NcContext *ctx, NcTokens ts) static char *
   NcGroups parts = nc_split(ctx, nc_aliased(ctx, ts), ":")
   char *text = nc_trim(ctx, nc_join(ctx, ts))
-  if parts.n != 2
-    return *text ? nc_format(ctx, "%s;", nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, ts)))) : ""
+  if parts.n != 2 then return *text ? nc_format(ctx, "%s;", nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, ts)))) : ""
   char *type = nc_trim(ctx, nc_join(ctx, parts.v[1])), *stars = nc_format(ctx, "")
   while *type == '*'
     stars = nc_format(ctx, "%s*", stars)
@@ -22,8 +21,7 @@
   NcGroups names = nc_split(ctx, parts.v[0], ",")
   NcBuffer out = {0}
   nc_printf(ctx, &out, "%s ", nc_trim(ctx, type))
-  for i:usize in 0..names.n
-    nc_printf(ctx, &out, "%s%s%s", i ? "," : "", stars, nc_trim(ctx, nc_join(ctx, names.v[i])))
+  for i:usize in 0..names.n then nc_printf(ctx, &out, "%s%s%s", i ? "," : "", stars, nc_trim(ctx, nc_join(ctx, names.v[i])))
   nc_add(ctx, &out, ";")
   out.v
 // Field declarations of an @s/@u record, from the header line or its indented body.

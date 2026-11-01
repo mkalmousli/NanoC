@@ -19,13 +19,11 @@
   NcGroups args = {0}
   bool block_only = (m->params.n == 1 && !strcmp(m->params.v[0].kind, "block")
     and !m->params.v[0].variadic)
-  if bang || (m->params.n && !block_only) || nc_header_at(c, "(", line)
-    args = nc_split(ctx, nc_group(c, "(", ")"), ",")
+  if bang || (m->params.n && !block_only) || nc_header_at(c, "(", line) then args = nc_split(ctx, nc_group(c, "(", ")"), ",")
   nc_block_argument(ctx, c, m, &args, c->pos ? c->ts.v[c->pos - 1].line : line, indent)
   bool variadic = m->params.n and m->params.v[m->params.n - 1].variadic
   usize fixed = m->params.n - (usize)variadic
-  if args.n < fixed or (!variadic and args.n != fixed)
-    nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name)
+  if args.n < fixed or (!variadic and args.n != fixed) then nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name)
   NcBindings b = {0}
   for i:usize in 0..m->params.n
     NcParam p = m->params.v[i]

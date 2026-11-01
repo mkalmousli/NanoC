@@ -1,11 +1,9 @@
 // Brace handling for the pretty C printer.
 @use "nanoc/nanoc"
 // Tells if the previous token is the word s.
-@f nc_pp_prev_is(NcPretty *p, cstr s) bool
-  p->has_prev and p->prev.kind == NC_WORD and nc_is(p->prev, s)
+@f nc_pp_prev_is(NcPretty *p, cstr s) bool = p->has_prev and p->prev.kind == NC_WORD and nc_is(p->prev, s)
 // Tells if the previous token is the punctuation s.
-@f nc_pp_prev_punct(NcPretty *p, cstr s) bool
-  p->has_prev and p->prev.kind == NC_PUNCT and nc_is(p->prev, s)
+@f nc_pp_prev_punct(NcPretty *p, cstr s) bool = p->has_prev and p->prev.kind == NC_PUNCT and nc_is(p->prev, s)
 // Classifies a "{": 'b' block, 't' type body, 'e' enum, 'i' init.
 @f brace_kind(NcPretty *p) static char
   if p->paren || (p->top && p->kind[p->top - 1] == 'i') then return 'i'

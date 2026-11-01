@@ -15,8 +15,7 @@
     for i:usize in 0..ts.n
       NcToken t = ts.v[i]
       nc_step(c, line)
-      if t.kind == NC_WORD and nc_is(t, needle) then nc_add(c, &out, to)
-      else nc_addn(c, &out, t.s, t.n)
+      if t.kind == NC_WORD and nc_is(t, needle) then nc_add(c, &out, to) else nc_addn(c, &out, t.s, t.n)
       nc_check(c, out.n, line)
     nc_add(c, &out, "")
     return nc_value_text(a.v[0].kind, out.v)

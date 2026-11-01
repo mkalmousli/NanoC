@@ -13,8 +13,7 @@
     while n and isspace((u8)t.s[n - 1]) then --n
     nc_pp_put(p, t.s, n)
     if t.s[1] == '/'
-      if p->paren then nc_pp_nl(p)
-      else nc_pp_end(p)
+      if p->paren then nc_pp_nl(p) else nc_pp_end(p)
     return
   usize lines = 0
   for i:usize in 0..t.n then lines += t.s[i] == '\n'
@@ -98,8 +97,7 @@
   p->stmt = true
   NcTokens ts = nc_lex(c, text, 1)
   for i:usize in 0..ts.n
-    if ts.v[i].kind == NC_SPACE then space(p, ts.v[i])
-    else nc_pp_token(p, ts.v[i])
+    if ts.v[i].kind == NC_SPACE then space(p, ts.v[i]) else nc_pp_token(p, ts.v[i])
   if p->after == 4 then p->after = 1
   if ts.n then nc_pp_resolve(p, ts.v[0])
   nc_pp_nl(p)

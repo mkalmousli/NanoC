@@ -325,6 +325,7 @@ char *nc_control(NcContext *ctx, NcTokens ts, int line);
 bool inline_head(NcToken t);
 size_t inline_first(NcTokens ts);
 int inline_split(NcTokens ts);
+int inline_else(NcTokens ts);
 NcLines nc_split_inline(NcContext *ctx, NcLines input);
 bool nc_extension_line(NcLayoutLine line);
 bool nc_meta_line(NcLayoutLine line);

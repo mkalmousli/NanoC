@@ -30,8 +30,7 @@
     while section < 4 and !nc_is(first, keys[section])
       ++section
     if section < 4
-      if section <= last
-        nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, labels, once each")
+      if section <= last then nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, labels, once each")
       sections[section] = nc_trim(ctx, nc_join(ctx, nc_slice(row.ts, row.pos, row.ts.n)))
       if !*sections[section] then nc_fail(ctx, line.line, "empty assembly section")
       last = section

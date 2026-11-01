@@ -23,8 +23,7 @@
     elif ch == '\n' then nc_add(c, &b, "\\n")
     elif ch == '\r' then nc_add(c, &b, "\\r")
     elif ch == '\t' then nc_add(c, &b, "\\t")
-    elif ch < 32 or ch >= 127 then nc_printf(c, &b, "\\%03o", ch)
-    else nc_addn(c, &b, s, 1)
+    elif ch < 32 or ch >= 127 then nc_printf(c, &b, "\\%03o", ch) else nc_addn(c, &b, s, 1)
   nc_add(c, &b, "\"")
   b.v
 // Removes quotes from a literal.

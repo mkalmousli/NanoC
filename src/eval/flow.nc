@@ -7,8 +7,7 @@
   (void)nc_group(c, "(", ")")
   (void)nc_group(c, "{", "}")
   if nc_eat(c, "else")
-    if nc_at(c, "if") then skip_conditional(c, depth + 1)
-    else (void)nc_group(c, "{", "}")
+    if nc_at(c, "if") then skip_conditional(c, depth + 1) else (void)nc_group(c, "{", "}")
 // Runs an if/elif/else chain.
 @f nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, usize depth) NcFlow
   NcTokens cond = nc_group(c, "(", ")")

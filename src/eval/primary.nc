@@ -20,8 +20,7 @@
     else
       NcGroups groups = nc_split(c, nc_group(&e->c, "[", "]"), ",")
       NcValues list = {0}
-      for i:usize in 0..groups.n
-        NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
+      for i:usize in 0..groups.n then NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       out = nc_list(list)
   elif t.kind == NC_WORD
     if nc_is(t, "true") then out = nc_boolean(true)
@@ -32,8 +31,7 @@
     elif nc_at(&e->c, "(")
       NcGroups groups = nc_split(c, nc_group(&e->c, "(", ")"), ",")
       NcValues args = {0}
-      for i:usize in 0..groups.n
-        NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
+      for i:usize in 0..groups.n then NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       if active then out = nc_call(e->m, nc_text(c, t), args, e->depth + 1, t.line)
     elif active then out = nc_lookup(c, e->env, nc_text(c, t), t.line)
   else nc_fail(c, t.line, "expected a compile-time expression")
@@ -43,6 +41,5 @@
     int64_t n = nc_numeric(c, index, t.line)
     usize size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0
     if n < 0 or (uint64_t)n >= size then nc_fail(c, t.line, "invalid compile-time index")
-    if out.kind == NC_LIST then out = out.items[n]
-    else out = nc_value_text(NC_STRING, nc_string(c, out.text + n, 1))
+    if out.kind == NC_LIST then out = out.items[n] else out = nc_value_text(NC_STRING, nc_string(c, out.text + n, 1))
   out

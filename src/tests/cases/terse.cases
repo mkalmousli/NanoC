@@ -293,3 +293,14 @@ case one-line blocks with then and else
       for i 0..3 then n += i
       while n < 10 then n *= 2
       sign(-5)+sign(7)+sign(0)+n!=12
+
+case inline then with else
+  nanoc
+    @f pick(int x) int
+      r:=0
+      if x == 1 then r = 10 else r = 20
+      if x == 5 then ret 99
+      elif x == 6 then r = 4 else r += 1
+      r
+    @f main int
+      pick(1)+pick(2)+pick(5)+pick(6)!=10+20+99+4

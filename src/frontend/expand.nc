@@ -17,16 +17,13 @@
       usize at = ctx->frame_count++
       ctx->frames[at] = frame
       if !strcmp(name, "macro") || !strcmp(name, "m") then nc_define_macro(ctx, &c)
-      elif !strcmp(name, "ct")
-        generated = nc_compile_time(ctx, nc_meta_body(&c, nc_header(&c), true, false), depth + 1)
+      elif !strcmp(name, "ct") then generated = nc_compile_time(ctx, nc_meta_body(&c, nc_header(&c), true, false), depth + 1)
       elif !strcmp(name, "bt")
         generated = nc_program(ctx, nc_meta_body(&c, nc_header(&c), true, false), nil, NC_BT,
           depth + 1)
       elif !strcmp(name, "f") then generated = nc_native_function(ctx, &c, depth + 1)
-      elif (!strcmp(name, "inc") || !strcmp(name, "use")) && !nc_get(&ctx->macros, name)
-        generated = nc_include(ctx, &c)
-      elif strlen(name) == 1 && strchr("seu", name[0]) && !nc_get(&ctx->macros, name)
-        generated = nc_record(ctx, &c, name[0])
+      elif (!strcmp(name, "inc") || !strcmp(name, "use")) && !nc_get(&ctx->macros, name) then generated = nc_include(ctx, &c)
+      elif strlen(name) == 1 && strchr("seu", name[0]) && !nc_get(&ctx->macros, name) then generated = nc_record(ctx, &c, name[0])
       elif !strcmp(name, "c") then generated = nc_raw(ctx, &c)
       elif !strcmp(name, "asm") then generated = nc_assembly(ctx, &c)
       elif !strcmp(name, "fn") || !strcmp(name, "let") || !strcmp(name, "for")
@@ -47,6 +44,5 @@
     ctx->source = input
     return ctx->mini ? nc_mini(ctx, input) : (char *)input
   char *output = nc_pipeline(ctx, input)
-  if ctx->need_stdio && !strstr(output, "<stdio.h>")
-    output = nc_format(ctx, "#include <stdio.h>\n%s", output)
+  if ctx->need_stdio && !strstr(output, "<stdio.h>") then output = nc_format(ctx, "#include <stdio.h>\n%s", output)
   strcmp(output, input) or ctx->mini ? nc_style(ctx, output) : output

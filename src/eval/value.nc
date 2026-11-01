@@ -1,14 +1,11 @@
 // Values of the meta language.
 @use "nanoc/nanoc", inttypes
 // Makes an integer value.
-@f nc_integer(int64_t n) NcValue
-  (NcValue){.kind = NC_INT, .n = n}
+@f nc_integer(int64_t n) NcValue = (NcValue){.kind = NC_INT, .n = n}
 // Makes a boolean value.
-@f nc_boolean(bool n) NcValue
-  (NcValue){.kind = NC_BOOL, .n = n}
+@f nc_boolean(bool n) NcValue = (NcValue){.kind = NC_BOOL, .n = n}
 // Makes a text value of a kind.
-@f nc_value_text(NcValueKind kind, char *s) NcValue
-  (NcValue){.kind = kind, .text = s}
+@f nc_value_text(NcValueKind kind, char *s) NcValue = (NcValue){.kind = kind, .text = s}
 // Makes a list value.
 @f nc_list(NcValues items) NcValue
   NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1}

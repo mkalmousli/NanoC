@@ -12,8 +12,7 @@
     ++*i
     char *s = nc_trim(c, nc_join(c, line.ts))
     if line.ts.v[0].kind != NC_DIRECTIVE && *s && s[strlen(s) - 1] == ':'
-      if *i == lines.n or lines.v[*i].indent <= indent
-        nc_fail(c, line.line, "expected an indented block")
+      if *i == lines.n or lines.v[*i].indent <= indent then nc_fail(c, line.line, "expected an indented block")
       node.children = nc_tree(c, lines, i, lines.v[*i].indent, depth + 1)
     elif *i < lines.n and lines.v[*i].indent > indent
       nc_fail(c, lines.v[*i].line, "unexpected indentation; block headers end with ':'")

@@ -1,8 +1,7 @@
 // The defer statement: runs a statement when its block ends or the function returns.
 @use "nanoc/nanoc"
 // Tells if the current function returns nothing.
-@f is_void(NcContext *c) static bool
-  c->ret_type && strstr(c->ret_type, "void") && !strchr(c->ret_type, '*')
+@f is_void(NcContext *c) static bool = c->ret_type && strstr(c->ret_type, "void") && !strchr(c->ret_type, '*')
 // The return type without storage qualifiers, usable for a temporary.
 @f value_type(NcContext *c) static char *
   char *t = c->ret_type ? c->ret_type : ""

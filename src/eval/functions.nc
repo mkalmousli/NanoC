@@ -4,8 +4,7 @@
 @f nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) void
   NcContext *ctx = m->ctx
   char *name = nc_name(c)
-  if nc_builtin_known(name) || !strcmp(name, "quote")
-    nc_fail(ctx, nc_line(c), "reserved compile-time function name")
+  if nc_builtin_known(name) || !strcmp(name, "quote") then nc_fail(ctx, nc_line(c), "reserved compile-time function name")
   if nc_get(&m->functions, name) then nc_fail(ctx, nc_line(c), "duplicate compile-time function: %s", name)
   NcCtFunction *f = nc_alloc(ctx, sizeof *f)
   f->closure = env

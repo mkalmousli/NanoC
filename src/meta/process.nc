@@ -15,7 +15,6 @@
   else result = nc_host_run(m, a, line)
   if !strcmp(name, "exec")
     i64 code = (i64) result.items[0].n
-    if result.items[0].n
-      nc_fail(m->ctx, line, "command exited %lld: %.1000s", code, result.items[2].text)
+    if result.items[0].n then nc_fail(m->ctx, line, "command exited %lld: %.1000s", code, result.items[2].text)
     return result.items[1]
   result

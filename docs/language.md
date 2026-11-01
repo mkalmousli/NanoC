@@ -243,7 +243,7 @@ int main(void) {
 
 ## One-line blocks
 
-`if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too. The output is still ordinary braced C.
+`if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too, and `if c then a else b` fits on one line. The output is still ordinary braced C.
 
 ```nanoc
 @f sign(int x) int

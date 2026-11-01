@@ -1,17 +1,13 @@
 // Token predicates and text helpers.
 @use "nanoc/nanoc"
 // Tells if a token has the text.
-@f nc_is(NcToken t, cstr s) bool
-  t.n == strlen(s) and !memcmp(t.s, s, t.n)
+@f nc_is(NcToken t, cstr s) bool = t.n == strlen(s) and !memcmp(t.s, s, t.n)
 // Copies a token as text.
-@f nc_text(NcContext *c, NcToken t) char *
-  nc_string(c, t.s, t.n)
+@f nc_text(NcContext *c, NcToken t) char * = nc_string(c, t.s, t.n)
 // Makes a token.
-@f nc_token(cstr s, int line, NcKind kind) NcToken
-  (NcToken){s, strlen(s), line, 1, kind}
+@f nc_token(cstr s, int line, NcKind kind) NcToken = (NcToken){s, strlen(s), line, 1, kind}
 // Takes a sub-range of tokens.
-@f nc_slice(NcTokens ts, usize a, usize b) NcTokens
-  (NcTokens){ts.v ? ts.v + a : nil, b - a, b - a}
+@f nc_slice(NcTokens ts, usize a, usize b) NcTokens = (NcTokens){ts.v ? ts.v + a : nil, b - a, b - a}
 // Concatenates token text.
 @f nc_join(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
@@ -38,12 +34,10 @@
       elif nc_is(t, "true") then s = "1"
       elif nc_is(t, "false") then s = "0"
       elif nc_is(t, "nil") then s = "NULL"
-    if s then nc_add(c, &b, s)
-    else nc_addn(c, &b, t.s, t.n)
+    if s then nc_add(c, &b, s) else nc_addn(c, &b, t.s, t.n)
   nc_add(c, &b, "")
   b.v
 // Records identifier tokens.
 @f nc_names(NcContext *c, NcTokens ts) void
   for i:usize in 0..ts.n
-    if ts.v[i].kind == NC_WORD and !nc_has_token(&c->names, ts.v[i])
-      nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)
+    if ts.v[i].kind == NC_WORD and !nc_has_token(&c->names, ts.v[i]) then nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)

@@ -74,7 +74,7 @@ lesson defer DEFER | Cleanup that cannot be forgotten | Defer
       3
     @f main int = work(1)!=7
 lesson inline INLINE | One-line blocks | Inline
-  p `if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too. The output is still ordinary braced C.
+  p `if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too, and `if c then a else b` fits on one line. The output is still ordinary braced C.
   code nanoc c
     @f sign(int x) int
       if x < 0 then ret -1
