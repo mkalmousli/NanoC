@@ -13,7 +13,7 @@ void b_walk(BPaths *out, const char *root, const char *suffix) {
         else if (S_ISREG(st.st_mode)) {
             size_t n = strlen(path), len = strlen(suffix);
             if (n < len || strcmp(path + n - len, suffix)) continue;
-            if (!strcmp(suffix, ".nc") && n > 6 && !strcmp(path + n - 6, ".bt.nc")) continue;
+            if (!strcmp(suffix, ".nc") && strchr(entry->d_name, '.') != strrchr(entry->d_name, '.')) continue;
             if (out->n == 512) b_die("too many project files");
             out->v[out->n] = strdup(path);
             if (!out->v[out->n++]) b_die("out of memory");

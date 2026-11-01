@@ -7,6 +7,16 @@
   exec(["rm","-rf","_site"])
   mkdir("_site")
   exec(["cp","-r","docs/.","_site/"])
+  eval(read("src/dsl/gen.bt.nc"))
+  eval(read("src/dsl/web.bt.nc"))
+  out("_site/style.css",css(read("src/web/style-a.css.nc"))+css(read("src/web/style-b.css.nc")))
+  for f ["app","play","compare","worker"]
+    out("_site/"+f+".js",js(read("src/web/"+f+".js.nc")))
+  out("_site/index.html",html(read("src/web/index-a.html.nc")+read("src/web/index-b.html.nc")))
+  for f ["compare","play"]
+    out("_site/"+f+".html",html(read("src/web/"+f+".html.nc")))
+  for f ["nav","footer","prism","lang-table"]
+    out("build/blocks/"+f+".html",html(read("src/web/blocks/"+f+".html.nc")))
   write("_site/.nojekyll","")
   exec(["git","checkout-index","-a","--prefix=_site/source/"])
   tracked:=split(exec(["git","ls-files"]),"\n")
@@ -16,7 +26,7 @@
     for e exts
       if len(f)>len(e)
         if slice(f,len(f)-len(e),len(f))==e
-          if !contains(f,"tests/corpus/")
+          if !contains(f,"tests/corpus/") && len(split(f,"."))==2
             index=push(index,"\""+f+"\"")
   write("_site/files.json","["+join(index,",")+"]\n")
   log("files: "+str(len(index)))
@@ -34,37 +44,39 @@
   tc:=0
   tcb:=0
   for f ncFiles
-    src:=read(f)
-    out:=""
-    if !contains(f,".bt.nc")
-      exec([compiler,f,"-o","build/site-stat.c"])
-      out=read("build/site-stat.c")
-    nl:=0
-    for l split(src,"\n")
-      if len(l)>0
-        nl+=1
-    cl:=0
-    for l split(out,"\n")
-      if len(l)>0
-        cl+=1
-    rest:=slice(f,4,len(f))
-    area:="tools"
-    if contains(rest,"/")
-      area=slice(rest,0,find(rest,"/"))
-    if !contains(join(areas,","),area)
-      areas=push(areas,area)
-    put("files:"+area,get("files:"+area,0)+1)
-    put("nc:"+area,get("nc:"+area,0)+nl)
-    put("c:"+area,get("c:"+area,0)+cl)
-    tn+=nl
-    tb+=len(src)
-    tc+=cl
-    tcb+=len(out)
+    if len(split(f,"."))==2
+      src:=read(f)
+      out:=""
+      if len(split(f,"."))==2
+        exec([compiler,f,"-o","build/site-stat.c"])
+        out=read("build/site-stat.c")
+      nl:=0
+      for l split(src,"\n")
+        if len(l)>0
+          nl+=1
+      cl:=0
+      for l split(out,"\n")
+        if len(l)>0
+          cl+=1
+      rest:=slice(f,4,len(f))
+      area:="tools"
+      if contains(rest,"/")
+        area=slice(rest,0,find(rest,"/"))
+      if !contains(join(areas,","),area)
+        areas=push(areas,area)
+      put("files:"+area,get("files:"+area,0)+1)
+      put("nc:"+area,get("nc:"+area,0)+nl)
+      put("c:"+area,get("c:"+area,0)+cl)
+      tn+=nl
+      tb+=len(src)
+      tc+=cl
+      tcb+=len(out)
   rows:=[]
   for a areas
     rows=push(rows,"{\"name\":\""+a+"\",\"files\":"+str(get("files:"+a,0))+",\"nc\":"+str(get("nc:"+a,0))+",\"c\":"+str(get("c:"+a,0))+"}")
   write("_site/stats.json","{\"generated\":\""+today+"\",\"files\":"+str(len(ncFiles))+",\"nc\":{\"lines\":"+str(tn)+",\"bytes\":"+str(tb)+"},\"c\":{\"lines\":"+str(tc)+",\"bytes\":"+str(tcb)+"},\"areas\":["+join(rows,",")+"]}\n")
   log("stats: "+str(tn)+" nanoc lines, "+str(tc)+" c lines")
   exec(["mkdir","-p","build/blocks"])
+  exec([compiler,"src/docs.bt.nc","-o","build/docs.c"])
   for step ["examples","wasm","pages"]
     exec([compiler,"src/site/"+step+".bt.nc","-o","build/site-"+step+".c"])

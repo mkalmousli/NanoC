@@ -22,8 +22,8 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i], "--no-editors")) no_editors = true;
         else if (!strcmp(argv[i], "build") || !strcmp(argv[i], "test") || !strcmp(argv[i], "bench") ||
                  !strcmp(argv[i], "clean") || !strcmp(argv[i], "install") || !strcmp(argv[i], "uninstall") ||
-                 !strcmp(argv[i], "bootstrap") || !strcmp(argv[i], "snapshot")) action = argv[i];
-        else b_die("usage: builder [build|bootstrap|snapshot|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize] [--no-editors]");
+                 !strcmp(argv[i], "bootstrap") || !strcmp(argv[i], "snapshot") || !strcmp(argv[i], "docs")) action = argv[i];
+        else b_die("usage: builder [build|bootstrap|snapshot|docs|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize] [--no-editors]");
     }
     if (!prefix && (!strcmp(action, "install") || !strcmp(action, "uninstall"))) {
         const char *home = getenv("HOME");
@@ -37,6 +37,10 @@ int main(int argc, char **argv) {
         if (unlink("build/config") && errno != ENOENT) b_die("cannot invalidate bootstrap cache");
     }
     b_compile(opts, false);
+    if (!strcmp(action, "docs")) {
+        char *gen[] = {"build/nanoc", "src/docs.bt.nc", "-o", "build/docs.c", NULL};
+        return b_run(gen);
+    }
     if (!strcmp(action, "snapshot")) { b_snapshot(); b_line_check(); }
     else if (!strcmp(action, "install")) b_install(prefix, !no_editors);
     else if (!strcmp(action, "test") || !strcmp(action, "bench")) {

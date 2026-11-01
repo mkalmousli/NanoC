@@ -1,0 +1,2 @@
+footer
+  div.wrap <a class="brand" href="index.html"><img src="logo.svg" width="22" height="22" alt=""> NanoC</a> <span>Compact source. Ordinary C. Free and open source. This page was assembled by NanoC ({{built}}).</span> <a href="https://github.com/mkalmousli/NanoC">github.com/mkalmousli/NanoC</a>

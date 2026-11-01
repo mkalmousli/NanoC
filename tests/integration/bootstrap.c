@@ -12,7 +12,7 @@ static size_t modules(const char *root) {
         CHECK(lstat(path, &st) == 0);
         if (S_ISDIR(st.st_mode)) { count += modules(path); continue; }
         size_t len = strlen(path);
-        if (len > 6 && !strcmp(path + len - 6, ".bt.nc")) continue;
+        if (strchr(entry->d_name, '.') != strrchr(entry->d_name, '.')) continue;
         CHECK(!strstr(entry->d_name, ".c"));
         CHECK(len > 3 && !strcmp(path + len - 3, ".nc"));
         CHECK(strstr(test_read(path), "\n@f ") != NULL);

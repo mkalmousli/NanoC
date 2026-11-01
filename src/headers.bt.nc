@@ -8,7 +8,7 @@
   nc:=env("NC_BIN")
   out:=env("NC_OUT")
   exec(["mkdir","-p",out+"/nanoc"])
-  mods:=split(exec(["find","src","-name","*.nc","-not","-name","*.bt.nc"]),"\n")
+  mods:=split(exec(["find","src","-name","*.nc","-not","-name","*.*.nc"]),"\n")
   main:="#ifndef NC_NANOC_H\n#define NC_NANOC_H\n"
   for t ["base","token","core","macro","layout","eval","meta","cli"]
     main+=exec([nc,"include/nanoc/"+t+".nc"])

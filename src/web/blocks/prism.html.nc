@@ -1,0 +1,2 @@
+script [src=https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js] 
+script [src=https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js] 

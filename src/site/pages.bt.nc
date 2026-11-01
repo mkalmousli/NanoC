@@ -2,7 +2,7 @@
 @bt
   today:=slice(exec(["date","-u","+%F"]),0,10)
   for n ["nav","footer","prism","lang-table"]
-    put("block:"+n,read("docs/blocks/"+n+".html"))
+    put("block:"+n,read("build/blocks/"+n+".html"))
   for n ["ex-table","builtins","builtins-count","wasm-size"]
     put("block:"+n,read("build/blocks/"+n+".html"))
   put("block:built",today)

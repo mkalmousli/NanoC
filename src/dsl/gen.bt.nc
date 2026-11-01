@@ -23,5 +23,6 @@ f a(xs)
 f json(v) = j(v)
 f out(path, text)
   parts:=split(path,"/")
-  exec(["mkdir","-p",join(slice(parts,0,len(parts)-1),"/")])
+  if len(parts)>1
+    exec(["mkdir","-p",join(slice(parts,0,len(parts)-1),"/")])
   write(path,text)
