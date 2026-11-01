@@ -111,6 +111,7 @@ struct NcContext {
     int error_line;
     char *frames[256];
     char *ret_type, *defers;
+    bool need_stdio;
     size_t frame_count;
 };
 // Macro types.
@@ -299,6 +300,7 @@ char *nc_quote(NcContext *c, const char *s);
 char *nc_unquote(NcContext *c, const char *s, int line);
 NcLayoutLine nc_logical_line(NcCursor *c);
 NcLines nc_body_lines(NcCursor *c, int header_line, int indent);
+char *nc_match(NcContext *c, NcNode node, size_t depth);
 NcHeader nc_header(const NcCursor *c);
 bool nc_same_line(const NcCursor *c, int line);
 bool nc_header_at(const NcCursor *c, const char *s, int line);

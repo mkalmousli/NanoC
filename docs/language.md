@@ -164,10 +164,9 @@ int main(void) {
 
 ## Printing, imports and escape hatch
 
-`say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `@use stdio` is `#include <stdio.h>`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
+`say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `say` adds `stdio.h` itself; `@use name` is `#include <name.h>`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
 
 ```nanoc
-@use stdio
 @c
   static int twice(int x) { return x*2; }
 @f main int
@@ -239,6 +238,46 @@ int work(int fail) {
 
 int main(void) {
     return work(1)!=7;
+}
+```
+
+## Switch without the noise
+
+`match x` takes arms of comma-separated values with an indented body, and `else` for the default. No `break`, no fallthrough. It becomes a plain C `switch`.
+
+```nanoc
+@f size(int x) int
+  r:=0
+  match x
+    1, 2
+      r=10
+    else
+      r=-1
+  r
+@f main int = size(2)!=10 || size(9)!=-1
+```
+
+```c
+int size(int x) {
+    int r = 0;
+    switch (x) {
+        case 1:
+        case 2:
+            {
+                r=10;
+            }
+            break;
+        default:
+            {
+                r=-1;
+            }
+            break;
+    }
+    return r;
+}
+
+int main(void) {
+    return size(2)!=10 || size(9)!=-1;
 }
 ```
 

@@ -8,6 +8,7 @@ extern int nc_std;
 char *nc_say(NcContext *c, const char *args, int line) {
     NcGroups parts = nc_split(c, nc_lex(c, args, line), ",");
     NcBuffer out = {0};
+    c->need_stdio = 1;
     nc_add(c, &out, "{ ");
     for (size_t i = 0; i < parts.n; ++i) {
         char *a = nc_trim(c, nc_join(c, parts.v[i]));

@@ -55,9 +55,8 @@ lesson records RECORDS | One-line structs, enums, unions | Records
       Color c=blue
       p.x+p.y!=3 || n.val!=3 || c!=6
 lesson say SAY & RAW C | Printing, imports and escape hatch | Say
-  p `say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `@use stdio` is `#include <stdio.h>`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
+  p `say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `say` adds `stdio.h` itself; `@use name` is `#include <name.h>`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
   code nanoc c
-    @use stdio
     @c
       static int twice(int x) { return x*2; }
     @f main int
@@ -74,6 +73,18 @@ lesson defer DEFER | Cleanup that cannot be forgotten | Defer
         ret 7
       3
     @f main int = work(1)!=7
+lesson match MATCH | Switch without the noise | Match
+  p `match x` takes arms of comma-separated values with an indented body, and `else` for the default. No `break`, no fallthrough. It becomes a plain C `switch`.
+  code nanoc c
+    @f size(int x) int
+      r:=0
+      match x
+        1, 2
+          r=10
+        else
+          r=-1
+      r
+    @f main int = size(2)!=10 || size(9)!=-1
 lesson locals LOCALS & LOOPS | Inference and ranges | Locals
   p `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.
   code nanoc c

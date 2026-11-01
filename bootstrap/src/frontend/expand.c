@@ -67,5 +67,8 @@ char *nc_transpile(NcContext *ctx, const char *input) {
         return ctx->mini ? nc_mini(ctx, input) : (char *)input;
     }
     char *output = nc_pipeline(ctx, input);
+    if (ctx->need_stdio && !strstr(output, "<stdio.h>")) {
+        output = nc_format(ctx, "#include <stdio.h>\n%s", output);
+    }
     return strcmp(output, input) || ctx->mini ? nc_style(ctx, output) : output;
 }

@@ -242,3 +242,25 @@ case defer runs at block end and before return
     close
     7
     bye
+
+case say adds stdio itself
+  nanoc
+    @f main int
+      say "n", 5
+      0
+  prints
+    n 5
+
+case match chooses an arm like switch
+  nanoc
+    @f size(int x) int
+      r:=0
+      match x
+        1, 2
+          r=10
+        3
+          r=30
+        else
+          r=-1
+      r
+    @f main int = size(2)!=10 || size(3)!=30 || size(9)!=-1

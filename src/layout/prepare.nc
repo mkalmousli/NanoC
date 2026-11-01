@@ -26,8 +26,11 @@
 // Marks lines before tree building.
 @f nc_prepare_lines(NcContext *ctx, NcLines input, bool program) NcLines
   NcLines out = {0}
+  int match_at = -1, arm_at = -1
   for usize i = 0; i < input.n; ++i
     NcLayoutLine line = input.v[i]
+    if line.indent <= match_at
+      match_at = arm_at = -1
     bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent
     bool ext = block && nc_extension_line(line)
     bool meta = nc_meta_line(line) || ext
@@ -48,6 +51,13 @@
     bool control = (nc_is(first, "if") || nc_is(first, "elif") || nc_is(first, "else")
       || nc_is(first, "while") || nc_is(first, "for") || (nc_is(first, "loop") && ts.n == 1)
       || ((nc_is(first, "unless") || nc_is(first, "until")) && ts.n > 1 && !nc_is(ts.v[1], "=")))
+    bool arm = match_at >= 0 && line.indent == arm_at
+    if nc_is(first, "match") && block && ts.n > 1 && !program
+      match_at = line.indent
+      arm_at = input.v[i + 1].indent
+      control = true
+    if arm
+      control = true
     bool function = (program && (nc_is(first, "f") || nc_is(first, "fn")) && ts.n >= 2
       && ts.v[1].kind == NC_WORD)
     bool expression = false

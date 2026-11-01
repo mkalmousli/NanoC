@@ -63,6 +63,15 @@ char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
             break;
         }
         bool returning = tail && last + 1 == nodes.n;
+        if (lead(node, "match") && node.children.n) {
+            if (returning) {
+                nc_fail(c, node.head.line, "match is a statement; end the function with a value");
+            }
+            nc_marker(c, &out, node.head.line);
+            nc_add(c, &out, nc_match(c, node, depth));
+            i = last + 1;
+            continue;
+        }
         if (!node.children.n) {
             if (node.head.raw || nc_meta_line(node.head)) {
                 nc_marker(c, &out, node.head.line);
