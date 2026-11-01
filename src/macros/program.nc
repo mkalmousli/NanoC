@@ -1,6 +1,5 @@
 // Macro bodies written as programs.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 // Runs a program-style macro.
 @f nc_macro_program(
   NcContext *ctx, NcMacro *macro, NcBindings *b,

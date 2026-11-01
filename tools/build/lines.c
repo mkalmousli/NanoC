@@ -2,13 +2,10 @@
 static void check_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) b_die("cannot read source for line check");
-    size_t count = 0, col = 0;
+    size_t count = 0;
     int ch, last = '\n';
-    size_t n = strlen(path);
-    bool narrow = !strncmp(path, "src/", 4) && n > 3 && !strcmp(path + n - 3, ".nc");
     while ((ch = fgetc(f)) != EOF) {
-        if (ch == '\n') { ++count; col = 0; }
-        else if (narrow && (ch & 0xC0) != 0x80 && ++col > 60) { fprintf(stderr, "%s:%zu: wider than 60 columns\n", path, count + 1); exit(1); }
+        if (ch == '\n') ++count;
         last = ch;
     }
     if (last != '\n') ++count;

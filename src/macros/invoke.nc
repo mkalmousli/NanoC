@@ -1,6 +1,5 @@
 // Macro invocation and checking.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 // Checks an argument fits its kind.
 @f validate(
   NcContext *ctx, NcParam p, NcTokens ts

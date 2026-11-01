@@ -1,6 +1,5 @@
 // Selects the BT build stage.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 typedef struct { NcTokens *v; size_t n, cap; } Programs;
 // Runs BT code in the build stage.
 @f nc_build_stage(NcContext *ctx, const char *source) char *

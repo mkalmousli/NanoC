@@ -1,7 +1,5 @@
 // Expansion driver: macros, @ct, @bt.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 // Expands tokens until stable.
 @f nc_expand(
   NcContext *ctx, NcTokens ts, size_t depth

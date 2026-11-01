@@ -1,6 +1,5 @@
 // Control builtins: error, log, emit.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 // Runs control builtins.
 @f nc_meta_control(
   NcMachine *m, const char *name, NcValues a, int line

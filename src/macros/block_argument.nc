@@ -1,6 +1,5 @@
 // Block arguments of macro calls.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 // Takes an indented block argument.
 @f nc_block_argument(
   NcContext *ctx, NcCursor *c, NcMacro *m, NcGroups *args,

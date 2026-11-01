@@ -1,6 +1,5 @@
 // Prints builtin metadata as JSON for --describe.
 #include "nanoc/nanoc.h"
-#include "nanoc/nanoc.h"
 // Writes one builtin as JSON.
 @f spec(FILE *out, const NcSpec *s) static void
   fputs("{\"name\":", out)
