@@ -1,4 +1,4 @@
-Section [id=install kicker="Install in one line" title="Works on any <em>POSIX host.</em>"]
+Section [id=install kicker="Install in one line" title="Works on any <em>anything.</em>"]
   div
     css
       display:grid
