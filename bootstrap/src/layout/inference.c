@@ -2,50 +2,82 @@
 #include "nanoc/nanoc.h"
 #include <errno.h>
 char * nc_infer(NcContext * c, NcTokens ts, int line) {
-    NcTokens items = nc_significant(c, ts);
-    size_t i = items.n > 1 && (nc_is(items.v[0], "+") || nc_is(items.v[0], "-")) ? 1 : 0;
+    NcTokens items = (
+    nc_significant(c, ts));
+    size_t i = (items.n > 1
+    && (
+    nc_is(items.v[0], "+")
+    || nc_is(items.v[0],
+    "-")) ? 1 : 0);
     if (items.n == i + 1) {
         NcToken t = items.v[i];
-        if (t.kind == NC_LITERAL && t.n && t.s[0] == '"') {
-            return "const char *";
-        }
-        if (nc_is(t, "true") || nc_is(t, "false")) {
-            return c->cpp ? "bool" : "_Bool";
-        }
-        if (t.kind == NC_NUMBER) {
-            char *s = nc_text(c, t), *end;
-            char *signed_text = i ? nc_format(c, "%.*s%s", (int)items.v[0].n, items.v[0].s, s) : s;
-            errno = 0;
-            long long n = strtoll(signed_text, &end, 10);
-            if (!errno && !*end && n >= INT32_MIN && n <= INT32_MAX) {
-                return "int";
-            }
-            if (strpbrk(s, ".eE")) {
-                errno = 0;
-                (void)strtod(s, &end);
-                if (!*end) {
-                    return "double";
-                }
-            }
-        }
+        if ((t.kind == NC_LITERAL
+        && t.n && t.s[0] == '"')) {
+        return "const char *";
     }
-    if (c->cpp) {
-        return "auto";
+    if ((nc_is(t, "true")
+|| nc_is(t, "false"))) {
+    return (c->cpp ? "bool"
+    : "_Bool");
+}
+if (t.kind == NC_NUMBER) {
+    char *s = nc_text(c,
+    t), *end;
+    char *signed_text = (i
+    ? nc_format(c,
+    "%.*s%s",
+    (int)items.v[0].n,
+    items.v[0].s, s)
+    : s);
+    errno = 0;
+    long long n = strtoll(
+    signed_text, &end, 10);
+    if ((!errno && !*end
+    && n >= INT32_MIN
+    && n <= INT32_MAX)) {
+    return "int";
+}
+if (strpbrk(s, ".eE")) {
+    errno = 0;
+    (void)strtod(s, &end);
+    if (!*end) {
+        return "double";
     }
-    nc_fail(c, line, "type needed: use 'name:CType = expression' for nonliteral initializers");
-    return NULL;
+}
+}
+}
+if (c->cpp) {
+    return "auto";
+}
+nc_fail(c, line,
+"type needed: use "
+"'name:CType = "
+"expression' for "
+"nonliteral initializers");
+return NULL;
 }
 NcTokens nc_declaration(NcContext * ctx, NcTokens ts, int line) {
     NcCursor c = {ctx, ts, 0};
-    NcTokens names = nc_until(&c, "=");
+    NcTokens names = nc_until(
+    &c, "=");
     nc_need(&c, "=");
-    NcTokens init = nc_slice(ts, c.pos, ts.n);
+    NcTokens init = nc_slice(ts,
+    c.pos, ts.n);
     bool colon = 0;
-    for (size_t i = 0; i < names.n; ++i) {
-        if (nc_is(names.v[i], ":")) {
-            colon = 1;
-        }
+    for (size_t i = 0;
+    i < names.n; ++i) {
+    if (nc_is(names.v[i], ":")) {
+        colon = 1;
     }
-    char *type = colon ? "" : nc_format(ctx, ":%s", nc_infer(ctx, init, line));
-    return nc_lex(ctx, nc_format(ctx, "%s%s=%s", nc_join(ctx, names), type, nc_join(ctx, init)), line);
+}
+char *type = (colon ? ""
+: nc_format(ctx, ":%s",
+nc_infer(ctx, init,
+line)));
+return nc_lex(ctx,
+nc_format(ctx, "%s%s=%s",
+nc_join(ctx, names),
+type,
+nc_join(ctx, init)),
+line);
 }

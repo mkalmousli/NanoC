@@ -4,24 +4,29 @@
 #include <string.h>
 #include <sys/utsname.h>
 bool mg_home(char * out) {
-    const char *home = getenv("HOME");
+    const char *home = getenv(
+    "HOME");
     if (!home || !*home) {
         return 0;
     }
-    snprintf(out, PATH_MAX, "%s", home);
+    snprintf(out, PATH_MAX,
+    "%s", home);
     return 1;
 }
 bool mg_config(char * out) {
-    const char *xdg = getenv("XDG_CONFIG_HOME");
+    const char *xdg = getenv(
+    "XDG_CONFIG_HOME");
     if (xdg && *xdg) {
-        snprintf(out, PATH_MAX, "%s", xdg);
+        snprintf(out, PATH_MAX,
+        "%s", xdg);
         return 1;
     }
     char home[PATH_MAX];
     if (!mg_home(home)) {
         return 0;
     }
-    snprintf(out, PATH_MAX, "%s/.config", home);
+    snprintf(out, PATH_MAX,
+    "%s/.config", home);
     return 1;
 }
 bool mg_sublime_dir(char * out) {
@@ -31,36 +36,78 @@ bool mg_sublime_dir(char * out) {
     }
     struct utsname u;
     uname(&u);
-    if (!strcmp(u.sysname, "Darwin")) {
-        snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User", home);
-    }
-    else {
-        snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home);
-    }
-    return 1;
+    if (!strcmp(u.sysname,
+    "Darwin")) {
+    snprintf(out, PATH_MAX,
+    "%s/Library/Applicatio"
+    "n Support/Sublime "
+    "Text/Packages/User",
+    home);
+}
+else {
+    snprintf(out, PATH_MAX,
+    "%s/.config/sublime-te"
+    "xt/Packages/User",
+    home);
+}
+return 1;
 }
 void mg_add(NcTarget * t, int * n, const char * src, const char * dir, const char * rel) {
     t[*n].src = src;
-    snprintf(t[*n].dst, PATH_MAX, "%s/%s", dir, rel);
+    snprintf(t[*n].dst,
+    PATH_MAX, "%s/%s", dir,
+    rel);
     *n += 1;
 }
 void mg_vscode_at(NcTarget * t, int * n, const char * base) {
     char dir[PATH_MAX];
-    snprintf(dir, sizeof dir, "%s/extensions/mkalmousli.nanoc-language-0.1.0", base);
-    mg_add(t, n, "editors/vscode/package.json", dir, "package.json");
-    mg_add(t, n, "editors/vscode/language-configuration.json", dir, "language-configuration.json");
-    mg_add(t, n, "editors/vscode/syntaxes/nanoc.tmLanguage.json", dir, "syntaxes/nanoc.tmLanguage.json");
-    mg_add(t, n, "editors/vscode/icon.png", dir, "icon.png");
-    mg_add(t, n, "editors/vscode/README.md", dir, "README.md");
-    mg_add(t, n, "editors/vscode/icons/nanoc.svg", dir, "icons/nanoc.svg");
-    mg_add(t, n, "editors/vscode/snippets/nanoc.code-snippets", dir, "snippets/nanoc.code-snippets");
+    snprintf(dir, sizeof dir,
+    "%s/extensions/mkalmousl"
+    "i.nanoc-language-0.1.0",
+    base);
+    mg_add(t, n,
+    "editors/vscode/package."
+    "json", dir,
+    "package.json");
+    mg_add(t, n,
+    "editors/vscode/language"
+    "-configuration.json",
+    dir,
+    "language-configuration."
+    "json");
+    mg_add(t, n,
+    "editors/vscode/syntaxes"
+    "/nanoc.tmLanguage.json",
+    dir,
+    "syntaxes/nanoc.tmLangua"
+    "ge.json");
+    mg_add(t, n,
+    "editors/vscode/icon.png",
+    dir, "icon.png");
+    mg_add(t, n,
+    "editors/vscode/README.m"
+    "d", dir, "README.md");
+    mg_add(t, n,
+    "editors/vscode/icons/na"
+    "noc.svg", dir,
+    "icons/nanoc.svg");
+    mg_add(t, n,
+    "editors/vscode/snippets"
+    "/nanoc.code-snippets",
+    dir,
+    "snippets/nanoc.code-sni"
+    "ppets");
 }
 void mg_vscode(NcTarget * t, int * n, const char * home) {
-    const char *bases[] = {".vscode", ".vscode-oss", ".cursor"};
+    const char *bases[] = {
+    ".vscode", ".vscode-oss",
+    ".cursor"};
     int found = 0;
     for (int i = 0; i < 3; ++i) {
         char base[PATH_MAX];
-        snprintf(base, sizeof base, "%s/%s", home, bases[i]);
+        snprintf(base,
+        sizeof base, "%s/%s",
+        home, bases[i]);
         if (nc_exists(base)) {
             mg_vscode_at(t, n, base);
             found += 1;
@@ -68,64 +115,9 @@ void mg_vscode(NcTarget * t, int * n, const char * home) {
     }
     if (!found) {
         char base[PATH_MAX];
-        snprintf(base, sizeof base, "%s/.vscode", home);
+        snprintf(base,
+        sizeof base,
+        "%s/.vscode", home);
         mg_vscode_at(t, n, base);
     }
-}
-const char * nc_editor_name(size_t i) {
-    static const char *names[] = {"vscode", "vim", "neovim", "emacs", "micro", "nano", "sublime", NULL};
-    return names[i];
-}
-bool nc_known_editor(const char * name) {
-    for (size_t i = 0; nc_editor_name(i); ++i) {
-        if (!strcmp(name, nc_editor_name(i))) {
-            return 1;
-        }
-    }
-    return 0;
-}
-int nc_targets(const char * editor, NcTarget * t) {
-    char home[PATH_MAX];
-    char cfg[PATH_MAX];
-    char dir[PATH_MAX];
-    if (!nc_known_editor(editor) || !mg_home(home) || !mg_config(cfg)) {
-        return -1;
-    }
-    int n = 0;
-    if (!strcmp(editor, "vscode")) {
-        mg_vscode(t, &n, home);
-    }
-    if (!strcmp(editor, "vim") || !strcmp(editor, "neovim")) {
-        if (!strcmp(editor, "vim")) {
-            snprintf(dir, sizeof dir, "%s/.vim", home);
-        }
-        else {
-            snprintf(dir, sizeof dir, "%s/nvim", cfg);
-        }
-        mg_add(t, &n, "editors/vim/nanoc.vim", dir, "syntax/nanoc.vim");
-        mg_add(t, &n, "editors/vim/ftdetect/nanoc.vim", dir, "ftdetect/nanoc.vim");
-    }
-    if (!strcmp(editor, "emacs")) {
-        char emacs[PATH_MAX];
-        snprintf(emacs, sizeof emacs, "%s/.emacs.d", home);
-        if (nc_exists(emacs)) {
-            snprintf(dir, sizeof dir, "%s/lisp", emacs);
-        }
-        else {
-            snprintf(dir, sizeof dir, "%s/emacs/lisp", cfg);
-        }
-        mg_add(t, &n, "editors/emacs/nanoc-mode.el", dir, "nanoc-mode.el");
-    }
-    if (!strcmp(editor, "micro")) {
-        snprintf(dir, sizeof dir, "%s/micro/syntax", cfg);
-        mg_add(t, &n, "editors/micro/nanoc.yaml", dir, "nanoc.yaml");
-    }
-    if (!strcmp(editor, "nano")) {
-        snprintf(dir, sizeof dir, "%s/.nano", home);
-        mg_add(t, &n, "editors/nano/nanoc.nanorc", dir, "nanoc.nanorc");
-    }
-    if (!strcmp(editor, "sublime") && mg_sublime_dir(dir)) {
-        mg_add(t, &n, "editors/sublime/NanoC.sublime-syntax", dir, "NanoC.sublime-syntax");
-    }
-    return n;
 }

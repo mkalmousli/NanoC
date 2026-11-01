@@ -2,73 +2,95 @@
 #include "nanoc/nanoc.h"
 #include "nanoc/manage.h"
 int main(int argc, char ** argv) {
-    int managed = nc_manage(argc, argv);
+    int managed = nc_manage(
+    argc, argv);
     if (managed >= 0) {
         return managed;
     }
-    NcContext *c = calloc(1, sizeof *c);
+    NcContext *c = calloc(1,
+    sizeof *c);
     if (!c) {
-        fputs("out of memory\n", stderr);
+        fputs("out of memory\n",
+        stderr);
         return 1;
     }
     nc_init(c, "");
     bool json = 0;
-    for (int i = 1; i + 1 < argc; ++i) {
-        if (!strcmp(argv[i], "--")) {
-            break;
-        }
-        if (!strcmp(argv[i], "--diagnostics") && !strcmp(argv[i + 1], "json")) {
-            json = 1;
-        }
+    for (int i = 1;
+    i + 1 < argc; ++i) {
+    if (!strcmp(argv[i], "--")) {
+        break;
     }
-    int code = 0;
-    if (setjmp(c->trap)) {
-        if (json) {
-            nc_diagnostic(stderr, c);
-        }
-        else {
-            fprintf(stderr, "%s\n", c->error);
-        }
-        code = 1;
+    if ((!strcmp(argv[i],
+    "--diagnostics")
+    && !strcmp(argv[i + 1],
+    "json"))) {
+    json = 1;
+}
+}
+int code = 0;
+if (setjmp(c->trap)) {
+    if (json) {
+        nc_diagnostic(stderr, c);
     }
     else {
-        NcOptions o = nc_options(c, argc, argv);
-        if (!strcmp(o.action, "--help")) {
-            nc_help(stdout);
-        }
-        else {
-            if (!strcmp(o.action, "--version")) {
-                puts("nanoc " NC_VERSION);
-            }
-            else {
-                if (!strcmp(o.action, "--describe")) {
-                    if (!nc_describe(stdout, o.input)) {
-                        nc_fail(c, 0, "unknown describe topic: %s", o.input);
-                    }
-                }
-                else {
-                    char *generated = nc_transpile(c, nc_read(c, o.input));
-                    if (o.prototypes) {
-                        nc_prototypes(c, stdout);
-                    }
-else if (o.check) {
-    if (o.json) {
-        nc_report(stdout, c, strlen(generated));
+        fprintf(stderr, "%s\n",
+        c->error);
     }
+    code = 1;
 }
 else {
-    if (!strcmp(o.output, "-")) {
-        fputs(generated, stdout);
+    NcOptions o = nc_options(
+    c, argc, argv);
+    if (!strcmp(o.action,
+    "--help")) {
+    nc_help(stdout);
+}
+else if (!strcmp(o.action,
+"--version")) {
+puts(
+"nanoc " NC_VERSION);
+}
+else if (!strcmp(o.action,
+"--describe")) {
+if (!nc_describe(stdout,
+o.input)) {
+nc_fail(c, 0,
+"unknown describe "
+"topic: %s",
+o.input);
+}
+}
+else {
+    char *generated = (
+    nc_transpile(c,
+    nc_read(c,
+    o.input)));
+    if (o.prototypes) {
+        nc_prototypes(c,
+        stdout);
     }
-    else {
-        nc_write(c, o.output, generated);
+else if (o.check) {
+    if (o.json) {
+        nc_report(stdout, c,
+        strlen(generated));
     }
+}
+else if (!strcmp(o.output,
+"-")) {
+fputs(generated,
+stdout);
+}
+else {
+    nc_write(c, o.output,
+    generated);
 }
 if (!o.json) {
-    for (size_t i = 0; i < c->logs.n; ++i) {
-        fprintf(stderr, "%s\n", c->logs.v[i]);
-    }
-}
+    for (size_t i = 0;
+    i < c->logs.n; ++i) {
+    fprintf(stderr,
+    "%s\n",
+    c->logs.v[i]);
 }
 }
 }

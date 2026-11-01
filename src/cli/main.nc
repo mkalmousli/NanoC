@@ -1,53 +1,80 @@
 #include "nanoc/nanoc.h"
 #include "nanoc/manage.h"
-@f main(int argc, char **argv) int
-  int managed = nc_manage(argc, argv)
+@f main(
+  int argc, char **argv
+) int
+  int managed = nc_manage(
+    argc, argv)
   if managed >= 0
     return managed
-  NcContext *c = calloc(1, sizeof *c)
+  NcContext *c = calloc(1,
+    sizeof *c)
   if !c
-    fputs("out of memory\n", stderr)
+    fputs("out of memory\n",
+      stderr)
     return 1
   nc_init(c, "")
   bool json = false
-  for int i = 1; i + 1 < argc; ++i
+  for (int i = 1;
+    i + 1 < argc; ++i)
     if !strcmp(argv[i], "--")
       break
-    if !strcmp(argv[i], "--diagnostics") && !strcmp(argv[i + 1], "json")
+    if (!strcmp(argv[i],
+        "--diagnostics")
+      && !strcmp(argv[i + 1],
+        "json"))
       json = true
   int code = 0
   if setjmp(c->trap)
     if json
       nc_diagnostic(stderr, c)
     else
-      fprintf(stderr, "%s\n", c->error)
+      fprintf(stderr, "%s\n",
+        c->error)
     code = 1
   else
-    NcOptions o = nc_options(c, argc, argv)
-    if !strcmp(o.action, "--help")
+    NcOptions o = nc_options(
+      c, argc, argv)
+    if !strcmp(o.action,
+      "--help")
       nc_help(stdout)
+    elif !strcmp(o.action,
+      "--version")
+      puts(
+        "nanoc " NC_VERSION)
+    elif !strcmp(o.action,
+      "--describe")
+      if !nc_describe(stdout,
+        o.input)
+        nc_fail(c, 0,
+          "unknown describe "
+          "topic: %s",
+          o.input)
     else
-      if !strcmp(o.action, "--version")
-        puts("nanoc " NC_VERSION)
+      char *generated = (
+        nc_transpile(c,
+          nc_read(c,
+            o.input)))
+      if o.prototypes
+        nc_prototypes(c,
+          stdout)
+      elif o.check
+        if o.json
+          nc_report(stdout, c,
+            strlen(generated))
+      elif !strcmp(o.output,
+        "-")
+        fputs(generated,
+          stdout)
       else
-        if !strcmp(o.action, "--describe")
-          if !nc_describe(stdout, o.input)
-            nc_fail(c, 0, "unknown describe topic: %s", o.input)
-        else
-          char *generated = nc_transpile(c, nc_read(c, o.input))
-          if o.prototypes
-            nc_prototypes(c, stdout)
-          elif o.check
-            if o.json
-              nc_report(stdout, c, strlen(generated))
-          else
-            if !strcmp(o.output, "-")
-              fputs(generated, stdout)
-            else
-              nc_write(c, o.output, generated)
-          if !o.json
-            for size_t i = 0; i < c->logs.n; ++i
-              fprintf(stderr, "%s\n", c->logs.v[i])
+        nc_write(c, o.output,
+          generated)
+      if !o.json
+        for (size_t i = 0;
+          i < c->logs.n; ++i)
+          fprintf(stderr,
+            "%s\n",
+            c->logs.v[i])
   if ferror(stdout)
     code = 1
   nc_dispose(c)

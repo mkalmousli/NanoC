@@ -1,6 +1,6 @@
 # Implementation map
 
-Self-hosted NanoC; C11 bootstrap/tools; POSIX host, libc only. Sources <=100 lines.
+Self-hosted NanoC; C11 bootstrap/tools; POSIX host, libc only. Sources <=200 lines, src/*.nc <=30 columns.
 
 | Directory | Owns |
 |---|---|

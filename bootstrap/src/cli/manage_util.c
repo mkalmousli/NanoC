@@ -10,15 +10,21 @@ bool nc_exists(const char * path) {
     return stat(path, &st) == 0;
 }
 static bool nc_search(const char * name, char * out) {
-    const char *path = getenv("PATH");
+    const char *path = getenv(
+    "PATH");
     if (!path) {
         return 0;
     }
     const char *p = path;
     while (*p) {
-        const char *end = strchr(p, ':');
-        size_t n = end ? (size_t)(end - p) : strlen(p);
-        snprintf(out, PATH_MAX, "%.*s/%s", (int)n, n ? p : ".", name);
+        const char *end = strchr(
+        p, ':');
+        size_t n = (end
+        ? (size_t)(end - p)
+        : strlen(p));
+        snprintf(out, PATH_MAX,
+        "%.*s/%s", (int)n,
+        n ? p : ".", name);
         if (access(out, X_OK) == 0) {
             return 1;
         }
@@ -37,40 +43,44 @@ bool nc_prefix(const char * argv0, char * out) {
             return 0;
         }
     }
-    else {
-        if (!nc_search(argv0, exe)) {
-            return 0;
-        }
-    }
-    char *slash = strrchr(exe, '/');
-    if (!slash) {
-        return 0;
-    }
-    *slash = 0;
-    slash = strrchr(exe, '/');
-    if (!slash) {
-        return 0;
-    }
-    *slash = 0;
-    snprintf(out, PATH_MAX, "%s", exe);
-    return 1;
+else if (!nc_search(argv0, exe)) {
+    return 0;
+}
+char *slash = strrchr(exe,
+'/');
+if (!slash) {
+    return 0;
+}
+*slash = 0;
+slash = strrchr(exe, '/');
+if (!slash) {
+    return 0;
+}
+*slash = 0;
+snprintf(out, PATH_MAX,
+"%s", exe);
+return 1;
 }
 bool nc_make_dirs(const char * path) {
     char copy[PATH_MAX];
-    snprintf(copy, sizeof copy, "%s", path);
-    for (char *p = copy + 1; *p; ++p) {
-        if (*p == '/') {
-            *p = 0;
-            if (mkdir(copy, 0755) && errno != EEXIST) {
-                return 0;
-            }
-            *p = '/';
-        }
-    }
-    if (mkdir(copy, 0755) && errno != EEXIST) {
+    snprintf(copy, sizeof copy,
+    "%s", path);
+    for (char *p = copy + 1; *p;
+    ++p) {
+    if (*p == '/') {
+        *p = 0;
+        if ((mkdir(copy, 0755)
+        && errno != EEXIST)) {
         return 0;
     }
-    return 1;
+    *p = '/';
+}
+}
+if ((mkdir(copy, 0755)
+&& errno != EEXIST)) {
+return 0;
+}
+return 1;
 }
 bool nc_copy_file(const char * from, const char * to) {
     FILE *in = fopen(from, "rb");
@@ -78,8 +88,10 @@ bool nc_copy_file(const char * from, const char * to) {
         return 0;
     }
     char dir[PATH_MAX];
-    snprintf(dir, sizeof dir, "%s", to);
-    char *slash = strrchr(dir, '/');
+    snprintf(dir, sizeof dir,
+    "%s", to);
+    char *slash = strrchr(dir,
+    '/');
     if (slash) {
         *slash = 0;
         if (!nc_make_dirs(dir)) {
@@ -94,22 +106,29 @@ bool nc_copy_file(const char * from, const char * to) {
     }
     char buf[8192];
     bool ok = 1;
-    size_t n = fread(buf, 1, sizeof buf, in);
+    size_t n = fread(buf, 1,
+    sizeof buf, in);
     while (n) {
-        if (fwrite(buf, 1, n, out) != n) {
-            ok = 0;
-        }
-        n = fread(buf, 1, sizeof buf, in);
+        if ((fwrite(buf, 1, n, out)
+        != n)) {
+        ok = 0;
     }
-    fclose(in);
-    return fclose(out) == 0 && ok;
+    n = fread(buf, 1,
+    sizeof buf, in);
+}
+fclose(in);
+return (fclose(out) == 0
+&& ok);
 }
 bool nc_confirm(const char * question) {
-    printf("%s [y/N] ", question);
+    printf("%s [y/N] ",
+    question);
     fflush(stdout);
     char line[16];
-    if (!fgets(line, sizeof line, stdin)) {
-        return 0;
-    }
-    return line[0] == 'y' || line[0] == 'Y';
+    if (!fgets(line, sizeof line,
+    stdin)) {
+    return 0;
+}
+return line[0] == 'y' || line[
+0] == 'Y';
 }

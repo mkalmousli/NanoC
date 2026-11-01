@@ -32,4 +32,4 @@ Shared C headers declare libc-facing types/contracts. The C builder/tests remain
 
 Seed C is generated, compacted and frozen; do not maintain a second implementation.
 Snapshot C retains `main` and compiles using only C11/libc/POSIX. Every committed
-source, including seed files, remains at most 100 physical lines.
+source, including seed files, remains at most 200 physical lines.

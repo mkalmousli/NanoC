@@ -2,11 +2,13 @@
 #include "nanoc/nanoc.h"
 void nc_addn(NcContext * c, NcBuffer * b, const char * s, size_t n) {
     if (n > SIZE_MAX - b->n - 1) {
-        nc_fail(c, 0, "output limit exceeded");
+        nc_fail(c, 0,
+        "output limit exceeded");
     }
     size_t need = b->n + n + 1;
     while (b->cap < need) {
-        b->v = nc_grow(c, b->v, b->n, &b->cap, 1);
+        b->v = nc_grow(c, b->v,
+        b->n, &b->cap, 1);
     }
     if (n) {
         memcpy(b->v + b->n, s, n);
@@ -21,15 +23,21 @@ void nc_printf(NcContext * c, NcBuffer * b, const char * format, ...) {
     va_list a, copy;
     va_start(a, format);
     va_copy(copy, a);
-    int size = vsnprintf(NULL, 0, format, copy);
+    int size = vsnprintf(NULL,
+    0, format, copy);
     va_end(copy);
     if (size < 0) {
-        nc_fail(c, 0, "formatting failed");
+        nc_fail(c, 0,
+        "formatting failed");
     }
-    char *s = nc_alloc(c, (size_t)size + 1);
-    vsnprintf(s, (size_t)size + 1, format, a);
+    char *s = nc_alloc(c,
+    (size_t)size + 1);
+    vsnprintf(s,
+    (size_t)size + 1, format,
+    a);
     va_end(a);
-    nc_addn(c, b, s, (size_t)size);
+    nc_addn(c, b, s,
+    (size_t)size);
 }
 char * nc_string(NcContext * c, const char * s, size_t n) {
     char *p = nc_alloc(c, n + 1);
@@ -42,13 +50,18 @@ char * nc_format(NcContext * c, const char * format, ...) {
     va_list a, copy;
     va_start(a, format);
     va_copy(copy, a);
-    int size = vsnprintf(NULL, 0, format, copy);
+    int size = vsnprintf(NULL,
+    0, format, copy);
     va_end(copy);
     if (size < 0) {
-        nc_fail(c, 0, "formatting failed");
+        nc_fail(c, 0,
+        "formatting failed");
     }
-    char *s = nc_alloc(c, (size_t)size + 1);
-    vsnprintf(s, (size_t)size + 1, format, a);
+    char *s = nc_alloc(c,
+    (size_t)size + 1);
+    vsnprintf(s,
+    (size_t)size + 1, format,
+    a);
     va_end(a);
     return s;
 }
