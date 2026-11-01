@@ -44,6 +44,49 @@ struct NcStrings {
     if ((a).n == (a).cap) (a).v = nc_grow(c, (a).v, (a).n, &(a).cap, sizeof *(a).v); \
     (a).v[(a).n++] = (x); \
 } while (0)
+// Host portability: the few OS facilities NanoC uses, spelled for POSIX and for Windows.
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#include <process.h>
+#include <sys/stat.h>
+#define NC_WINDOWS 1
+#define NC_MKDIR(p) _mkdir(p)
+#define NC_RMDIR(p) _rmdir(p)
+#define NC_ISATTY(fd) _isatty(fd)
+#define NC_REALPATH(p, out) (_fullpath(out, p, PATH_MAX) != NULL)
+#define NC_RUNNABLE(p) (_access(p, 0) == 0)
+#define NC_PATH_LIST ';'
+#define NC_HOME_VAR "USERPROFILE"
+#define NC_TEMP_VAR "TEMP"
+#define NC_TEMP_DEFAULT "."
+#define NC_SHELL_RMTREE "rmdir /s /q \"%s\""
+#define NC_CONFIG_DIR "%s/AppData/Roaming"
+#define NC_SUBLIME_DIR "%s/AppData/Roaming/Sublime Text/Packages/User"
+#else
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#define NC_MKDIR(p) mkdir(p, 0755)
+#define NC_RMDIR(p) rmdir(p)
+#define NC_ISATTY(fd) isatty(fd)
+#define NC_REALPATH(p, out) (realpath(p, out) != NULL)
+#define NC_RUNNABLE(p) (access(p, X_OK) == 0)
+#define NC_PATH_LIST ':'
+#define NC_HOME_VAR "HOME"
+#define NC_TEMP_VAR "TMPDIR"
+#define NC_TEMP_DEFAULT "/tmp"
+#define NC_SHELL_RMTREE "rm -rf '%s'"
+#define NC_CONFIG_DIR "%s/.config"
+#ifdef __APPLE__
+#define NC_SUBLIME_DIR "%s/Library/Application Support/Sublime Text/Packages/User"
+#else
+#define NC_SUBLIME_DIR "%s/.config/sublime-text/Packages/User"
+#endif
+#endif
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 // Token and cursor types.
 typedef enum {
     NC_SPACE,
@@ -110,8 +153,6 @@ struct NcContext {
     const char *code;
     int error_line;
     char *frames[256];
-    char *ret_type, *defers;
-    bool need_stdio;
     size_t frame_count;
 };
 // Macro types.
@@ -300,6 +341,7 @@ char *nc_quote(NcContext *c, const char *s);
 char *nc_unquote(NcContext *c, const char *s, int line);
 NcLayoutLine nc_logical_line(NcCursor *c);
 NcLines nc_body_lines(NcCursor *c, int header_line, int indent);
+bool plain(NcContext *c, const char *body);
 char *nc_match(NcContext *c, NcNode node, size_t depth);
 NcHeader nc_header(const NcCursor *c);
 bool nc_same_line(const NcCursor *c, int line);
@@ -307,9 +349,6 @@ bool nc_header_at(const NcCursor *c, const char *s, int line);
 bool nc_header_eat(NcCursor *c, const char *s, int line);
 NcTokens nc_line_expression(NcCursor *c);
 NcNodes nc_indented_nodes(NcCursor *c, NcHeader header, bool program);
-char *nc_defer_return(NcContext *c, char *s);
-void nc_emit_defer(NcContext *c, NcBuffer *out, NcNodes nodes, size_t at, bool tail, size_t depth);
-char *nc_say(NcContext *c, const char *args, int line);
 NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail);
 NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program);
 bool nc_is_ret(NcContext *c, NcTokens items);
@@ -403,6 +442,7 @@ void nc_diagnostic(FILE *out, NcContext *c);
 bool nc_describe(FILE *out, const char *topic);
 NcValue nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line);
 char *nc_pipeline(NcContext *ctx, const char *input);
+NcValue nc_host_run(NcMachine *m, NcValues a, int line);
 NcValue nc_host_run(NcMachine *m, NcValues a, int line);
 NcValue nc_meta_process(NcMachine *m, const char *name, NcValues a, int line);
 char *nc_build_stage(NcContext *ctx, const char *source);

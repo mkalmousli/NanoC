@@ -6,7 +6,6 @@
 #include "nanoc/manage.h"
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 // Gets the install manifest path.
 static void mg_manifest(const char *prefix, char *out) {

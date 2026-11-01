@@ -1,5 +1,5 @@
 // Whole-file read and write.
-@use sys/stat, unistd, errno
+@use errno
 // Reads a whole file.
 @f nc_read(NcContext *c, cstr path) char *
   struct stat st
@@ -34,5 +34,5 @@
   if close(fd) then bad = true
   if !bad and !rename(temporary, path) then return
   int saved = errno
-  unlink(temporary)
+  remove(temporary)
   nc_fail(c, 0, "cannot write output %s: %s", path, strerror(saved))

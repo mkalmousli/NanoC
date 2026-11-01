@@ -1,5 +1,7 @@
-// Runs host processes for BT.
-@use sys/wait, sys/stat, unistd, errno
+// Runs host processes for BT (POSIX: fork and exec; Windows: see host_run_win.nc).
+@use errno
+#ifndef _WIN32
+#include <fcntl.h>
 // Runs a host command, captures it.
 @f nc_host_run(NcMachine *m, NcValues a, int line) NcValue
   NcContext *c = m->ctx
@@ -68,3 +70,4 @@
   NC_PUSH(c, result, nc_value_text(NC_STRING, stdout_text))
   NC_PUSH(c, result, nc_value_text(NC_STRING, stderr_text))
   nc_list(result)
+#endif

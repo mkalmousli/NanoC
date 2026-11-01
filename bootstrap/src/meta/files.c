@@ -3,7 +3,6 @@
 
 // File builtins: read, write, mkdir.
 
-#include <sys/stat.h>
 #include <errno.h>
 
 // Creates the parent directories.
@@ -18,7 +17,7 @@ static void directories(NcContext *c, const char *path, int line) {
         }
         char last = *p;
         *p = 0;
-        if (mkdir(copy, 0755) && errno != EEXIST) {
+        if (NC_MKDIR(copy) && errno != EEXIST) {
             nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno));
         }
         *p = last;

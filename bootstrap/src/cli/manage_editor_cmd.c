@@ -6,11 +6,10 @@
 #include "nanoc/manage.h"
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 // Prints an ok/fail status line.
 void nc_ui_line(bool ok, const char *name, const char *where) {
-    bool tty = isatty(1);
+    bool tty = NC_ISATTY(1);
     const char *mark = ok ? (tty ? "\033[32m✓\033[0m" : "✓") : (tty ? "\033[31m✗\033[0m" : "✗");
     printf("  %s %-9s %s\n", mark, name, where);
 }

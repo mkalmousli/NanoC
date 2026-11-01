@@ -3,8 +3,6 @@
 
 // Whole-file read and write.
 
-#include <sys/stat.h>
-#include <unistd.h>
 #include <errno.h>
 
 // Reads a whole file.
@@ -69,6 +67,6 @@ void nc_write(NcContext *c, const char *path, const char *contents) {
         return;
     }
     int saved = errno;
-    unlink(temporary);
+    remove(temporary);
     nc_fail(c, 0, "cannot write output %s: %s", path, strerror(saved));
 }

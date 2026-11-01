@@ -11,24 +11,40 @@ static NcTokens bare(NcContext *c, NcLayoutLine line) {
     return ts;
 }
 
+// Tells if an arm body is simple statements that need no braces: no declarations and no blocks.
+bool plain(NcContext *c, const char *body) {
+    if (strchr(body, '{')) {
+        return 0;
+    }
+    NcTokens ts = nc_significant(c, nc_lex(c, body, 1));
+    for (size_t i = (0), nanoc_end_1 = (ts.n); i < nanoc_end_1; ++i) {
+        if (ts.v[i].kind == NC_WORD && i + 1 < ts.n && (ts.v[i + 1].kind == NC_WORD || nc_is(ts.v[i + 1],
+                "*")) && (!i || nc_is(ts.v[i - 1], ";"))) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 // Emits "match x" with arms "a, b" (indented bodies) and an optional "else" arm.
 char *nc_match(NcContext *c, NcNode node, size_t depth) {
     NcTokens head = bare(c, node.head);
     char *subject = nc_trim(c, nc_join(c, nc_slice(head, 1, head.n)));
     NcBuffer out = {0};
     nc_printf(c, &out, "switch (%s) {\n", subject);
-    for (size_t i = (0), nanoc_end_1 = (node.children.n); i < nanoc_end_1; ++i) {
+    for (size_t i = (0), nanoc_end_2 = (node.children.n); i < nanoc_end_2; ++i) {
         NcNode arm = node.children.v[i];
         NcTokens labels = bare(c, arm.head);
         if (labels.n == 1 && nc_is(labels.v[0], "else")) {
             nc_add(c, &out, "default:");
         } else {
             NcGroups items = nc_split(c, labels, ",");
-            for (size_t k = (0), nanoc_end_2 = (items.n); k < nanoc_end_2; ++k) {
+            for (size_t k = (0), nanoc_end_3 = (items.n); k < nanoc_end_3; ++k) {
                 nc_printf(c, &out, "case %s:", nc_trim(c, nc_join(c, items.v[k])));
             }
         }
-        nc_printf(c, &out, " {%s} break;\n", nc_emit_block(c, arm.children, 0, depth + 1));
+        char *body = nc_emit_block(c, arm.children, 0, depth + 1);
+        nc_printf(c, &out, plain(c, body) ? " %s break;\n" : " {%s} break;\n", body);
     }
     nc_add(c, &out, "}\n");
     return out.v;

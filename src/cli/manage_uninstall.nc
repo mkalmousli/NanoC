@@ -1,5 +1,5 @@
 // The uninstall command.
-@use "nanoc/manage", stdlib, string, unistd
+@use "nanoc/manage", stdlib, string
 // Removes empty parent directories.
 @f mg_prune(cstr prefix, cstr path) static void
   char dir[PATH_MAX]
@@ -10,7 +10,7 @@
     char *slash = strrchr(dir, '/')
     if not slash then return
     *slash = 0
-    if rmdir(dir) then return
+    if NC_RMDIR(dir) then return
 // Deletes recorded files.
 @f mg_remove_recorded(cstr prefix) static int
   int count = 0
@@ -39,15 +39,15 @@
   int files = mg_remove_recorded(prefix)
   char bin[PATH_MAX]
   snprintf(bin, sizeof bin, "%s/bin", prefix)
-  rmdir(bin)
+  NC_RMDIR(bin)
   char share[PATH_MAX]
   snprintf(share, sizeof share, "%s/share/nanoc", prefix)
   char manifest[PATH_MAX]
   snprintf(manifest, sizeof manifest, "%s/editors.manifest", share)
   remove(manifest)
-  rmdir(share)
+  NC_RMDIR(share)
   char top[PATH_MAX * 2]
   snprintf(top, sizeof top, "%s/share", prefix)
-  rmdir(top)
+  NC_RMDIR(top)
   printf("Removed %d NanoC files. Your source projects were not touched.\n", files)
   0

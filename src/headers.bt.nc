@@ -10,7 +10,7 @@
   exec(["mkdir","-p",out+"/nanoc"])
   mods:=split(exec(["find","src","-name","*.nc","-not","-name","*.*.nc"]),"\n")
   main:="#ifndef NC_NANOC_H\n#define NC_NANOC_H\n"
-  for t ["base","token","core","macro","layout","eval","meta","cli"]
+  for t ["base","host","token","core","macro","layout","eval","meta","cli"]
     main+=exec([nc,"include/nanoc/"+t+".nc"])
   mg:="#ifndef NC_MANAGE_H\n#define NC_MANAGE_H\n"
   mg+=exec([nc,"include/nanoc/manage.nc"])

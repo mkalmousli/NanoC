@@ -55,10 +55,6 @@ char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
         } else if (lead(node, "elif") || lead(node, "else")) {
             nc_fail(c, node.head.line, "branch without matching if");
         }
-        if (lead(node, "defer") && !node.children.n) {
-            nc_emit_defer(c, &out, nodes, i, tail, depth);
-            break;
-        }
         bool returning = tail && last + 1 == nodes.n;
         if (lead(node, "match") && node.children.n) {
             if (returning) {
@@ -82,7 +78,7 @@ char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
                 nc_fail(c, node.head.line, "value function needs a final expression");
             }
             nc_marker(c, &out, node.head.line);
-            nc_add(c, &out, nc_defer_return(c, nc_statement(c, node.head, returning)));
+            nc_add(c, &out, nc_statement(c, node.head, returning));
         } else {
             if (returning && (!lead(node, "if") || !lead(nodes.v[last], "else"))) {
                 nc_fail(c, node.head.line, "value function needs a final expression or exhaustive if/else");

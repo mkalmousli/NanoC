@@ -20,7 +20,7 @@ dirs:=[["include/nanoc","Internal subsystem contracts, written in NanoC (types o
   ["src/*.bt.nc, src/site, src/docs","Build-time generators: headers, editors, docs, website"],
   ["build.c, src/build.bt.nc","`build.c` compiles the C seed; the build workflow is NanoC"],["src/tests, tests/","NanoC test sources (built to C by ./builder test); corpus and fixtures data. Compiler behavior, real C, CLI/ABI/BT/install; `tests/corpus` is licensed upstream C"]]
 page("docs/architecture.md",[h(1,"Implementation map"),
-  "Self-hosted NanoC; C11 bootstrap; POSIX host, libc only. Sources <= "+LIMIT+" lines.",
+  "Self-hosted NanoC; C11 bootstrap; portable C11 + libc (Linux, macOS, BSD, Windows). Sources <= "+LIMIT+" lines.",
   tbl(["Directory","Owns"],dirs),
   "Tokens are immutable source slices; lookahead copies indices. A context owns translation allocations and persistent pass state. Error checkpoints release all owned memory; arena accounting and budgets bound work. No-`@` input passes through. Output files use same-directory temporary files + rename. Host commands use argv; only explicit `sh` invokes a shell. Builtin signatures live in `src/meta/registry.nc`.",
   h(2,"Style"),
@@ -34,7 +34,7 @@ page("docs/architecture.md",[h(1,"Implementation map"),
     "Pure C with no real `@` use is returned unchanged in normal mode.",
     "Reseed after a formatting change: `NC_RESEED=1 ./builder snapshot` (twice), then `./builder bootstrap`."])])
 page("docs/bootstrap.md",[h(1,"Bootstrap card"),
-  "Requirements: POSIX host + C11 compiler. No installed NanoC, packages or downloads.",
+  "Requirements: any C11 compiler (gcc, clang, MinGW, MSVC-compatible); the build workflow also needs a POSIX shell (sh, MSYS2 or Git Bash on Windows). No installed NanoC, packages or downloads.",
   code("sh",["cc -std=c11 -O2 build.c -o builder","./builder bootstrap","./build/nanoc --version","./builder test","CC=clang ./builder test --sanitize"]),
   tbl(["Stage","Built from","Emits"],[[c("build/stage0"),"Frozen `bootstrap/src` C + `bootstrap/include`","`build/stage1/src` C"],
     [c("build/stage1-nanoc"),"Stage 1 C, generated from `src` NanoC","`build/stage2/src` C"],

@@ -1,8 +1,8 @@
 // The editors install/list commands.
-@use "nanoc/manage", stdlib, string, unistd
+@use "nanoc/manage", stdlib, string
 // Prints an ok/fail status line.
 @f nc_ui_line(bool ok, cstr name, cstr where) void
-  bool tty = isatty(1)
+  bool tty = NC_ISATTY(1)
   const char *mark = ok ? (tty ? "\033[32m✓\033[0m" : "✓") : (tty ? "\033[31m✗\033[0m" : "✗")
   printf("  %s %-9s %s\n", mark, name, where)
 // Installs editor files for a name.

@@ -5,8 +5,6 @@
 
 #include "nanoc/manage.h"
 #include <errno.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -24,10 +22,10 @@ static bool nc_search(const char *name, char *out) {
     }
     const char * p = path;
     while (*p) {
-        const char *end = strchr(p, ':');
+        const char *end = strchr(p, NC_PATH_LIST);
         size_t n = end ? (size_t)(end - p) : strlen(p);
         snprintf(out, PATH_MAX, "%.*s/%s", (int)n, n ? p : ".", name);
-        if (access(out, X_OK) == 0) {
+        if (NC_RUNNABLE(out)) {
             return 1;
         }
         p = end ? end + 1 : p + n;
@@ -45,7 +43,7 @@ bool nc_have_command(const char *name) {
 bool nc_prefix(const char *argv0, char *out) {
     char exe[PATH_MAX];
     if (strchr(argv0, '/')) {
-        if (!realpath(argv0, exe)) {
+        if (!NC_REALPATH(argv0, exe)) {
             return 0;
         }
     } else if (!nc_search(argv0, exe)) {
@@ -72,13 +70,13 @@ bool nc_make_dirs(const char *path) {
     for (char *p = copy + 1; *p; ++p) {
         if (*p == '/') {
             *p = 0;
-            if (mkdir(copy, 0755) && errno != EEXIST) {
+            if (NC_MKDIR(copy) && errno != EEXIST) {
                 return 0;
             }
             *p = '/';
         }
     }
-    if (mkdir(copy, 0755) && errno != EEXIST) {
+    if (NC_MKDIR(copy) && errno != EEXIST) {
         return 0;
     }
     return 1;

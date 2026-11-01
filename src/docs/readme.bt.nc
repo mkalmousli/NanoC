@@ -34,7 +34,7 @@ page("README.md",[
     b("Agent-friendly:")+" `nanoc --describe syntax|builtins|asm`, `nanoc file.nc --check --diagnostics json`."]),
   "Output is ordinary C with no NanoC runtime. Full reference: "+link("language card","docs/language.md")+" or `nanoc --describe syntax`.",
   h(2,"Runs wherever C runs"),
-  ul([b("Host:")+" Linux, macOS, BSD, WSL, MSYS2 (POSIX shell and a C11 compiler).",
+  ul([b("Host:")+" Linux, macOS, BSD and Windows: the compiler is plain portable C11 (cross-compiled with MinGW in CI); building it from source uses a POSIX shell such as sh, MSYS2 or Git Bash.",
     b("Output:")+" portable C11, or C++17 with `--lang c++`.",
     b("Assembly")+" is the only target-specific part: it is passed to GCC/Clang inline asm."]),
   h(2,"Editors"),

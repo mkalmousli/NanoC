@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <time.h>
 
 // Runs a shell step, with label.
 static int nc_update_cmd(const char *cmd, const char *what) {
@@ -23,23 +23,23 @@ int nc_update_command(const char *prefix) {
         fputs("nanoc: update needs git\n", stderr);
         return 1;
     }
-    const char *tmp = getenv("TMPDIR");
+    const char *tmp = getenv(NC_TEMP_VAR);
     char dir[PATH_MAX];
-    snprintf(dir, sizeof dir, "%s/nanoc-update-XXXXXX", tmp && *tmp ? tmp : "/tmp");
-    if (!mkdtemp(dir)) {
+    snprintf(dir, sizeof dir, "%s/nanoc-update-%lx", tmp && *tmp ? tmp : NC_TEMP_DEFAULT, (unsigned long)time(NULL));
+    if (NC_MKDIR(dir)) {
         fputs("nanoc: cannot create a temporary directory\n", stderr);
         return 1;
     }
     char cmd[PATH_MAX * 4];
-    snprintf(cmd, sizeof cmd, "git clone -q --depth 1 https://github.com/mkalmousli/NanoC.git '%s/NanoC'",
+    snprintf(cmd, sizeof cmd, "git clone -q --depth 1 https://github.com/mkalmousli/NanoC.git \"%s/NanoC\"",
             dir);
     int rc = nc_update_cmd(cmd, "Fetching the latest NanoC");
     if (rc == 0) {
-        snprintf(cmd, sizeof cmd, "cd '%s/NanoC' && cc -std=c11 -O2 build.c -o builder && ./builder install --prefix '%s'",
+        snprintf(cmd, sizeof cmd, "cd \"%s/NanoC\" && cc -std=c11 -O2 build.c -o builder && ./builder install --prefix \"%s\"",
                 dir, prefix);
         rc = nc_update_cmd(cmd, "Building and installing");
     }
-    snprintf(cmd, sizeof cmd, "rm -rf '%s'", dir);
+    snprintf(cmd, sizeof cmd, NC_SHELL_RMTREE, dir);
     if (system(cmd)) {
         fputs("nanoc: could not remove the temporary clone\n", stderr);
     }

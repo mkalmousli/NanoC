@@ -6,11 +6,10 @@
 #include "nanoc/manage.h"
 #include <stdlib.h>
 #include <string.h>
-#include <sys/utsname.h>
 
 // Finds the user home directory.
 bool mg_home(char *out) {
-    const char *home = getenv("HOME");
+    const char *home = getenv(NC_HOME_VAR);
     if (!home || !*home) {
         return 0;
     }
@@ -29,7 +28,7 @@ bool mg_config(char *out) {
     if (!mg_home(home)) {
         return 0;
     }
-    snprintf(out, PATH_MAX, "%s/.config", home);
+    snprintf(out, PATH_MAX, NC_CONFIG_DIR, home);
     return 1;
 }
 
@@ -39,14 +38,7 @@ bool mg_sublime_dir(char *out) {
     if (!mg_home(home)) {
         return 0;
     }
-    struct utsname u;
-    uname(&u);
-    if (!strcmp(u.sysname, "Darwin")) {
-        snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User",
-                home);
-    } else {
-        snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home);
-    }
+    snprintf(out, PATH_MAX, NC_SUBLIME_DIR, home);
     return 1;
 }
 

@@ -1,8 +1,8 @@
 // Editor config locations on this host.
-@use "nanoc/manage", stdlib, string, sys/utsname
+@use "nanoc/manage", stdlib, string
 // Finds the user home directory.
 @f mg_home(char *out) bool
-  const char *home = getenv("HOME")
+  const char *home = getenv(NC_HOME_VAR)
   if !home or !*home then return false
   snprintf(out, PATH_MAX, "%s", home)
   true
@@ -12,16 +12,13 @@
   if xdg and *xdg then snprintf(out, PATH_MAX, "%s", xdg); return true
   char home[PATH_MAX]
   if !mg_home(home) then return false
-  snprintf(out, PATH_MAX, "%s/.config", home)
+  snprintf(out, PATH_MAX, NC_CONFIG_DIR, home)
   true
 // Finds the Sublime packages dir.
 @f mg_sublime_dir(char *out) bool
   char home[PATH_MAX]
   if !mg_home(home) then return false
-  struct utsname u
-  uname(&u)
-  if !strcmp(u.sysname, "Darwin") then snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User", home)
-  else snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home)
+  snprintf(out, PATH_MAX, NC_SUBLIME_DIR, home)
   true
 // Adds a file to the targets.
 @f mg_add(NcTarget *t, int *n, cstr src, cstr dir, cstr rel) void

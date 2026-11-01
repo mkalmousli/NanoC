@@ -1,5 +1,5 @@
 // Records which editor files were installed.
-@use "nanoc/manage", stdlib, string, unistd
+@use "nanoc/manage", stdlib, string
 // Gets the install manifest path.
 @f mg_manifest(cstr prefix, char *out) static void = snprintf(out, PATH_MAX, "%s/share/nanoc/editors.manifest", prefix)
 // Tells if an editor is present.

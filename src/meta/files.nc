@@ -1,5 +1,5 @@
 // File builtins: read, write, mkdir.
-@use sys/stat, errno
+@use errno
 // Creates the parent directories.
 @f directories(NcContext *c, cstr path, int line) static void
   char *copy = nc_string(c, path, strlen(path))
@@ -8,7 +8,7 @@
     if *p && *p != '/' then continue
     char last = *p
     *p = 0
-    if mkdir(copy, 0755) and errno != EEXIST then nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
+    if NC_MKDIR(copy) and errno != EEXIST then nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
     *p = last
     if not last then break
 // Runs file builtins.

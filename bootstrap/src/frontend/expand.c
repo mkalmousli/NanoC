@@ -69,8 +69,5 @@ char *nc_transpile(NcContext *ctx, const char *input) {
     if (*prelude && !strstr(output, prelude)) {
         output = nc_format(ctx, "%s%s", prelude, output);
     }
-    if (ctx->need_stdio && !strstr(output, "<stdio.h>")) {
-        output = nc_format(ctx, "#include <stdio.h>\n%s", output);
-    }
     return strcmp(output, input) || ctx->mini ? nc_style(ctx, output) : output;
 }

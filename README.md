@@ -47,7 +47,7 @@ Output is ordinary C with no NanoC runtime. Full reference: [language card](docs
 
 ## Runs wherever C runs
 
-- **Host:** Linux, macOS, BSD, WSL, MSYS2 (POSIX shell and a C11 compiler).
+- **Host:** Linux, macOS, BSD and Windows: the compiler is plain portable C11 (cross-compiled with MinGW in CI); building it from source uses a POSIX shell such as sh, MSYS2 or Git Bash.
 - **Output:** portable C11, or C++17 with `--lang c++`.
 - **Assembly** is the only target-specific part: it is passed to GCC/Clang inline asm.
 
