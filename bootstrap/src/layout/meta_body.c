@@ -22,7 +22,6 @@ NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) {
 }
 
 // Reads a @m body.
-
 NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program) {
     header.line = c->pos ? c->ts.v[c->pos - 1].line : header.line;
     bool old = nc_header_eat(c, "=>", header.line);

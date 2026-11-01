@@ -10,7 +10,6 @@ void jw_start(NcJson *w, FILE *out) {
 }
 
 // Writes the comma owed before the next value, if any.
-
 static void jw_sep(NcJson *w) {
     if (w->more[w->depth]) {
         fputc(',', w->out);
@@ -19,7 +18,6 @@ static void jw_sep(NcJson *w) {
 }
 
 // Writes a JSON string literal.
-
 void jw_text(NcJson *w, const char *s) {
     fputc('"', w->out);
     for (; *s; ++s) {
@@ -37,7 +35,6 @@ void jw_text(NcJson *w, const char *s) {
 }
 
 // Opens an object or array (open is '{' or '[').
-
 void jw_open(NcJson *w, char open) {
     jw_sep(w);
     fputc(open, w->out);
@@ -45,14 +42,12 @@ void jw_open(NcJson *w, char open) {
 }
 
 // Closes the innermost object or array.
-
 void jw_close(NcJson *w, char close) {
     --w->depth;
     fputc(close, w->out);
 }
 
 // Writes an object key; the next value belongs to it.
-
 void jw_key(NcJson *w, const char *key) {
     jw_sep(w);
     jw_text(w, key);
@@ -61,35 +56,30 @@ void jw_key(NcJson *w, const char *key) {
 }
 
 // Writes a string value.
-
 void jw_str(NcJson *w, const char *s) {
     jw_sep(w);
     jw_text(w, s);
 }
 
 // Writes an integer value.
-
 void jw_int(NcJson *w, long n) {
     jw_sep(w);
     fprintf(w->out, "%ld", n);
 }
 
 // Writes a boolean value.
-
 void jw_bool(NcJson *w, bool b) {
     jw_sep(w);
     fputs(b ? "true" : "false", w->out);
 }
 
 // Writes pre-rendered JSON as one value.
-
 void jw_raw(NcJson *w, const char *json) {
     jw_sep(w);
     fputs(json, w->out);
 }
 
 // Key/value shortcuts: "k": string, integer, boolean, raw.
-
 void jw_ks(NcJson *w, const char *k, const char *s) {
     jw_key(w, k);
     jw_str(w, s);

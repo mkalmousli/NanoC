@@ -18,7 +18,6 @@ static size_t positive(NcContext *c, const char *s) {
 }
 
 // Parses the command line.
-
 NcOptions nc_options(NcContext *c, int argc, char **argv) {
     NcOptions o = {.input = "", .output = "-", .action = ""};
     bool positional = 0;

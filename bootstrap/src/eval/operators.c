@@ -26,7 +26,6 @@ int nc_precedence(NcToken t) {
 }
 
 // Applies a binary operator.
-
 NcValue nc_binary(NcContext *c, NcToken op, NcValue a, NcValue b, int line) {
     if (nc_is(op, "==")) {
         return nc_boolean(nc_equal(c, a, b, 0, line));

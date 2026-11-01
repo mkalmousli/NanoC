@@ -43,7 +43,6 @@ char *nc_infer(NcContext *c, NcTokens ts, int line) {
 }
 
 // Parses a declaration head.
-
 NcTokens nc_declaration(NcContext *ctx, NcTokens ts, int line) {
     NcCursor c = {ctx, ts, 0};
     NcTokens names = nc_until(&c, "=");

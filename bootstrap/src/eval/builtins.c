@@ -10,7 +10,6 @@ void nc_arity(NcContext *c, NcValues args, size_t n, int line) {
 }
 
 // Calls the builtin by name.
-
 NcValue nc_builtin(NcMachine *m, const char *name, NcValues args, int line) {
     NcContext *c = m->ctx;
     if (!strcmp(name, "range")) {

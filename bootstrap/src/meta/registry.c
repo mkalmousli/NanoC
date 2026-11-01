@@ -35,7 +35,6 @@ bool nc_builtin_known(const char *name) {
 }
 
 // Calls a registered builtin.
-
 NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) {
     for (size_t i = (0), nanoc_end_2 = (nc_spec_count); i < nanoc_end_2; ++i) {
         const NcSpec *s = &nc_specs[i];
@@ -48,7 +47,6 @@ NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line
 }
 
 // Gets a value as text.
-
 const char *nc_meta_text(NcContext *c, NcValue v, int line) {
     if (v.kind != NC_STRING && v.kind != NC_CODE) {
         nc_fail(c, line, "expected text or tokens");
@@ -57,7 +55,6 @@ const char *nc_meta_text(NcContext *c, NcValue v, int line) {
 }
 
 // Fails unless host effects are on.
-
 void nc_effect(NcMachine *m, int line) {
     if (m->phase != NC_BT) {
         nc_fail(m->ctx, line, "host effects require @bt");

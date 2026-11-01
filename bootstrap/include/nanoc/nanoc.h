@@ -170,8 +170,8 @@ typedef struct NcHeader NcHeader;
 struct NcHeader {
     int line,indent;
 };
-// State of the pretty C printer.
 
+// State of the pretty C printer.
 typedef struct {
     NcContext *c;
     NcBuffer out;

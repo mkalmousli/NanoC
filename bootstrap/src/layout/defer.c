@@ -8,7 +8,6 @@ static bool is_void(NcContext *c) {
 }
 
 // The return type without storage qualifiers, usable for a temporary.
-
 static char *value_type(NcContext *c) {
     char *t = c->ret_type ? c->ret_type : "";
     const char *q[] = {"static ", "inline ", "extern ", "_Noreturn "};
@@ -21,7 +20,6 @@ static char *value_type(NcContext *c) {
 }
 
 // Wraps "return x;" so pending deferred statements run after x is computed.
-
 char *nc_defer_return(NcContext *c, char *s) {
     if (!c->defers || strncmp(s, "return", 6) || (s[6] != ' ' && s[6] != ';')) {
         return s;
@@ -37,7 +35,6 @@ char *nc_defer_return(NcContext *c, char *s) {
 }
 
 // Emits "defer stmt" at nodes[at]: the rest of the block becomes a scope that ends with the statement.
-
 void nc_emit_defer(NcContext *c, NcBuffer *out, NcNodes nodes, size_t at, bool tail, size_t depth) {
     NcLayoutLine line = nodes.v[at].head;
     size_t k = 0;

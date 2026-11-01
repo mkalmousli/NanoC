@@ -17,7 +17,6 @@ static NcTokens rest_of_line(NcCursor *c) {
 }
 
 // One field "names:type" or "type names" as a C declaration with its semicolon.
-
 static char *field_text(NcContext *ctx, NcTokens ts) {
     NcGroups parts = nc_split(ctx, nc_aliased(ctx, ts), ":");
     char *text = nc_trim(ctx, nc_join(ctx, ts));
@@ -40,7 +39,6 @@ static char *field_text(NcContext *ctx, NcTokens ts) {
 }
 
 // Field declarations of an @s/@u record, from the header line or its indented body.
-
 static char *record_fields(NcContext *ctx, NcCursor *c, NcHeader h, NcTokens head) {
     NcBuffer out = {0};
     if (head.n) {
@@ -58,7 +56,6 @@ static char *record_fields(NcContext *ctx, NcCursor *c, NcHeader h, NcTokens hea
 }
 
 // Expands "@s Name fields", "@u Name fields" or "@e Name items" (or the indented block form).
-
 char *nc_record(NcContext *ctx, NcCursor *c, char kind) {
     NcHeader h = nc_header(c);
     char *name = nc_name(c);

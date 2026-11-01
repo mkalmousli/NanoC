@@ -23,7 +23,6 @@ char *prelude_file(NcContext *ctx, const char *file) {
 }
 
 // Returns the include lines the nearest `.nanoc` adds to a module, or an empty string.
-
 char *nc_prelude(NcContext *ctx) {
     const char * base = ctx->file ? strrchr(ctx->file, '/') : NULL;
     base = base ? base + 1 : ctx->file;

@@ -11,19 +11,16 @@ NcValue nc_integer(int64_t n) {
 }
 
 // Makes a boolean value.
-
 NcValue nc_boolean(bool n) {
     return (NcValue){.kind = NC_BOOL, .n = n};
 }
 
 // Makes a text value of a kind.
-
 NcValue nc_value_text(NcValueKind kind, char *s) {
     return (NcValue){.kind = kind, .text = s};
 }
 
 // Makes a list value.
-
 NcValue nc_list(NcValues items) {
     NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1};
     for (size_t i = (0), nanoc_end_1 = (items.n); i < nanoc_end_1; ++i) {
@@ -35,7 +32,6 @@ NcValue nc_list(NcValues items) {
 }
 
 // Gets the truth of a value.
-
 bool nc_truth(NcValue v) {
     if (v.kind == NC_LIST) {
         return v.count != 0;
@@ -47,7 +43,6 @@ bool nc_truth(NcValue v) {
 }
 
 // Gets a value as an integer.
-
 int64_t nc_numeric(NcContext *c, NcValue v, int line) {
     if (v.kind != NC_INT && v.kind != NC_BOOL) {
         nc_fail(c, line, "expected an integer");
@@ -56,7 +51,6 @@ int64_t nc_numeric(NcContext *c, NcValue v, int line) {
 }
 
 // Renders a value as text.
-
 char *nc_display(NcContext *c, NcValue v, size_t depth, int line) {
     nc_depth(c, depth, line, "value");
     if (v.kind == NC_INT) {
@@ -82,7 +76,6 @@ char *nc_display(NcContext *c, NcValue v, size_t depth, int line) {
 }
 
 // Renders a value as source code.
-
 char *nc_value_code(NcContext *c, NcValue v, int line) {
     if (v.kind == NC_LIST) {
         nc_fail(c, line, "lists require explicit repetition before emission");
@@ -97,7 +90,6 @@ char *nc_value_code(NcContext *c, NcValue v, int line) {
 }
 
 // Compares two values.
-
 bool nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line) {
     nc_depth(c, depth, line, "value");
     if (a.kind != b.kind) {

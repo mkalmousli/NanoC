@@ -19,13 +19,11 @@ void nc_addn(NcContext *c, NcBuffer *b, const char *s, size_t n) {
 }
 
 // Appends a string.
-
 void nc_add(NcContext *c, NcBuffer *b, const char *s) {
     nc_addn(c, b, s, strlen(s));
 }
 
 // Appends formatted text.
-
 void nc_printf(NcContext *c, NcBuffer *b, const char *format, ...) {
     va_list a, copy;
     va_start(a, format);
@@ -42,7 +40,6 @@ void nc_printf(NcContext *c, NcBuffer *b, const char *format, ...) {
 }
 
 // Finishes a buffer as a string.
-
 char *nc_string(NcContext *c, const char *s, size_t n) {
     char *p = nc_alloc(c, n + 1);
     if (n) {
@@ -52,7 +49,6 @@ char *nc_string(NcContext *c, const char *s, size_t n) {
 }
 
 // Formats text into a new string.
-
 char *nc_format(NcContext *c, const char *format, ...) {
     va_list a, copy;
     va_start(a, format);

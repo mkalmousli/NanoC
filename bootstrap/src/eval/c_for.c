@@ -8,7 +8,6 @@ static NcTokens statement(NcContext *c, NcTokens ts) {
 }
 
 // Runs a C-style for loop.
-
 NcFlow nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth) {
     NcContext *ctx = m->ctx;
     NcGroups parts = nc_split(ctx, nc_group(c, "(", ")"), ";");

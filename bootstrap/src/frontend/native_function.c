@@ -13,7 +13,6 @@ static NcTokens return_type(NcCursor *c, int line) {
 }
 
 // Rewrites the final return.
-
 static char *lower_returns(NcContext *ctx, char *body, int line) {
     if (!strstr(body, "=>")) {
         return body;
@@ -33,7 +32,6 @@ static char *lower_returns(NcContext *ctx, char *body, int line) {
 }
 
 // Expands a native function.
-
 char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
     NcHeader header = nc_header(c);
     int definition_line = header.line;

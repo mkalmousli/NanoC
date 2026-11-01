@@ -57,7 +57,6 @@ char *nc_expand(NcContext *ctx, NcTokens ts, size_t depth) {
 }
 
 // Transpiles source text to C.
-
 char *nc_transpile(NcContext *ctx, const char *input) {
     nc_check(ctx, strlen(input), 1);
     if (!strchr(input, '@')) {

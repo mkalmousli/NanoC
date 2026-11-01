@@ -18,7 +18,6 @@ static void skip_conditional(NcCursor *c, size_t depth) {
 }
 
 // Runs an if/elif/else chain.
-
 NcFlow nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth) {
     NcTokens cond = nc_group(c, "(", ")");
     NcTokens yes = nc_group(c, "{", "}"), no = {0};
@@ -36,7 +35,6 @@ NcFlow nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth) {
 }
 
 // Runs a for or while loop.
-
 NcFlow nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *name) {
     NcContext *ctx = m->ctx;
     NcFlow out = {0};

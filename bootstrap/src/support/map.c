@@ -12,7 +12,6 @@ static size_t hash(const char *s) {
 }
 
 // Looks up a key in a map.
-
 void *nc_get(const NcMap *m, const char *key) {
     if (! m->cap) {
         return NULL;
@@ -28,7 +27,6 @@ void *nc_get(const NcMap *m, const char *key) {
 }
 
 // Tells if the map has the token.
-
 bool nc_has_token(const NcMap *m, NcToken t) {
     if (! m->cap) {
         return 0;
@@ -49,7 +47,6 @@ bool nc_has_token(const NcMap *m, NcToken t) {
 }
 
 // Stores a key in a map.
-
 void nc_put(NcContext *c, NcMap *m, const char *key, void *value) {
     if (!m->cap || m->n >= m->cap / 2) {
         NcMap old = *m;
@@ -73,7 +70,6 @@ void nc_put(NcContext *c, NcMap *m, const char *key, void *value) {
 }
 
 // Makes an unused name.
-
 char *nc_fresh(NcContext *c, const char *hint) {
     char *name;
     while (1) {

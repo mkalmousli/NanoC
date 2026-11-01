@@ -12,7 +12,6 @@ NcHeader nc_header(const NcCursor *c) {
 }
 
 // Tells if a token is on the line.
-
 bool nc_same_line(const NcCursor *c, int line) {
     size_t i = c->pos;
     while (i < c->ts.n && c->ts.v[i].kind == NC_SPACE) {
@@ -22,7 +21,6 @@ bool nc_same_line(const NcCursor *c, int line) {
 }
 
 // Tells if the header has s.
-
 bool nc_header_at(const NcCursor *c, const char *s, int line) {
     size_t i = c->pos;
     while (i < c->ts.n && c->ts.v[i].kind == NC_SPACE) {
@@ -32,7 +30,6 @@ bool nc_header_at(const NcCursor *c, const char *s, int line) {
 }
 
 // Consumes s from the header.
-
 bool nc_header_eat(NcCursor *c, const char *s, int line) {
     if (!nc_header_at(c, s, line)) {
         return 0;
@@ -42,7 +39,6 @@ bool nc_header_eat(NcCursor *c, const char *s, int line) {
 }
 
 // Reads the rest of the line.
-
 NcTokens nc_line_expression(NcCursor *c) {
     NcTokens ts = {0};
     nc_skip(c);
@@ -76,7 +72,6 @@ NcTokens nc_line_expression(NcCursor *c) {
 }
 
 // Builds nodes from indented lines.
-
 NcNodes nc_indented_nodes(NcCursor *c, NcHeader header, bool program) {
     NcLines lines = nc_prepare_lines(c->ctx, nc_body_lines(c, header.line, header.indent), program);
     size_t i = 0;

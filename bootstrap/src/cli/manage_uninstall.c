@@ -27,7 +27,6 @@ static void mg_prune(const char *prefix, const char *path) {
 }
 
 // Deletes recorded files.
-
 static int mg_remove_recorded(const char *prefix) {
     int count = 0;
     char list[PATH_MAX];
@@ -55,7 +54,6 @@ static int mg_remove_recorded(const char *prefix) {
 }
 
 // Runs the uninstall command.
-
 int nc_uninstall_command(int argc, char **argv, const char *prefix) {
     bool yes = argc && !strcmp(argv[0], "--yes");
     printf("Remove NanoC from %s, including editor integrations?\n", prefix);

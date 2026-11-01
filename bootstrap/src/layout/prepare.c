@@ -18,7 +18,6 @@ bool nc_extension_line(NcLayoutLine line) {
 }
 
 // Tells if a line is meta.
-
 bool nc_meta_line(NcLayoutLine line) {
     size_t i = 0;
     while (i < line.ts.n && line.ts.v[i].kind == NC_SPACE) {
@@ -38,7 +37,6 @@ bool nc_meta_line(NcLayoutLine line) {
 }
 
 // Marks lines before tree building.
-
 NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program) {
     input = nc_split_inline(ctx, input);
     NcLines out = {0};

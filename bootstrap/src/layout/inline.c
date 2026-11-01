@@ -14,7 +14,6 @@ bool inline_head(NcToken t) {
 }
 
 // Finds the index of the first significant token in a line.
-
 size_t inline_first(NcTokens ts) {
     size_t i = 0;
     while (i < ts.n && ts.v[i].kind == NC_SPACE) {
@@ -24,7 +23,6 @@ size_t inline_first(NcTokens ts) {
 }
 
 // Finds the `then` token at bracket depth zero, or the end of `else`; -1 for no inline body.
-
 int inline_split(NcTokens ts) {
     size_t f = inline_first(ts);
     if (f == ts.n || ! inline_head(ts.v[f])) {
@@ -54,7 +52,6 @@ int inline_split(NcTokens ts) {
 }
 
 // Finds a depth-zero `else` word inside an inline body, or -1 for none.
-
 int inline_else(NcTokens ts) {
     int depth = 0;
     for (size_t i = (0), nanoc_end_3 = (ts.n); i < nanoc_end_3; ++i) {
@@ -71,7 +68,6 @@ int inline_else(NcTokens ts) {
 }
 
 // Splits lines such as `if a then b` into `if a` and an indented `b`.
-
 NcLines nc_split_inline(NcContext *ctx, NcLines input) {
     NcLines out = {0};
     for (size_t i = (0), nanoc_end_4 = (input.n); i < nanoc_end_4; ++i) {

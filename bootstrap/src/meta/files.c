@@ -29,7 +29,6 @@ static void directories(NcContext *c, const char *path, int line) {
 }
 
 // Runs file builtins.
-
 NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) {
     NcContext *c = m->ctx;
     if (!strcmp(name, "file")) {

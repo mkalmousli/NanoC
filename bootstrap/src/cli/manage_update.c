@@ -18,7 +18,6 @@ static int nc_update_cmd(const char *cmd, const char *what) {
 }
 
 // Runs the update command.
-
 int nc_update_command(const char *prefix) {
     if (!nc_have_command("git")) {
         fputs("nanoc: update needs git\n", stderr);

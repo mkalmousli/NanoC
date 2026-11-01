@@ -17,7 +17,6 @@ bool nc_exists(const char *path) {
 }
 
 // Finds a command on PATH.
-
 static bool nc_search(const char *name, char *out) {
     const char *path = getenv("PATH");
     if (! path) {
@@ -37,14 +36,12 @@ static bool nc_search(const char *name, char *out) {
 }
 
 // Tells if a command is on PATH.
-
 bool nc_have_command(const char *name) {
     char found[PATH_MAX];
     return nc_search(name, found);
 }
 
 // Finds the install prefix of argv0.
-
 bool nc_prefix(const char *argv0, char *out) {
     char exe[PATH_MAX];
     if (strchr(argv0, '/')) {
@@ -69,7 +66,6 @@ bool nc_prefix(const char *argv0, char *out) {
 }
 
 // Creates a directory tree.
-
 bool nc_make_dirs(const char *path) {
     char copy[PATH_MAX];
     snprintf(copy, sizeof copy, "%s", path);
@@ -89,7 +85,6 @@ bool nc_make_dirs(const char *path) {
 }
 
 // Copies one file.
-
 bool nc_copy_file(const char *from, const char *to) {
     FILE *in = fopen(from, "rb");
     if (! in) {
@@ -124,7 +119,6 @@ bool nc_copy_file(const char *from, const char *to) {
 }
 
 // Asks a yes/no question.
-
 bool nc_confirm(const char *question) {
     printf("%s [y/N] ", question);
     fflush(stdout);

@@ -9,7 +9,6 @@ const char *nc_sep(const char *type) {
 }
 
 // Parses a typed declaration.
-
 char *nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
     NcCursor c = {ctx, input, 0};
     NcGroups names = nc_split(ctx, nc_until(&c, ":"), ",");
@@ -56,7 +55,6 @@ char *nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
 }
 
 // Parses a parameter list.
-
 char *nc_parameters(NcContext *ctx, NcTokens ts) {
     if (!*nc_trim(ctx, nc_join(ctx, ts))) {
         return ctx->cpp ? "" : "void";

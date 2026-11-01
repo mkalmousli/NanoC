@@ -24,7 +24,6 @@ void nc_pp_put(NcPretty *p, const char *s, size_t n) {
 }
 
 // Ends the current line unless it is already empty.
-
 void nc_pp_nl(NcPretty *p) {
     if (! p->bol) {
         nc_add(p->c, &p->out, "\n");
@@ -35,14 +34,12 @@ void nc_pp_nl(NcPretty *p) {
 }
 
 // Ends a statement line and drops wrap indentation.
-
 void nc_pp_end(NcPretty *p) {
     p->cont = 0;
     nc_pp_nl(p);
 }
 
 // Ends the line and leaves one empty line after it.
-
 void nc_pp_blank(NcPretty *p) {
     nc_pp_nl(p);
     if (p->out.n && !(p->out.n >= 2 && p->out.v[p->out.n - 2] == '\n')) {
@@ -51,7 +48,6 @@ void nc_pp_blank(NcPretty *p) {
 }
 
 // Writes a preprocessor directive on its own line.
-
 void nc_pp_directive(NcPretty *p, NcToken t) {
     size_t n = t.n;
     while (n && isspace((unsigned char)t.s[n - 1])) {

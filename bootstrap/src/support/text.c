@@ -15,7 +15,6 @@ char *nc_trim(NcContext *c, const char *s) {
 }
 
 // Tells if text is an identifier.
-
 bool nc_identifier(const char *s) {
     if (!isalpha((unsigned char)*s) && *s != '_') {
         return 0;
@@ -29,7 +28,6 @@ bool nc_identifier(const char *s) {
 }
 
 // Quotes text as a C string.
-
 char *nc_quote(NcContext *c, const char *s) {
     NcBuffer b = {0};
     nc_add(c, &b, "\"");
@@ -54,7 +52,6 @@ char *nc_quote(NcContext *c, const char *s) {
 }
 
 // Removes quotes from a literal.
-
 char *nc_unquote(NcContext *c, const char *s, int line) {
     NcBuffer b = {0};
     size_t len = strlen(s);

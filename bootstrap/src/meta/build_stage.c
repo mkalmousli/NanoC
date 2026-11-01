@@ -7,8 +7,8 @@ struct Programs {
     NcTokens *v;
     size_t n,cap;
 };
-// Runs BT code in the build stage.
 
+// Runs BT code in the build stage.
 char *nc_build_stage(NcContext *ctx, const char *source) {
     if (!strstr(source, "bt")) {
         ctx->source = source;

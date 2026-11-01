@@ -16,7 +16,6 @@ void nc_ui_line(bool ok, const char *name, const char *where) {
 }
 
 // Installs editor files for a name.
-
 static bool mg_install(const char *prefix, const char *name) {
     NcTarget t[16];
     int n = nc_targets(name, t);
@@ -42,7 +41,6 @@ static bool mg_install(const char *prefix, const char *name) {
 }
 
 // Tells if name is among the args.
-
 static bool mg_named(int argc, char **argv, int first, const char *name) {
     for (int i = (first), nanoc_end_2 = (argc); i < nanoc_end_2; ++i) {
         if (!strcmp(argv[i], name)) {
@@ -53,7 +51,6 @@ static bool mg_named(int argc, char **argv, int first, const char *name) {
 }
 
 // Lists known editors.
-
 static int nc_editor_list(const char *prefix) {
     printf("  %-9s %-10s %s\n", "EDITOR", "DETECTED", "INSTALLED");
     for (size_t i = 0; nc_editor_name(i); ++i) {
@@ -65,7 +62,6 @@ static int nc_editor_list(const char *prefix) {
 }
 
 // Runs the editors subcommand.
-
 int nc_editor_command(int argc, char **argv, const char *prefix) {
     int first = 0;
     bool remove = argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall"));

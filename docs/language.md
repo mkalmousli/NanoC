@@ -15,10 +15,7 @@ Save this as `hello.nc`. `say` prints its arguments and brings in `stdio.h` by i
 #include <stdio.h>
 
 int main(void) {
-    {
-        fputs("Hello from NanoC!", stdout);
-        putchar('\n');
-    }
+    puts("Hello from NanoC!");
     return 0;
 }
 ```
@@ -47,26 +44,21 @@ int add(int a, int b) {
 }
 
 void greet(const char *name) {
-    {
-        fputs("hi", stdout);
-        putchar(' ');
-        printf(_Generic((name), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), name);
-        putchar('\n');
-    }
+    fputs("hi ", stdout);
+    printf(_Generic((name), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
+            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
+            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
+            name);
+    putchar('\n');
 }
 
 int main(void) {
     greet("NanoC");
-    {
-        printf(_Generic((add(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), add(2,3));
-        putchar('\n');
-    }
+    printf(_Generic((add(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+            default: "%d"), add(2,3));
+    putchar('\n');
     return 0;
 }
 ```
@@ -128,18 +120,16 @@ int add(int a, int b) {
 int main(void) {
     unsigned char x=200;
     const char * s="hi";
-    {
-        printf(_Generic((s), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
-                char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
-                unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
-                s);
-        putchar(' ');
-        printf(_Generic((add(x,2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), add(x,2));
-        putchar('\n');
-    }
+    printf(_Generic((s), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
+            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
+            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
+            s);
+    putchar(' ');
+    printf(_Generic((add(x,2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+            default: "%d"), add(x,2));
+    putchar('\n');
     return 0;
 }
 ```
@@ -207,20 +197,17 @@ static int twice(int x) {
 }
 
 int main(void) {
-    {
-        fputs("twice", stdout);
-        putchar(' ');
-        printf(_Generic((twice(21)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), twice(21));
-        putchar(' ');
-        printf(_Generic((1.5), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), 1.5);
-        putchar('\n');
-    }
+    fputs("twice ", stdout);
+    printf(_Generic((twice(21)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+            default: "%d"), twice(21));
+    putchar(' ');
+    printf(_Generic((1.5), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
+            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
+            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
+            1.5);
+    putchar('\n');
     return 0;
 }
 ```
@@ -311,14 +298,10 @@ int size(int x) {
     switch (x) {
         case 1:
         case 2:
-            {
-                r=10;
-            }
+            r=10;
             break;
         default:
-            {
-                r=-1;
-            }
+            r=-1;
             break;
     }
     return r;
@@ -349,15 +332,12 @@ int main(void) {
     for (int i = (1), nanoc_end_1 = (6); i < nanoc_end_1; ++i) {
         total+=i;
     }
-    {
-        fputs("total", stdout);
-        putchar(' ');
-        printf(_Generic((total), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), total);
-        putchar('\n');
-    }
+    fputs("total ", stdout);
+    printf(_Generic((total), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
+            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
+            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
+            total);
+    putchar('\n');
     return 0;
 }
 ```
@@ -392,18 +372,16 @@ int max_int(int a, int b) {
 }
 
 int main(void) {
-    {
-        printf(_Generic((((42)*2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), ((42)*2));
-        putchar(' ');
-        printf(_Generic((max_int(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), max_int(2,3));
-        putchar('\n');
-    }
+    printf(_Generic((((42)*2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+            default: "%d"), ((42)*2));
+    putchar(' ');
+    printf(_Generic((max_int(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+            default: "%d"), max_int(2,3));
+    putchar('\n');
     return 0;
 }
 ```
@@ -446,13 +424,11 @@ int square_4(void) {
 }
 
 int main(void) {
-    {
-        printf(_Generic((square_4()), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-                default: "%d"), square_4());
-        putchar('\n');
-    }
+    printf(_Generic((square_4()), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+            default: "%d"), square_4());
+    putchar('\n');
     return 0;
 }
 ```

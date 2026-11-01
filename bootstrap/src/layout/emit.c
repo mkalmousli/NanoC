@@ -21,7 +21,6 @@ static bool lead(NcNode n, const char *s) {
 }
 
 // Starts a new C line (and #line).
-
 void nc_marker(NcContext *c, NcBuffer *b, int line) {
     if (c->lines) {
         nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file));
@@ -31,7 +30,6 @@ void nc_marker(NcContext *c, NcBuffer *b, int line) {
 }
 
 // Emits a block of nodes as C.
-
 char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
     nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout");
     if (!nodes.n && tail) {

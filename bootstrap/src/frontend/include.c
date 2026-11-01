@@ -15,7 +15,6 @@ static const char *bundle(const char *item) {
 }
 
 // Turns one @use item into an #include line: names get .h in C and none in C++ standard headers.
-
 static char *include_line(NcContext *ctx, const char *item) {
     size_t n = strlen(item);
     if (item[0] == '<') {
@@ -38,7 +37,6 @@ static char *include_line(NcContext *ctx, const char *item) {
 }
 
 // Expands "@use a, b" to one #include per name; bundles such as std expand to several.
-
 char *nc_include(NcContext *ctx, NcCursor *c) {
     NcGroups items = nc_split(ctx, nc_line_expression(c), ",");
     NcBuffer out = {0};

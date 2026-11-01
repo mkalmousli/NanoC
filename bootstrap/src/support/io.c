@@ -43,7 +43,6 @@ char *nc_read(NcContext *c, const char *path) {
 }
 
 // Writes a whole file.
-
 void nc_write(NcContext *c, const char *path, const char *contents) {
     char *temporary = nc_format(c, "%s.nanoc-XXXXXX", path);
     int fd = mkstemp(temporary);

@@ -10,21 +10,18 @@ void nc_skip(NcCursor *c) {
 }
 
 // Tells if the cursor is at the end.
-
 bool nc_end(NcCursor *c) {
     nc_skip(c);
     return c->pos == c->ts.n;
 }
 
 // Tells if the next token matches.
-
 bool nc_at(NcCursor *c, const char *s) {
     nc_skip(c);
     return c->pos < c->ts.n && nc_is(c->ts.v[c->pos], s);
 }
 
 // Gets the current source line.
-
 int nc_line(const NcCursor *c) {
     if (c->pos < c->ts.n) {
         return c->ts.v[c->pos].line;
@@ -33,7 +30,6 @@ int nc_line(const NcCursor *c) {
 }
 
 // Takes the next token.
-
 NcToken nc_take(NcCursor *c) {
     if (nc_end(c)) {
         nc_fail(c->ctx, nc_line(c), "unexpected end of input");
@@ -42,7 +38,6 @@ NcToken nc_take(NcCursor *c) {
 }
 
 // Consumes a token if it matches.
-
 bool nc_eat(NcCursor *c, const char *s) {
     if (!nc_at(c, s)) {
         return 0;
@@ -52,7 +47,6 @@ bool nc_eat(NcCursor *c, const char *s) {
 }
 
 // Consumes a token or fails.
-
 void nc_need(NcCursor *c, const char *s) {
     NcToken t = nc_take(c);
     if (!nc_is(t, s)) {
@@ -61,7 +55,6 @@ void nc_need(NcCursor *c, const char *s) {
 }
 
 // Consumes an identifier.
-
 char *nc_name(NcCursor *c) {
     NcToken t = nc_take(c);
     if (t.kind != NC_WORD) {

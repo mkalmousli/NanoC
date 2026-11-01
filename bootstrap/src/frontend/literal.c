@@ -25,7 +25,6 @@ size_t nc_literal_start(const char *s, size_t i, bool cpp) {
 }
 
 // Finds where a literal ends.
-
 size_t nc_literal_end(NcContext *c, const char *s, size_t i, int line) {
     size_t quote = i;
     while (s[quote] && s[quote] != '"' && s[quote] != '\'') {
@@ -58,7 +57,6 @@ size_t nc_literal_end(NcContext *c, const char *s, size_t i, int line) {
 }
 
 // Finds the end of a line.
-
 size_t nc_line_end(const char *s, size_t start) {
     size_t i = start;
     while (s[i]) {

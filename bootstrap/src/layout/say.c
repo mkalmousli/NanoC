@@ -8,22 +8,32 @@ char *nc_say(NcContext *c, const char *args, int line) {
     NcGroups parts = nc_split(c, nc_lex(c, args, line), ",");
     NcBuffer out = {0};
     c->need_stdio = 1;
-    nc_add(c, &out, "{ ");
+    bool lead = 0;
     for (size_t i = (0), nanoc_end_1 = (parts.n); i < nanoc_end_1; ++i) {
         char *a = nc_trim(c, nc_join(c, parts.v[i]));
-        if (i) {
-            nc_add(c, &out, "putchar(' '); ");
+        bool last = i + 1 == parts.n;
+        if (lead && *a != '"') {
+            nc_add(c, &out, "putchar(' ');\n");
         }
         if (*a == '"') {
-            nc_printf(c, &out, "fputs(%s, stdout); ", a);
+            size_t n = strlen(a);
+            char *inner = nc_string(c, a + 1, n - 2);
+            if (last) {
+                nc_printf(c, &out, "puts(\"%s%s\");\n", lead ? " " : "", inner);
+                return out.v;
+            }
+            nc_printf(c, &out, "fputs(\"%s%s \", stdout);\n", lead ? " " : "", inner);
+            lead = 0;
             continue;
         }
+        lead = 0;
         if (nc_std == 89 || nc_std == 99) {
             nc_fail(c, line, "say of a value needs --std c11 or newer");
         }
-        nc_printf(c, &out, "printf(_Generic((%s), char *: \"%%s\", const char *: \"%%s\", " "float: \"%%g\", double: \"%%g\", long double: \"%%Lg\", char: \"%%c\", " "unsigned char: \"%%u\", unsigned short: \"%%u\", unsigned: \"%%u\", long: \"%%ld\", " "unsigned long: \"%%lu\", long long: \"%%lld\", unsigned long long: \"%%llu\", " "default: \"%%d\"), %s); ",
+        nc_printf(c, &out, "printf(_Generic((%s), char *: \"%%s\", const char *: \"%%s\", " "float: \"%%g\", double: \"%%g\", long double: \"%%Lg\", char: \"%%c\", " "unsigned char: \"%%u\", unsigned short: \"%%u\", unsigned: \"%%u\", long: \"%%ld\", " "unsigned long: \"%%lu\", long long: \"%%lld\", unsigned long long: \"%%llu\", " "default: \"%%d\"), %s);\n",
                 a, a);
+        lead = ! last;
     }
-    nc_add(c, &out, "putchar('\\n'); }");
+    nc_add(c, &out, "putchar('\\n');");
     return out.v;
 }

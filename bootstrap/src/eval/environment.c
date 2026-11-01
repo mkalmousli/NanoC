@@ -10,7 +10,6 @@ NcEnv *nc_env(NcContext *c, NcEnv *parent) {
 }
 
 // Defines a variable in a scope.
-
 void nc_bind(NcContext *c, NcEnv *e, const char *name, NcValue value) {
     NcValue *p = nc_alloc(c, sizeof *p);
     *p = value;
@@ -18,7 +17,6 @@ void nc_bind(NcContext *c, NcEnv *e, const char *name, NcValue value) {
 }
 
 // Finds a variable in the scopes.
-
 NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) {
     for (; e; e = e->parent) {
         NcValue *p = nc_get(&e->values, name);
@@ -31,7 +29,6 @@ NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) {
 }
 
 // Updates an existing variable.
-
 void nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line) {
     for (; e; e = e->parent) {
         NcValue *p = nc_get(&e->values, name);

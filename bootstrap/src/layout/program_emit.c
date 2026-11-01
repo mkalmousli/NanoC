@@ -9,14 +9,12 @@ static bool starts(NcContext *c, NcNode n, const char *word) {
 }
 
 // Tells if the node is a function.
-
 static bool function_node(NcContext *c, NcNode n) {
     NcTokens ts = nc_significant(c, n.head.ts);
     return ts.n > 1 && ts.v[1].kind == NC_WORD && (nc_is(ts.v[0], "f") || nc_is(ts.v[0], "fn"));
 }
 
 // Tells if a line is a value.
-
 static bool value_line(NcContext *c, NcTokens ts) {
     NcTokens sig = nc_significant(c, ts);
     if (! sig.n) {
@@ -49,7 +47,6 @@ static bool value_line(NcContext *c, NcTokens ts) {
 }
 
 // Emits nodes as program text.
-
 char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
     nc_depth(ctx, depth, nodes.n ? nodes.v[0].head.line : 1, "program layout");
     NcBuffer out = {0};

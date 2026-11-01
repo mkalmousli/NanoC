@@ -56,7 +56,6 @@ NcLayoutLine nc_logical_line(NcCursor *c) {
 }
 
 // Reads an indented body.
-
 NcLines nc_body_lines(NcCursor *c, int header_line, int indent) {
     NcLines out = {0};
     for (;;) {

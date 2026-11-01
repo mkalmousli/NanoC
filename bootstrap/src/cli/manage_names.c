@@ -13,7 +13,6 @@ const char *nc_editor_name(size_t i) {
 }
 
 // Tells if an editor name exists.
-
 bool nc_known_editor(const char *name) {
     for (size_t i = 0; nc_editor_name(i); ++i) {
         if (!strcmp(name, nc_editor_name(i))) {
@@ -24,7 +23,6 @@ bool nc_known_editor(const char *name) {
 }
 
 // Lists install targets of an editor.
-
 int nc_targets(const char *editor, NcTarget *t) {
     char home[PATH_MAX];
     char cfg[PATH_MAX];

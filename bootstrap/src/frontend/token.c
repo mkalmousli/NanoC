@@ -8,25 +8,21 @@ bool nc_is(NcToken t, const char *s) {
 }
 
 // Copies a token as text.
-
 char *nc_text(NcContext *c, NcToken t) {
     return nc_string(c, t.s, t.n);
 }
 
 // Makes a token.
-
 NcToken nc_token(const char *s, int line, NcKind kind) {
     return (NcToken){s, strlen(s), line, 1, kind};
 }
 
 // Takes a sub-range of tokens.
-
 NcTokens nc_slice(NcTokens ts, size_t a, size_t b) {
     return (NcTokens){ts.v ? ts.v + a : NULL, b - a, b - a};
 }
 
 // Concatenates token text.
-
 char *nc_join(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
     for (size_t i = (0), nanoc_end_1 = (ts.n); i < nanoc_end_1; ++i) {
@@ -37,7 +33,6 @@ char *nc_join(NcContext *c, NcTokens ts) {
 }
 
 // Drops whitespace tokens.
-
 NcTokens nc_significant(NcContext *c, NcTokens ts) {
     NcTokens out = {0};
     for (size_t i = (0), nanoc_end_2 = (ts.n); i < nanoc_end_2; ++i) {
@@ -49,7 +44,6 @@ NcTokens nc_significant(NcContext *c, NcTokens ts) {
 }
 
 // Joins tokens as spaced words.
-
 char *nc_words(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
     for (size_t i = (0), nanoc_end_3 = (ts.n); i < nanoc_end_3; ++i) {
@@ -82,7 +76,6 @@ char *nc_words(NcContext *c, NcTokens ts) {
 }
 
 // Records identifier tokens.
-
 void nc_names(NcContext *c, NcTokens ts) {
     for (size_t i = (0), nanoc_end_4 = (ts.n); i < nanoc_end_4; ++i) {
         if (ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])) {

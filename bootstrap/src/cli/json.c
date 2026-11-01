@@ -13,7 +13,6 @@ static void logs(NcJson *w, NcContext *c) {
 }
 
 // Prints a diagnostic report.
-
 void nc_report(FILE *out, NcContext *c, size_t bytes) {
     NcJson w;
     jw_start(&w, out);
@@ -45,7 +44,6 @@ void nc_report(FILE *out, NcContext *c, size_t bytes) {
 }
 
 // Writes one JSON diagnostic.
-
 void nc_diagnostic(FILE *out, NcContext *c) {
     NcJson w;
     jw_start(&w, out);

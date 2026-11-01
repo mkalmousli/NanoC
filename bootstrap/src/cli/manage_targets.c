@@ -19,7 +19,6 @@ bool mg_home(char *out) {
 }
 
 // Finds the user config directory.
-
 bool mg_config(char *out) {
     const char *xdg = getenv("XDG_CONFIG_HOME");
     if (xdg && *xdg) {
@@ -35,7 +34,6 @@ bool mg_config(char *out) {
 }
 
 // Finds the Sublime packages dir.
-
 bool mg_sublime_dir(char *out) {
     char home[PATH_MAX];
     if (!mg_home(home)) {
@@ -53,7 +51,6 @@ bool mg_sublime_dir(char *out) {
 }
 
 // Adds a file to the targets.
-
 void mg_add(NcTarget *t, int *n, const char *src, const char *dir, const char *rel) {
     t[*n].src = src;
     snprintf(t[*n].dst, PATH_MAX, "%s/%s", dir, rel);
@@ -61,7 +58,6 @@ void mg_add(NcTarget *t, int *n, const char *src, const char *dir, const char *r
 }
 
 // Adds VS Code targets under a base.
-
 void mg_vscode_at(NcTarget *t, int *n, const char *base) {
     char dir[PATH_MAX];
     snprintf(dir, sizeof dir, "%s/extensions/mkalmousli.nanoc-language-0.1.0", base);
@@ -75,7 +71,6 @@ void mg_vscode_at(NcTarget *t, int *n, const char *base) {
 }
 
 // Adds all VS Code targets.
-
 void mg_vscode(NcTarget *t, int *n, const char *home) {
     const char *bases[] = {".vscode", ".vscode-oss", ".cursor"};
     int found = 0;

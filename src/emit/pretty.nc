@@ -6,6 +6,8 @@
     nc_pp_resolve(p, none)
     if p->last_dir and !p->top and !p->paren then nc_pp_blank(p)
     p->last_dir = false
+    if p->gap and p->out.n and !p->paren then nc_pp_blank(p)
+    p->gap = false
     p->space = true
     p->comment = true
     usize n = t.n

@@ -18,7 +18,6 @@ NcValue nc_builtin_tokens(NcMachine *m, const char *name, NcValue v, int line) {
 }
 
 // Runs the range builtin.
-
 NcValue nc_builtin_range(NcMachine *m, NcValues args, int line) {
     NcContext *c = m->ctx;
     if (args.n != 1 && args.n != 2) {

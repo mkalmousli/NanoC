@@ -30,7 +30,6 @@ NcTokens nc_group(NcCursor *c, const char *open, const char *close) {
 }
 
 // Takes tokens until a delimiter.
-
 NcTokens nc_until(NcCursor *c, const char *delimiter) {
     NcTokens out = {0};
     while (!nc_end(c) && !nc_at(c, delimiter)) {
@@ -54,7 +53,6 @@ NcTokens nc_until(NcCursor *c, const char *delimiter) {
 }
 
 // Splits tokens at a delimiter.
-
 NcGroups nc_split(NcContext *ctx, NcTokens ts, const char *delimiter) {
     NcCursor c = {ctx, ts, 0};
     NcGroups out = {0};

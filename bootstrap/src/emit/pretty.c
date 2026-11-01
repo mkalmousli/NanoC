@@ -11,6 +11,10 @@ static void space(NcPretty *p, NcToken t) {
             nc_pp_blank(p);
         }
         p->last_dir = 0;
+        if (p->gap && p->out.n && !p->paren) {
+            nc_pp_blank(p);
+        }
+        p->gap = 0;
         p->space = 1;
         p->comment = 1;
         size_t n = t.n;
@@ -38,7 +42,6 @@ static void space(NcPretty *p, NcToken t) {
 }
 
 // Handles ";" and ",".
-
 static void separator(NcPretty *p, NcToken t) {
     bool init = p->top && p->kind[p->top - 1] == 'i';
     nc_pp_put(p, t.s, 1);
@@ -59,7 +62,6 @@ static void separator(NcPretty *p, NcToken t) {
 }
 
 // Handles ":" (case labels and ternaries).
-
 static void colon(NcPretty *p, NcToken t) {
     nc_pp_put(p, t.s, 1);
     if (p->ternary > 0) {
@@ -74,7 +76,6 @@ static void colon(NcPretty *p, NcToken t) {
 }
 
 // Handles one significant token.
-
 static void nc_pp_token(NcPretty *p, NcToken t) {
     if (t.kind == NC_DIRECTIVE) {
         nc_pp_directive(p, t);
@@ -141,7 +142,6 @@ static void nc_pp_token(NcPretty *p, NcToken t) {
 }
 
 // Formats C text with indentation and line breaks.
-
 char *nc_pretty(NcContext *c, const char *text) {
     NcPretty state = {0};
     NcPretty *p = &state;

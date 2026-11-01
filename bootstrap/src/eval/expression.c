@@ -56,7 +56,6 @@ NcValue nc_expression(NcExpr *e, int minimum, bool active) {
 }
 
 // Evaluates an expression.
-
 NcValue nc_eval(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth, bool active) {
     nc_depth(m->ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time");
     NcExpr e = {{m->ctx, ts, 0}, m, env, depth};

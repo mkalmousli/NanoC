@@ -14,7 +14,6 @@ static void mg_manifest(const char *prefix, char *out) {
 }
 
 // Tells if an editor is present.
-
 bool mg_detected(const char *name) {
     char home[PATH_MAX];
     char cfg[PATH_MAX];
@@ -52,7 +51,6 @@ bool mg_detected(const char *name) {
 }
 
 // Tells if an editor is installed.
-
 bool mg_installed(const char *prefix, const char *name) {
     char path[PATH_MAX];
     mg_manifest(prefix, path);
@@ -73,7 +71,6 @@ bool mg_installed(const char *prefix, const char *name) {
 }
 
 // Drops an editor from the manifest.
-
 void mg_forget(const char *prefix, const char *name) {
     char path[PATH_MAX];
     char tmp[PATH_MAX + 8];
@@ -104,7 +101,6 @@ void mg_forget(const char *prefix, const char *name) {
 }
 
 // Records an installed file.
-
 void mg_remember(const char *prefix, const char *name, const char *dst) {
     char path[PATH_MAX];
     mg_manifest(prefix, path);

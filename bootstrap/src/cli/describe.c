@@ -6,8 +6,8 @@
 static const char ASM_CARD[] = "{\"syntax\":\"@asm\\n  addl $5,%0\\n  out \\\"+r\\\"(n)\\n  clobber \\\"cc\\\"\",\"qualifiers\":[\"volatile\",\"inline\",\"goto\"],\"sections\":[\"out\",\"in\",\"clobber\",\"labels\"],\"rules\":\"instructions first; sections optional, ordered, once each; goto needs labels\",\"backend\":\"GNU __asm__; GCC/Clang; target ISA/ABI/constraints; C/C++\",\"templates\":\"raw instructions get newlines; quoted C strings pass through\"}";
 static const char SYNTAX[] = "{\"function\":\"@f add(int a,b) int = a+b\",\"block\":\"@f main int\\n  n:=0\\n  for i 0..3\\n    n+=i\\n  n!=3\",\"macro\":\"@m twice($x)\\n  (($x)*2)\",\"blockArgument\":\"@scope\\n  statement\",\"assembly\":\"@asm\\n  nop\",\"programMacro\":\"@m id($x) = x\",\"program\":\"@ct\\n  n:=42\\n  emit(quote(int answer=$n;))\",\"implicitReturn\":\"last expression or final exhaustive if/else\",\"layout\":\"spaces; no braces, colons, semicolons or arrows required\",\"emptyParameters\":\"() optional on zero-argument definitions/macros\",\"shortcuts\":\"@inc stdio, \\\"x.h\\\"; ret x; nil; unless c; until c; loop; and/or/not\",\"emit\":\"--emit normal|mini\",\"legacySyntax\":true}";
 static const char LIMITS[] = "{\"passes\":32,\"steps\":1000000,\"zeroMeansUnlimited\":[\"passes\",\"steps\"],\"depth\":128,\"depthCap\":512,\"bytes\":16777216}";
-// Writes one builtin.
 
+// Writes one builtin.
 static void spec(NcJson *w, const NcSpec *s) {
     jw_open(w, '{');
     jw_ks(w, "name", s->name);
@@ -17,7 +17,6 @@ static void spec(NcJson *w, const NcSpec *s) {
 }
 
 // Prints a topic or builtin card.
-
 bool nc_describe(FILE *out, const char *topic) {
     NcJson w;
     jw_start(&w, out);

@@ -8,13 +8,11 @@ bool nc_pp_prev_is(NcPretty *p, const char *s) {
 }
 
 // Tells if the previous token is the punctuation s.
-
 bool nc_pp_prev_punct(NcPretty *p, const char *s) {
     return p->has_prev && p->prev.kind == NC_PUNCT && nc_is(p->prev, s);
 }
 
 // Classifies a "{": 'b' block, 't' type body, 'e' enum, 'i' init.
-
 static char brace_kind(NcPretty *p) {
     if (p->paren || (p->top && p->kind[p->top - 1] == 'i')) {
         return 'i';
@@ -39,7 +37,6 @@ static char brace_kind(NcPretty *p) {
 }
 
 // Handles an opening brace.
-
 void nc_pp_open(NcPretty *p, NcToken t) {
     if (p->top == 255) {
         nc_fail(p->c, t.line, "braces nested too deeply");
@@ -63,7 +60,6 @@ void nc_pp_open(NcPretty *p, NcToken t) {
 }
 
 // Handles a closing brace; returns what to do after it.
-
 void nc_pp_close(NcPretty *p) {
     if (! p->top) {
         nc_pp_put(p, "}", 1);
@@ -86,7 +82,6 @@ void nc_pp_close(NcPretty *p) {
 }
 
 // Decides the line break owed after a block's closing brace.
-
 void nc_pp_resolve(NcPretty *p, NcToken t) {
     int after = p->after;
     p->after = 0;

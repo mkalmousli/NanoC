@@ -8,7 +8,6 @@ static bool wordy(char ch) {
 }
 
 // Tells if two adjacent characters must stay apart.
-
 static bool apart(char a, char b) {
     const char *glue = "+-&|<>=*/!%^:.";
     if (wordy(a) && wordy(b)) {
@@ -21,7 +20,6 @@ static bool apart(char a, char b) {
 }
 
 // Strips comments and layout; keeps one directive per line.
-
 char *nc_mini(NcContext *c, const char *text) {
     NcTokens ts = nc_lex(c, text, 1);
     NcBuffer out = {0};
@@ -55,7 +53,6 @@ char *nc_mini(NcContext *c, const char *text) {
 }
 
 // Applies the selected emit style to generated C.
-
 char *nc_style(NcContext *c, const char *text) {
     if (c->mini) {
         return nc_mini(c, text);

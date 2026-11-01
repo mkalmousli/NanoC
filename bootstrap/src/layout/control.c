@@ -27,13 +27,11 @@ static bool enclosed(const char *s) {
 }
 
 // Wraps a condition in parentheses unless already wrapped.
-
 static char *paren(NcContext *ctx, const char *s) {
     return enclosed(s) ? nc_format(ctx, "%s", s) : nc_format(ctx, "(%s)", s);
 }
 
 // Rewrites a control statement.
-
 char *nc_control(NcContext *ctx, NcTokens ts, int line) {
     char *source = nc_trim(ctx, nc_words(ctx, ts));
     size_t len = strlen(source);

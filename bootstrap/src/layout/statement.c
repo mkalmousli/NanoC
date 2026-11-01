@@ -20,7 +20,6 @@ bool nc_is_ret(NcContext *c, NcTokens items) {
 }
 
 // Converts one statement to C.
-
 char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
     NcTokens ts = line.ts;
     NcTokens items = nc_significant(c, ts);

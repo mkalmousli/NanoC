@@ -19,7 +19,6 @@ void nc_init(NcContext *c, const char *file) {
 }
 
 // Allocates tracked memory.
-
 void *nc_alloc(NcContext *c, size_t size) {
     size_t align = _Alignof(max_align_t);
     if (size > SIZE_MAX - align) {
@@ -60,7 +59,6 @@ void *nc_alloc(NcContext *c, size_t size) {
 }
 
 // Frees all tracked memory.
-
 void nc_dispose(NcContext *c) {
     while (c->allocations) {
         NcAllocation *p = c->allocations;
@@ -70,7 +68,6 @@ void nc_dispose(NcContext *c) {
 }
 
 // Grows an array by one.
-
 void *nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) {
     size_t next = *cap ? *cap * 2 : 8;
     if (next < *cap || next > SIZE_MAX / width) {

@@ -29,7 +29,6 @@ void nc_alias(NcToken *t) {
 }
 
 // Rewrites a type name given as text, e.g. "usize" to "size_t".
-
 char *nc_alias_name(NcContext *c, const char *name) {
     NcToken t = {name, strlen(name), 0, 0, NC_WORD};
     nc_alias(&t);
@@ -37,7 +36,6 @@ char *nc_alias_name(NcContext *c, const char *name) {
 }
 
 // Returns the tokens with every short type name rewritten; only NanoC-owned code goes through here.
-
 NcTokens nc_aliased(NcContext *c, NcTokens ts) {
     NcTokens out = {0};
     for (size_t i = (0), nanoc_end_2 = (ts.n); i < nanoc_end_2; ++i) {

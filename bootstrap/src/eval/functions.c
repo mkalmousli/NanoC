@@ -40,7 +40,6 @@ void nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) {
 }
 
 // Calls a meta function.
-
 NcValue nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int line) {
     NcContext *c = m->ctx;
     nc_depth(c, depth, line, "compile-time");

@@ -12,7 +12,6 @@ static NcTokens bare(NcContext *c, NcLayoutLine line) {
 }
 
 // Emits "match x" with arms "a, b" (indented bodies) and an optional "else" arm.
-
 char *nc_match(NcContext *c, NcNode node, size_t depth) {
     NcTokens head = bare(c, node.head);
     char *subject = nc_trim(c, nc_join(c, nc_slice(head, 1, head.n)));
