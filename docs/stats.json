@@ -1,0 +1,15 @@
+{
+  "generated": "2026-11-01",
+  "files": 70,
+  "nc": {"lines": 3203, "bytes": 121481},
+  "c": {"lines": 6640, "bytes": 223561},
+  "areas": [
+    {"name": "meta", "files": 9, "nc": 436, "c": 850},
+    {"name": "eval", "files": 15, "nc": 583, "c": 1231},
+    {"name": "frontend", "files": 12, "nc": 573, "c": 1216},
+    {"name": "cli", "files": 11, "nc": 641, "c": 1329},
+    {"name": "support", "files": 6, "nc": 288, "c": 602},
+    {"name": "macros", "files": 5, "nc": 164, "c": 331},
+    {"name": "layout", "files": 12, "nc": 518, "c": 1081}
+  ]
+}
