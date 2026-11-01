@@ -21,7 +21,7 @@ static bool nc_search(const char *name, char *out) {
     if (!path) {
         return 0;
     }
-    const char *p = path;
+    const char * p = path;
     while (*p) {
         const char *end = strchr(p, ':');
         size_t n = end ? (size_t)(end - p) : strlen(p);

@@ -1,19 +1,19 @@
-#include "test.h"
-@f whitespace(const char **s) static void
-  while isspace((unsigned char)**s)
+@use "test"
+@f whitespace(cstr *s) static void
+  while isspace((u8)**s)
     ++*s
-@f string(const char **s) static bool
+@f string(cstr *s) static bool
   if *(*s)++ != '"'
     ret false
   while **s && **s != '"'
-    if (unsigned char)**s < 32
+    if (u8)**s < 32
       ret false
     if *(*s)++ != '\\'
       continue
     if **s == 'u'
       ++*s
       for int i = 0; i < 4; ++i
-        if !isxdigit((unsigned char)**s)
+        if !isxdigit((u8)**s)
           ret false
         ++*s
     else
@@ -24,7 +24,7 @@
     ret false
   ++*s
   ret true
-@f value(const char **s, int depth) static bool
+@f value(cstr *s, int depth) static bool
   if depth > 128
     ret false
   whitespace(s)
@@ -65,7 +65,7 @@
     ret false
   *s = end
   ret true
-@f test_json(const char *source) bool
+@f test_json(cstr source) bool
   if !value(&source, 0)
     ret false
   whitespace(&source)

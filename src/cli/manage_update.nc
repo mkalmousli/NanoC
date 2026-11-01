@@ -1,17 +1,13 @@
 // The update command.
-#include "nanoc/manage.h"
-@use stdio
-@use stdlib
-@use string
-@use unistd
+@use "nanoc/manage", stdio, stdlib, string, unistd
 // Runs a shell step, with label.
-@f nc_update_cmd(const char *cmd, const char *what) static int
+@f nc_update_cmd(cstr cmd, cstr what) static int
   printf("  %s\n", what)
   fflush(stdout)
   int rc = system(cmd)
   rc == 0 ? 0 : 1
 // Runs the update command.
-@f nc_update_command(const char *prefix) int
+@f nc_update_command(cstr prefix) int
   if !nc_have_command("git")
     fputs("nanoc: update needs git\n", stderr)
     return 1

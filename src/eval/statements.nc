@@ -1,5 +1,5 @@
 // Statement execution for CT/BT code.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Runs a statement sequence.
 @f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, usize depth) NcFlow
   NcContext *ctx = m->ctx
@@ -10,7 +10,7 @@
     NcToken t = nc_take(&c)
     nc_step(ctx, t.line)
     usize next = c.pos
-    while next < ts.n && ts.v[next].kind == NC_SPACE
+    while next < ts.n and ts.v[next].kind == NC_SPACE
       ++next
     bool define_f = nc_is(t, "f") && next < ts.n && ts.v[next].kind == NC_WORD
     if nc_is(t, ";")
@@ -19,11 +19,11 @@
       nc_ct_define(m, &c, env)
     elif nc_is(t, "if")
       out = nc_conditional(m, &c, env, depth)
-      if out.returning || out.breaking || out.continuing
+      if out.returning or out.breaking or out.continuing
         return out
     elif nc_is(t, "for") || nc_is(t, "while")
       out = nc_loop(m, &c, env, depth, nc_text(ctx, t))
-      if out.returning || out.breaking || out.continuing
+      if out.returning or out.breaking or out.continuing
         return out
     elif nc_is(t, "break") || nc_is(t, "continue")
       nc_need(&c, ";")
@@ -47,5 +47,5 @@
   out
 // Expands a compile-time block.
 @f nc_compile_time(NcContext *ctx, NcTokens ts, usize depth) char *
-  nc_expand(ctx, nc_lex(ctx, nc_program(ctx, ts, NULL, NC_CT, depth), ts.n ? ts.v[0].line : 1),
+  nc_expand(ctx, nc_lex(ctx, nc_program(ctx, ts, nil, NC_CT, depth), ts.n ? ts.v[0].line : 1),
     depth)

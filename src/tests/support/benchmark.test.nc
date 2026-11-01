@@ -1,13 +1,11 @@
-#include "test.h"
-@use time
-@use errno
+@use "test", time, errno
 @f seconds(struct timespec start) static double
   struct timespec end
   CHECK(clock_gettime(CLOCK_MONOTONIC, &end) == 0)
   ret (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_nsec - start.tv_nsec) / 1e9
-@f translation_size(const char *source, const char *file) static size_t
+@f translation_size(cstr source, cstr file) static size_t
   NcContext *c = calloc(1, sizeof *c)
-  CHECK(c != NULL)
+  CHECK(c != nil)
   nc_init(c, file)
   if setjmp(c->trap)
     fprintf(stderr, "%s\n", c->error)

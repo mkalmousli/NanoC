@@ -1,5 +1,5 @@
 // Binary operators and precedence.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Gets the binding power of an operator.
 @f nc_precedence(NcToken t) int
   if nc_is(t, "||")
@@ -22,11 +22,11 @@
   if nc_is(op, "!=")
     return nc_boolean(!nc_equal(c, a, b, 0, line))
   if nc_is(op, "&&")
-    return nc_boolean(nc_truth(a) && nc_truth(b))
+    return nc_boolean(nc_truth(a) and nc_truth(b))
   if nc_is(op, "||")
-    return nc_boolean(nc_truth(a) || nc_truth(b))
+    return nc_boolean(nc_truth(a) or nc_truth(b))
   if nc_is(op, "+") && a.kind == b.kind
-    if a.kind == NC_STRING || a.kind == NC_CODE
+    if a.kind == NC_STRING or a.kind == NC_CODE
       nc_check(c, strlen(a.text) + strlen(b.text), line)
       return nc_value_text(a.kind, nc_format(c, "%s%s", a.text, b.text))
     if a.kind == NC_LIST

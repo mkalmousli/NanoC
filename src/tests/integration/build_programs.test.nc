@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f unlimited_passes static void
   char *path = test_path("passes.nc")
   test_write(path, "@ct {n:=get(\"n\",0);put(\"n\",n+1);if(n<64){again();}}\n@f main()->int=>0;\n")
@@ -17,7 +17,7 @@
   CHECK(!test_exists(made))
   test_write(source, nc_format(c, "%s@later(%s)\n", template, nc_quote(c, made)))
   const char *disabled[] = {"build/nanoc", source, "--no-effects", NULL}
-  CHECK(test_run(disabled).status != 0 && !test_exists(made))
+  CHECK(test_run(disabled).status != 0 and !test_exists(made))
   const char *run[] = {"build/nanoc", source, NULL}
   (void)test_command(run)
   CHECK(!strcmp(test_read(made), "deferred"))
@@ -41,10 +41,10 @@
   const char *check[] = {"build/nanoc", source, "--check", "--diagnostics", "json", NULL}
   TestResult r = test_run(check)
   CHECK(r.status != 0 && test_json(r.err) && strstr(r.err, "host effects disabled"))
-  CHECK(!test_exists(file) && !test_exists(header))
+  CHECK(!test_exists(file) and !test_exists(header))
   const char *run[] = {"build/nanoc", source, "-o", generated, "--diagnostics", "json", NULL}
   r = test_command(run)
-  CHECK(!*r.out && !*r.err)
+  CHECK(!*r.out and !*r.err)
   const char *cc[] = {"cc", "-std=c11", generated, "-o", test_path("bt-program"), NULL}
   (void)test_command(cc)
   const char *binary[] = {test_path("bt-program"), NULL}

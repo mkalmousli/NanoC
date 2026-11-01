@@ -10,7 +10,7 @@ int nc_manage(int argc, char **argv) {
     if (argc < 2) {
         return -1;
     }
-    const char *cmd = argv[1];
+    const char * cmd = argv[1];
     bool editor = !strcmp(cmd, "editor");
     bool uninstall = !strcmp(cmd, "uninstall");
     bool update = !strcmp(cmd, "update");

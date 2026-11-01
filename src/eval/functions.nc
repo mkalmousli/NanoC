@@ -1,5 +1,5 @@
 // User functions in meta code.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Defines a meta function.
 @f nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) void
   NcContext *ctx = m->ctx
@@ -17,7 +17,7 @@
   for usize i = 0; i < params.n; ++i
     NcCursor p = {ctx, params.v[i], 0}
     char *id = nc_name(&p)
-    if !nc_end(&p) || nc_get(&names, id)
+    if !nc_end(&p) or nc_get(&names, id)
       nc_fail(ctx, nc_line(&p), "invalid function parameter")
     nc_put(ctx, &names, id, (void *)1)
     NC_PUSH(ctx, f->params, id)
@@ -30,7 +30,7 @@
     f->body = nc_group(c, "{", "}")
   nc_put(ctx, &m->functions, name, f)
 // Calls a meta function.
-@f nc_call(NcMachine *m, const char *name, NcValues args, usize depth, int line) NcValue
+@f nc_call(NcMachine *m, cstr name, NcValues args, usize depth, int line) NcValue
   NcContext *c = m->ctx
   nc_depth(c, depth, line, "compile-time")
   NcCtFunction *f = nc_get(&m->functions, name)
@@ -47,6 +47,6 @@
   c->frames[c->frame_count++] = frame
   NcFlow result = nc_run(m, f->body, env, depth + 1)
   --c->frame_count
-  if result.breaking || result.continuing
+  if result.breaking or result.continuing
     nc_fail(c, line, "loop control outside a loop")
   result.value

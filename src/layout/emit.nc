@@ -1,12 +1,12 @@
 // Emits a layout tree as C.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if the node starts with s.
-@f lead(NcNode n, const char *s) static bool
+@f lead(NcNode n, cstr s) static bool
   for usize i = 0; i < n.head.ts.n; ++i
     if n.head.ts.v[i].kind != NC_SPACE
       if nc_is(n.head.ts.v[i], "else")
         usize next = i + 1
-        while next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE
+        while next < n.head.ts.n and n.head.ts.v[next].kind == NC_SPACE
           ++next
         bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if")
         return !strcmp(s, condition ? "elif" : "else")
@@ -21,7 +21,7 @@
 // Emits a block of nodes as C.
 @f nc_emit_block(NcContext *c, NcNodes nodes, bool tail, usize depth) char *
   nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout")
-  if !nodes.n && tail
+  if !nodes.n and tail
     nc_fail(c, 1, "value function needs a final expression")
   NcBuffer out = {0}
   usize i = 0
@@ -42,7 +42,7 @@
     if lead(node, "defer") && !node.children.n
       nc_emit_defer(c, &out, nodes, i, tail, depth)
       break
-    bool returning = tail && last + 1 == nodes.n
+    bool returning = tail and last + 1 == nodes.n
     if lead(node, "match") && node.children.n
       if returning
         nc_fail(c, node.head.line, "match is a statement; end the function with a value")
@@ -51,14 +51,14 @@
       i = last + 1
       continue
     if !node.children.n
-      if node.head.raw || nc_meta_line(node.head)
+      if node.head.raw or nc_meta_line(node.head)
         nc_marker(c, &out, node.head.line)
         nc_add(c, &out, nc_join(c, node.head.ts))
         nc_add(c, &out, "\n")
         i = last + 1
         continue
       if (returning
-        && (
+        and (
           lead(node, "let") || lead(node, "var") || lead(node, "intent") || lead(node, "break")
           || lead(node, "continue")))
         nc_fail(c, node.head.line, "value function needs a final expression")

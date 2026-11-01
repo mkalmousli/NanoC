@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_assembly void
   const char *card[] = {"build/nanoc", "--describe", "asm", NULL}
   TestResult description = test_command(card)

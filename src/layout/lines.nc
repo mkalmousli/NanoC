@@ -1,5 +1,5 @@
 // Splits tokens into logical lines.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Reads one logical line.
 @f nc_logical_line(NcCursor *c) NcLayoutLine
   usize whitespace = c->pos
@@ -19,7 +19,7 @@
     NcToken t = c->ts.v[c->pos]
     if !stack.n && t.kind == NC_SPACE && memchr(t.s, '\n', t.n)
       break
-    if !stack.n && t.kind == NC_DIRECTIVE
+    if !stack.n and t.kind == NC_DIRECTIVE
       if out.ts.n
         nc_fail(c->ctx, t.line, "directive must start its own line")
       NC_PUSH(c->ctx, out.ts, t)
@@ -33,7 +33,7 @@
     if end
       NC_PUSH(c->ctx, stack, (char *)end)
     elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
-      if !stack.n || !nc_is(t, stack.v[stack.n - 1])
+      if !stack.n or !nc_is(t, stack.v[stack.n - 1])
         nc_fail(c->ctx, t.line, "mismatched delimiter")
       --stack.n
   if stack.n
@@ -44,7 +44,7 @@
   NcLines out = {0}
   for ;;
     usize next = c->pos
-    while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
+    while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
       ++next
     if next == c->ts.n
       break

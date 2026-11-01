@@ -1,6 +1,5 @@
-#include "test.h"
-@use dirent
-@f test_remove(const char *path) void
+@use "test", dirent
+@f test_remove(cstr path) void
   struct stat st
   if lstat(path, &st)
     return
@@ -8,7 +7,7 @@
     CHECK(unlink(path) == 0)
     return
   DIR *dir = opendir(path)
-  CHECK(dir != NULL)
+  CHECK(dir != nil)
   struct dirent *entry
   while (entry = readdir(dir)) != nil
     if !strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")

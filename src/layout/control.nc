@@ -1,14 +1,14 @@
 // Control statements: if, for, while.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if one parenthesis pair spans all of s.
-@f enclosed(const char *s) static bool
+@f enclosed(cstr s) static bool
   if *s != '('
     return false
   int depth = 0
   for usize i = 0; s[i]; ++i
     if s[i] == '"' || s[i] == '\''
       char quote = s[i++]
-      while s[i] && s[i] != quote
+      while s[i] and s[i] != quote
         i += s[i] == '\\' && s[i + 1] ? 2 : 1
       if !s[i]
         return false
@@ -18,7 +18,7 @@
       return !s[i + 1]
   false
 // Wraps a condition in parentheses unless already wrapped.
-@f paren(NcContext *ctx, const char *s) static char *
+@f paren(NcContext *ctx, cstr s) static char *
   enclosed(s) ? nc_format(ctx, "%s", s) : nc_format(ctx, "(%s)", s)
 // Rewrites a control statement.
 @f nc_control(NcContext *ctx, NcTokens ts, int line) char *
@@ -62,7 +62,7 @@
     for usize i = c.pos; i < c.ts.n; ++i
       if nc_is(c.ts.v[i], "..")
         range = true
-    if ctx->cpp && !range
+    if ctx->cpp and !range
       return nc_format(ctx, "for (%s%s %s : %s)", typed ? type : "auto", typed ? "&" : "&&", id,
         bounds)
     NcBuffer out = {0}
@@ -75,4 +75,4 @@
     nc_add(ctx, &out, "")
     return nc_format(ctx, "@for (%s %s in %s)", type, id, out.v)
   nc_fail(ctx, line, "unsupported block header: %s", name)
-  NULL
+  nil

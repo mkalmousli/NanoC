@@ -17,7 +17,7 @@
   for m mods
     if len(m)>3
       protos:=exec([nc,"--prototypes",m])
-      if contains(read(m),"#include \"nanoc/manage.h\"")
+      if contains(read(m),"\"nanoc/manage")
         mg+=protos
       else
         main+=protos

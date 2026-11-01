@@ -1,6 +1,5 @@
 // Values of the meta language.
-#include "nanoc/nanoc.h"
-@use inttypes
+@use "nanoc/nanoc", inttypes
 // Makes an integer value.
 @f nc_integer(int64_t n) NcValue
   (NcValue){.kind = NC_INT, .n = n}
@@ -21,12 +20,12 @@
 @f nc_truth(NcValue v) bool
   if v.kind == NC_LIST
     return v.count != 0
-  if v.kind == NC_STRING || v.kind == NC_CODE
+  if v.kind == NC_STRING or v.kind == NC_CODE
     return *v.text != 0
   v.n != 0
 // Gets a value as an integer.
 @f nc_numeric(NcContext *c, NcValue v, int line) int64_t
-  if v.kind != NC_INT && v.kind != NC_BOOL
+  if v.kind != NC_INT and v.kind != NC_BOOL
     nc_fail(c, line, "expected an integer")
   v.n
 // Renders a value as text.
@@ -36,7 +35,7 @@
     return nc_format(c, "%" PRId64, v.n)
   if v.kind == NC_BOOL
     return v.n ? "true" : "false"
-  if v.kind == NC_STRING || v.kind == NC_CODE
+  if v.kind == NC_STRING or v.kind == NC_CODE
     return v.text
   NcBuffer b = {0}
   nc_add(c, &b, "[")
@@ -61,9 +60,9 @@
   nc_depth(c, depth, line, "value")
   if a.kind != b.kind
     return false
-  if a.kind == NC_INT || a.kind == NC_BOOL
+  if a.kind == NC_INT or a.kind == NC_BOOL
     return a.n == b.n
-  if a.kind == NC_STRING || a.kind == NC_CODE
+  if a.kind == NC_STRING or a.kind == NC_CODE
     return !strcmp(a.text, b.text)
   if a.count != b.count
     return false

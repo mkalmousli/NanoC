@@ -1,6 +1,6 @@
 // Prints non-static prototypes for --prototypes. Used to
 // generate headers.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Prints non-static prototypes.
 @f nc_prototypes(NcContext *c, FILE *out) void
   for usize i = 0; i < c->symbols.n; ++i

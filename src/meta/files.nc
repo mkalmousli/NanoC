@@ -1,9 +1,7 @@
 // File builtins: read, write, mkdir.
-#include "nanoc/nanoc.h"
-@use sys/stat
-@use errno
+@use "nanoc/nanoc", sys/stat, errno
 // Creates the parent directories.
-@f directories(NcContext *c, const char *path, int line) static void
+@f directories(NcContext *c, cstr path, int line) static void
   char *copy = nc_string(c, path, strlen(path))
   if !*copy
     nc_fail(c, line, "empty directory path")
@@ -12,19 +10,19 @@
       continue
     char last = *p
     *p = 0
-    if mkdir(copy, 0755) && errno != EEXIST
+    if mkdir(copy, 0755) and errno != EEXIST
       nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
     *p = last
     if !last
       break
 // Runs file builtins.
-@f nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) NcValue
+@f nc_meta_files(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "file")
     nc_arity(c, a, 0, line)
     return nc_value_text(NC_STRING, (char *)c->file)
   nc_arity(c, a, !strcmp(name, "write") ? 2 : 1, line)
-  const char *path = nc_meta_text(c, a.v[0], line)
+  cstr path = nc_meta_text(c, a.v[0], line)
   if !strcmp(name, "read")
     return nc_value_text(NC_STRING, nc_read(c, path))
   if !strcmp(name, "exists")

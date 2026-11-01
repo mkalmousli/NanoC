@@ -1,5 +1,5 @@
 // Substitutes macro arguments.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Substitutes macro parameters.
 @f nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, usize depth, usize index) char *
   nc_depth(ctx, depth, 1, "substitution")
@@ -44,7 +44,7 @@
         NcGroups *values = nc_get(&b->values, name)
         if !values
           nc_fail(ctx, t.line, "unknown macro capture: $%s", name)
-        usize n = b->variadic && !strcmp(name, b->variadic) ? index : 0
+        usize n = b->variadic and !strcmp(name, b->variadic) ? index : 0
         if n == SIZE_MAX
           nc_fail(ctx, t.line, "variadic capture requires repetition")
         if n >= values->n

@@ -19,7 +19,7 @@ NcValue nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) {
     }
     if (!strcmp(name, "put") || !strcmp(name, "get")) {
         nc_arity(c, a, 2, line);
-        const char *key = nc_meta_text(c, a.v[0], line);
+        const char * key = nc_meta_text(c, a.v[0], line);
         NcValue *v = nc_get(&c->state, key);
         if (!strcmp(name, "get")) {
             return v ? *v : a.v[1];
@@ -41,7 +41,7 @@ NcValue nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) {
         return a.v[0];
     }
     nc_arity(c, a, 1, line);
-    const char *text = nc_meta_text(c, a.v[0], line);
+    const char * text = nc_meta_text(c, a.v[0], line);
     if (!strcmp(name, "fail")) {
         nc_fail(c, line, "%s", text);
     }

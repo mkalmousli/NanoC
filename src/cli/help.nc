@@ -1,5 +1,5 @@
 // Text shown by --help.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Prints the usage text.
 @f nc_help(FILE *out) void
   fputs(

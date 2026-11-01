@@ -55,7 +55,7 @@ NcValue nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line) {
         }
         return result;
     }
-    const char *separator = nc_meta_text(c, a.v[1], line);
+    const char * separator = nc_meta_text(c, a.v[1], line);
     NcBuffer b = {0};
     for (size_t i = 0; i < a.v[0].count; ++i) {
         nc_step(c, line);

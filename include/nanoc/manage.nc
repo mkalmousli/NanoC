@@ -2,10 +2,7 @@
 #define _XOPEN_SOURCE 700
 /* Paths are bounded by PATH_MAX; snprintf truncation is handled by callers. */
 #pragma GCC diagnostic ignored "-Wformat-truncation"
-@use stdio
-@use stdbool
-@use limits
-@use stddef
+@use stdio, stdbool, limits, stddef
 #ifndef PATH_MAX
 #define PATH_MAX 4096
 #endif

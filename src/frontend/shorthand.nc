@@ -1,7 +1,7 @@
 // Shorthand forms such as fn.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Expands shorthand forms.
-@f nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, usize depth) char *
+@f nc_shorthand(NcContext *ctx, NcCursor *c, cstr name, usize depth) char *
   if !strcmp(name, "fn")
     return nc_function(ctx, c, depth)
   if !strcmp(name, "let")
@@ -15,7 +15,7 @@
   char *low = nc_trim(ctx, nc_join(ctx, nc_until(&h, "..")))
   nc_need(&h, "..")
   char *high = nc_trim(ctx, nc_join(ctx, nc_slice(h.ts, h.pos, h.ts.n)))
-  if !*low || !*high
+  if !*low or !*high
     nc_fail(ctx, nc_line(c), "range requires two bounds")
   NcTokens body = nc_group(c, "{", "}")
   char *start = nc_fresh(ctx, "start"), *end = nc_fresh(ctx, "end")

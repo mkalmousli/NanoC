@@ -1,7 +1,7 @@
-#include "test.h"
-@f emit(const char *source, bool mini) static char *
+@use "test"
+@f emit(cstr source, bool mini) static char *
   NcContext *c = calloc(1, sizeof *c)
-  CHECK(c != NULL)
+  CHECK(c != nil)
   nc_init(c, "test.nc")
   c->mini = mini
   if setjmp(c->trap)

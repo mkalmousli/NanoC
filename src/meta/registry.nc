@@ -1,5 +1,5 @@
 // Builtin catalog and metadata.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"str", "str(value)", "all", NULL}, {"tokens", "tokens(text)", "all", NULL},
   {"ident", "ident(text)", "all", NULL}, {"fresh", "fresh(hint)", "all", NULL},
@@ -29,22 +29,22 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"sh", "sh(command) -> [status,out,err]", "bt", nc_meta_process} };
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
-@f nc_builtin_known(const char *name) bool
+@f nc_builtin_known(cstr name) bool
   for usize i = 0; i < nc_spec_count; ++i
     if !strcmp(name, nc_specs[i].name)
       return true
   false
 // Calls a registered builtin.
-@f nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) NcValue
+@f nc_extra_builtin(NcMachine *m, cstr name, NcValues args, int line) NcValue
   for usize i = 0; i < nc_spec_count; ++i
     const NcSpec *s = &nc_specs[i]
-    if !strcmp(name, s->name) && s->function
+    if !strcmp(name, s->name) and s->function
       return s->function(m, name, args, line)
   nc_fail(m->ctx, line, "unknown compile-time function: %s", name)
   (NcValue){0}
 // Gets a value as text.
-@f nc_meta_text(NcContext *c, NcValue v, int line) const char *
-  if v.kind != NC_STRING && v.kind != NC_CODE
+@f nc_meta_text(NcContext *c, NcValue v, int line) cstr 
+  if v.kind != NC_STRING and v.kind != NC_CODE
     nc_fail(c, line, "expected text or tokens")
   v.text
 // Fails unless host effects are on.

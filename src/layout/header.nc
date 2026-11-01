@@ -1,5 +1,5 @@
 // Statement header lookahead.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Finds the statement header.
 @f nc_header(const NcCursor *c) NcHeader
   usize i = c->pos ? c->pos - 1 : 0
@@ -9,17 +9,17 @@
 // Tells if a token is on the line.
 @f nc_same_line(const NcCursor *c, int line) bool
   usize i = c->pos
-  while i < c->ts.n && c->ts.v[i].kind == NC_SPACE
+  while i < c->ts.n and c->ts.v[i].kind == NC_SPACE
     ++i
-  i < c->ts.n && c->ts.v[i].line == line
+  i < c->ts.n and c->ts.v[i].line == line
 // Tells if the header has s.
-@f nc_header_at(const NcCursor *c, const char *s, int line) bool
+@f nc_header_at(const NcCursor *c, cstr s, int line) bool
   usize i = c->pos
-  while i < c->ts.n && c->ts.v[i].kind == NC_SPACE
+  while i < c->ts.n and c->ts.v[i].kind == NC_SPACE
     ++i
-  i < c->ts.n && c->ts.v[i].line == line && nc_is(c->ts.v[i], s)
+  i < c->ts.n and c->ts.v[i].line == line and nc_is(c->ts.v[i], s)
 // Consumes s from the header.
-@f nc_header_eat(NcCursor *c, const char *s, int line) bool
+@f nc_header_eat(NcCursor *c, cstr s, int line) bool
   if !nc_header_at(c, s, line)
     return false
   nc_need(c, s)
@@ -43,7 +43,7 @@
     else
       NC_PUSH(c->ctx, ts, t)
       ++c->pos
-  while ts.n && ts.v[ts.n - 1].kind == NC_SPACE
+  while ts.n and ts.v[ts.n - 1].kind == NC_SPACE
     --ts.n
   if !ts.n
     nc_fail(c->ctx, nc_line(c), "missing expression")

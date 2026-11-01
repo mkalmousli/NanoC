@@ -1,5 +1,5 @@
 // Conditionals and loops in meta code.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Skips an if/elif/else chain.
 @f skip_conditional(NcCursor *c, usize depth) static void
   nc_depth(c->ctx, depth, nc_line(c), "conditional")
@@ -25,7 +25,7 @@
   bool choose = nc_truth(nc_eval(m, cond, env, depth, true))
   nc_run(m, choose ? yes : no, nc_env(m->ctx, env), depth + 1)
 // Runs a for or while loop.
-@f nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, const char *name) NcFlow
+@f nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, cstr name) NcFlow
   NcContext *ctx = m->ctx
   NcFlow out = {0}
   if !strcmp(name, "for") && nc_at(c, "(")

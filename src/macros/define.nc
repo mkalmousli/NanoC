@@ -1,5 +1,5 @@
 // Parses @m macro definitions.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Defines a macro.
 @f nc_define_macro(NcContext *ctx, NcCursor *c) void
   NcHeader header = nc_header(c)
@@ -26,7 +26,7 @@
     if nc_get(&names, p.name) || !strcmp(p.name, "fresh")
       nc_fail(ctx, nc_line(&a), "duplicate or reserved parameter")
     nc_put(ctx, &names, p.name, (void *)1)
-    if m->params.n && m->params.v[m->params.n - 1].variadic
+    if m->params.n and m->params.v[m->params.n - 1].variadic
       nc_fail(ctx, nc_line(&a), "variadic parameter must be last")
     NC_PUSH(ctx, m->params, p)
   m->body = nc_macro_body(c, header, &m->program)

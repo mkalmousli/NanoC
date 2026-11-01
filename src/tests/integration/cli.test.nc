@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_cli void
   const char *help[] = {"build/nanoc", "--help", NULL}
   (void)test_command(help)

@@ -36,7 +36,7 @@ NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) {
         return nc_value_text(NC_STRING, (char *)c->file);
     }
     nc_arity(c, a, !strcmp(name, "write") ? 2 : 1, line);
-    const char *path = nc_meta_text(c, a.v[0], line);
+    const char * path = nc_meta_text(c, a.v[0], line);
     if (!strcmp(name, "read")) {
         return nc_value_text(NC_STRING, nc_read(c, path));
     }

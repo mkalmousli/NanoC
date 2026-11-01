@@ -1,11 +1,11 @@
 // Brace handling for the pretty C printer.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if the previous token is the word s.
-@f nc_pp_prev_is(NcPretty *p, const char *s) bool
-  p->has_prev && p->prev.kind == NC_WORD && nc_is(p->prev, s)
+@f nc_pp_prev_is(NcPretty *p, cstr s) bool
+  p->has_prev and p->prev.kind == NC_WORD and nc_is(p->prev, s)
 // Tells if the previous token is the punctuation s.
-@f nc_pp_prev_punct(NcPretty *p, const char *s) bool
-  p->has_prev && p->prev.kind == NC_PUNCT && nc_is(p->prev, s)
+@f nc_pp_prev_punct(NcPretty *p, cstr s) bool
+  p->has_prev and p->prev.kind == NC_PUNCT and nc_is(p->prev, s)
 // Classifies a "{": 'b' block, 't' type body, 'e' enum, 'i' init.
 @f brace_kind(NcPretty *p) static char
   if p->paren || (p->top && p->kind[p->top - 1] == 'i')
@@ -17,9 +17,9 @@
     return 'b'
   if nc_pp_prev_punct(p, ")")
     return p->ctl[255] || !p->top ? 'b' : 'i'
-  if p->kw_type && p->prev.kind == NC_WORD
+  if p->kw_type and p->prev.kind == NC_WORD
     return p->kw_enum ? 'e' : 't'
-  if !p->top && p->prev.kind == NC_LITERAL
+  if !p->top and p->prev.kind == NC_LITERAL
     return 'b'
   'i'
 // Handles an opening brace.
@@ -62,7 +62,7 @@
 @f nc_pp_resolve(NcPretty *p, NcToken t) void
   int after = p->after
   p->after = 0
-  if after == 0 || after == 3
+  if after == 0 or after == 3
     return
   bool word = t.kind == NC_WORD
   if (after == 1 && word && nc_is(t, "else")) || (after == 2 && word && nc_is(t, "while"))

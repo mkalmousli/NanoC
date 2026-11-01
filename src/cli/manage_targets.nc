@@ -1,19 +1,16 @@
 // Editor config locations on this host.
-#include "nanoc/manage.h"
-@use stdlib
-@use string
-@use sys/utsname
+@use "nanoc/manage", stdlib, string, sys/utsname
 // Finds the user home directory.
 @f mg_home(char *out) bool
   const char *home = getenv("HOME")
-  if !home || !*home
+  if !home or !*home
     return false
   snprintf(out, PATH_MAX, "%s", home)
   true
 // Finds the user config directory.
 @f mg_config(char *out) bool
   const char *xdg = getenv("XDG_CONFIG_HOME")
-  if xdg && *xdg
+  if xdg and *xdg
     snprintf(out, PATH_MAX, "%s", xdg)
     return true
   char home[PATH_MAX]
@@ -34,12 +31,12 @@
     snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home)
   true
 // Adds a file to the targets.
-@f mg_add(NcTarget *t, int *n, const char *src, const char *dir, const char *rel) void
+@f mg_add(NcTarget *t, int *n, cstr src, cstr dir, cstr rel) void
   t[*n].src = src
   snprintf(t[*n].dst, PATH_MAX, "%s/%s", dir, rel)
   *n += 1
 // Adds VS Code targets under a base.
-@f mg_vscode_at(NcTarget *t, int *n, const char *base) void
+@f mg_vscode_at(NcTarget *t, int *n, cstr base) void
   char dir[PATH_MAX]
   snprintf(dir, sizeof dir, "%s/extensions/mkalmousli.nanoc-language-0.1.0", base)
   mg_add(t, n, "editors/vscode/package.json", dir, "package.json")
@@ -51,7 +48,7 @@
   mg_add(t, n, "editors/vscode/icons/nanoc.svg", dir, "icons/nanoc.svg")
   mg_add(t, n, "editors/vscode/snippets/nanoc.code-snippets", dir, "snippets/nanoc.code-snippets")
 // Adds all VS Code targets.
-@f mg_vscode(NcTarget *t, int *n, const char *home) void
+@f mg_vscode(NcTarget *t, int *n, cstr home) void
   const char *bases[] = {".vscode", ".vscode-oss", ".cursor"}
   int found = 0
   for int i = 0; i < 3; ++i

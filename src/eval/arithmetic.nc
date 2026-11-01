@@ -1,14 +1,14 @@
 // Checked 64-bit integer arithmetic.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Applies an operator, checking overflow.
-@f nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line) int64_t
+@f nc_arithmetic(NcContext *c, cstr op, int64_t x, int64_t y, int line) int64_t
   bool overflow = false
   if !strcmp(op, "+")
-    overflow = (y > 0 && x > INT64_MAX - y) || (y < 0 && x < INT64_MIN - y)
+    overflow = (y > 0 and x > INT64_MAX - y) or (y < 0 and x < INT64_MIN - y)
     if !overflow
       return x + y
   elif !strcmp(op, "-")
-    overflow = (y < 0 && x > INT64_MAX + y) || (y > 0 && x < INT64_MIN + y)
+    overflow = (y < 0 and x > INT64_MAX + y) or (y > 0 and x < INT64_MIN + y)
     if !overflow
       return x - y
   elif !strcmp(op, "*")
@@ -21,7 +21,7 @@
   elif !strcmp(op, "/") || !strcmp(op, "%")
     if !y
       nc_fail(c, line, "division by zero")
-    if x == INT64_MIN && y == -1
+    if x == INT64_MIN and y == -1
       overflow = true
     else
       return *op == '/' ? x / y : x % y

@@ -1,7 +1,7 @@
 // Builtins that work on token lists.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Runs token-list builtins.
-@f nc_builtin_tokens(NcMachine *m, const char *name, NcValue v, int line) NcValue
+@f nc_builtin_tokens(NcMachine *m, cstr name, NcValue v, int line) NcValue
   NcContext *c = m->ctx
   if v.kind != NC_STRING
     nc_fail(c, line, "%s requires a string", name)
@@ -13,7 +13,7 @@
 // Runs the range builtin.
 @f nc_builtin_range(NcMachine *m, NcValues args, int line) NcValue
   NcContext *c = m->ctx
-  if args.n != 1 && args.n != 2
+  if args.n != 1 and args.n != 2
     nc_fail(c, line, "range expects one or two integers")
   int64_t start = args.n == 2 ? nc_numeric(c, args.v[0], line) : 0
   int64_t end = nc_numeric(c, args.v[args.n - 1], line)

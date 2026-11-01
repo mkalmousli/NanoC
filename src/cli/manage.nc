@@ -1,16 +1,14 @@
 // The manage subcommand dispatcher.
-#include "nanoc/manage.h"
-@use stdlib
-@use string
+@use "nanoc/manage", stdlib, string
 // Dispatches manage subcommands.
 @f nc_manage(int argc, char **argv) int
   if argc < 2
     return -1
-  const char *cmd = argv[1]
+  cstr cmd = argv[1]
   bool editor = !strcmp(cmd, "editor")
   bool uninstall = !strcmp(cmd, "uninstall")
   bool update = !strcmp(cmd, "update")
-  if !editor && !uninstall && !update
+  if !editor and !uninstall and !update
     return -1
   char prefix[PATH_MAX]
   if !nc_prefix(argv[0], prefix)

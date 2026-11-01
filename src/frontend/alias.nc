@@ -1,5 +1,5 @@
 // Short numeric type names that lex to plain C type words, valid in every C compiler.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Rewrites a word token such as i32 or f64 to its C type; other tokens are unchanged.
 int nc_std;
 @f nc_alias(NcToken *t) void
@@ -7,10 +7,10 @@ int nc_std;
     {"i64", "long long"}, {"u8", "unsigned char"}, {"u16", "unsigned short"}, {"u32", "unsigned"},
     {"u64", "unsigned long long"}, {"f32", "float"}, {"f64", "double"}, {"usize", "size_t"},
     {"isize", "ptrdiff_t"}, {"byte", "unsigned char"}, {"cstr", "const char *"}}
-  if t->kind != NC_WORD || t->n < 2 || t->n > 5
+  if t->kind != NC_WORD or t->n < 2 or t->n > 5
     return
   for size_t k = 0; k < sizeof map / sizeof *map; ++k
-    if strlen(map[k][0]) == t->n && !strncmp(t->s, map[k][0], t->n)
+    if strlen(map[k][0]) == t->n and !strncmp(t->s, map[k][0], t->n)
       if nc_std == 89 && strstr(map[k][1], "long long")
         t->s = map[k][1][0] == 'u' ? "unsigned long" : "long"
         t->n = strlen(t->s)

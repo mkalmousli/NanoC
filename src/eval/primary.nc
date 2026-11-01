@@ -1,7 +1,5 @@
 // Primary expressions: literals, calls, lists.
-#include "nanoc/nanoc.h"
-@use errno
-@use inttypes
+@use "nanoc/nanoc", errno, inttypes
 // Evaluates a primary expression.
 @f nc_primary(NcExpr *e, bool active) NcValue
   NcContext *c = e->m->ctx
@@ -11,7 +9,7 @@
     char *s = nc_text(c, t), *end
     errno = 0
     intmax_t n = strtoimax(s, &end, 10)
-    if errno || *end
+    if errno or *end
       nc_fail(c, t.line, "invalid decimal integer")
     out = nc_integer(n)
   elif t.kind == NC_LITERAL
@@ -53,7 +51,7 @@
       continue
     int64_t n = nc_numeric(c, index, t.line)
     usize size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0
-    if n < 0 || (uint64_t)n >= size
+    if n < 0 or (uint64_t)n >= size
       nc_fail(c, t.line, "invalid compile-time index")
     if out.kind == NC_LIST
       out = out.items[n]

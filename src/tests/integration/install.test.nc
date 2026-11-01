@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_install void
   char *prefix = test_path("prefix with spaces")
   bool sanitized = strstr(test_read("build/config"), "sanitize=1") != NULL

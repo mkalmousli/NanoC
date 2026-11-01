@@ -1,8 +1,8 @@
 // The say statement: prints its arguments separated by spaces, then a newline.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 extern int nc_std;
 // Expands "say a, b" to printf calls whose formats follow the C types (needs C11 _Generic).
-@f nc_say(NcContext *c, const char *args, int line) char *
+@f nc_say(NcContext *c, cstr args, int line) char *
   NcGroups parts = nc_split(c, nc_lex(c, args, line), ",")
   NcBuffer out = {0}
   c->need_stdio = true
@@ -14,7 +14,7 @@ extern int nc_std;
     if *a == '"'
       nc_printf(c, &out, "fputs(%s, stdout); ", a)
       continue
-    if nc_std == 89 || nc_std == 99
+    if nc_std == 89 or nc_std == 99
       nc_fail(c, line, "say of a value needs --std c11 or newer")
     nc_printf(c, &out, "printf(_Generic((%s), char *: \"%%s\", const char *: \"%%s\", "
       "float: \"%%g\", double: \"%%g\", long double: \"%%Lg\", char: \"%%c\", "

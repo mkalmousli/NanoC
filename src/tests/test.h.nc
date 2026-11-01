@@ -1,5 +1,5 @@
 // Shared test types and CHECK; prototypes for every *.test.nc function are appended by the build.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 #include <unistd.h>
 #include <sys/stat.h>
 @s TestResult status:i32; char *out, *err

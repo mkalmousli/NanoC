@@ -1,7 +1,7 @@
 // Control builtins: error, log, emit.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Runs control builtins.
-@f nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) NcValue
+@f nc_meta_control(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "source") || !strcmp(name, "again") || !strcmp(name, "pass")
     nc_arity(c, a, 0, line)
@@ -13,7 +13,7 @@
     return nc_integer(0)
   if !strcmp(name, "put") || !strcmp(name, "get")
     nc_arity(c, a, 2, line)
-    const char *key = nc_meta_text(c, a.v[0], line)
+    cstr key = nc_meta_text(c, a.v[0], line)
     NcValue *v = nc_get(&c->state, key)
     if !strcmp(name, "get")
       return v ? *v : a.v[1]
@@ -23,19 +23,19 @@
     *v = a.v[1]
     return a.v[1]
   if !strcmp(name, "assert")
-    if a.n != 1 && a.n != 2
+    if a.n != 1 and a.n != 2
       nc_fail(c, line, "assert expects condition[,message]")
     if !nc_truth(a.v[0])
       nc_fail(c, line, "%s",
         a.n == 2 ? nc_meta_text(c, a.v[1], line) : "compile-time assertion failed")
     return a.v[0]
   nc_arity(c, a, 1, line)
-  const char *text = nc_meta_text(c, a.v[0], line)
+  cstr text = nc_meta_text(c, a.v[0], line)
   if !strcmp(name, "fail")
     nc_fail(c, line, "%s", text)
   if !strcmp(name, "rewrite")
     nc_check(c, strlen(text), line)
-    if !c->source || strcmp(text, c->source)
+    if !c->source or strcmp(text, c->source)
       c->next_source = text
       c->again = true
   elif !strcmp(name, "log")
@@ -45,7 +45,7 @@
     ++m->depth
     NcFlow flow = nc_run(m, nc_program_text(c, text, line), m->root, m->depth)
     --m->depth
-    if flow.breaking || flow.continuing
+    if flow.breaking or flow.continuing
       nc_fail(c, line, "loop control outside eval loop")
     return flow.value
   nc_integer(0)

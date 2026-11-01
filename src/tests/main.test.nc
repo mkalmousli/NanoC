@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f main(int argc, char **argv) int
   test_state.mem = calloc(1, sizeof *test_state.mem)
   if !test_state.mem
@@ -9,7 +9,7 @@
     ret 1
   char template[] = "/tmp/nanoc-c-tests-XXXXXX"
   test_state.dir = mkdtemp(template)
-  CHECK(test_state.dir != NULL)
+  CHECK(test_state.dir != nil)
   char *asan = nc_format(test_state.mem, "%s:detect_leaks=0", getenv("ASAN_OPTIONS") ? getenv("ASAN_OPTIONS") : "")
   CHECK(setenv("ASAN_OPTIONS", asan, 1) == 0)
   if argc > 1 && !strcmp(argv[1], "--bench")

@@ -1,10 +1,7 @@
 // The uninstall command.
-#include "nanoc/manage.h"
-@use stdlib
-@use string
-@use unistd
+@use "nanoc/manage", stdlib, string, unistd
 // Removes empty parent directories.
-@f mg_prune(const char *prefix, const char *path) static void
+@f mg_prune(cstr prefix, cstr path) static void
   char dir[PATH_MAX]
   snprintf(dir, sizeof dir, "%s", path)
   char stop[PATH_MAX]
@@ -17,7 +14,7 @@
     if rmdir(dir)
       return
 // Deletes recorded files.
-@f mg_remove_recorded(const char *prefix) static int
+@f mg_remove_recorded(cstr prefix) static int
   int count = 0
   char list[PATH_MAX]
   snprintf(list, sizeof list, "%s/share/nanoc/install.manifest", prefix)
@@ -38,7 +35,7 @@
   remove(list)
   count
 // Runs the uninstall command.
-@f nc_uninstall_command(int argc, char **argv, const char *prefix) int
+@f nc_uninstall_command(int argc, char **argv, cstr prefix) int
   bool yes = argc && !strcmp(argv[0], "--yes")
   printf("Remove NanoC from %s, including editor integrations?\n", prefix)
   if !yes && !nc_confirm("Continue?")

@@ -1,7 +1,7 @@
 // String, char and raw literal scanning.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Finds where a literal starts.
-@f nc_literal_start(const char *s, usize i, bool cpp) usize
+@f nc_literal_start(cstr s, usize i, bool cpp) usize
   if s[i] == '"' || s[i] == '\''
     return 1
   const char *raw[] = {"R\"", "u8R\"", "uR\"", "UR\"", "LR\""}
@@ -15,17 +15,17 @@
       return strlen(normal[n])
   0
 // Finds where a literal ends.
-@f nc_literal_end(NcContext *c, const char *s, usize i, int line) usize
+@f nc_literal_end(NcContext *c, cstr s, usize i, int line) usize
   usize quote = i
   while s[quote] && s[quote] != '"' && s[quote] != '\''
     ++quote
   if quote > i && s[quote - 1] == 'R'
     const char *open = strchr(s + quote + 1, '(')
-    if !open || open - s - (ptrdiff_t)quote > 17
+    if !open or open - s - (ptrdiff_t)quote > 17
       nc_fail(c, line, "invalid raw string")
     char *delimiter = nc_string(c, s + quote + 1, (usize)(open - s) - quote - 1)
     char *closing = nc_format(c, ")%s\"", delimiter)
-    const char *end = strstr(open + 1, closing)
+    cstr end = strstr(open + 1, closing)
     if !end
       nc_fail(c, line, "unterminated raw string")
     return (usize)(end - s) + strlen(closing)
@@ -39,7 +39,7 @@
   nc_fail(c, line, "unterminated literal")
   (usize){0}
 // Finds the end of a line.
-@f nc_line_end(const char *s, usize start) usize
+@f nc_line_end(cstr s, usize start) usize
   usize i = start
   while s[i]
     if s[i++] != '\n'

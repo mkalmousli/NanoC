@@ -1,14 +1,11 @@
 // Whole-file read and write.
-#include "nanoc/nanoc.h"
-@use sys/stat
-@use unistd
-@use errno
+@use "nanoc/nanoc", sys/stat, unistd, errno
 // Reads a whole file.
-@f nc_read(NcContext *c, const char *path) char *
+@f nc_read(NcContext *c, cstr path) char *
   struct stat st
   if stat(path, &st)
     nc_fail(c, 0, "cannot read %s: %s", path, strerror(errno))
-  if st.st_size < 0 || (uintmax_t)st.st_size > c->max_output
+  if st.st_size < 0 or (uintmax_t)st.st_size > c->max_output
     nc_fail(c, 1, "input limit exceeded")
   FILE *f = fopen(path, "rb")
   if !f
@@ -17,7 +14,7 @@
   char block[8192]
   usize n
   while (n = fread(block, 1, sizeof block, f)) != 0
-    if b.n > c->max_output || n > c->max_output - b.n
+    if b.n > c->max_output or n > c->max_output - b.n
       fclose(f)
       nc_fail(c, 1, "input limit exceeded")
     nc_addn(c, &b, block, n)
@@ -30,7 +27,7 @@
     nc_fail(c, 1, "NUL byte in source input")
   b.v
 // Writes a whole file.
-@f nc_write(NcContext *c, const char *path, const char *contents) void
+@f nc_write(NcContext *c, cstr path, cstr contents) void
   char *temporary = nc_format(c, "%s.nanoc-XXXXXX", path)
   int fd = mkstemp(temporary)
   if fd < 0
@@ -39,7 +36,7 @@
   bool bad = false
   while done < n
     ssize_t written = write(fd, contents + done, n - done)
-    if written < 0 && errno == EINTR
+    if written < 0 and errno == EINTR
       continue
     if written <= 0
       bad = true
@@ -47,7 +44,7 @@
     done += (usize)written
   if close(fd)
     bad = true
-  if !bad && !rename(temporary, path)
+  if !bad and !rename(temporary, path)
     return
   int saved = errno
   unlink(temporary)

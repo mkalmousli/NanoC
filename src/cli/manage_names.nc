@@ -1,22 +1,21 @@
 // Editor names and their install targets.
-#include "nanoc/nanoc.h"
-#include "nanoc/manage.h"
+@use "nanoc/nanoc", "nanoc/manage"
 // Gets the name of editor i.
-@f nc_editor_name(usize i) const char *
+@f nc_editor_name(usize i) cstr 
   static const char *ids[] = {"vscode", "vim", "neovim", "emacs", "micro", "nano", "sublime", NULL}
   ids[i]
 // Tells if an editor name exists.
-@f nc_known_editor(const char *name) bool
+@f nc_known_editor(cstr name) bool
   for usize i = 0; nc_editor_name(i); ++i
     if !strcmp(name, nc_editor_name(i))
       return true
   false
 // Lists install targets of an editor.
-@f nc_targets(const char *editor, NcTarget *t) int
+@f nc_targets(cstr editor, NcTarget *t) int
   char home[PATH_MAX]
   char cfg[PATH_MAX]
   char dir[PATH_MAX]
-  if !nc_known_editor(editor) || !mg_home(home) || !mg_config(cfg)
+  if !nc_known_editor(editor) or !mg_home(home) or !mg_config(cfg)
     return -1
   int n = 0
   if !strcmp(editor, "vscode")

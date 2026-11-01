@@ -1,5 +1,5 @@
 // Statement lines to C.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if the statement starts with the ret keyword.
 @f nc_is_ret(NcContext *c, NcTokens items) bool
   if !nc_is(items.v[0], "ret")
@@ -20,7 +20,7 @@
     return ""
   if nc_is(items.v[items.n - 1], ";")
     usize last = ts.n
-    while last && ts.v[last - 1].kind == NC_SPACE
+    while last and ts.v[last - 1].kind == NC_SPACE
       --last
     ts.n = last - 1
     items = nc_significant(c, ts)
@@ -39,7 +39,7 @@
     (void)nc_take(&cursor)
     ts = nc_declaration(c, nc_slice(ts, cursor.pos, ts.n), line.line)
     declaration = true
-  elif (items.n > 1 && items.v[0].kind == NC_WORD
+  elif (items.n > 1 and items.v[0].kind == NC_WORD
     && (nc_is(items.v[1], ":") || nc_is(items.v[1], ",")))
     for usize i = 0; i < items.n; ++i
       if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":"))

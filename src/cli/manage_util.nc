@@ -1,20 +1,15 @@
 // Small file and process helpers for manage.
-#include "nanoc/manage.h"
-@use errno
-@use sys/stat
-@use unistd
-@use stdlib
-@use string
+@use "nanoc/manage", errno, sys/stat, unistd, stdlib, string
 // Tells if a path exists.
-@f nc_exists(const char *path) bool
+@f nc_exists(cstr path) bool
   struct stat st
   stat(path, &st) == 0
 // Finds a command on PATH.
-@f nc_search(const char *name, char *out) static bool
+@f nc_search(cstr name, char *out) static bool
   const char *path = getenv("PATH")
   if !path
     return false
-  const char *p = path
+  cstr p = path
   while *p
     const char *end = strchr(p, ':')
     usize n = end ? (usize)(end - p) : strlen(p)
@@ -24,11 +19,11 @@
     p = end ? end + 1 : p + n
   false
 // Tells if a command is on PATH.
-@f nc_have_command(const char *name) bool
+@f nc_have_command(cstr name) bool
   char found[PATH_MAX]
   nc_search(name, found)
 // Finds the install prefix of argv0.
-@f nc_prefix(const char *argv0, char *out) bool
+@f nc_prefix(cstr argv0, char *out) bool
   char exe[PATH_MAX]
   if strchr(argv0, '/')
     if !realpath(argv0, exe)
@@ -46,20 +41,20 @@
   snprintf(out, PATH_MAX, "%s", exe)
   true
 // Creates a directory tree.
-@f nc_make_dirs(const char *path) bool
+@f nc_make_dirs(cstr path) bool
   char copy[PATH_MAX]
   snprintf(copy, sizeof copy, "%s", path)
   for char *p = copy + 1; *p; ++p
     if *p == '/'
       *p = 0
-      if mkdir(copy, 0755) && errno != EEXIST
+      if mkdir(copy, 0755) and errno != EEXIST
         return false
       *p = '/'
-  if mkdir(copy, 0755) && errno != EEXIST
+  if mkdir(copy, 0755) and errno != EEXIST
     return false
   true
 // Copies one file.
-@f nc_copy_file(const char *from, const char *to) bool
+@f nc_copy_file(cstr from, cstr to) bool
   FILE *in = fopen(from, "rb")
   if !in
     return false
@@ -83,9 +78,9 @@
       ok = false
     n = fread(buf, 1, sizeof buf, in)
   fclose(in)
-  return fclose(out) == 0 && ok
+  return fclose(out) == 0 and ok
 // Asks a yes/no question.
-@f nc_confirm(const char *question) bool
+@f nc_confirm(cstr question) bool
   printf("%s [y/N] ", question)
   fflush(stdout)
   char line[16]

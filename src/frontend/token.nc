@@ -1,17 +1,17 @@
 // Token predicates and text helpers.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if a token has the text.
-@f nc_is(NcToken t, const char *s) bool
-  t.n == strlen(s) && !memcmp(t.s, s, t.n)
+@f nc_is(NcToken t, cstr s) bool
+  t.n == strlen(s) and !memcmp(t.s, s, t.n)
 // Copies a token as text.
 @f nc_text(NcContext *c, NcToken t) char *
   nc_string(c, t.s, t.n)
 // Makes a token.
-@f nc_token(const char *s, int line, NcKind kind) NcToken
+@f nc_token(cstr s, int line, NcKind kind) NcToken
   (NcToken){s, strlen(s), line, 1, kind}
 // Takes a sub-range of tokens.
 @f nc_slice(NcTokens ts, usize a, usize b) NcTokens
-  (NcTokens){ts.v ? ts.v + a : NULL, b - a, b - a}
+  (NcTokens){ts.v ? ts.v + a : nil, b - a, b - a}
 // Concatenates token text.
 @f nc_join(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
@@ -32,7 +32,7 @@
   for usize i = 0; i < ts.n; ++i
     NcToken t = ts.v[i]
     nc_alias(&t)
-    const char *s = NULL
+    cstr s = nil
     if t.kind == NC_WORD
       if nc_is(t, "and")
         s = "&&"
@@ -55,5 +55,5 @@
 // Records identifier tokens.
 @f nc_names(NcContext *c, NcTokens ts) void
   for usize i = 0; i < ts.n; ++i
-    if ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])
+    if ts.v[i].kind == NC_WORD and !nc_has_token(&c->names, ts.v[i])
       nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)

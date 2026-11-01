@@ -1,11 +1,11 @@
 // Dispatch of builtin calls.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Checks the argument count.
 @f nc_arity(NcContext *c, NcValues args, usize n, int line) void
   if args.n != n
     nc_fail(c, line, "wrong builtin argument count")
 // Calls the builtin by name.
-@f nc_builtin(NcMachine *m, const char *name, NcValues args, int line) NcValue
+@f nc_builtin(NcMachine *m, cstr name, NcValues args, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "range")
     return nc_builtin_range(m, args, line)
@@ -15,7 +15,7 @@
   nc_arity(c, args, 1, line)
   NcValue v = args.v[0]
   if !strcmp(name, "emit")
-    if v.kind != NC_STRING && v.kind != NC_CODE
+    if v.kind != NC_STRING and v.kind != NC_CODE
       nc_fail(c, line, "emit requires a string or tokens")
     nc_check(c, m->output.n + strlen(v.text), line)
     nc_names(c, nc_lex(c, v.text, line))
@@ -28,7 +28,7 @@
   if !strcmp(name, "len")
     if v.kind == NC_LIST
       return nc_integer((int64_t)v.count)
-    if v.kind == NC_STRING || v.kind == NC_CODE
+    if v.kind == NC_STRING or v.kind == NC_CODE
       return nc_integer((int64_t)strlen(v.text))
     nc_fail(c, line, "len requires a list, string, or tokens")
   nc_fail(c, line, "unknown compile-time function: %s", name)

@@ -1,23 +1,23 @@
 // Prepares lines before the tree is built.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if a line extends C.
 @f nc_extension_line(NcLayoutLine line) bool
   usize i = 0
-  while i < line.ts.n && line.ts.v[i].kind == NC_SPACE
+  while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
   if i == line.ts.n || !nc_is(line.ts.v[i++], "@")
     return false
-  while i < line.ts.n && line.ts.v[i].kind == NC_SPACE
+  while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
-  i < line.ts.n && line.ts.v[i].kind == NC_WORD
+  i < line.ts.n and line.ts.v[i].kind == NC_WORD
 // Tells if a line is meta.
 @f nc_meta_line(NcLayoutLine line) bool
   usize i = 0
-  while i < line.ts.n && line.ts.v[i].kind == NC_SPACE
+  while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
   if i == line.ts.n || !nc_is(line.ts.v[i++], "@")
     return false
-  while i < line.ts.n && line.ts.v[i].kind == NC_SPACE
+  while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
   if i == line.ts.n
     return false
@@ -31,13 +31,13 @@
     NcLayoutLine line = input.v[i]
     if line.indent <= match_at
       match_at = arm_at = -1
-    bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent
-    bool ext = block && nc_extension_line(line)
-    bool meta = nc_meta_line(line) || ext
-    if !program && meta
+    bool block = i + 1 < input.n and input.v[i + 1].indent > line.indent
+    bool ext = block and nc_extension_line(line)
+    bool meta = nc_meta_line(line) or ext
+    if !program and meta
       NcBuffer raw = {0}
       nc_printf(ctx, &raw, "%s\n", nc_join(ctx, line.ts))
-      while i + 1 < input.n && input.v[i + 1].indent > line.indent
+      while i + 1 < input.n and input.v[i + 1].indent > line.indent
         NcLayoutLine child = input.v[++i]
         nc_printf(ctx, &raw, "%*s%s\n", child.indent - line.indent, "", nc_join(ctx, child.ts))
       line.ts = nc_lex(ctx, raw.v, line.line)
@@ -51,7 +51,7 @@
     bool control = (nc_is(first, "if") || nc_is(first, "elif") || nc_is(first, "else")
       || nc_is(first, "while") || nc_is(first, "for") || (nc_is(first, "loop") && ts.n == 1)
       || ((nc_is(first, "unless") || nc_is(first, "until")) && ts.n > 1 && !nc_is(ts.v[1], "=")))
-    bool arm = match_at >= 0 && line.indent == arm_at
+    bool arm = match_at >= 0 and line.indent == arm_at
     if nc_is(first, "match") && block && ts.n > 1 && !program
       match_at = line.indent
       arm_at = input.v[i + 1].indent
@@ -59,7 +59,7 @@
     if arm
       control = true
     bool function = (program && (nc_is(first, "f") || nc_is(first, "fn")) && ts.n >= 2
-      && ts.v[1].kind == NC_WORD)
+      and ts.v[1].kind == NC_WORD)
     bool expression = false
     if function
       for usize j = 0; j < ts.n; ++j

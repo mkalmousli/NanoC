@@ -1,7 +1,7 @@
 // List and slice builtins.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Runs list builtins.
-@f nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line) NcValue
+@f nc_meta_lists(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "lex")
     nc_arity(c, a, 1, line)
@@ -13,13 +13,13 @@
     nc_check(c, out.n * 8, line)
     return nc_list(out)
   if !strcmp(name, "slice")
-    if a.n != 2 && a.n != 3
+    if a.n != 2 and a.n != 3
       nc_fail(c, line, "slice expects value,start[,end]")
     NcValue v = a.v[0]
     usize size = v.kind == NC_LIST ? v.count : strlen(nc_meta_text(c, v, line))
     int64_t start = nc_numeric(c, a.v[1], line)
     int64_t end = a.n == 3 ? nc_numeric(c, a.v[2], line) : (int64_t)size
-    if start < 0 || end < start || (uint64_t)end > size
+    if start < 0 or end < start or (uint64_t)end > size
       nc_fail(c, line, "invalid slice bounds")
     if v.kind != NC_LIST
       return nc_value_text(v.kind, nc_string(c, v.text + start, (usize)(end - start)))
@@ -40,7 +40,7 @@
     if result.height > c->max_depth
       nc_fail(c, line, "value depth limit exceeded")
     return result
-  const char *separator = nc_meta_text(c, a.v[1], line)
+  cstr separator = nc_meta_text(c, a.v[1], line)
   NcBuffer b = {0}
   for usize i = 0; i < a.v[0].count; ++i
     nc_step(c, line)

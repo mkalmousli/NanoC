@@ -55,7 +55,7 @@ static bool mg_named(int argc, char **argv, int first, const char *name) {
 static int nc_editor_list(const char *prefix) {
     printf("  %-9s %-10s %s\n", "EDITOR", "DETECTED", "INSTALLED");
     for (size_t i = 0; nc_editor_name(i); ++i) {
-        const char *name = nc_editor_name(i);
+        const char * name = nc_editor_name(i);
         printf("  %-9s %-10s %s\n", name, mg_detected(name) ? "yes" : "no", mg_installed(prefix,
                 name) ? "yes" : "no");
     }
@@ -94,7 +94,7 @@ int nc_editor_command(int argc, char **argv, const char *prefix) {
     int status = 0;
     int acted = 0;
     for (size_t i = 0; nc_editor_name(i); ++i) {
-        const char *name = nc_editor_name(i);
+        const char * name = nc_editor_name(i);
         bool picked = (all || mg_named(argc, argv, first, name) || (!named && !remove && mg_detected(name)));
         if (!picked) {
             continue;

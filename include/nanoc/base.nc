@@ -1,14 +1,5 @@
 // Base types and limits.
-@use stdbool
-@use stddef
-@use stdint
-@use setjmp
-@use stdio
-@use stdlib
-@use string
-@use stdarg
-@use limits
-@use ctype
+@use stdbool, stddef, stdint, setjmp, stdio, stdlib, string, stdarg, limits, ctype
 typedef struct NcContext NcContext;
 typedef struct NcAllocation NcAllocation;
 @s NcEntry key:cstr; value:*void

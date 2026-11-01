@@ -1,5 +1,5 @@
 // The defer statement: runs a statement when its block ends or the function returns.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if the current function returns nothing.
 @f is_void(NcContext *c) static bool
   c->ret_type && strstr(c->ret_type, "void") && !strchr(c->ret_type, '*')
@@ -17,7 +17,7 @@
     return s
   usize n = strlen(s)
   char *expr = nc_trim(c, nc_string(c, s + 6, n - 7))
-  if !*expr || is_void(c)
+  if !*expr or is_void(c)
     return nc_format(c, "{ %s return %s; }", c->defers, expr)
   char *tmp = nc_fresh(c, "ret")
   nc_format(c, "{ %s %s = (%s); %s return %s; }", value_type(c), tmp, expr, c->defers, tmp)
@@ -36,7 +36,7 @@
   nc_marker(c, out, line.line)
   nc_add(c, out, "{")
   nc_add(c, out, nc_emit_block(c, rest, tail, depth + 1))
-  if !tail || is_void(c)
+  if !tail or is_void(c)
     nc_printf(c, out, "%s", c->defers)
   c->defers = saved
   nc_add(c, out, "}\n")

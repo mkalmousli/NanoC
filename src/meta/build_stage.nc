@@ -1,8 +1,8 @@
 // Selects the BT build stage.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 @s Programs v:*NcTokens; n,cap:usize
 // Runs BT code in the build stage.
-@f nc_build_stage(NcContext *ctx, const char *source) char *
+@f nc_build_stage(NcContext *ctx, cstr source) char *
   if !strstr(source, "bt")
     ctx->source = source
     return (char *)source
@@ -15,7 +15,7 @@
     NcToken t = ts.v[c.pos++]
     if t.kind == NC_PUNCT && nc_is(t, "@")
       usize next = c.pos
-      while next < ts.n && ts.v[next].kind == NC_SPACE
+      while next < ts.n and ts.v[next].kind == NC_SPACE
         ++next
       if next < ts.n && nc_is(ts.v[next], "bt")
         c.pos = next + 1
@@ -52,11 +52,11 @@
     char *frame = nc_format(ctx, "while executing @bt at %s:%d", ctx->file,
       programs.v[i].n ? programs.v[i].v[0].line : 1)
     ctx->frames[ctx->frame_count++] = frame
-    nc_add(ctx, &prelude, nc_program(ctx, programs.v[i], NULL, NC_BT, 1))
+    nc_add(ctx, &prelude, nc_program(ctx, programs.v[i], nil, NC_BT, 1))
     --ctx->frame_count
     if ctx->next_source
       ctx->source = ctx->next_source
-      ctx->next_source = NULL
+      ctx->next_source = nil
       ctx->again = false
   if prelude.n
     nc_add(ctx, &prelude, "\n")

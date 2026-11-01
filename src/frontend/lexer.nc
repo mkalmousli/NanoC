@@ -1,7 +1,7 @@
 // Turns source text into tokens.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Splits text into tokens.
-@f nc_lex(NcContext *c, const char *s, int line) NcTokens
+@f nc_lex(NcContext *c, cstr s, int line) NcTokens
   NcTokens out = {0}
   usize i = 0
   int column = 1
@@ -9,10 +9,10 @@
   while s[i]
     usize start = i
     NcToken t = {s + i, 0, line, column, NC_PUNCT}
-    unsigned char ch = (unsigned char)s[i]
+    u8 ch = (u8)s[i]
     if isspace(ch)
       t.kind = NC_SPACE
-      while s[i] && isspace((unsigned char)s[i])
+      while s[i] and isspace((u8)s[i])
         ++i
     elif !strncmp(s + i, "//", 2)
       t.kind = NC_SPACE

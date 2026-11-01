@@ -1,9 +1,9 @@
 // Bodies of @bt, @ct and @m blocks.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Reads a @bt or @ct body.
 @f nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) NcTokens
   usize next = c->pos
-  while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
+  while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
     ++next
   if next < c->ts.n && nc_is(c->ts.v[next], "{")
     return nc_group(c, "{", "}")

@@ -1,5 +1,5 @@
-#include "test.h"
-@f test_program(const char *source, const char *expected, bool cpp) void
+@use "test"
+@f test_program(cstr source, cstr expected, bool cpp) void
   char *file = test_path(cpp ? "program.cpp" : "program.c")
   char *exe = test_path("program")
   test_write(file, test_translate(source, cpp))
@@ -8,6 +8,6 @@
     const char *args[] = {ccs[i], cpp ? "-std=c++17" : "-std=c11", "-O2", "-Wall", "-Wextra",
       "-Werror", "-pedantic-errors", file, "-o", exe, NULL}
     (void)test_command(args)
-    const char *run[] = {exe, NULL}
+    cstr run[] = {exe, nil}
     TestResult result = test_command(run)
     CHECK(!strcmp(result.out, expected))

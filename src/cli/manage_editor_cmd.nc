@@ -1,15 +1,12 @@
 // The editors install/list commands.
-#include "nanoc/manage.h"
-@use stdlib
-@use string
-@use unistd
+@use "nanoc/manage", stdlib, string, unistd
 // Prints an ok/fail status line.
-@f nc_ui_line(bool ok, const char *name, const char *where) void
+@f nc_ui_line(bool ok, cstr name, cstr where) void
   bool tty = isatty(1)
   const char *mark = ok ? (tty ? "\033[32m✓\033[0m" : "✓") : (tty ? "\033[31m✗\033[0m" : "✗")
   printf("  %s %-9s %s\n", mark, name, where)
 // Installs editor files for a name.
-@f mg_install(const char *prefix, const char *name) static bool
+@f mg_install(cstr prefix, cstr name) static bool
   NcTarget t[16]
   int n = nc_targets(name, t)
   if n <= 0
@@ -29,21 +26,21 @@
       ok = false
   ok
 // Tells if name is among the args.
-@f mg_named(int argc, char **argv, int first, const char *name) static bool
+@f mg_named(int argc, char **argv, int first, cstr name) static bool
   for int i = first; i < argc; ++i
     if !strcmp(argv[i], name)
       return true
   false
 // Lists known editors.
-@f nc_editor_list(const char *prefix) static int
+@f nc_editor_list(cstr prefix) static int
   printf("  %-9s %-10s %s\n", "EDITOR", "DETECTED", "INSTALLED")
   for usize i = 0; nc_editor_name(i); ++i
-    const char *name = nc_editor_name(i)
+    cstr name = nc_editor_name(i)
     printf("  %-9s %-10s %s\n", name, mg_detected(name) ? "yes" : "no",
       mg_installed(prefix, name) ? "yes" : "no")
   0
 // Runs the editors subcommand.
-@f nc_editor_command(int argc, char **argv, const char *prefix) int
+@f nc_editor_command(int argc, char **argv, cstr prefix) int
   int first = 0
   bool remove = argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall"))
   if argc && (remove || !strcmp(argv[0], "install"))
@@ -60,15 +57,15 @@
         fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n", argv[i])
         return 2
       named += 1
-  if remove && !all && !named
+  if remove and !all and !named
     fputs("usage: nanoc editor remove NAME|--all\n", stderr)
     return 2
   int status = 0
   int acted = 0
   for usize i = 0; nc_editor_name(i); ++i
-    const char *name = nc_editor_name(i)
-    bool picked = (all || mg_named(argc, argv, first, name)
-      || (!named && !remove && mg_detected(name)))
+    cstr name = nc_editor_name(i)
+    bool picked = (all or mg_named(argc, argv, first, name)
+      or (!named and !remove and mg_detected(name)))
     if !picked
       continue
     acted += 1
@@ -78,6 +75,6 @@
         printf("  - %s removed\n", name)
     elif !mg_install(prefix, name)
       status = 1
-  if !acted && !remove
+  if !acted and !remove
     puts("No supported editors detected. Name one: nanoc editor install vim")
   status

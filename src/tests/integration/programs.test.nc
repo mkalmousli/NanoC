@@ -1,10 +1,10 @@
-#include "test.h"
+@use "test"
 @f test_programs void
   char *manifest = test_read("tests/fixtures/programs.tsv")
   char *save
   for char *row = strtok_r(manifest, "\n", &save); row; row = strtok_r(NULL, "\n", &save)
     char *tab = strchr(row, '\t')
-    CHECK(tab != NULL)
+    CHECK(tab != nil)
     *tab++ = 0
     char *expected = nc_string(test_state.mem, row, strlen(row) + 1)
     strcpy(expected + strlen(expected) - 3, ".out")
@@ -15,7 +15,7 @@
   char *save
   for char *row = strtok_r(manifest, "\n", &save); row; row = strtok_r(NULL, "\n", &save)
     char *tab = strchr(row, '\t')
-    CHECK(tab != NULL)
+    CHECK(tab != nil)
     *tab++ = 0
     size_t depth, steps, output
     CHECK(sscanf(tab, "%zu\t%zu\t%zu", &depth, &steps, &output) == 3)

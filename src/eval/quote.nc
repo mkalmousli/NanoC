@@ -1,5 +1,5 @@
 // Quoted token templates.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Builds a value from a quoted template.
 @f nc_quotation(NcExpr *e, NcTokens ts, bool active) NcValue
   NcContext *ctx = e->m->ctx

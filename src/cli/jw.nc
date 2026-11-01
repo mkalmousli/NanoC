@@ -1,5 +1,5 @@
 // Streaming JSON writer: callers describe structure, punctuation and escaping happen here.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Starts a writer on a stream.
 @f jw_start(NcJson *w, FILE *out) void
   w->out = out
@@ -11,10 +11,10 @@
     fputc(',', w->out)
   w->more[w->depth] = true
 // Writes a JSON string literal.
-@f jw_text(NcJson *w, const char *s) void
+@f jw_text(NcJson *w, cstr s) void
   fputc('"', w->out)
   for ; *s; ++s
-    unsigned char ch = (unsigned char)*s
+    u8 ch = (u8)*s
     if ch == '"' || ch == '\\'
       fputc('\\', w->out)
       fputc(ch, w->out)
@@ -33,13 +33,13 @@
   --w->depth
   fputc(close, w->out)
 // Writes an object key; the next value belongs to it.
-@f jw_key(NcJson *w, const char *key) void
+@f jw_key(NcJson *w, cstr key) void
   jw_sep(w)
   jw_text(w, key)
   fputc(':', w->out)
   w->more[w->depth] = false
 // Writes a string value.
-@f jw_str(NcJson *w, const char *s) void
+@f jw_str(NcJson *w, cstr s) void
   jw_sep(w)
   jw_text(w, s)
 // Writes an integer value.
@@ -51,19 +51,19 @@
   jw_sep(w)
   fputs(b ? "true" : "false", w->out)
 // Writes pre-rendered JSON as one value.
-@f jw_raw(NcJson *w, const char *json) void
+@f jw_raw(NcJson *w, cstr json) void
   jw_sep(w)
   fputs(json, w->out)
 // Key/value shortcuts: "k": string, integer, boolean, raw.
-@f jw_ks(NcJson *w, const char *k, const char *s) void
+@f jw_ks(NcJson *w, cstr k, cstr s) void
   jw_key(w, k)
   jw_str(w, s)
-@f jw_ki(NcJson *w, const char *k, long n) void
+@f jw_ki(NcJson *w, cstr k, long n) void
   jw_key(w, k)
   jw_int(w, n)
-@f jw_kb(NcJson *w, const char *k, bool b) void
+@f jw_kb(NcJson *w, cstr k, bool b) void
   jw_key(w, k)
   jw_bool(w, b)
-@f jw_kr(NcJson *w, const char *k, const char *json) void
+@f jw_kr(NcJson *w, cstr k, cstr json) void
   jw_key(w, k)
   jw_raw(w, json)

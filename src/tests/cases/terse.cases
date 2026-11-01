@@ -264,3 +264,20 @@ case match chooses an arm like switch
           r=-1
       r
     @f main int = size(2)!=10 || size(3)!=30 || size(9)!=-1
+
+case use takes lists, bundles and local headers
+  nanoc
+    @use std, math
+    @f main int
+      printf("%d %.0f\n", (int)strlen("ab"), floor(2.5))
+      0
+  prints
+    2 2
+
+case use drops the .h for C++ standard headers
+  nanoc
+    @use std, vector
+    @f main int
+      std::vector<int> v(3, 2)
+      v.size()!=3
+  cpp

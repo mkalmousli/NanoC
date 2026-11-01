@@ -39,7 +39,7 @@ NcTokens nc_until(NcCursor *c, const char *delimiter) {
         NC_PUSH(c->ctx, out, t);
         if (t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))) {
             --c->pos;
-            const char *open = nc_text(c->ctx, t);
+            const char * open = nc_text(c->ctx, t);
             const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}";
             NcTokens body = nc_group(c, open, close);
             for (size_t i = 0; i < body.n; ++i) {

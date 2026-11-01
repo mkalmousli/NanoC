@@ -1,5 +1,5 @@
 // The match statement: a switch whose arms are "values" blocks, with else as default.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tokens of a header line without its closing colon.
 @f bare(NcContext *c, NcLayoutLine line) static NcTokens
   NcTokens ts = nc_significant(c, line.ts)

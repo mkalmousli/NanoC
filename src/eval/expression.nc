@@ -1,5 +1,5 @@
 // Expression parsing and evaluation.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Parses with operator precedence.
 @f nc_expression(NcExpr *e, int minimum, bool active) NcValue
   ++e->depth
@@ -36,7 +36,7 @@
     NcValue rhs = nc_expression(e, precedence + 1, execute)
     if active
       out = execute ? nc_binary(c, op, out, rhs, op.line) : nc_boolean(nc_is(op, "||"))
-  if active && out.kind == NC_LIST
+  if active and out.kind == NC_LIST
     if out.height > c->max_depth
       nc_fail(c, nc_line(&e->c), "value depth limit exceeded")
     nc_check(c, out.count * 8, nc_line(&e->c))

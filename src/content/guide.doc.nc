@@ -55,7 +55,7 @@ lesson records RECORDS | One-line structs, enums, unions | Records
       Color c=blue
       p.x+p.y!=3 || n.val!=3 || c!=6
 lesson say SAY & RAW C | Printing, imports and escape hatch | Say
-  p `say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `say` adds `stdio.h` itself; `@use name` is `#include <name.h>`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
+  p `say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `say` adds `stdio.h` itself. `@use a, b` includes several headers at once, `@use "mine"` is a local `mine.h`, and bundles expand to many: `std` (stdio, stdlib, string), `libc`, `posix`, `cxx`. In C++ the standard headers lose their `.h`: `@use vector`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
   code nanoc c
     @c
       static int twice(int x) { return x*2; }

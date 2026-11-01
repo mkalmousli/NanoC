@@ -1,7 +1,7 @@
 // Process builtins: exec, run, sh.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Runs process builtins.
-@f nc_meta_process(NcMachine *m, const char *name, NcValues a, int line) NcValue
+@f nc_meta_process(NcMachine *m, cstr name, NcValues a, int line) NcValue
   nc_effect(m, line)
   NcValue result
   if !strcmp(name, "sh")
@@ -15,7 +15,7 @@
   else
     result = nc_host_run(m, a, line)
   if !strcmp(name, "exec")
-    long long code = (long long) result.items[0].n
+    i64 code = (i64) result.items[0].n
     if result.items[0].n
       nc_fail(m->ctx, line, "command exited %lld: %.1000s", code, result.items[2].text)
     return result.items[1]

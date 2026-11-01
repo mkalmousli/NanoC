@@ -1,17 +1,17 @@
 // Pretty printer: readable, indented C.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Handles whitespace and comments between tokens.
 @f space(NcPretty *p, NcToken t) static void
   if t.s[0] == '/'
     NcToken none = {"", 0, t.line, 0, NC_PUNCT}
     nc_pp_resolve(p, none)
-    if p->last_dir && !p->top && !p->paren
+    if p->last_dir and !p->top and !p->paren
       nc_pp_blank(p)
     p->last_dir = false
     p->space = true
     p->comment = true
     usize n = t.n
-    while n && isspace((unsigned char)t.s[n - 1])
+    while n and isspace((u8)t.s[n - 1])
       --n
     nc_pp_put(p, t.s, n)
     if t.s[1] == '/'
@@ -24,7 +24,7 @@
   for usize i = 0; i < t.n; ++i
     lines += t.s[i] == '\n'
   p->space = true
-  if lines > 1 && !p->top && !p->paren && p->stmt && !p->comment
+  if lines > 1 and !p->top and !p->paren and p->stmt and !p->comment
     p->gap = true
 // Handles ";" and ",".
 @f separator(NcPretty *p, NcToken t) static void
@@ -34,12 +34,12 @@
     p->ternary = 0
     p->kw_type = false
     p->kw_enum = false
-    if !p->paren && !init
+    if !p->paren and !init
       p->stmt = true
       nc_pp_end(p)
   elif !p->paren && p->top && p->kind[p->top - 1] == 'e'
     nc_pp_end(p)
-  elif (p->paren || init) && p->col > 90
+  elif (p->paren or init) and p->col > 90
     nc_pp_nl(p)
     p->cont = true
 // Handles ":" (case labels and ternaries).
@@ -47,7 +47,7 @@
   nc_pp_put(p, t.s, 1)
   if p->ternary > 0
     --p->ternary
-  elif p->in_case && !p->paren && p->top
+  elif p->in_case and !p->paren and p->top
     p->in_case = false
     p->cases[p->top - 1] = true
     ++p->ind
@@ -61,13 +61,13 @@
   nc_pp_resolve(p, t)
   if p->last_dir
     p->last_dir = false
-    if !p->top && !p->paren
+    if !p->top and !p->paren
       nc_pp_blank(p)
-  if p->gap && p->out.n && !p->paren
+  if p->gap and p->out.n and !p->paren
     nc_pp_blank(p)
   p->gap = false
   p->comment = false
-  bool punct = t.kind == NC_PUNCT && t.n == 1
+  bool punct = t.kind == NC_PUNCT and t.n == 1
   char ch = punct ? t.s[0] : 0
   if (ch && strchr(")],;", ch)) || nc_pp_prev_punct(p, "(") || nc_pp_prev_punct(p, "[")
     p->space = false
@@ -80,9 +80,9 @@
   elif ch == ':'
     colon(p, t)
   else
-    if t.kind == NC_WORD && !p->paren
+    if t.kind == NC_WORD and !p->paren
       if p->stmt && (nc_is(t, "case") || nc_is(t, "default"))
-        if p->top && p->cases[p->top - 1]
+        if p->top and p->cases[p->top - 1]
           p->cases[p->top - 1] = false
           --p->ind
         p->in_case = true
@@ -106,7 +106,7 @@
   if !punct || (ch != ';' && ch != '{' && ch != '}' && ch != ':')
     p->stmt = false
 // Formats C text with indentation and line breaks.
-@f nc_pretty(NcContext *c, const char *text) char *
+@f nc_pretty(NcContext *c, cstr text) char *
   NcPretty state = {0}
   NcPretty *p = &state
   p->c = c

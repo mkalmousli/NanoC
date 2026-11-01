@@ -21,7 +21,7 @@ NcValue nc_host_run(NcMachine *m, NcValues a, int line) {
     for (size_t i = 0; i < list.count; ++i) {
         argv[i] = (char *)nc_meta_text(c, list.items[i], line);
     }
-    const char *cwd = a.n == 2 ? nc_meta_text(c, a.v[1], line) : NULL;
+    const char * cwd = a.n == 2 ? nc_meta_text(c, a.v[1], line) : NULL;
     char out_path[32];
     char err_path[32];
     strcpy(out_path, "/tmp/nanoc-out-XXXXXX");

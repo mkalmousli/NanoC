@@ -1,9 +1,9 @@
 // Emits meta programs as text.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Tells if the node starts with word.
-@f starts(NcContext *c, NcNode n, const char *word) static bool
+@f starts(NcContext *c, NcNode n, cstr word) static bool
   NcTokens ts = nc_significant(c, n.head.ts)
-  ts.n && nc_is(ts.v[0], word)
+  ts.n and nc_is(ts.v[0], word)
 // Tells if the node is a function.
 @f function_node(NcContext *c, NcNode n) static bool
   NcTokens ts = nc_significant(c, n.head.ts)
@@ -26,11 +26,11 @@
     elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
       --level
     elif (!level
-      && (
+      and (
         nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t, "--")
         || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0]))))
       return false
-  bool function = (sig.n > 1 && sig.v[1].kind == NC_WORD
+  bool function = (sig.n > 1 and sig.v[1].kind == NC_WORD
     && (nc_is(sig.v[0], "f") || nc_is(sig.v[0], "fn")))
   !function && !nc_is(sig.v[0], "return") && !nc_is(sig.v[0], "=>") && !nc_is(sig.v[0],
     "break") && !nc_is(sig.v[0], "continue") && !nc_is(sig.v[0], "let") && !nc_is(sig.v[0],
@@ -50,7 +50,7 @@
       NcTokens ts = n.head.ts
       char *text = nc_trim(ctx, nc_join(ctx, ts))
       bool function = function_node(ctx, n)
-      bool returning = tail && i + 1 == nodes.n && value_line(ctx, ts)
+      bool returning = tail and i + 1 == nodes.n and value_line(ctx, ts)
       nc_printf(ctx, &out, "%s%s%s\n", returning ? "return " : "", text,
         *text && text[strlen(text) - 1] == '}' && function ? "" : ";")
     else
@@ -58,12 +58,12 @@
       bool loop = starts(ctx, n, "for") || starts(ctx, n, "while")
       bool has_next_branch = (i + 1 < nodes.n
         && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx, nodes.v[i + 1], "else")))
-      bool last = tail && !loop && (i + 1 == nodes.n || has_next_branch)
+      bool last = tail and !loop and (i + 1 == nodes.n or has_next_branch)
       char *header = nc_program_control(ctx, n.head.ts, n.head.line)
       nc_printf(ctx, &out, "%s {\n", header)
       for int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad
         nc_add(ctx, &out, "\n")
-      char *body = nc_emit_program(ctx, n.children, function || last, depth + 1)
+      char *body = nc_emit_program(ctx, n.children, function or last, depth + 1)
       usize size = strlen(body)
       if size && body[size - 1] == '\n'
         --size

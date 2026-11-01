@@ -1,8 +1,7 @@
-#include "test.h"
-@use dirent
-@f modules(const char *root) static size_t
+@use "test", dirent
+@f modules(cstr root) static size_t
   DIR *dir = opendir(root)
-  CHECK(dir != NULL)
+  CHECK(dir != nil)
   struct dirent *entry
   size_t count = 0
   while (entry = readdir(dir)) != nil
@@ -24,7 +23,7 @@
     char *first = test_read(nc_format(test_state.mem, "build/stage1/%s.c", name))
     char *second = test_read(nc_format(test_state.mem, "build/stage2/%s.c", name))
     char *third = test_read(nc_format(test_state.mem, "build/stage3/%s.c", name))
-    CHECK(!strcmp(first, second) && !strcmp(second, third))
+    CHECK(!strcmp(first, second) and !strcmp(second, third))
     ++count
   closedir(dir)
   ret count

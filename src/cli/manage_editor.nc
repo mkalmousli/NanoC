@@ -1,17 +1,14 @@
 // Records which editor files were installed.
-#include "nanoc/manage.h"
-@use stdlib
-@use string
-@use unistd
+@use "nanoc/manage", stdlib, string, unistd
 // Gets the install manifest path.
-@f mg_manifest(const char *prefix, char *out) static void
+@f mg_manifest(cstr prefix, char *out) static void
   snprintf(out, PATH_MAX, "%s/share/nanoc/editors.manifest", prefix)
 // Tells if an editor is present.
-@f mg_detected(const char *name) bool
+@f mg_detected(cstr name) bool
   char home[PATH_MAX]
   char cfg[PATH_MAX]
   char dir[PATH_MAX]
-  if !mg_home(home) || !mg_config(cfg)
+  if !mg_home(home) or !mg_config(cfg)
     return false
   if !strcmp(name, "vscode")
     snprintf(dir, sizeof dir, "%s/.vscode", home)
@@ -34,7 +31,7 @@
     return nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir))
   false
 // Tells if an editor is installed.
-@f mg_installed(const char *prefix, const char *name) bool
+@f mg_installed(cstr prefix, cstr name) bool
   char path[PATH_MAX]
   mg_manifest(prefix, path)
   FILE *f = fopen(path, "r")
@@ -49,7 +46,7 @@
   fclose(f)
   found
 // Drops an editor from the manifest.
-@f mg_forget(const char *prefix, const char *name) void
+@f mg_forget(cstr prefix, cstr name) void
   char path[PATH_MAX]
   char tmp[PATH_MAX + 8]
   mg_manifest(prefix, path)
@@ -73,7 +70,7 @@
   fclose(out)
   rename(tmp, path)
 // Records an installed file.
-@f mg_remember(const char *prefix, const char *name, const char *dst) void
+@f mg_remember(cstr prefix, cstr name, cstr dst) void
   char path[PATH_MAX]
   mg_manifest(prefix, path)
   FILE *f = fopen(path, "a")

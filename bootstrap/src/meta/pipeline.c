@@ -5,7 +5,7 @@
 
 // Runs the whole compile pipeline.
 char *nc_pipeline(NcContext *ctx, const char *input) {
-    const char *current = input;
+    const char * current = input;
     for (;;) {
         if (ctx->max_passes && ctx->pass >= ctx->max_passes) {
             nc_fail(ctx, 1, "pass limit exceeded");
@@ -18,7 +18,7 @@ char *nc_pipeline(NcContext *ctx, const char *input) {
         ctx->next_source = NULL;
         ctx->macros = (NcMap){0};
         ctx->symbols = (NcSymbols){0};
-        const char *prepared = nc_build_stage(ctx, current);
+        const char * prepared = nc_build_stage(ctx, current);
         ctx->source = prepared;
         char *output = nc_expand(ctx, nc_lex(ctx, prepared, 1), 0);
         if (!ctx->again && !ctx->next_source) {

@@ -1,17 +1,17 @@
 // Token cursor helpers for the parsers.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Skips whitespace tokens.
 @f nc_skip(NcCursor *c) void
-  while c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE
+  while c->pos < c->ts.n and c->ts.v[c->pos].kind == NC_SPACE
     ++c->pos
 // Tells if the cursor is at the end.
 @f nc_end(NcCursor *c) bool
   nc_skip(c)
   c->pos == c->ts.n
 // Tells if the next token matches.
-@f nc_at(NcCursor *c, const char *s) bool
+@f nc_at(NcCursor *c, cstr s) bool
   nc_skip(c)
-  c->pos < c->ts.n && nc_is(c->ts.v[c->pos], s)
+  c->pos < c->ts.n and nc_is(c->ts.v[c->pos], s)
 // Gets the current source line.
 @f nc_line(const NcCursor *c) int
   if c->pos < c->ts.n
@@ -23,13 +23,13 @@
     nc_fail(c->ctx, nc_line(c), "unexpected end of input")
   c->ts.v[c->pos++]
 // Consumes a token if it matches.
-@f nc_eat(NcCursor *c, const char *s) bool
+@f nc_eat(NcCursor *c, cstr s) bool
   if !nc_at(c, s)
     return false
   ++c->pos
   true
 // Consumes a token or fails.
-@f nc_need(NcCursor *c, const char *s) void
+@f nc_need(NcCursor *c, cstr s) void
   NcToken t = nc_take(c)
   if !nc_is(t, s)
     nc_fail(c->ctx, t.line, "expected '%s', got '%.*s'", s, (int)t.n, t.s)

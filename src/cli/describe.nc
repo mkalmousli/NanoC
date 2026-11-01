@@ -1,6 +1,6 @@
 // Prints builtin metadata and language cards as JSON for --describe.
 // The static cards are written once, with the JSON DSL, and baked in as C strings at compile time.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 @ct
   eval(read("src/dsl/gen.bt.nc"))
   card:=o(["syntax","@asm\n  addl $5,%0\n  out \"+r\"(n)\n  clobber \"cc\"","qualifiers",a(["volatile","inline","goto"]),"sections",a(["out","in","clobber","labels"]),"rules","instructions first; sections optional, ordered, once each; goto needs labels","backend","GNU __asm__; GCC/Clang; target ISA/ABI/constraints; C/C++","templates","raw instructions get newlines; quoted C strings pass through"])
@@ -17,7 +17,7 @@
   jw_ks(w, "phase", s->phase)
   jw_close(w, '}')
 // Prints a topic or builtin card.
-@f nc_describe(FILE *out, const char *topic) bool
+@f nc_describe(FILE *out, cstr topic) bool
   NcJson w
   jw_start(&w, out)
   if !strcmp(topic, "asm")

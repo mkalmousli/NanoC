@@ -1,5 +1,5 @@
 // The @f function form.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Expands a @f function.
 @f nc_function(NcContext *ctx, NcCursor *c, usize depth) char *
   int line = nc_line(c)
@@ -29,9 +29,9 @@
     nc_need(c, "=")
     int header_line = c->ts.v[c->pos - 1].line
     usize next = c->pos
-    while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
+    while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
       ++next
-    if next < c->ts.n && c->ts.v[next].line == header_line
+    if next < c->ts.n and c->ts.v[next].line == header_line
       NcLayoutLine first = nc_logical_line(c)
       NcNode node = {.head = first}
       NcNodes nodes = {&node, 1, 1}

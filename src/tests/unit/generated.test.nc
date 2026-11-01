@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_generated void
   NcContext *c = test_state.mem
   NcBuffer source = {0}, checks = {0}

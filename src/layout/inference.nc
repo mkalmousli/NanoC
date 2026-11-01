@@ -1,6 +1,5 @@
 // Type inference for := declarations.
-#include "nanoc/nanoc.h"
-@use errno
+@use "nanoc/nanoc", errno
 // Rewrites := with a typeof.
 @f nc_infer(NcContext *c, NcTokens ts, int line) char *
   NcTokens items = nc_significant(c, ts)
@@ -15,8 +14,8 @@
       char *s = nc_text(c, t), *end
       char *signed_text = i ? nc_format(c, "%.*s%s", (int)items.v[0].n, items.v[0].s, s) : s
       errno = 0
-      long long n = strtoll(signed_text, &end, 10)
-      if !errno && !*end && n >= INT32_MIN && n <= INT32_MAX
+      i64 n = strtoll(signed_text, &end, 10)
+      if !errno and !*end and n >= INT32_MIN and n <= INT32_MAX
         return "int"
       if strpbrk(s, ".eE")
         errno = 0
@@ -26,7 +25,7 @@
   if c->cpp
     return "auto"
   nc_fail(c, line, "type needed: use 'name:CType = expression' for nonliteral initializers")
-  NULL
+  nil
 // Parses a declaration head.
 @f nc_declaration(NcContext *ctx, NcTokens ts, int line) NcTokens
   NcCursor c = {ctx, ts, 0}

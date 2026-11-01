@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_preservation void
   const char *sources[] = {"", "int main(void){return 0;}\n", "int fn, let, macro;\n",
     "// @fn ignored\nconst char *s=\"@let x:int;\";\n", "/* @ct { bad } */\nchar c='@';\n",

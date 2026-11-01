@@ -1,8 +1,8 @@
 // Arena allocation for one compile.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t align; };
 // Sets up a context.
-@f nc_init(NcContext *c, const char *file) void
+@f nc_init(NcContext *c, cstr file) void
   memset(c, 0, sizeof *c)
   c->file = file
   c->max_depth = 128
@@ -19,8 +19,8 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
   if !size
     size = align
   NcAllocation *p = c->allocations
-  if p && size <= p->capacity - p->used
-    void *data = (unsigned char *)(p + 1) + p->used
+  if p and size <= p->capacity - p->used
+    void *data = (u8 *)(p + 1) + p->used
     p->used += size
     return data
   usize capacity = size > 65536 ? size : 65536
@@ -30,7 +30,7 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
   size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128
   if limit < 1024 * 1024
     limit = 1024 * 1024
-  if charged > limit || c->allocated > limit - charged
+  if charged > limit or c->allocated > limit - charged
     nc_fail(c, 0, "allocation limit exceeded")
   p = calloc(1, charged)
   if !p

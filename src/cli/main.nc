@@ -1,6 +1,5 @@
 // Program entry: parse options, run the pipeline.
-#include "nanoc/nanoc.h"
-#include "nanoc/manage.h"
+@use "nanoc/nanoc", "nanoc/manage"
 // Entry point of the nanoc CLI.
 @f main(int argc, char **argv) int
   int managed = nc_manage(argc, argv)

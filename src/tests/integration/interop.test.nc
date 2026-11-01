@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_interop void
   char *header = test_path("api.h"), *source = test_path("api.c"), *object = test_path("api.o")
   test_write(header, "#ifdef __cplusplus\nextern \"C\" {\n#endif\n" "struct Pair {int a,b;};\nint total(struct Pair);\n#ifdef __cplusplus\n}\n#endif\n")
@@ -11,6 +11,6 @@
     const char *link[] = {cpp ? "c++" : "cc", cpp ? "-std=c++17" : "-std=c11",
       "-pedantic-errors", main, object, "-o", exe, NULL}
     (void)test_command(link)
-    const char *run[] = {exe, NULL}
+    cstr run[] = {exe, nil}
     (void)test_command(run)
   puts("[OK] independent C object ABI linked from generated C and C++")

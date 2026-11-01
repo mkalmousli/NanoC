@@ -40,7 +40,7 @@ bool nc_has_token(const NcMap *m, NcToken t) {
     }
     size_t slot = h & (m->cap - 1);
     while (m->v[slot].key) {
-        const char *key = m->v[slot].key;
+        const char * key = m->v[slot].key;
         if (strlen(key) == t.n && !memcmp(key, t.s, t.n)) {
             return 1;
         }

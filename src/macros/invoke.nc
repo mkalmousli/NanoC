@@ -1,5 +1,5 @@
 // Macro invocation and checking.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Checks an argument fits its kind.
 @f validate(NcContext *ctx, NcParam p, NcTokens ts) static void
   NcCursor c = {ctx, ts, 0}
@@ -14,7 +14,7 @@
   if !nc_end(&c)
     nc_fail(ctx, nc_line(&c), "invalid %s argument", p.kind)
 // Expands a macro call.
-@f nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, usize depth) char *
+@f nc_invoke_macro(NcContext *ctx, NcCursor *c, cstr name, usize depth) char *
   NcMacro *m = nc_get(&ctx->macros, name)
   if !m
     nc_fail(ctx, nc_line(c), "unknown extension: @%s", name)
@@ -23,13 +23,13 @@
   bool bang = nc_header_eat(c, "!", line)
   NcGroups args = {0}
   bool block_only = (m->params.n == 1 && !strcmp(m->params.v[0].kind, "block")
-    && !m->params.v[0].variadic)
+    and !m->params.v[0].variadic)
   if bang || (m->params.n && !block_only) || nc_header_at(c, "(", line)
     args = nc_split(ctx, nc_group(c, "(", ")"), ",")
   nc_block_argument(ctx, c, m, &args, c->pos ? c->ts.v[c->pos - 1].line : line, indent)
-  bool variadic = m->params.n && m->params.v[m->params.n - 1].variadic
+  bool variadic = m->params.n and m->params.v[m->params.n - 1].variadic
   usize fixed = m->params.n - (usize)variadic
-  if args.n < fixed || (!variadic && args.n != fixed)
+  if args.n < fixed or (!variadic and args.n != fixed)
     nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name)
   NcBindings b = {0}
   for usize i = 0; i < m->params.n; ++i

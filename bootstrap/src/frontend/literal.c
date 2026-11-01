@@ -39,7 +39,7 @@ size_t nc_literal_end(NcContext *c, const char *s, size_t i, int line) {
         }
         char *delimiter = nc_string(c, s + quote + 1, (size_t)(open - s) - quote - 1);
         char *closing = nc_format(c, ")%s\"", delimiter);
-        const char *end = strstr(open + 1, closing);
+        const char * end = strstr(open + 1, closing);
         if (!end) {
             nc_fail(c, line, "unterminated raw string");
         }

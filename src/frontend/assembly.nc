@@ -1,5 +1,5 @@
 // The @asm inline assembly form.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Expands an asm block to C.
 @f nc_assembly(NcContext *ctx, NcCursor *c) char *
   NcHeader header = nc_header(c)
@@ -9,9 +9,9 @@
   while nc_same_line(c, header.line)
     char *name = nc_name(c)
     usize i = 0
-    while i < 3 && strcmp(name, names[i])
+    while i < 3 and strcmp(name, names[i])
       ++i
-    if i == 3 || seen[i]
+    if i == 3 or seen[i]
       nc_fail(ctx, header.line, "invalid or repeated assembly qualifier: %s", name)
     seen[i] = true
     if i == 2
@@ -30,7 +30,7 @@
     NcCursor row = {ctx, line.ts, 0}
     NcToken first = nc_take(&row)
     int section = 0
-    while section < 4 && !nc_is(first, keys[section])
+    while section < 4 and !nc_is(first, keys[section])
       ++section
     if section < 4
       if section <= last
@@ -51,9 +51,9 @@
     nc_check(ctx, code.n, line.line)
   if !instructions
     nc_fail(ctx, header.line, "assembly needs instructions or a quoted template")
-  if jump && !*sections[3]
+  if jump and !*sections[3]
     nc_fail(ctx, header.line, "assembly goto needs labels")
-  if !jump && *sections[3]
+  if !jump and *sections[3]
     nc_fail(ctx, header.line, "assembly labels require goto")
   NcBuffer out = {0}
   nc_printf(ctx, &out, "__asm__%s (%s", qualifiers.v ? qualifiers.v : "", code.v)

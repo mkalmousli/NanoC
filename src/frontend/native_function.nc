@@ -1,5 +1,5 @@
 // Native function headers and returns.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Reads a function return type.
 @f return_type(NcCursor *c, int line) static NcTokens
   usize start = c->pos
@@ -33,7 +33,7 @@
   char *type = "void"
   bool arrow = nc_header_eat(c, "->", header.line)
   if (arrow
-    || (
+    or (
       nc_same_line(c, header.line) && !nc_header_at(c, "=", header.line)
       && !nc_header_at(c, "=>", header.line) && !nc_header_at(c, "{", header.line)))
     type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, return_type(c, header.line))))
@@ -44,7 +44,7 @@
   NC_PUSH(ctx, ctx->symbols, ((NcSymbol){name, params, type, "", definition_line}))
   char *body
   ctx->ret_type = type
-  ctx->defers = NULL
+  ctx->defers = nil
   if nc_header_eat(c, "=>", header.line)
     char *expr = nc_join(ctx, nc_aliased(ctx, nc_until(c, ";")))
     nc_need(c, ";")
@@ -52,9 +52,9 @@
   else
     bool expression = nc_header_eat(c, "=", header.line)
     usize next = c->pos
-    while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
+    while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
       ++next
-    if expression && nc_same_line(c, header.line)
+    if expression and nc_same_line(c, header.line)
       body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_aliased(ctx, nc_line_expression(c))))
     elif next < c->ts.n && nc_is(c->ts.v[next], "{")
       body = nc_join(ctx, nc_aliased(ctx, nc_group(c, "{", "}")))

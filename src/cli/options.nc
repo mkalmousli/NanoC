@@ -1,12 +1,11 @@
 extern int nc_std;
 // Command-line option parsing.
-#include "nanoc/nanoc.h"
-@use errno
+@use "nanoc/nanoc", errno
 // Parses a positive count option.
-@f positive(NcContext *c, const char *s) static usize
+@f positive(NcContext *c, cstr s) static usize
   char *end
   errno = 0
-  unsigned long long n = strtoull(s, &end, 10)
+  unsigned i64 n = strtoull(s, &end, 10)
   if !*s || *s == '-' || *end || errno || !n || n > SIZE_MAX
     nc_fail(c, 0, "expected a positive integer: %s", s)
   (usize)n
@@ -22,7 +21,7 @@ extern int nc_std;
       o.check = true
       c->effects = false
     elif (!positional
-      && (
+      and (
         !strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives")
         || !strcmp(arg, "--prototypes")))
       if !strcmp(arg, "--prototypes")
@@ -35,7 +34,7 @@ extern int nc_std;
       && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg, "--describe")))
       o.action = arg
     elif (!positional
-      && (
+      and (
         !strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg, "--emit")
         || !strcmp(arg, "--diagnostics") || !strcmp(arg, "--std") || !strcmp(arg, "--max-depth")
         || !strcmp(arg, "--max-steps") || !strcmp(arg, "--max-passes")
@@ -76,6 +75,6 @@ extern int nc_std;
     else
       o.input = arg
       c->file = arg
-  if !*o.action && !*o.input
+  if !*o.action and !*o.input
     nc_fail(c, 0, "missing input file; use --help")
   o

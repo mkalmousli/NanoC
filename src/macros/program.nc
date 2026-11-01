@@ -1,8 +1,8 @@
 // Macro bodies written as programs.
-#include "nanoc/nanoc.h"
+@use "nanoc/nanoc"
 // Runs a program-style macro.
 @f nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, usize depth) char *
-  NcEnv *env = nc_env(ctx, NULL)
+  NcEnv *env = nc_env(ctx, nil)
   for usize i = 0; i < macro->params.n; ++i
     NcParam p = macro->params.v[i]
     NcGroups *values = nc_get(&b->values, p.name)

@@ -1,4 +1,4 @@
-#include "test.h"
+@use "test"
 @f test_terse_meta void
   test_program("@ct\n  f answer\n    f:=42\n    f\n  n:=answer()\n" "  emit(quote(int n=$n;))\n@f main int = n!=42\n", "", false)
   test_program("@ct\n  f fact(n)\n    if n<=1\n      1\n    else\n      n*fact(n-1)\n" "  n:=fact(5)\n  emit(quote(int n=$n;))\n@f main int = n!=120\n", "", false)
@@ -22,7 +22,7 @@
   test_write(input, nc_format(c, "@bt\n  write(%s,\"#define GENERATED 42\\n\")\n" "  emit(read(%s))\n@f main int = GENERATED!=42\n", nc_quote(c, made), nc_quote(c, made)))
   const char *check[] = {"build/nanoc", input, "--check", "--diagnostics", "json", NULL}
   TestResult r = test_run(check)
-  CHECK(r.status != 0 && test_json(r.err) && !test_exists(made))
+  CHECK(r.status != 0 and test_json(r.err) and !test_exists(made))
   const char *compile[] = {"build/nanoc", input, "-o", test_path("terse-bt.c"), NULL}
   (void)test_command(compile)
   CHECK(!strcmp(test_read(made), "#define GENERATED 42\n"))
