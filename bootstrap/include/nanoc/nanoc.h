@@ -1,5 +1,6 @@
 #ifndef NC_NANOC_H
 #define NC_NANOC_H
+// Base types and limits.
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -20,11 +21,13 @@ typedef struct { char **v; size_t n, cap; } NcStrings;
     if ((a).n == (a).cap) (a).v = nc_grow(c, (a).v, (a).n, &(a).cap, sizeof *(a).v); \
     (a).v[(a).n++] = (x); \
 } while (0)
+// Token and cursor types.
 typedef enum { NC_SPACE, NC_WORD, NC_NUMBER, NC_LITERAL, NC_PUNCT, NC_DIRECTIVE } NcKind;
 typedef struct { const char *s; size_t n; int line, column; NcKind kind; } NcToken;
 typedef struct { NcToken *v; size_t n, cap; } NcTokens;
 typedef struct { NcTokens *v; size_t n, cap; } NcGroups;
 typedef struct { NcContext *ctx; NcTokens ts; size_t pos; } NcCursor;
+// The compile context.
 typedef struct { char *name, *params, *returns, *intent; int line; } NcSymbol;
 typedef struct { NcSymbol *v; size_t n, cap; } NcSymbols;
 struct NcContext {
@@ -46,16 +49,19 @@ struct NcContext {
     char *frames[256];
     size_t frame_count;
 };
+// Macro types.
 typedef struct { char *name, *kind; bool variadic; } NcParam;
 typedef struct { NcParam *v; size_t n, cap; } NcParams;
 typedef struct { NcParams params; NcTokens body; bool program; } NcMacro;
 typedef struct { NcMap values, fresh; char *variadic; } NcBindings;
+// Layout tree types.
 typedef struct { NcTokens ts; int indent, line; bool raw; } NcLayoutLine;
 typedef struct { NcLayoutLine *v; size_t n, cap; } NcLines;
 typedef struct NcNode NcNode;
 typedef struct { NcNode *v; size_t n, cap; } NcNodes;
 struct NcNode { NcLayoutLine head; NcNodes children; };
 typedef struct { int line, indent; } NcHeader;
+// Evaluator types.
 typedef enum { NC_INT, NC_BOOL, NC_STRING, NC_CODE, NC_LIST } NcValueKind;
 typedef struct NcValue NcValue;
 struct NcValue { NcValueKind kind; int64_t n; char *text; NcValue *items; size_t count, height; };
@@ -66,10 +72,12 @@ typedef enum { NC_CT, NC_BT, NC_MACRO } NcPhase;
 typedef struct { NcContext *ctx; NcMap functions; NcBuffer output; NcEnv *root; NcPhase phase; size_t depth; } NcMachine;
 typedef struct { bool returning; NcValue value; bool breaking, continuing; } NcFlow;
 typedef struct { NcCursor c; NcMachine *m; NcEnv *env; size_t depth; } NcExpr;
+// Builtin catalog types.
 typedef NcValue (*NcBuiltinFn)(NcMachine *, const char *, NcValues, int);
 typedef struct { const char *name, *signature, *phase; NcBuiltinFn function; } NcSpec;
 extern const NcSpec nc_specs[];
 extern const size_t nc_spec_count;
+// CLI option types.
 #define NC_VERSION "0.6.0"
 typedef struct { char *input, *output, *action; bool check, json, prototypes; } NcOptions;
 char * nc_read(NcContext * c, const char * path);

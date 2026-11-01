@@ -1,3 +1,4 @@
+// Layout tree types.
 typedef struct { NcTokens ts; int indent, line; bool raw; } NcLayoutLine;
 typedef struct { NcLayoutLine *v; size_t n, cap; } NcLines;
 typedef struct NcNode NcNode;

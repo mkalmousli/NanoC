@@ -1,3 +1,4 @@
+// The compile context.
 typedef struct { char *name, *params, *returns, *intent; int line; } NcSymbol;
 typedef struct { NcSymbol *v; size_t n, cap; } NcSymbols;
 struct NcContext {

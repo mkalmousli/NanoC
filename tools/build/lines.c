@@ -8,7 +8,7 @@ static void check_file(const char *path) {
     bool narrow = !strncmp(path, "src/", 4) && n > 3 && !strcmp(path + n - 3, ".nc");
     while ((ch = fgetc(f)) != EOF) {
         if (ch == '\n') { ++count; col = 0; }
-        else if (narrow && (ch & 0xC0) != 0x80 && ++col > 30) { fprintf(stderr, "%s:%zu: wider than 30 columns\n", path, count + 1); exit(1); }
+        else if (narrow && (ch & 0xC0) != 0x80 && ++col > 60) { fprintf(stderr, "%s:%zu: wider than 60 columns\n", path, count + 1); exit(1); }
         last = ch;
     }
     if (last != '\n') ++count;

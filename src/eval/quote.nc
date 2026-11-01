@@ -1,33 +1,24 @@
+// Quoted token templates.
 #include "nanoc/nanoc.h"
-@f nc_quotation(
-  NcExpr *e, NcTokens ts,
-  bool active
-) NcValue
+// Builds a value from a quoted template.
+@f nc_quotation(NcExpr *e, NcTokens ts, bool active) NcValue
   NcContext *ctx = e->m->ctx
   NcCursor c = {ctx, ts, 0}
   NcBuffer out = {0}
   while c.pos < ts.n
     NcToken t = ts.v[c.pos++]
     nc_step(ctx, t.line)
-    if (t.kind == NC_PUNCT
-      && nc_is(t, "$"))
+    if t.kind == NC_PUNCT && nc_is(t, "$")
       if nc_eat(&c, "$")
         nc_add(ctx, &out, "$")
       else
-        char *name = nc_name(
-          &c)
+        char *name = nc_name(&c)
         if active
           nc_add(ctx, &out,
             nc_value_code(ctx,
-              nc_lookup(ctx,
-                e->env, name,
-                t.line),
-              t.line))
+              nc_lookup(ctx, e->env, name, t.line), t.line))
     else
-      nc_addn(ctx, &out, t.s,
-        t.n)
-    nc_check(ctx, out.n,
-      t.line)
+      nc_addn(ctx, &out, t.s, t.n)
+    nc_check(ctx, out.n, t.line)
   nc_add(ctx, &out, "")
-  nc_value_text(NC_CODE,
-    out.v)
+  nc_value_text(NC_CODE, out.v)

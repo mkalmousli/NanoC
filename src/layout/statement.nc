@@ -1,150 +1,82 @@
+// Statement lines to C.
 #include "nanoc/nanoc.h"
+// Converts one statement to C.
 @f nc_statement(
-  NcContext *c,
-  NcLayoutLine line, bool tail
+  NcContext *c, NcLayoutLine line, bool tail
 ) char *
   NcTokens ts = line.ts
-  NcTokens items = (
-    nc_significant(c, ts))
+  NcTokens items = nc_significant(c, ts)
   if !items.n
     return ""
-  if nc_is(
-    items.v[items.n - 1], ";")
+  if nc_is(items.v[items.n - 1], ";")
     size_t last = ts.n
-    while (last
-      && ts.v[last - 1].kind
-      == NC_SPACE)
+    while last && ts.v[last - 1].kind == NC_SPACE
       --last
     ts.n = last - 1
-    items = nc_significant(c,
-      ts)
+    items = nc_significant(c, ts)
   if !items.n
     return ";"
-  char *first = nc_text(c,
-    items.v[0])
+  char *first = nc_text(c, items.v[0])
   if !strcmp(first, "intent")
-    if (items.n != 2
-      || items.v[1].kind
-      != NC_LITERAL
-      || items.v[1].s[0]
-      != '"')
+    if (items.n != 2 || items.v[1].kind != NC_LITERAL
+      || items.v[1].s[0] != '"')
       nc_fail(c, line.line,
-        "intent requires "
-        "one string literal")
+        "intent requires one string literal")
     if c->symbols.n
-      c->symbols.v[
-        c->symbols.n
-        - 1].intent = (
-        nc_unquote(c,
-          nc_text(c,
-            items.v[1]),
-          line.line))
+      c->symbols.v[c->symbols.n - 1].intent = nc_unquote(c,
+        nc_text(c, items.v[1]), line.line)
     return ""
   NcCursor cursor = {c, ts, 0}
   bool declaration = false
-  if (!strcmp(first, "let")
-    || !strcmp(first, "var"))
+  if !strcmp(first, "let") || !strcmp(first, "var")
     (void)nc_take(&cursor)
-    ts = nc_declaration(c,
-      nc_slice(ts, cursor.pos,
-        ts.n), line.line)
+    ts = nc_declaration(c, nc_slice(ts, cursor.pos, ts.n),
+      line.line)
     declaration = true
-  elif (items.n > 1
-    && items.v[0].kind
-    == NC_WORD
-    && (
-      nc_is(items.v[1], ":")
-      || nc_is(items.v[1],
-        ",")))
-    for (size_t i = 0;
-      i < items.n; ++i)
-      if (nc_is(items.v[i],
-          ":")
+  elif (items.n > 1 && items.v[0].kind == NC_WORD
+    && (nc_is(items.v[1], ":") || nc_is(items.v[1], ",")))
+    for size_t i = 0; i < items.n; ++i
+      if (nc_is(items.v[i], ":")
+        && (!i || !nc_is(items.v[i - 1], ":"))
         && (
-          !i
-          || !nc_is(
-            items.v[i - 1],
-            ":"))
-        && (
-          i + 1 == items.n
-          || !nc_is(
-            items.v[i + 1],
-            ":")))
+          i + 1 == items.n || !nc_is(items.v[i + 1], ":")))
         declaration = true
   if declaration
     if tail
       nc_fail(c, line.line,
-        "value function "
-        "needs a final "
-        "expression")
+        "value function needs a final expression")
     return nc_format(c, "%s;",
       nc_words(c,
-        nc_lex(c,
-          nc_typed(c, ts,
-            true),
-          line.line)))
-  for (size_t i = 0; i < ts.n;
-    ++i)
-    if (ts.v[i].kind
-      == NC_PUNCT
-      && nc_is(ts.v[i], ":="))
+        nc_lex(c, nc_typed(c, ts, true), line.line)))
+  for size_t i = 0; i < ts.n; ++i
+    if ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")
       if tail
         nc_fail(c, line.line,
-          "value function "
-          "needs a final "
-          "expression")
-      NcTokens normalized = {
-        0}
-      for (size_t j = 0;
-        j < ts.n; ++j)
+          "value function needs a final expression")
+      NcTokens normalized = {0}
+      for size_t j = 0; j < ts.n; ++j
         NC_PUSH(c, normalized,
           nc_is(ts.v[j], ":=")
-          ? nc_token("=",
-            ts.v[j].line,
-            NC_PUNCT)
-          : ts.v[j])
-      char *typed = nc_typed(
-        c,
-        nc_declaration(c,
-          normalized,
-          line.line), true)
-      return nc_format(c,
-        "%s;",
-        nc_words(c,
-          nc_lex(c, typed,
-            line.line)))
-  char *code = nc_trim(c,
-    nc_words(c, ts))
+          ? nc_token("=", ts.v[j].line, NC_PUNCT) : ts.v[j])
+      char *typed = nc_typed(c,
+        nc_declaration(c, normalized, line.line), true)
+      return nc_format(c, "%s;",
+        nc_words(c, nc_lex(c, typed, line.line)))
+  char *code = nc_trim(c, nc_words(c, ts))
   if !strcmp(first, "=>")
-    return nc_format(c,
-      "return %s;",
-      nc_trim(c, code + 2))
-  if (!strcmp(first, "return")
-    || !strcmp(first, "break")
-    || !strcmp(first,
-      "continue")
-    || !strcmp(first, "goto")
-    || !strcmp(first,
-      "throw"))
-    return nc_format(c, "%s;",
-      code)
-  if (items.v[0].kind
-    == NC_DIRECTIVE)
+    return nc_format(c, "return %s;", nc_trim(c, code + 2))
+  if (!strcmp(first, "return") || !strcmp(first, "break")
+    || !strcmp(first, "continue") || !strcmp(first, "goto")
+    || !strcmp(first, "throw"))
+    return nc_format(c, "%s;", code)
+  if items.v[0].kind == NC_DIRECTIVE
     return nc_join(c, ts)
   if tail
-    const char *decls[] = {
-      "int", "char", "void",
-      "float", "double",
-      "struct", "typedef",
-      "static"}
-    for (size_t i = 0; i < 8;
-      ++i)
-      if !strcmp(first,
-        decls[i])
+    const char *decls[] = {"int", "char", "void", "float",
+      "double", "struct", "typedef", "static"}
+    for size_t i = 0; i < 8; ++i
+      if !strcmp(first, decls[i])
         nc_fail(c, line.line,
-          "value function "
-          "needs a final "
-          "expression")
-    return nc_format(c,
-      "return %s;", code)
+          "value function needs a final expression")
+    return nc_format(c, "return %s;", code)
   nc_format(c, "%s;", code)

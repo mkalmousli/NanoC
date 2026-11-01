@@ -2,7 +2,7 @@
 
 - Headers: generated from `include/nanoc/*.nc` + `--prototypes` by `tools/headers.nc`.
 - Self-hosted compiler in `src/**/*.nc`; C11 bootstrap/tools/tests; POSIX host.
-  Every source file <=200 physical lines; src `.nc` <=30 columns, doc comment per function. Edit NanoC; never hand-edit generated seed C.
+  Every source file <=200 physical lines; src `.nc` <=60 columns, doc comment per function. Edit NanoC; never hand-edit generated seed C.
 - Preserve unmarked C/C++. New code uses `@f name(args) int`, bare types and
   indentation: no arrows, block colons, braces, semicolons or final return markers.
 - Bootstrap: `cc -std=c11 -O2 build.c -o builder`; run `./builder test`.

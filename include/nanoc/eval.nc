@@ -1,3 +1,4 @@
+// Evaluator types.
 typedef enum { NC_INT, NC_BOOL, NC_STRING, NC_CODE, NC_LIST } NcValueKind;
 typedef struct NcValue NcValue;
 struct NcValue { NcValueKind kind; int64_t n; char *text; NcValue *items; size_t count, height; };

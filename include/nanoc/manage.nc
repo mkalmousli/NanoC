@@ -1,3 +1,5 @@
+// Manage command types.
+#define _XOPEN_SOURCE 700
 /* Paths are bounded by PATH_MAX; snprintf truncation is handled by callers. */
 #pragma GCC diagnostic ignored "-Wformat-truncation"
 #include <stdio.h>

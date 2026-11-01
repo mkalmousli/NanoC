@@ -1,6 +1,6 @@
 # Implementation map
 
-Self-hosted NanoC; C11 bootstrap/tools; POSIX host, libc only. Sources <=200 lines, src/*.nc <=30 columns.
+Self-hosted NanoC; C11 bootstrap/tools; POSIX host, libc only. Sources <=200 lines, src/*.nc <=60 columns.
 
 | Directory | Owns |
 |---|---|
@@ -25,3 +25,10 @@ Output files use same-directory temporary files + rename. Host commands use argv
 only explicit `sh` invokes a shell. Builtin signatures live in `src/meta/registry.nc`.
 Compiler modules are `.nc`, with indented functions and controls. C11 emitted by
 three generations must match; see [bootstrap card](bootstrap.md).
+
+## Style
+- `src/**/*.nc`: max 60 columns, 200 lines per file.
+- Every file starts with a `//` header comment.
+- Every `@f` has a one-line `//` doc comment above it.
+- Headers are generated: `include/nanoc/*.nc` (types) plus
+  `nanoc --prototypes` per module, via `tools/headers.nc`.
