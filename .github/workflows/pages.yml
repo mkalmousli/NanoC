@@ -7,13 +7,38 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  publish:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the compiler
+        run: cc -std=c11 -O2 build.c -o builder && ./builder build
+      - name: Assemble the site
+        run: build/nanoc tools/site/site.nc -o build/site.c
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  branch:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
