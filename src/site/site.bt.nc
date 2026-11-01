@@ -1,7 +1,7 @@
 // Assemble the GitHub Pages site in _site/: docs, a copy of the tracked sources
 // (the explorer reads them), a file index and NanoC-vs-C compiler stats.
 // From the repository root, after `cc -std=c11 build.c -o builder && ./builder build`:
-//   build/nanoc tools/site/site.nc -o build/site.c
+//   build/nanoc src/site/site.bt.nc -o build/site.c
 // It then runs examples.nc, wasm.nc and pages.nc (same folder) to finish the job.
 @bt
   exec(["rm","-rf","_site"])
@@ -35,8 +35,10 @@
   tcb:=0
   for f ncFiles
     src:=read(f)
-    exec([compiler,f,"-o","build/site-stat.c"])
-    out:=read("build/site-stat.c")
+    out:=""
+    if !contains(f,".bt.nc")
+      exec([compiler,f,"-o","build/site-stat.c"])
+      out=read("build/site-stat.c")
     nl:=0
     for l split(src,"\n")
       if len(l)>0
@@ -46,7 +48,9 @@
       if len(l)>0
         cl+=1
     rest:=slice(f,4,len(f))
-    area:=slice(rest,0,find(rest,"/"))
+    area:="tools"
+    if contains(rest,"/")
+      area=slice(rest,0,find(rest,"/"))
     if !contains(join(areas,","),area)
       areas=push(areas,area)
     put("files:"+area,get("files:"+area,0)+1)
@@ -63,4 +67,4 @@
   log("stats: "+str(tn)+" nanoc lines, "+str(tc)+" c lines")
   exec(["mkdir","-p","build/blocks"])
   for step ["examples","wasm","pages"]
-    exec([compiler,"tools/site/"+step+".nc","-o","build/site-"+step+".c"])
+    exec([compiler,"src/site/"+step+".bt.nc","-o","build/site-"+step+".c"])

@@ -48,7 +48,7 @@ void b_fixed_point(const char *a, const char *b) {
 /* Generate include/nanoc/*.h with the given compiler. */
 static void b_headers(const char *compiler, const char *out) {
     if (setenv("NC_BIN", compiler, 1) || setenv("NC_OUT", out, 1)) b_die("cannot set header environment");
-    char *args[] = {(char *)compiler, "tools/headers.nc", "-o", "build/headers.c", NULL};
+    char *args[] = {(char *)compiler, "src/headers.bt.nc", "-o", "build/headers.c", NULL};
     if (b_run(args)) b_die("header generation failed");
 }
 void b_selfhost(BOptions o) {

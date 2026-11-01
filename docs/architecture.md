@@ -31,7 +31,7 @@ three generations must match; see [bootstrap card](bootstrap.md).
 - Every file starts with a `//` header comment.
 - Every `@f` has a one-line `//` doc comment above it.
 - Headers are generated: `include/nanoc/*.nc` (types) plus
-  `nanoc --prototypes` per module, via `tools/headers.nc`.
+  `nanoc --prototypes` per module, via `src/headers.bt.nc`.
 
 ## Emitters
 - `src/emit/pretty.nc`, `braces.nc`, `output.nc`: normal mode. A token pass over generated C: indentation, cuddled `else`, `case` indent, one blank line between top-level definitions, soft wrap at 90 columns. Source spacing is kept.

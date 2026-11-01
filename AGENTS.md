@@ -1,6 +1,6 @@
 # NanoC agent entry
 
-- Headers: generated from `include/nanoc/*.nc` + `--prototypes` by `tools/headers.nc`.
+- Headers: generated from `include/nanoc/*.nc` + `--prototypes` by `src/headers.bt.nc`.
 - Self-hosted compiler in `src/**/*.nc`; C11 bootstrap/tools/tests; POSIX host.
   Every source file <=200 physical lines, doc comment per function. Edit NanoC; never hand-edit generated seed C.
 - Preserve unmarked C/C++. New code uses `@f name(args) int`, bare types and

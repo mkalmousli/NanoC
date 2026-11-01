@@ -57,10 +57,18 @@ void b_install(const char *prefix, bool editors) {
         b_path(path, prefix, installed[i]);
         if (b_exists(path) && !owned[i]) b_die("refusing to overwrite unmanaged installation file");
     }
+    char *gen[] = {"build/nanoc", "src/editors.bt.nc", "-o", "build/editors.c", NULL};
+    if (b_run(gen)) b_die("editor generation failed");
     for (size_t i = 0; i + 1 < INSTALLED_COUNT; ++i) {
         progress(i + 1, INSTALLED_COUNT - 1);
         b_path(path, prefix, installed[i]);
-        b_copy(i ? installed[i] + 12 : "build/nanoc", path);
+        char from[PATH_MAX];
+        const char *rel = installed[i] + 12;
+        if (!i) snprintf(from, sizeof from, "build/nanoc");
+        else if (!strcmp(rel, "editors/vscode/icon.png")) snprintf(from, sizeof from, "assets/icon.png");
+        else if (!strncmp(rel, "editors/", 8)) snprintf(from, sizeof from, "build/%s", rel);
+        else snprintf(from, sizeof from, "%s", rel);
+        b_copy(from, path);
     }
     printf("\n");
     b_path(path, prefix, installed[INSTALLED_COUNT - 1]);

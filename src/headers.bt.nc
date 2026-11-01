@@ -3,12 +3,12 @@
 // (in dependency order); prototypes come from the
 // compiler itself (--prototypes) for every src module.
 // Run: NC_BIN=build/nanoc NC_OUT=build/include
-//   build/nanoc tools/headers.nc -o build/headers.c
+//   build/nanoc src/headers.bt.nc -o build/headers.c
 @bt
   nc:=env("NC_BIN")
   out:=env("NC_OUT")
   exec(["mkdir","-p",out+"/nanoc"])
-  mods:=split(exec(["find","src","-name","*.nc"]),"\n")
+  mods:=split(exec(["find","src","-name","*.nc","-not","-name","*.bt.nc"]),"\n")
   main:="#ifndef NC_NANOC_H\n#define NC_NANOC_H\n"
   for t ["base","token","core","macro","layout","eval","meta","cli"]
     main+=exec([nc,"include/nanoc/"+t+".nc"])

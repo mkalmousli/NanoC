@@ -13,7 +13,7 @@
   <a href="https://mkalmousli.github.io/NanoC/">Website</a> ·
   <a href="docs/language.md">Language card</a> ·
   <a href="docs/architecture.md">Architecture</a> ·
-  <a href="editors/">Editors</a>
+  <a href="src/editors.bt.nc">Editors</a>
 </p>
 
 ---
