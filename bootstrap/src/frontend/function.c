@@ -29,7 +29,7 @@ char *nc_function(NcContext *ctx, NcCursor *c, size_t depth) {
     NcSymbol symbol = {id, args, returns, "", line};
     NC_PUSH(ctx, ctx->symbols, symbol);
     char *body;
-    if (!compact) {
+    if (! compact) {
         body = nc_expand(ctx, nc_group(c, "{", "}"), depth);
     } else {
         nc_need(c, "=");

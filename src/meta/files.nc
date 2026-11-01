@@ -13,7 +13,7 @@
     if mkdir(copy, 0755) and errno != EEXIST
       nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
     *p = last
-    if !last
+    if not last
       break
 // Runs file builtins.
 @f nc_meta_files(NcMachine *m, cstr name, NcValues a, int line) NcValue

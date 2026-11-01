@@ -17,15 +17,19 @@ NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line) {
         }
         NcTokens ts = nc_lex(c, text, line);
         NcBuffer out = {0};
-        for (size_t i = 0; i < ts.n; ++i) {
-            NcToken t = ts.v[i];
-            nc_step(c, line);
-            if (t.kind == NC_WORD && nc_is(t, needle)) {
-                nc_add(c, &out, to);
-            } else {
-                nc_addn(c, &out, t.s, t.n);
+        {
+            size_t nanoc_start_1 = (0);
+            size_t nanoc_end_2 = (ts.n);
+            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                NcToken t = ts.v[i];
+                nc_step(c, line);
+                if (t.kind == NC_WORD && nc_is(t, needle)) {
+                    nc_add(c, &out, to);
+                } else {
+                    nc_addn(c, &out, t.s, t.n);
+                }
+                nc_check(c, out.n, line);
             }
-            nc_check(c, out.n, line);
         }
         nc_add(c, &out, "");
         return nc_value_text(a.v[0].kind, out.v);
@@ -34,7 +38,7 @@ NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line) {
         const char * found = strstr(text, needle);
         return (!strcmp(name, "contains") ? nc_boolean(found != NULL) : nc_integer(found ? found - text : -1));
     }
-    if (!n) {
+    if (! n) {
         nc_fail(c, line, "separator/search text must not be empty");
     }
     if (!strcmp(name, "split")) {
@@ -44,7 +48,7 @@ NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line) {
             const char * found = strstr(text, needle);
             NC_PUSH(c, list, nc_value_text(NC_STRING, nc_string(c, text, found ? (size_t)(found - text) : strlen(text))));
             nc_check(c, list.n * 8, line);
-            if (!found) {
+            if (! found) {
                 break;
             }
             text = found + n;
@@ -61,7 +65,7 @@ NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line) {
             nc_add(c, &out, replacement);
         }
         nc_check(c, out.n, line);
-        if (!found) {
+        if (! found) {
             break;
         }
         text = found + n;

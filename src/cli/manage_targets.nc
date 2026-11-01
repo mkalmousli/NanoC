@@ -51,13 +51,13 @@
 @f mg_vscode(NcTarget *t, int *n, cstr home) void
   const char *bases[] = {".vscode", ".vscode-oss", ".cursor"}
   int found = 0
-  for int i = 0; i < 3; ++i
+  for i in 0..3
     char base[PATH_MAX]
     snprintf(base, sizeof base, "%s/%s", home, bases[i])
     if nc_exists(base)
       mg_vscode_at(t, n, base)
       found += 1
-  if !found
+  if not found
     char base[PATH_MAX]
     snprintf(base, sizeof base, "%s/.vscode", home)
     mg_vscode_at(t, n, base)

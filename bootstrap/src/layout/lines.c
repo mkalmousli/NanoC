@@ -11,14 +11,18 @@ NcLayoutLine nc_logical_line(NcCursor *c) {
         nc_fail(c->ctx, nc_line(c), "expected a logical line");
     }
     NcLayoutLine out = {.indent = c->ts.v[c->pos].column - 1, .line = nc_line(c)};
-    for (size_t i = whitespace; i < c->pos; ++i) {
-        NcToken t = c->ts.v[i];
-        size_t tail = t.n;
-        while (tail && t.s[tail - 1] != '\n') {
-            --tail;
-        }
-        if (memchr(t.s + tail, '\t', t.n - tail)) {
-            nc_fail(c->ctx, out.line, "use spaces for indentation");
+    {
+        size_t nanoc_start_1 = (whitespace);
+        size_t nanoc_end_2 = (c->pos);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcToken t = c->ts.v[i];
+            size_t tail = t.n;
+            while (tail && t.s[tail - 1] != '\n') {
+                --tail;
+            }
+            if (memchr(t.s + tail, '\t', t.n - tail)) {
+                nc_fail(c->ctx, out.line, "use spaces for indentation");
+            }
         }
     }
     NcStrings stack = {0};
@@ -77,7 +81,7 @@ NcLines nc_body_lines(NcCursor *c, int header_line, int indent) {
         }
         NC_PUSH(c->ctx, out, nc_logical_line(c));
     }
-    if (!out.n) {
+    if (! out.n) {
         nc_fail(c->ctx, header_line, "expected an indented function body");
     }
     return out;

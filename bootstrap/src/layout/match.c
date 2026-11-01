@@ -19,18 +19,26 @@ char *nc_match(NcContext *c, NcNode node, size_t depth) {
     char *subject = nc_trim(c, nc_join(c, nc_slice(head, 1, head.n)));
     NcBuffer out = {0};
     nc_printf(c, &out, "switch (%s) {\n", subject);
-    for (size_t i = 0; i < node.children.n; ++i) {
-        NcNode arm = node.children.v[i];
-        NcTokens labels = bare(c, arm.head);
-        if (labels.n == 1 && nc_is(labels.v[0], "else")) {
-            nc_add(c, &out, "default:");
-        } else {
-            NcGroups items = nc_split(c, labels, ",");
-            for (size_t k = 0; k < items.n; ++k) {
-                nc_printf(c, &out, "case %s:", nc_trim(c, nc_join(c, items.v[k])));
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (node.children.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcNode arm = node.children.v[i];
+            NcTokens labels = bare(c, arm.head);
+            if (labels.n == 1 && nc_is(labels.v[0], "else")) {
+                nc_add(c, &out, "default:");
+            } else {
+                NcGroups items = nc_split(c, labels, ",");
+                {
+                    size_t nanoc_start_3 = (0);
+                    size_t nanoc_end_4 = (items.n);
+                    for (size_t k = nanoc_start_3; k < nanoc_end_4; ++k) {
+                        nc_printf(c, &out, "case %s:", nc_trim(c, nc_join(c, items.v[k])));
+                    }
+                }
             }
+            nc_printf(c, &out, " {%s} break;\n", nc_emit_block(c, arm.children, 0, depth + 1));
         }
-        nc_printf(c, &out, " {%s} break;\n", nc_emit_block(c, arm.children, 0, depth + 1));
     }
     nc_add(c, &out, "}\n");
     return out.v;

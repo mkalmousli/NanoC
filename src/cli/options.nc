@@ -13,7 +13,7 @@ extern int nc_std;
 @f nc_options(NcContext *c, int argc, char **argv) NcOptions
   NcOptions o = {.input = "", .output = "-", .action = ""}
   bool positional = false
-  for int i = 1; i < argc; ++i
+  for i in 1..argc
     char *arg = argv[i]
     if !positional && !strcmp(arg, "--")
       positional = true
@@ -50,7 +50,7 @@ extern int nc_std;
         c->mini = !strcmp(value, "mini")
       elif !strcmp(arg, "--std")
         nc_std = !strcmp(value, "c89") ? 89 : !strcmp(value, "c99") ? 99 : !strcmp(value, "c11") ? 11 : !strcmp(value, "c17") ? 17 : 0
-        if !nc_std
+        if not nc_std
           nc_fail(c, 0, "--std requires c89, c99, c11 or c17")
       elif !strcmp(arg, "--lang")
         if strcmp(value, "c") && strcmp(value, "c++")

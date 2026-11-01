@@ -55,7 +55,7 @@ bool mg_installed(const char *prefix, const char *name) {
     char path[PATH_MAX];
     mg_manifest(prefix, path);
     FILE *f = fopen(path, "r");
-    if (!f) {
+    if (! f) {
         return 0;
     }
     char line[PATH_MAX + 64];
@@ -78,11 +78,11 @@ void mg_forget(const char *prefix, const char *name) {
     mg_manifest(prefix, path);
     snprintf(tmp, sizeof tmp, "%s.tmp", path);
     FILE *in = fopen(path, "r");
-    if (!in) {
+    if (! in) {
         return;
     }
     FILE *out = fopen(tmp, "w");
-    if (!out) {
+    if (! out) {
         fclose(in);
         return;
     }

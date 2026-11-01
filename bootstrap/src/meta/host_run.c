@@ -18,8 +18,12 @@ NcValue nc_host_run(NcMachine *m, NcValues a, int line) {
     }
     NcValue list = a.v[0];
     char **argv = nc_alloc(c, (list.count + 1) * sizeof *argv);
-    for (size_t i = 0; i < list.count; ++i) {
-        argv[i] = (char *)nc_meta_text(c, list.items[i], line);
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (list.count);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            argv[i] = (char *)nc_meta_text(c, list.items[i], line);
+        }
     }
     const char * cwd = a.n == 2 ? nc_meta_text(c, a.v[1], line) : NULL;
     char out_path[32];
@@ -39,7 +43,7 @@ NcValue nc_host_run(NcMachine *m, NcValues a, int line) {
         nc_fail(c, line, "cannot create process capture files");
     }
     pid_t pid = fork();
-    if (!pid) {
+    if (! pid) {
         if (dup2(out, 1) < 0 || dup2(err, 2) < 0) {
             _exit(126);
         }
@@ -97,7 +101,7 @@ NcValue nc_host_run(NcMachine *m, NcValues a, int line) {
     close(err);
     unlink(out_path);
     unlink(err_path);
-    if (!valid) {
+    if (! valid) {
         nc_fail(c, line, "command capture failed or output limit exceeded");
     }
     if (strlen(stdout_text) != (size_t)so.st_size || strlen(stderr_text) != (size_t)se.st_size) {

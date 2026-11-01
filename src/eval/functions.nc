@@ -14,7 +14,7 @@
   if nc_at(c, "(")
     params = nc_split(ctx, nc_group(c, "(", ")"), ",")
   NcMap names = {0}
-  for usize i = 0; i < params.n; ++i
+  for i:usize in 0..params.n
     NcCursor p = {ctx, params.v[i], 0}
     char *id = nc_name(&p)
     if !nc_end(&p) or nc_get(&names, id)
@@ -34,12 +34,12 @@
   NcContext *c = m->ctx
   nc_depth(c, depth, line, "compile-time")
   NcCtFunction *f = nc_get(&m->functions, name)
-  if !f
+  if not f
     return nc_builtin(m, name, args, line)
   if args.n != f->params.n
     nc_fail(c, line, "wrong argument count for %s", name)
   NcEnv *env = nc_env(c, f->closure)
-  for usize i = 0; i < args.n; ++i
+  for i:usize in 0..args.n
     nc_bind(c, env, f->params.v[i], args.v[i])
   if c->frame_count == 256
     nc_fail(c, line, "compile-time depth limit exceeded")

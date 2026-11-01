@@ -35,7 +35,7 @@
   char path[PATH_MAX]
   mg_manifest(prefix, path)
   FILE *f = fopen(path, "r")
-  if !f
+  if not f
     return false
   char line[PATH_MAX + 64]
   bool found = false
@@ -52,10 +52,10 @@
   mg_manifest(prefix, path)
   snprintf(tmp, sizeof tmp, "%s.tmp", path)
   FILE *in = fopen(path, "r")
-  if !in
+  if not in
     return
   FILE *out = fopen(tmp, "w")
-  if !out
+  if not out
     fclose(in)
     return
   char line[PATH_MAX + 64]

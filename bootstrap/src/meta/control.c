@@ -24,7 +24,7 @@ NcValue nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) {
         if (!strcmp(name, "get")) {
             return v ? *v : a.v[1];
         }
-        if (!v) {
+        if (! v) {
             v = nc_alloc(c, sizeof *v);
             nc_put(c, &c->state, key, v);
         }

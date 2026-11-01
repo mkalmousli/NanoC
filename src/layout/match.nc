@@ -12,14 +12,14 @@
   char *subject = nc_trim(c, nc_join(c, nc_slice(head, 1, head.n)))
   NcBuffer out = {0}
   nc_printf(c, &out, "switch (%s) {\n", subject)
-  for usize i = 0; i < node.children.n; ++i
+  for i:usize in 0..node.children.n
     NcNode arm = node.children.v[i]
     NcTokens labels = bare(c, arm.head)
     if labels.n == 1 && nc_is(labels.v[0], "else")
       nc_add(c, &out, "default:")
     else
       NcGroups items = nc_split(c, labels, ",")
-      for usize k = 0; k < items.n; ++k
+      for k:usize in 0..items.n
         nc_printf(c, &out, "case %s:", nc_trim(c, nc_join(c, items.v[k])))
     nc_printf(c, &out, " {%s} break;\n", nc_emit_block(c, arm.children, false, depth + 1))
   nc_add(c, &out, "}\n")

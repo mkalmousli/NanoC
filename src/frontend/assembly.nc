@@ -22,7 +22,7 @@
   const char *keys[] = {"out", "in", "clobber", "labels"}
   int last = -1
   bool instructions = false
-  for usize i = 0; i < lines.n; ++i
+  for i:usize in 0..lines.n
     NcLayoutLine line = lines.v[i]
     nc_step(ctx, line.line)
     if line.indent != lines.v[0].indent
@@ -49,7 +49,7 @@
         nc_printf(ctx, &code, "%s ", nc_quote(ctx, nc_format(ctx, "%s\n", text)))
       instructions = true
     nc_check(ctx, code.n, line.line)
-  if !instructions
+  if not instructions
     nc_fail(ctx, header.line, "assembly needs instructions or a quoted template")
   if jump and !*sections[3]
     nc_fail(ctx, header.line, "assembly goto needs labels")

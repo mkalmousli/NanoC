@@ -43,7 +43,7 @@
   nc_pp_end(p)
 // Handles a closing brace; returns what to do after it.
 @f nc_pp_close(NcPretty *p) void
-  if !p->top
+  if not p->top
     nc_pp_put(p, "}", 1)
     return
   --p->top

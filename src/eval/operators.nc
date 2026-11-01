@@ -32,9 +32,9 @@
     if a.kind == NC_LIST
       nc_check(c, (a.count + b.count) * 8, line)
       NcValues list = {0}
-      for usize i = 0; i < a.count; ++i
+      for i:usize in 0..a.count
         NC_PUSH(c, list, a.items[i])
-      for usize i = 0; i < b.count; ++i
+      for i:usize in 0..b.count
         NC_PUSH(c, list, b.items[i])
       return nc_list(list)
   int64_t x = nc_numeric(c, a, line), y = nc_numeric(c, b, line)

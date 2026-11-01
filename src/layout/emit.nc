@@ -2,7 +2,7 @@
 @use "nanoc/nanoc"
 // Tells if the node starts with s.
 @f lead(NcNode n, cstr s) static bool
-  for usize i = 0; i < n.head.ts.n; ++i
+  for i:usize in 0..n.head.ts.n
     if n.head.ts.v[i].kind != NC_SPACE
       if nc_is(n.head.ts.v[i], "else")
         usize next = i + 1
@@ -50,7 +50,7 @@
       nc_add(c, &out, nc_match(c, node, depth))
       i = last + 1
       continue
-    if !node.children.n
+    if not node.children.n
       if node.head.raw or nc_meta_line(node.head)
         nc_marker(c, &out, node.head.line)
         nc_add(c, &out, nc_join(c, node.head.ts))

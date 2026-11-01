@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
         return managed;
     }
     NcContext *c = calloc(1, sizeof *c);
-    if (!c) {
+    if (! c) {
         fputs("out of memory\n", stderr);
         return 1;
     }
@@ -56,9 +56,13 @@ int main(int argc, char **argv) {
             } else {
                 nc_write(c, o.output, generated);
             }
-            if (!o.json) {
-                for (size_t i = 0; i < c->logs.n; ++i) {
-                    fprintf(stderr, "%s\n", c->logs.v[i]);
+            if (! o.json) {
+                {
+                    size_t nanoc_start_1 = (0);
+                    size_t nanoc_end_2 = (c->logs.n);
+                    for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                        fprintf(stderr, "%s\n", c->logs.v[i]);
+                    }
                 }
             }
         }

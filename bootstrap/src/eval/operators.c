@@ -49,11 +49,19 @@ NcValue nc_binary(NcContext *c, NcToken op, NcValue a, NcValue b, int line) {
         if (a.kind == NC_LIST) {
             nc_check(c, (a.count + b.count) * 8, line);
             NcValues list = {0};
-            for (size_t i = 0; i < a.count; ++i) {
-                NC_PUSH(c, list, a.items[i]);
+            {
+                size_t nanoc_start_1 = (0);
+                size_t nanoc_end_2 = (a.count);
+                for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                    NC_PUSH(c, list, a.items[i]);
+                }
             }
-            for (size_t i = 0; i < b.count; ++i) {
-                NC_PUSH(c, list, b.items[i]);
+            {
+                size_t nanoc_start_3 = (0);
+                size_t nanoc_end_4 = (b.count);
+                for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+                    NC_PUSH(c, list, b.items[i]);
+                }
             }
             return nc_list(list);
         }

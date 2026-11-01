@@ -10,8 +10,12 @@ void nc_pp_put(NcPretty *p, const char *s, size_t n) {
         if (p->cont) {
             width += 8;
         }
-        for (size_t i = 0; i < width; ++i) {
-            nc_add(p->c, &p->out, " ");
+        {
+            size_t nanoc_start_1 = (0);
+            size_t nanoc_end_2 = (width);
+            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                nc_add(p->c, &p->out, " ");
+            }
         }
         p->col = width;
         p->bol = 0;
@@ -27,7 +31,7 @@ void nc_pp_put(NcPretty *p, const char *s, size_t n) {
 // Ends the current line unless it is already empty.
 
 void nc_pp_nl(NcPretty *p) {
-    if (!p->bol) {
+    if (! p->bol) {
         nc_add(p->c, &p->out, "\n");
         p->bol = 1;
         p->col = 0;
@@ -69,7 +73,7 @@ void nc_pp_directive(NcPretty *p, NcToken t) {
     p->col = 0;
     p->stmt = 1;
     p->after = 0;
-    if (!marker) {
+    if (! marker) {
         p->last_dir = 1;
     }
 }

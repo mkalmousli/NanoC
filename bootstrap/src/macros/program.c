@@ -6,20 +6,28 @@
 // Runs a program-style macro.
 char *nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth) {
     NcEnv *env = nc_env(ctx, NULL);
-    for (size_t i = 0; i < macro->params.n; ++i) {
-        NcParam p = macro->params.v[i];
-        NcGroups *values = nc_get(&b->values, p.name);
-        NcValue value;
-        if (p.variadic) {
-            NcValues items = {0};
-            for (size_t j = 0; j < values->n; ++j) {
-                NC_PUSH(ctx, items, nc_value_text(NC_CODE, nc_join(ctx, values->v[j])));
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (macro->params.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcParam p = macro->params.v[i];
+            NcGroups *values = nc_get(&b->values, p.name);
+            NcValue value;
+            if (p.variadic) {
+                NcValues items = {0};
+                {
+                    size_t nanoc_start_3 = (0);
+                    size_t nanoc_end_4 = (values->n);
+                    for (size_t j = nanoc_start_3; j < nanoc_end_4; ++j) {
+                        NC_PUSH(ctx, items, nc_value_text(NC_CODE, nc_join(ctx, values->v[j])));
+                    }
+                }
+                value = nc_list(items);
+            } else {
+                value = nc_value_text(NC_CODE, nc_join(ctx, values->v[0]));
             }
-            value = nc_list(items);
-        } else {
-            value = nc_value_text(NC_CODE, nc_join(ctx, values->v[0]));
+            nc_bind(ctx, env, p.name, value);
         }
-        nc_bind(ctx, env, p.name, value);
     }
     return nc_program(ctx, macro->body, env, NC_MACRO, depth);
 }

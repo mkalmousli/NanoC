@@ -27,7 +27,7 @@
 @f nc_prepare_lines(NcContext *ctx, NcLines input, bool program) NcLines
   NcLines out = {0}
   int match_at = -1, arm_at = -1
-  for usize i = 0; i < input.n; ++i
+  for i:usize in 0..input.n
     NcLayoutLine line = input.v[i]
     if line.indent <= match_at
       match_at = arm_at = -1
@@ -45,7 +45,7 @@
       NC_PUSH(ctx, out, line)
       continue
     NcTokens ts = nc_significant(ctx, line.ts)
-    if !ts.n
+    if not ts.n
       continue
     NcToken first = ts.v[0], last = ts.v[ts.n - 1]
     bool control = (nc_is(first, "if") || nc_is(first, "elif") || nc_is(first, "else")
@@ -62,13 +62,13 @@
       and ts.v[1].kind == NC_WORD)
     bool expression = false
     if function
-      for usize j = 0; j < ts.n; ++j
+      for j:usize in 0..ts.n
         if nc_is(ts.v[j], "=") || nc_is(ts.v[j], "=>")
           expression = true
     if ((control || (function && !expression)) && !nc_is(last, ":")
       && (block || (!nc_is(last, "}") && !nc_is(last, ";"))))
       NcTokens copy = {0}
-      for usize j = 0; j < line.ts.n; ++j
+      for j:usize in 0..line.ts.n
         NC_PUSH(ctx, copy, line.ts.v[j])
       NC_PUSH(ctx, copy, nc_token(":", line.line, NC_PUNCT))
       line.ts = copy

@@ -30,8 +30,12 @@ NcValue nc_primary(NcExpr *e, bool active) {
         } else {
             NcGroups groups = nc_split(c, nc_group(&e->c, "[", "]"), ",");
             NcValues list = {0};
-            for (size_t i = 0; i < groups.n; ++i) {
-                NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active));
+            {
+                size_t nanoc_start_1 = (0);
+                size_t nanoc_end_2 = (groups.n);
+                for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                    NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active));
+                }
             }
             out = nc_list(list);
         }
@@ -46,8 +50,12 @@ NcValue nc_primary(NcExpr *e, bool active) {
         } else if (nc_at(&e->c, "(")) {
             NcGroups groups = nc_split(c, nc_group(&e->c, "(", ")"), ",");
             NcValues args = {0};
-            for (size_t i = 0; i < groups.n; ++i) {
-                NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active));
+            {
+                size_t nanoc_start_3 = (0);
+                size_t nanoc_end_4 = (groups.n);
+                for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+                    NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active));
+                }
             }
             if (active) {
                 out = nc_call(e->m, nc_text(c, t), args, e->depth + 1, t.line);
@@ -60,7 +68,7 @@ NcValue nc_primary(NcExpr *e, bool active) {
     }
     while (nc_at(&e->c, "[")) {
         NcValue index = nc_eval(e->m, nc_group(&e->c, "[", "]"), e->env, e->depth + 1, active);
-        if (!active) {
+        if (! active) {
             continue;
         }
         int64_t n = nc_numeric(c, index, t.line);

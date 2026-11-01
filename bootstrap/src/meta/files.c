@@ -21,7 +21,7 @@ static void directories(NcContext *c, const char *path, int line) {
             nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno));
         }
         *p = last;
-        if (!last) {
+        if (! last) {
             break;
         }
     }

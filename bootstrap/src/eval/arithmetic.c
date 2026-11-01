@@ -8,12 +8,12 @@ int64_t nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int li
     bool overflow = 0;
     if (!strcmp(op, "+")) {
         overflow = (y > 0 && x > INT64_MAX - y) || (y < 0 && x < INT64_MIN - y);
-        if (!overflow) {
+        if (! overflow) {
             return x + y;
         }
     } else if (!strcmp(op, "-")) {
         overflow = (y < 0 && x > INT64_MAX + y) || (y > 0 && x < INT64_MIN + y);
-        if (!overflow) {
+        if (! overflow) {
             return x - y;
         }
     } else if (!strcmp(op, "*")) {
@@ -22,11 +22,11 @@ int64_t nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int li
         } else if (x < 0) {
             overflow = y > 0 ? x < INT64_MIN / y : y < 0 && x < INT64_MAX / y;
         }
-        if (!overflow) {
+        if (! overflow) {
             return x * y;
         }
     } else if (!strcmp(op, "/") || !strcmp(op, "%")) {
-        if (!y) {
+        if (! y) {
             nc_fail(c, line, "division by zero");
         }
         if (x == INT64_MIN && y == -1) {

@@ -43,19 +43,27 @@ static char *include_line(NcContext *ctx, const char *item) {
 char *nc_include(NcContext *ctx, NcCursor *c) {
     NcGroups items = nc_split(ctx, nc_line_expression(c), ",");
     NcBuffer out = {0};
-    for (size_t i = 0; i < items.n; ++i) {
-        char *item = nc_trim(ctx, nc_join(ctx, items.v[i]));
-        if (!*item) {
-            nc_fail(ctx, nc_line(c), "@use needs a header name");
-        }
-        const char * many = bundle(item);
-        if (many) {
-            NcGroups parts = nc_split(ctx, nc_lex(ctx, many, nc_line(c)), ",");
-            for (size_t k = 0; k < parts.n; ++k) {
-                nc_add(ctx, &out, include_line(ctx, nc_trim(ctx, nc_join(ctx, parts.v[k]))));
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (items.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            char *item = nc_trim(ctx, nc_join(ctx, items.v[i]));
+            if (!*item) {
+                nc_fail(ctx, nc_line(c), "@use needs a header name");
             }
-        } else {
-            nc_add(ctx, &out, include_line(ctx, item));
+            const char * many = bundle(item);
+            if (many) {
+                NcGroups parts = nc_split(ctx, nc_lex(ctx, many, nc_line(c)), ",");
+                {
+                    size_t nanoc_start_3 = (0);
+                    size_t nanoc_end_4 = (parts.n);
+                    for (size_t k = nanoc_start_3; k < nanoc_end_4; ++k) {
+                        nc_add(ctx, &out, include_line(ctx, nc_trim(ctx, nc_join(ctx, parts.v[k]))));
+                    }
+                }
+            } else {
+                nc_add(ctx, &out, include_line(ctx, item));
+            }
         }
     }
     nc_add(ctx, &out, "");

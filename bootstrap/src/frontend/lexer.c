@@ -24,7 +24,7 @@ NcTokens nc_lex(NcContext *c, const char *s, int line) {
         } else if (!strncmp(s + i, "/*", 2)) {
             t.kind = NC_SPACE;
             const char *end = strstr(s + i + 2, "*/");
-            if (!end) {
+            if (! end) {
                 nc_fail(c, line, "unterminated comment");
             }
             i = (size_t)(end - s) + 2;
@@ -68,13 +68,17 @@ NcTokens nc_lex(NcContext *c, const char *s, int line) {
         }
         t.n = i - start;
         bool newline = 0;
-        for (size_t n = start; n < i; ++n) {
-            if (s[n] == '\n') {
-                ++line;
-                column = 1;
-                newline = 1;
-            } else {
-                ++column;
+        {
+            size_t nanoc_start_1 = (start);
+            size_t nanoc_end_2 = (i);
+            for (size_t n = nanoc_start_1; n < nanoc_end_2; ++n) {
+                if (s[n] == '\n') {
+                    ++line;
+                    column = 1;
+                    newline = 1;
+                } else {
+                    ++column;
+                }
             }
         }
         if (t.kind == NC_SPACE) {

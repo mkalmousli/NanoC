@@ -3,13 +3,13 @@
 // Reads native parameters.
 @f nc_native_parameters(NcContext *ctx, NcTokens ts) char *
   NcGroups groups = nc_split(ctx, ts, ",")
-  if !groups.n
+  if not groups.n
     return ctx->cpp ? "" : "void"
   char *type = nil
   NcBuffer out = {0}
-  for usize i = 0; i < groups.n; ++i
+  for i:usize in 0..groups.n
     NcTokens part = nc_significant(ctx, groups.v[i])
-    if !part.n
+    if not part.n
       nc_fail(ctx, 1, "empty function parameter")
     if i
       nc_add(ctx, &out, ", ")

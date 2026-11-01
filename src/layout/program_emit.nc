@@ -11,7 +11,7 @@
 // Tells if a line is a value.
 @f value_line(NcContext *c, NcTokens ts) static bool
   NcTokens sig = nc_significant(c, ts)
-  if !sig.n
+  if not sig.n
     return false
   const char *statements[] = {"emit", "log", "assert", "write", "mkdir", "remove", "again",
     "rewrite", "put"}
@@ -19,7 +19,7 @@
     if nc_is(sig.v[0], statements[i])
       return false
   int level = 0
-  for usize i = 0; i < sig.n; ++i
+  for i:usize in 0..sig.n
     NcToken t = sig.v[i]
     if nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")
       ++level
@@ -40,13 +40,13 @@
   nc_depth(ctx, depth, nodes.n ? nodes.v[0].head.line : 1, "program layout")
   NcBuffer out = {0}
   int line = nodes.n ? nodes.v[0].head.line : 1
-  for usize i = 0; i < nodes.n; ++i
+  for i:usize in 0..nodes.n
     NcNode n = nodes.v[i]
     while line < n.head.line
       nc_add(ctx, &out, "\n")
       ++line
     usize start = out.n
-    if !n.children.n
+    if not n.children.n
       NcTokens ts = n.head.ts
       char *text = nc_trim(ctx, nc_join(ctx, ts))
       bool function = function_node(ctx, n)
@@ -69,7 +69,7 @@
         --size
       nc_addn(ctx, &out, body, size)
       nc_add(ctx, &out, "}\n")
-    for usize j = start; j < out.n; ++j
+    for j:usize in start..out.n
       if out.v[j] == '\n'
         ++line
     nc_check(ctx, out.n, n.head.line)

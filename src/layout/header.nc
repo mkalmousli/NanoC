@@ -38,14 +38,14 @@
     if t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))
       usize start = c->pos
       (void)nc_group(c, nc_text(c->ctx, t), nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}")
-      for usize i = start; i < c->pos; ++i
+      for i:usize in start..c->pos
         NC_PUSH(c->ctx, ts, c->ts.v[i])
     else
       NC_PUSH(c->ctx, ts, t)
       ++c->pos
   while ts.n and ts.v[ts.n - 1].kind == NC_SPACE
     --ts.n
-  if !ts.n
+  if not ts.n
     nc_fail(c->ctx, nc_line(c), "missing expression")
   ts
 // Builds nodes from indented lines.

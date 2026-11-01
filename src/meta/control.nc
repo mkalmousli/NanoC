@@ -17,7 +17,7 @@
     NcValue *v = nc_get(&c->state, key)
     if !strcmp(name, "get")
       return v ? *v : a.v[1]
-    if !v
+    if not v
       v = nc_alloc(c, sizeof *v)
       nc_put(c, &c->state, key, v)
     *v = a.v[1]

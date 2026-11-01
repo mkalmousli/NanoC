@@ -24,7 +24,7 @@ jobs:
       - name: Install the WebAssembly linker
         run: sudo apt-get install -y -qq lld
       - name: Assemble the site
-        run: build/nanoc src/site/site.bt.nc -o build/site.c
+        run: build/nanoc --max-steps 0 --max-output 268435456 src/site/site.bt.nc -o build/site.c
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
@@ -49,7 +49,7 @@ jobs:
       - name: Install the WebAssembly linker
         run: sudo apt-get install -y -qq lld
       - name: Assemble the site
-        run: build/nanoc src/site/site.bt.nc -o build/site.c
+        run: build/nanoc --max-steps 0 --max-output 268435456 src/site/site.bt.nc -o build/site.c
       - name: Publish as a single commit on gh-pages
         env:
           SHA: ${{ github.sha }}

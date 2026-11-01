@@ -66,7 +66,7 @@ void nc_pp_open(NcPretty *p, NcToken t) {
 // Handles a closing brace; returns what to do after it.
 
 void nc_pp_close(NcPretty *p) {
-    if (!p->top) {
+    if (! p->top) {
         nc_pp_put(p, "}", 1);
         return;
     }

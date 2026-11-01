@@ -43,63 +43,75 @@ bool nc_meta_line(NcLayoutLine line) {
 NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program) {
     NcLines out = {0};
     int match_at = -1, arm_at = -1;
-    for (size_t i = 0; i < input.n; ++i) {
-        NcLayoutLine line = input.v[i];
-        if (line.indent <= match_at) {
-            match_at = arm_at = -1;
-        }
-        bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent;
-        bool ext = block && nc_extension_line(line);
-        bool meta = nc_meta_line(line) || ext;
-        if (!program && meta) {
-            NcBuffer raw = {0};
-            nc_printf(ctx, &raw, "%s\n", nc_join(ctx, line.ts));
-            while (i + 1 < input.n && input.v[i + 1].indent > line.indent) {
-                NcLayoutLine child = input.v[++i];
-                nc_printf(ctx, &raw, "%*s%s\n", child.indent - line.indent, "", nc_join(ctx,
-                        child.ts));
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (input.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcLayoutLine line = input.v[i];
+            if (line.indent <= match_at) {
+                match_at = arm_at = -1;
             }
-            line.ts = nc_lex(ctx, raw.v, line.line);
-            line.raw = 1;
-            NC_PUSH(ctx, out, line);
-            continue;
-        }
-        NcTokens ts = nc_significant(ctx, line.ts);
-        if (!ts.n) {
-            continue;
-        }
-        NcToken first = ts.v[0], last = ts.v[ts.n - 1];
-        bool control = (nc_is(first, "if") || nc_is(first, "elif") || nc_is(first, "else") || nc_is(first,
-                "while") || nc_is(first, "for") || (nc_is(first, "loop") && ts.n == 1) || ((nc_is(first,
-                "unless") || nc_is(first, "until")) && ts.n > 1 && !nc_is(ts.v[1], "=")));
-        bool arm = match_at >= 0 && line.indent == arm_at;
-        if (nc_is(first, "match") && block && ts.n > 1 && !program) {
-            match_at = line.indent;
-            arm_at = input.v[i + 1].indent;
-            control = 1;
-        }
-        if (arm) {
-            control = 1;
-        }
-        bool function = (program && (nc_is(first, "f") || nc_is(first, "fn")) && ts.n >= 2 && ts.v[1].kind == NC_WORD);
-        bool expression = 0;
-        if (function) {
-            for (size_t j = 0; j < ts.n; ++j) {
-                if (nc_is(ts.v[j], "=") || nc_is(ts.v[j], "=>")) {
-                    expression = 1;
+            bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent;
+            bool ext = block && nc_extension_line(line);
+            bool meta = nc_meta_line(line) || ext;
+            if (!program && meta) {
+                NcBuffer raw = {0};
+                nc_printf(ctx, &raw, "%s\n", nc_join(ctx, line.ts));
+                while (i + 1 < input.n && input.v[i + 1].indent > line.indent) {
+                    NcLayoutLine child = input.v[++i];
+                    nc_printf(ctx, &raw, "%*s%s\n", child.indent - line.indent, "", nc_join(ctx,
+                            child.ts));
+                }
+                line.ts = nc_lex(ctx, raw.v, line.line);
+                line.raw = 1;
+                NC_PUSH(ctx, out, line);
+                continue;
+            }
+            NcTokens ts = nc_significant(ctx, line.ts);
+            if (! ts.n) {
+                continue;
+            }
+            NcToken first = ts.v[0], last = ts.v[ts.n - 1];
+            bool control = (nc_is(first, "if") || nc_is(first, "elif") || nc_is(first, "else") || nc_is(first,
+                    "while") || nc_is(first, "for") || (nc_is(first, "loop") && ts.n == 1) || ((nc_is(first,
+                    "unless") || nc_is(first, "until")) && ts.n > 1 && !nc_is(ts.v[1], "=")));
+            bool arm = match_at >= 0 && line.indent == arm_at;
+            if (nc_is(first, "match") && block && ts.n > 1 && !program) {
+                match_at = line.indent;
+                arm_at = input.v[i + 1].indent;
+                control = 1;
+            }
+            if (arm) {
+                control = 1;
+            }
+            bool function = (program && (nc_is(first, "f") || nc_is(first, "fn")) && ts.n >= 2 && ts.v[1].kind == NC_WORD);
+            bool expression = 0;
+            if (function) {
+                {
+                    size_t nanoc_start_3 = (0);
+                    size_t nanoc_end_4 = (ts.n);
+                    for (size_t j = nanoc_start_3; j < nanoc_end_4; ++j) {
+                        if (nc_is(ts.v[j], "=") || nc_is(ts.v[j], "=>")) {
+                            expression = 1;
+                        }
+                    }
                 }
             }
-        }
-        if ((control || (function && !expression)) && !nc_is(last, ":") && (block || (!nc_is(last,
-                "}") && !nc_is(last, ";")))) {
-            NcTokens copy = {0};
-            for (size_t j = 0; j < line.ts.n; ++j) {
-                NC_PUSH(ctx, copy, line.ts.v[j]);
+            if ((control || (function && !expression)) && !nc_is(last, ":") && (block || (!nc_is(last,
+                    "}") && !nc_is(last, ";")))) {
+                NcTokens copy = {0};
+                {
+                    size_t nanoc_start_5 = (0);
+                    size_t nanoc_end_6 = (line.ts.n);
+                    for (size_t j = nanoc_start_5; j < nanoc_end_6; ++j) {
+                        NC_PUSH(ctx, copy, line.ts.v[j]);
+                    }
+                }
+                NC_PUSH(ctx, copy, nc_token(":", line.line, NC_PUNCT));
+                line.ts = copy;
             }
-            NC_PUSH(ctx, copy, nc_token(":", line.line, NC_PUNCT));
-            line.ts = copy;
+            NC_PUSH(ctx, out, line);
         }
-        NC_PUSH(ctx, out, line);
     }
     return out;
 }

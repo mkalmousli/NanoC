@@ -22,19 +22,23 @@ char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, si
                 separator = nc_text(ctx, nc_take(&c));
             }
             nc_need(&c, "*");
-            if (!b->variadic) {
+            if (! b->variadic) {
                 nc_fail(ctx, t.line, "repetition requires a variadic parameter");
             }
             if (index != SIZE_MAX) {
                 nc_fail(ctx, t.line, "nested repetitions are not supported");
             }
             NcGroups *values = nc_get(&b->values, b->variadic);
-            for (size_t i = 0; i < values->n; ++i) {
-                if (i) {
-                    nc_add(ctx, &out, separator);
+            {
+                size_t nanoc_start_1 = (0);
+                size_t nanoc_end_2 = (values->n);
+                for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                    if (i) {
+                        nc_add(ctx, &out, separator);
+                    }
+                    nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i));
+                    nc_check(ctx, out.n, t.line);
                 }
-                nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i));
-                nc_check(ctx, out.n, t.line);
             }
         } else {
             char *name = nc_name(&c);
@@ -45,14 +49,14 @@ char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, si
                     nc_fail(ctx, t.line, "fresh requires one identifier");
                 }
                 char *fresh = nc_get(&b->fresh, id);
-                if (!fresh) {
+                if (! fresh) {
                     fresh = nc_fresh(ctx, id);
                     nc_put(ctx, &b->fresh, id, fresh);
                 }
                 nc_add(ctx, &out, fresh);
             } else {
                 NcGroups *values = nc_get(&b->values, name);
-                if (!values) {
+                if (! values) {
                     nc_fail(ctx, t.line, "unknown macro capture: $%s", name);
                 }
                 size_t n = b->variadic && !strcmp(name, b->variadic) ? index : 0;

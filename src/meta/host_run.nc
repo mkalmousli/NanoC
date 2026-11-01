@@ -9,7 +9,7 @@
     nc_fail(c, line, "command requires a nonempty argument list")
   NcValue list = a.v[0]
   char **argv = nc_alloc(c, (list.count + 1) * sizeof *argv)
-  for usize i = 0; i < list.count; ++i
+  for i:usize in 0..list.count
     argv[i] = (char *)nc_meta_text(c, list.items[i], line)
   cstr cwd = a.n == 2 ? nc_meta_text(c, a.v[1], line) : nil
   char out_path[32]
@@ -26,7 +26,7 @@
       unlink(err_path)
     nc_fail(c, line, "cannot create process capture files")
   pid_t pid = fork()
-  if !pid
+  if not pid
     if dup2(out, 1) < 0 or dup2(err, 2) < 0
       _exit(126)
     close(out)
@@ -74,7 +74,7 @@
   close(err)
   unlink(out_path)
   unlink(err_path)
-  if !valid
+  if not valid
     nc_fail(c, line, "command capture failed or output limit exceeded")
   if strlen(stdout_text) != (usize)so.st_size or strlen(stderr_text) != (usize)se.st_size
     nc_fail(c, line, "command output must be text (NUL byte found)")

@@ -6,10 +6,14 @@
 
 // Prints non-static prototypes.
 void nc_prototypes(NcContext *c, FILE *out) {
-    for (size_t i = 0; i < c->symbols.n; ++i) {
-        NcSymbol s = c->symbols.v[i];
-        if (strncmp(s.returns, "static", 6)) {
-            fprintf(out, "%s%s%s(%s);\n", s.returns, nc_sep(s.returns), s.name, s.params);
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (c->symbols.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcSymbol s = c->symbols.v[i];
+            if (strncmp(s.returns, "static", 6)) {
+                fprintf(out, "%s%s%s(%s);\n", s.returns, nc_sep(s.returns), s.name, s.params);
+            }
         }
     }
 }

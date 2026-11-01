@@ -24,7 +24,7 @@
     fprintf(out, "%s\n", ASM_CARD)
     return true
   if *topic && strcmp(topic, "syntax") && strcmp(topic, "builtins")
-    for usize i = 0; i < nc_spec_count; ++i
+    for i:usize in 0..nc_spec_count
       if !strcmp(topic, nc_specs[i].name)
         spec(&w, &nc_specs[i])
         fputc('\n', out)
@@ -35,7 +35,7 @@
   if !strcmp(topic, "builtins")
     jw_key(&w, "builtins")
     jw_open(&w, '[')
-    for usize i = 0; i < nc_spec_count; ++i
+    for i:usize in 0..nc_spec_count
       spec(&w, &nc_specs[i])
     jw_close(&w, ']')
   else

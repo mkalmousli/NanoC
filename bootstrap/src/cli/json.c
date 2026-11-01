@@ -7,8 +7,12 @@
 static void logs(NcJson *w, NcContext *c) {
     jw_key(w, "logs");
     jw_open(w, '[');
-    for (size_t i = 0; i < c->logs.n; ++i) {
-        jw_str(w, c->logs.v[i]);
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (c->logs.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            jw_str(w, c->logs.v[i]);
+        }
     }
     jw_close(w, ']');
 }
@@ -27,15 +31,19 @@ void nc_report(FILE *out, NcContext *c, size_t bytes) {
     jw_ki(&w, "generatedBytes", (long)bytes);
     jw_key(&w, "symbols");
     jw_open(&w, '[');
-    for (size_t i = 0; i < c->symbols.n; ++i) {
-        NcSymbol s = c->symbols.v[i];
-        jw_open(&w, '{');
-        jw_ks(&w, "name", s.name);
-        jw_ki(&w, "line", s.line);
-        jw_ks(&w, "parameters", s.params);
-        jw_ks(&w, "returnType", s.returns);
-        jw_ks(&w, "intent", s.intent);
-        jw_close(&w, '}');
+    {
+        size_t nanoc_start_3 = (0);
+        size_t nanoc_end_4 = (c->symbols.n);
+        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+            NcSymbol s = c->symbols.v[i];
+            jw_open(&w, '{');
+            jw_ks(&w, "name", s.name);
+            jw_ki(&w, "line", s.line);
+            jw_ks(&w, "parameters", s.params);
+            jw_ks(&w, "returnType", s.returns);
+            jw_ks(&w, "intent", s.intent);
+            jw_close(&w, '}');
+        }
     }
     jw_close(&w, ']');
     jw_ki(&w, "passes", (long)c->pass);

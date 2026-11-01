@@ -13,9 +13,13 @@ static bool is_void(NcContext *c) {
 static char *value_type(NcContext *c) {
     char *t = c->ret_type ? c->ret_type : "";
     const char *q[] = {"static ", "inline ", "extern ", "_Noreturn "};
-    for (size_t i = 0; i < 4; ++i) {
-        while (!strncmp(t, q[i], strlen(q[i]))) {
-            t += strlen(q[i]);
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (4);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            while (!strncmp(t, q[i], strlen(q[i]))) {
+                t += strlen(q[i]);
+            }
         }
     }
     return t;
@@ -46,7 +50,7 @@ void nc_emit_defer(NcContext *c, NcBuffer *out, NcNodes nodes, size_t at, bool t
         ++k;
     }
     line.ts = nc_slice(line.ts, k + 1, line.ts.n);
-    if (!line.ts.n) {
+    if (! line.ts.n) {
         nc_fail(c, line.line, "defer needs a statement");
     }
     char *saved = c->defers, *stmt = nc_statement(c, line, 0);

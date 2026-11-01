@@ -7,10 +7,10 @@
   const char *raw[] = {"R\"", "u8R\"", "uR\"", "UR\"", "LR\""}
   const char *normal[] = {"u8\"", "u\"", "U\"", "L\"", "u'", "U'", "L'"}
   if cpp
-    for usize n = 0; n < 5; ++n
+    for n:usize in 0..5
       if !strncmp(s + i, raw[n], strlen(raw[n]))
         return strlen(raw[n])
-  for usize n = 0; n < 7; ++n
+  for n:usize in 0..7
     if !strncmp(s + i, normal[n], strlen(normal[n]))
       return strlen(normal[n])
   0
@@ -26,7 +26,7 @@
     char *delimiter = nc_string(c, s + quote + 1, (usize)(open - s) - quote - 1)
     char *closing = nc_format(c, ")%s\"", delimiter)
     cstr end = strstr(open + 1, closing)
-    if !end
+    if not end
       nc_fail(c, line, "unterminated raw string")
     return (usize)(end - s) + strlen(closing)
   usize end = quote + 1

@@ -12,7 +12,7 @@
 // Makes a list value.
 @f nc_list(NcValues items) NcValue
   NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1}
-  for usize i = 0; i < items.n; ++i
+  for i:usize in 0..items.n
     if items.v[i].height + 1 > v.height
       v.height = items.v[i].height + 1
   v
@@ -39,7 +39,7 @@
     return v.text
   NcBuffer b = {0}
   nc_add(c, &b, "[")
-  for usize i = 0; i < v.count; ++i
+  for i:usize in 0..v.count
     if i
       nc_add(c, &b, ", ")
     nc_add(c, &b, nc_display(c, v.items[i], depth + 1, line))
@@ -66,7 +66,7 @@
     return !strcmp(a.text, b.text)
   if a.count != b.count
     return false
-  for usize i = 0; i < a.count; ++i
+  for i:usize in 0..a.count
     if !nc_equal(c, a.items[i], b.items[i], depth + 1, line)
       return false
   true

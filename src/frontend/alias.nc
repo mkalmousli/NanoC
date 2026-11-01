@@ -9,7 +9,7 @@ int nc_std;
     {"isize", "ptrdiff_t"}, {"byte", "unsigned char"}, {"cstr", "const char *"}}
   if t->kind != NC_WORD or t->n < 2 or t->n > 5
     return
-  for size_t k = 0; k < sizeof map / sizeof *map; ++k
+  for k:usize 0..sizeof map / sizeof *map
     if strlen(map[k][0]) == t->n and !strncmp(t->s, map[k][0], t->n)
       if nc_std == 89 && strstr(map[k][1], "long long")
         t->s = map[k][1][0] == 'u' ? "unsigned long" : "long"
@@ -18,10 +18,15 @@ int nc_std;
       t->s = map[k][1]
       t->n = strlen(map[k][1])
       return
+// Rewrites a type name given as text, e.g. "usize" to "size_t".
+@f nc_alias_name(NcContext *c, cstr name) char *
+  NcToken t = {name, strlen(name), 0, 0, NC_WORD}
+  nc_alias(&t)
+  nc_string(c, t.s, t.n)
 // Returns the tokens with every short type name rewritten; only NanoC-owned code goes through here.
 @f nc_aliased(NcContext *c, NcTokens ts) NcTokens
   NcTokens out = {0}
-  for usize i = 0; i < ts.n; ++i
+  for i:usize 0..ts.n
     NcToken t = ts.v[i]
     nc_alias(&t)
     NC_PUSH(c, out, t)

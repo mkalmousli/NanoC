@@ -15,7 +15,7 @@
 @f nc_mini(NcContext *c, cstr text) char *
   NcTokens ts = nc_lex(c, text, 1)
   NcBuffer out = {0}
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     NcToken t = ts.v[i]
     if t.kind == NC_SPACE
       continue

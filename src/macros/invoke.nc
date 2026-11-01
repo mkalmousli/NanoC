@@ -16,7 +16,7 @@
 // Expands a macro call.
 @f nc_invoke_macro(NcContext *ctx, NcCursor *c, cstr name, usize depth) char *
   NcMacro *m = nc_get(&ctx->macros, name)
-  if !m
+  if not m
     nc_fail(ctx, nc_line(c), "unknown extension: @%s", name)
   int line = c->pos ? c->ts.v[c->pos - 1].line : nc_line(c)
   int indent = nc_header(c).indent
@@ -32,13 +32,13 @@
   if args.n < fixed or (!variadic and args.n != fixed)
     nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name)
   NcBindings b = {0}
-  for usize i = 0; i < m->params.n; ++i
+  for i:usize in 0..m->params.n
     NcParam p = m->params.v[i]
     NcGroups *values = nc_alloc(ctx, sizeof *values)
     usize end = p.variadic ? args.n : i + 1
     if p.variadic
       b.variadic = p.name
-    for usize j = i; j < end; ++j
+    for j:usize in i..end
       validate(ctx, p, args.v[j])
       NC_PUSH(ctx, *values, args.v[j])
     nc_put(ctx, &b.values, p.name, values)

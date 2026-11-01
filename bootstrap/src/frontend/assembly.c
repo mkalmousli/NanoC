@@ -29,42 +29,46 @@ char *nc_assembly(NcContext *ctx, NcCursor *c) {
     const char *keys[] = {"out", "in", "clobber", "labels"};
     int last = -1;
     bool instructions = 0;
-    for (size_t i = 0; i < lines.n; ++i) {
-        NcLayoutLine line = lines.v[i];
-        nc_step(ctx, line.line);
-        if (line.indent != lines.v[0].indent) {
-            nc_fail(ctx, line.line, "inconsistent assembly indentation");
-        }
-        NcCursor row = {ctx, line.ts, 0};
-        NcToken first = nc_take(&row);
-        int section = 0;
-        while (section < 4 && !nc_is(first, keys[section])) {
-            ++section;
-        }
-        if (section < 4) {
-            if (section <= last) {
-                nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, labels, once each");
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (lines.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcLayoutLine line = lines.v[i];
+            nc_step(ctx, line.line);
+            if (line.indent != lines.v[0].indent) {
+                nc_fail(ctx, line.line, "inconsistent assembly indentation");
             }
-            sections[section] = nc_trim(ctx, nc_join(ctx, nc_slice(row.ts, row.pos, row.ts.n)));
-            if (!*sections[section]) {
-                nc_fail(ctx, line.line, "empty assembly section");
+            NcCursor row = {ctx, line.ts, 0};
+            NcToken first = nc_take(&row);
+            int section = 0;
+            while (section < 4 && !nc_is(first, keys[section])) {
+                ++section;
             }
-            last = section;
-        } else {
-            if (last >= 0) {
-                nc_fail(ctx, line.line, "assembly instructions must precede operand sections");
-            }
-            char *text = nc_trim(ctx, nc_join(ctx, line.ts));
-            if (first.kind == NC_LITERAL && first.s[0] == '"') {
-                nc_printf(ctx, &code, "%s ", text);
+            if (section < 4) {
+                if (section <= last) {
+                    nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, labels, once each");
+                }
+                sections[section] = nc_trim(ctx, nc_join(ctx, nc_slice(row.ts, row.pos, row.ts.n)));
+                if (!*sections[section]) {
+                    nc_fail(ctx, line.line, "empty assembly section");
+                }
+                last = section;
             } else {
-                nc_printf(ctx, &code, "%s ", nc_quote(ctx, nc_format(ctx, "%s\n", text)));
+                if (last >= 0) {
+                    nc_fail(ctx, line.line, "assembly instructions must precede operand sections");
+                }
+                char *text = nc_trim(ctx, nc_join(ctx, line.ts));
+                if (first.kind == NC_LITERAL && first.s[0] == '"') {
+                    nc_printf(ctx, &code, "%s ", text);
+                } else {
+                    nc_printf(ctx, &code, "%s ", nc_quote(ctx, nc_format(ctx, "%s\n", text)));
+                }
+                instructions = 1;
             }
-            instructions = 1;
+            nc_check(ctx, code.n, line.line);
         }
-        nc_check(ctx, code.n, line.line);
     }
-    if (!instructions) {
+    if (! instructions) {
         nc_fail(ctx, header.line, "assembly needs instructions or a quoted template");
     }
     if (jump && !*sections[3]) {

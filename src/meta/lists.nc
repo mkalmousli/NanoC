@@ -7,7 +7,7 @@
     nc_arity(c, a, 1, line)
     NcTokens ts = nc_lex(c, nc_meta_text(c, a.v[0], line), line)
     NcValues out = {0}
-    for usize i = 0; i < ts.n; ++i
+    for i:usize in 0..ts.n
       if ts.v[i].kind != NC_SPACE
         NC_PUSH(c, out, nc_value_text(NC_CODE, nc_text(c, ts.v[i])))
     nc_check(c, out.n * 8, line)

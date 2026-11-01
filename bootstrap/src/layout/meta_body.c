@@ -13,7 +13,7 @@ NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) {
         return nc_group(c, "{", "}");
     }
     (void)nc_header_eat(c, ":", header.line);
-    if (!program) {
+    if (! program) {
         size_t start = c->pos;
         (void)nc_body_lines(c, header.line, header.indent);
         return nc_slice(c->ts, start, c->pos);

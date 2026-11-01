@@ -20,7 +20,7 @@
       if next < ts.n && nc_is(ts.v[next], "bt")
         c.pos = next + 1
         NC_PUSH(ctx, programs, nc_meta_body(&c, nc_header(&c), true, false))
-        for usize i = start; i < c.pos; ++i
+        for i:usize in start..c.pos
           for usize j = 0; j < ts.v[i].n; ++j
             nc_add(ctx, &bare, ts.v[i].s[j] == '\n' ? "\n" : " ")
         continue
@@ -38,15 +38,15 @@
       elif next < ts.n && nc_is(ts.v[next], "ct")
         c.pos = next + 1
         (void)nc_meta_body(&c, nc_header(&c), true, false)
-    for usize i = start; i < c.pos; ++i
+    for i:usize in start..c.pos
       nc_addn(ctx, &bare, ts.v[i].s, ts.v[i].n)
-  if !programs.n
+  if not programs.n
     ctx->source = source
     return (char *)source
   nc_add(ctx, &bare, "")
   ctx->source = bare.v
   NcBuffer prelude = {0}
-  for usize i = 0; i < programs.n; ++i
+  for i:usize in 0..programs.n
     if ctx->frame_count == 256
       nc_fail(ctx, 1, "build depth limit exceeded")
     char *frame = nc_format(ctx, "while executing @bt at %s:%d", ctx->file,

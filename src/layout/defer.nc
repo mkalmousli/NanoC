@@ -7,7 +7,7 @@
 @f value_type(NcContext *c) static char *
   char *t = c->ret_type ? c->ret_type : ""
   const char *q[] = {"static ", "inline ", "extern ", "_Noreturn "}
-  for usize i = 0; i < 4; ++i
+  for i:usize in 0..4
     while !strncmp(t, q[i], strlen(q[i]))
       t += strlen(q[i])
   t
@@ -28,7 +28,7 @@
   while line.ts.v[k].kind == NC_SPACE
     ++k
   line.ts = nc_slice(line.ts, k + 1, line.ts.n)
-  if !line.ts.n
+  if not line.ts.n
     nc_fail(c, line.line, "defer needs a statement")
   char *saved = c->defers, *stmt = nc_statement(c, line, false)
   c->defers = nc_format(c, "%s%s ", stmt, saved ? saved : "")

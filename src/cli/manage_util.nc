@@ -7,7 +7,7 @@
 // Finds a command on PATH.
 @f nc_search(cstr name, char *out) static bool
   const char *path = getenv("PATH")
-  if !path
+  if not path
     return false
   cstr p = path
   while *p
@@ -31,11 +31,11 @@
   elif !nc_search(argv0, exe)
     return false
   char *slash = strrchr(exe, '/')
-  if !slash
+  if not slash
     return false
   *slash = 0
   slash = strrchr(exe, '/')
-  if !slash
+  if not slash
     return false
   *slash = 0
   snprintf(out, PATH_MAX, "%s", exe)
@@ -56,7 +56,7 @@
 // Copies one file.
 @f nc_copy_file(cstr from, cstr to) bool
   FILE *in = fopen(from, "rb")
-  if !in
+  if not in
     return false
   char dir[PATH_MAX]
   snprintf(dir, sizeof dir, "%s", to)
@@ -67,7 +67,7 @@
       fclose(in)
       return false
   FILE *out = fopen(to, "wb")
-  if !out
+  if not out
     fclose(in)
     return false
   char buf[8192]

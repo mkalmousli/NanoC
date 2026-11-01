@@ -4,7 +4,7 @@
 @f logs(NcJson *w, NcContext *c) static void
   jw_key(w, "logs")
   jw_open(w, '[')
-  for usize i = 0; i < c->logs.n; ++i
+  for i:usize in 0..c->logs.n
     jw_str(w, c->logs.v[i])
   jw_close(w, ']')
 // Prints a diagnostic report.
@@ -20,7 +20,7 @@
   jw_ki(&w, "generatedBytes", (long)bytes)
   jw_key(&w, "symbols")
   jw_open(&w, '[')
-  for usize i = 0; i < c->symbols.n; ++i
+  for i:usize in 0..c->symbols.n
     NcSymbol s = c->symbols.v[i]
     jw_open(&w, '{')
     jw_ks(&w, "name", s.name)

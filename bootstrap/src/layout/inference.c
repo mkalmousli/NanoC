@@ -49,9 +49,13 @@ NcTokens nc_declaration(NcContext *ctx, NcTokens ts, int line) {
     nc_need(&c, "=");
     NcTokens init = nc_slice(ts, c.pos, ts.n);
     bool colon = 0;
-    for (size_t i = 0; i < names.n; ++i) {
-        if (nc_is(names.v[i], ":")) {
-            colon = 1;
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (names.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            if (nc_is(names.v[i], ":")) {
+                colon = 1;
+            }
         }
     }
     char *type = colon ? "" : nc_format(ctx, ":%s", nc_infer(ctx, init, line));

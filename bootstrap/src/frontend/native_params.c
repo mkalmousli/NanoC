@@ -6,38 +6,42 @@
 // Reads native parameters.
 char *nc_native_parameters(NcContext *ctx, NcTokens ts) {
     NcGroups groups = nc_split(ctx, ts, ",");
-    if (!groups.n) {
+    if (! groups.n) {
         return ctx->cpp ? "" : "void";
     }
     char *type = NULL;
     NcBuffer out = {0};
-    for (size_t i = 0; i < groups.n; ++i) {
-        NcTokens part = nc_significant(ctx, groups.v[i]);
-        if (!part.n) {
-            nc_fail(ctx, 1, "empty function parameter");
-        }
-        if (i) {
-            nc_add(ctx, &out, ", ");
-        }
-        if (part.n == 1 && (nc_is(part.v[0], "void") || nc_is(part.v[0], "..."))) {
-            nc_add(ctx, &out, nc_text(ctx, part.v[0]));
-            continue;
-        }
-        NcToken name = part.v[part.n - 1];
-        if (name.kind != NC_WORD) {
-            nc_fail(ctx, name.line, "use a typedef or ordinary C for complex parameters");
-        }
-        if (part.n > 1) {
-            size_t last = groups.v[i].n;
-            while (last && groups.v[i].v[last - 1].kind == NC_SPACE) {
-                --last;
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (groups.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcTokens part = nc_significant(ctx, groups.v[i]);
+            if (! part.n) {
+                nc_fail(ctx, 1, "empty function parameter");
             }
-            type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, nc_slice(groups.v[i], 0, last - 1))));
+            if (i) {
+                nc_add(ctx, &out, ", ");
+            }
+            if (part.n == 1 && (nc_is(part.v[0], "void") || nc_is(part.v[0], "..."))) {
+                nc_add(ctx, &out, nc_text(ctx, part.v[0]));
+                continue;
+            }
+            NcToken name = part.v[part.n - 1];
+            if (name.kind != NC_WORD) {
+                nc_fail(ctx, name.line, "use a typedef or ordinary C for complex parameters");
+            }
+            if (part.n > 1) {
+                size_t last = groups.v[i].n;
+                while (last && groups.v[i].v[last - 1].kind == NC_SPACE) {
+                    --last;
+                }
+                type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, nc_slice(groups.v[i], 0, last - 1))));
+            }
+            if (!type || !*type) {
+                nc_fail(ctx, name.line, "first parameter in a group needs a C type");
+            }
+            nc_printf(ctx, &out, "%s%s%.*s", type, nc_sep(type), (int)name.n, name.s);
         }
-        if (!type || !*type) {
-            nc_fail(ctx, name.line, "first parameter in a group needs a C type");
-        }
-        nc_printf(ctx, &out, "%s%s%.*s", type, nc_sep(type), (int)name.n, name.s);
     }
     return out.v;
 }

@@ -13,7 +13,7 @@
       nc_fail(c, line, "rename expects identifier names")
     NcTokens ts = nc_lex(c, text, line)
     NcBuffer out = {0}
-    for usize i = 0; i < ts.n; ++i
+    for i:usize in 0..ts.n
       NcToken t = ts.v[i]
       nc_step(c, line)
       if t.kind == NC_WORD and nc_is(t, needle)
@@ -27,7 +27,7 @@
     cstr found = strstr(text, needle)
     return (!strcmp(name, "contains") ? nc_boolean(found != NULL)
       : nc_integer(found ? found - text : -1))
-  if !n
+  if not n
     nc_fail(c, line, "separator/search text must not be empty")
   if !strcmp(name, "split")
     NcValues list = {0}
@@ -37,7 +37,7 @@
       NC_PUSH(c, list,
         nc_value_text(NC_STRING, nc_string(c, text, found ? (usize)(found - text) : strlen(text))))
       nc_check(c, list.n * 8, line)
-      if !found
+      if not found
         break
       text = found + n
     return nc_list(list)
@@ -50,7 +50,7 @@
     if found
       nc_add(c, &out, replacement)
     nc_check(c, out.n, line)
-    if !found
+    if not found
       break
     text = found + n
   nc_value_text(a.v[0].kind, out.v)

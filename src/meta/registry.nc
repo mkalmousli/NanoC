@@ -30,13 +30,13 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
 @f nc_builtin_known(cstr name) bool
-  for usize i = 0; i < nc_spec_count; ++i
+  for i:usize in 0..nc_spec_count
     if !strcmp(name, nc_specs[i].name)
       return true
   false
 // Calls a registered builtin.
 @f nc_extra_builtin(NcMachine *m, cstr name, NcValues args, int line) NcValue
-  for usize i = 0; i < nc_spec_count; ++i
+  for i:usize in 0..nc_spec_count
     const NcSpec *s = &nc_specs[i]
     if !strcmp(name, s->name) and s->function
       return s->function(m, name, args, line)
@@ -51,5 +51,5 @@ const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 @f nc_effect(NcMachine *m, int line) void
   if m->phase != NC_BT
     nc_fail(m->ctx, line, "host effects require @bt")
-  if !m->ctx->effects
+  if not m->ctx->effects
     nc_fail(m->ctx, line, "host effects disabled by --check or --no-effects")

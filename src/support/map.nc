@@ -8,7 +8,7 @@
   h
 // Looks up a key in a map.
 @f nc_get(const NcMap *m, cstr key) void *
-  if !m->cap
+  if not m->cap
     return nil
   usize i = hash(key) & (m->cap - 1)
   while m->v[i].key
@@ -18,10 +18,10 @@
   nil
 // Tells if the map has the token.
 @f nc_has_token(const NcMap *m, NcToken t) bool
-  if !m->cap
+  if not m->cap
     return false
   usize h = 2166136261u
-  for usize i = 0; i < t.n; ++i
+  for i:usize in 0..t.n
     h = (h ^ (u8)t.s[i]) * 16777619u
   usize slot = h & (m->cap - 1)
   while m->v[slot].key
@@ -37,7 +37,7 @@
     m->cap = old.cap ? old.cap * 2 : 16
     m->v = nc_alloc(c, m->cap * sizeof *m->v)
     m->n = 0
-    for usize i = 0; i < old.cap; ++i
+    for i:usize in 0..old.cap
       if old.v[i].key
         nc_put(c, m, old.v[i].key, old.v[i].value)
   usize i = hash(key) & (m->cap - 1)

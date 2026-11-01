@@ -33,7 +33,7 @@
   nc_need(&c, "=")
   NcTokens init = nc_slice(ts, c.pos, ts.n)
   bool colon = false
-  for usize i = 0; i < names.n; ++i
+  for i:usize in 0..names.n
     if nc_is(names.v[i], ":")
       colon = true
   char *type = colon ? "" : nc_format(ctx, ":%s", nc_infer(ctx, init, line))

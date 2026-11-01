@@ -96,6 +96,7 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
           div [as=cview]
   js
     const RAW = 'source/'; // sources copied into the site by the site build
+    const FRESH = { cache: 'no-cache' }; // always revalidate so the tree matches the latest build
     let files = []
     let current = null
     const openDirs = new Set(['src', 'src/frontend'])
@@ -162,15 +163,15 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
       A.cview.innerHTML = '<div class="loading">Loading…</div>'
       A.ratio.textContent = ''
       try
-        let r = await fetch('source/' + path)
-        if (!r.ok) r = await fetch(RAW + path)
+        let r = await fetch('source/' + path, FRESH)
+        if (!r.ok) r = await fetch(RAW + path, FRESH)
         if (!r.ok) throw Error(String(r.status))
         const text = await r.text()
         if (current !== path) return
         ncLines = lines(text)
         A.ncstat.textContent = ncLines + ' lines'
         show(A.ncview, text, 'nanoc')
-        const cr = await fetch('c/' + path)
+        const cr = await fetch('c/' + path, FRESH)
         if (current !== path) return
         const cout = cr.ok ? await cr.text() : ''
         showC({ ok: cout.length > 0, out: cout })
@@ -182,7 +183,7 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
         e.preventDefault()
         A.search.focus()
     )
-    fetch('files.json').then(r =>
+    fetch('files.json', FRESH).then(r =>
       if (!r.ok) throw Error(String(r.status))
       return r.json()
     ).then(paths =>

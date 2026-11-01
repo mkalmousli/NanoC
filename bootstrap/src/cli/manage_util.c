@@ -18,7 +18,7 @@ bool nc_exists(const char *path) {
 
 static bool nc_search(const char *name, char *out) {
     const char *path = getenv("PATH");
-    if (!path) {
+    if (! path) {
         return 0;
     }
     const char * p = path;
@@ -53,12 +53,12 @@ bool nc_prefix(const char *argv0, char *out) {
         return 0;
     }
     char *slash = strrchr(exe, '/');
-    if (!slash) {
+    if (! slash) {
         return 0;
     }
     *slash = 0;
     slash = strrchr(exe, '/');
-    if (!slash) {
+    if (! slash) {
         return 0;
     }
     *slash = 0;
@@ -90,7 +90,7 @@ bool nc_make_dirs(const char *path) {
 
 bool nc_copy_file(const char *from, const char *to) {
     FILE *in = fopen(from, "rb");
-    if (!in) {
+    if (! in) {
         return 0;
     }
     char dir[PATH_MAX];
@@ -104,7 +104,7 @@ bool nc_copy_file(const char *from, const char *to) {
         }
     }
     FILE *out = fopen(to, "wb");
-    if (!out) {
+    if (! out) {
         fclose(in);
         return 0;
     }

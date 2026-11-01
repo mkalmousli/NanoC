@@ -7,7 +7,7 @@
   if c->pos == c->ts.n
     nc_fail(c->ctx, nc_line(c), "expected a logical line")
   NcLayoutLine out = {.indent = c->ts.v[c->pos].column - 1, .line = nc_line(c)}
-  for usize i = whitespace; i < c->pos; ++i
+  for i:usize in whitespace..c->pos
     NcToken t = c->ts.v[i]
     usize tail = t.n
     while tail && t.s[tail - 1] != '\n'
@@ -54,6 +54,6 @@
     if t.column - 1 <= indent
       break
     NC_PUSH(c->ctx, out, nc_logical_line(c))
-  if !out.n
+  if not out.n
     nc_fail(c->ctx, header_line, "expected an indented function body")
   out

@@ -6,7 +6,7 @@
     usize width = (usize)(p->ind > 0 ? p->ind : 0) * 4
     if p->cont
       width += 8
-    for usize i = 0; i < width; ++i
+    for i:usize in 0..width
       nc_add(p->c, &p->out, " ")
     p->col = width
     p->bol = false
@@ -18,7 +18,7 @@
   p->col += n
 // Ends the current line unless it is already empty.
 @f nc_pp_nl(NcPretty *p) void
-  if !p->bol
+  if not p->bol
     nc_add(p->c, &p->out, "\n")
     p->bol = true
     p->col = 0
@@ -47,5 +47,5 @@
   p->col = 0
   p->stmt = true
   p->after = 0
-  if !marker
+  if not marker
     p->last_dir = true

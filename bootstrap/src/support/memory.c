@@ -27,7 +27,7 @@ void *nc_alloc(NcContext *c, size_t size) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     size = (size + align - 1) / align * align;
-    if (!size) {
+    if (! size) {
         size = align;
     }
     NcAllocation *p = c->allocations;
@@ -49,7 +49,7 @@ void *nc_alloc(NcContext *c, size_t size) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     p = calloc(1, charged);
-    if (!p) {
+    if (! p) {
         nc_fail(c, 0, "out of memory");
     }
     p->next = c->allocations;

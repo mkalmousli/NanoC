@@ -16,7 +16,7 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
   if size > SIZE_MAX - align
     nc_fail(c, 0, "allocation limit exceeded")
   size = (size + align - 1) / align * align
-  if !size
+  if not size
     size = align
   NcAllocation *p = c->allocations
   if p and size <= p->capacity - p->used
@@ -33,7 +33,7 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
   if charged > limit or c->allocated > limit - charged
     nc_fail(c, 0, "allocation limit exceeded")
   p = calloc(1, charged)
-  if !p
+  if not p
     nc_fail(c, 0, "out of memory")
   p->next = c->allocations
   p->capacity = capacity

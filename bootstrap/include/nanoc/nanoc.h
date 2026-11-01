@@ -412,6 +412,7 @@ char *nc_include(NcContext *ctx, NcCursor *c);
 char *nc_expand(NcContext *ctx, NcTokens ts, size_t depth);
 char *nc_transpile(NcContext *ctx, const char *input);
 void nc_alias(NcToken *t);
+char *nc_alias_name(NcContext *c, const char *name);
 NcTokens nc_aliased(NcContext *c, NcTokens ts);
 char *nc_function(NcContext *ctx, NcCursor *c, size_t depth);
 char *nc_raw(NcContext *ctx, NcCursor *c);

@@ -21,7 +21,7 @@
         nc_pp_end(p)
     return
   usize lines = 0
-  for usize i = 0; i < t.n; ++i
+  for i:usize in 0..t.n
     lines += t.s[i] == '\n'
   p->space = true
   if lines > 1 and !p->top and !p->paren and p->stmt and !p->comment
@@ -113,7 +113,7 @@
   p->bol = true
   p->stmt = true
   NcTokens ts = nc_lex(c, text, 1)
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     if ts.v[i].kind == NC_SPACE
       space(p, ts.v[i])
     else

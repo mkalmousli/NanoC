@@ -23,7 +23,7 @@
   NcGroups names = nc_split(ctx, parts.v[0], ",")
   NcBuffer out = {0}
   nc_printf(ctx, &out, "%s ", nc_trim(ctx, type))
-  for size_t i = 0; i < names.n; ++i
+  for i:usize in 0..names.n
     nc_printf(ctx, &out, "%s%s%s", i ? "," : "", stars, nc_trim(ctx, nc_join(ctx, names.v[i])))
   nc_add(ctx, &out, ";")
   out.v
@@ -32,11 +32,11 @@
   NcBuffer out = {0}
   if head.n
     NcGroups fs = nc_split(ctx, head, ";")
-    for size_t i = 0; i < fs.n; ++i
+    for i:usize in 0..fs.n
       nc_add(ctx, &out, field_text(ctx, fs.v[i]))
     return out.v
   NcLines lines = nc_body_lines(c, h.line, h.indent)
-  for size_t i = 0; i < lines.n; ++i
+  for i:usize in 0..lines.n
     nc_add(ctx, &out, field_text(ctx, lines.v[i].ts))
   out.v
 // Expands "@s Name fields", "@u Name fields" or "@e Name items" (or the indented block form).
@@ -50,7 +50,7 @@
       nc_add(ctx, &items, nc_join(ctx, head))
     else
       NcLines lines = nc_body_lines(c, h.line, h.indent)
-      for size_t i = 0; i < lines.n; ++i
+      for i:usize in 0..lines.n
         nc_printf(ctx, &items, "%s%s", i ? "," : "", nc_join(ctx, lines.v[i].ts))
     return nc_format(ctx, "typedef enum { %s } %s;\n", items.v ? items.v : "", name)
   const char *word = kind == 's' ? "struct" : "union"

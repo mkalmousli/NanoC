@@ -16,7 +16,7 @@ char *nc_read(NcContext *c, const char *path) {
         nc_fail(c, 1, "input limit exceeded");
     }
     FILE *f = fopen(path, "rb");
-    if (!f) {
+    if (! f) {
         nc_fail(c, 0, "cannot read %s: %s", path, strerror(errno));
     }
     NcBuffer b = {0};

@@ -15,28 +15,44 @@ void nc_alias(NcToken *t) {
     if (t->kind != NC_WORD || t->n < 2 || t->n > 5) {
         return;
     }
-    for (size_t k = 0; k < sizeof map / sizeof *map; ++k) {
-        if (strlen(map[k][0]) == t->n && !strncmp(t->s, map[k][0], t->n)) {
-            if (nc_std == 89 && strstr(map[k][1], "long long")) {
-                t->s = map[k][1][0] == 'u' ? "unsigned long" : "long";
-                t->n = strlen(t->s);
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (sizeof map / sizeof *map);
+        for (size_t k = nanoc_start_1; k < nanoc_end_2; ++k) {
+            if (strlen(map[k][0]) == t->n && !strncmp(t->s, map[k][0], t->n)) {
+                if (nc_std == 89 && strstr(map[k][1], "long long")) {
+                    t->s = map[k][1][0] == 'u' ? "unsigned long" : "long";
+                    t->n = strlen(t->s);
+                    return;
+                }
+                t->s = map[k][1];
+                t->n = strlen(map[k][1]);
                 return;
             }
-            t->s = map[k][1];
-            t->n = strlen(map[k][1]);
-            return;
         }
     }
+}
+
+// Rewrites a type name given as text, e.g. "usize" to "size_t".
+
+char *nc_alias_name(NcContext *c, const char *name) {
+    NcToken t = {name, strlen(name), 0, 0, NC_WORD};
+    nc_alias(&t);
+    return nc_string(c, t.s, t.n);
 }
 
 // Returns the tokens with every short type name rewritten; only NanoC-owned code goes through here.
 
 NcTokens nc_aliased(NcContext *c, NcTokens ts) {
     NcTokens out = {0};
-    for (size_t i = 0; i < ts.n; ++i) {
-        NcToken t = ts.v[i];
-        nc_alias(&t);
-        NC_PUSH(c, out, t);
+    {
+        size_t nanoc_start_3 = (0);
+        size_t nanoc_end_4 = (ts.n);
+        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+            NcToken t = ts.v[i];
+            nc_alias(&t);
+            NC_PUSH(c, out, t);
+        }
     }
     return out;
 }

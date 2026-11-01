@@ -20,7 +20,7 @@
     elif !strncmp(s + i, "/*", 2)
       t.kind = NC_SPACE
       const char *end = strstr(s + i + 2, "*/")
-      if !end
+      if not end
         nc_fail(c, line, "unterminated comment")
       i = (usize)(end - s) + 2
     elif ch == '#' && bol
@@ -55,7 +55,7 @@
           break
     t.n = i - start
     bool newline = false
-    for usize n = start; n < i; ++n
+    for n:usize in start..i
       if s[n] == '\n'
         ++line
         column = 1

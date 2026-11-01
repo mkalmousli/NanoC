@@ -18,12 +18,12 @@
       if !nc_at(&c, "*")
         separator = nc_text(ctx, nc_take(&c))
       nc_need(&c, "*")
-      if !b->variadic
+      if not b->variadic
         nc_fail(ctx, t.line, "repetition requires a variadic parameter")
       if index != SIZE_MAX
         nc_fail(ctx, t.line, "nested repetitions are not supported")
       NcGroups *values = nc_get(&b->values, b->variadic)
-      for usize i = 0; i < values->n; ++i
+      for i:usize in 0..values->n
         if i
           nc_add(ctx, &out, separator)
         nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i))
@@ -36,13 +36,13 @@
         if !nc_end(&h)
           nc_fail(ctx, t.line, "fresh requires one identifier")
         char *fresh = nc_get(&b->fresh, id)
-        if !fresh
+        if not fresh
           fresh = nc_fresh(ctx, id)
           nc_put(ctx, &b->fresh, id, fresh)
         nc_add(ctx, &out, fresh)
       else
         NcGroups *values = nc_get(&b->values, name)
-        if !values
+        if not values
           nc_fail(ctx, t.line, "unknown macro capture: $%s", name)
         usize n = b->variadic and !strcmp(name, b->variadic) ? index : 0
         if n == SIZE_MAX

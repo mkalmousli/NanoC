@@ -27,14 +27,14 @@
 @f nc_include(NcContext *ctx, NcCursor *c) char *
   NcGroups items = nc_split(ctx, nc_line_expression(c), ",")
   NcBuffer out = {0}
-  for usize i = 0; i < items.n; ++i
+  for i:usize in 0..items.n
     char *item = nc_trim(ctx, nc_join(ctx, items.v[i]))
     if !*item
       nc_fail(ctx, nc_line(c), "@use needs a header name")
     cstr many = bundle(item)
     if many
       NcGroups parts = nc_split(ctx, nc_lex(ctx, many, nc_line(c)), ",")
-      for usize k = 0; k < parts.n; ++k
+      for k:usize in 0..parts.n
         nc_add(ctx, &out, include_line(ctx, nc_trim(ctx, nc_join(ctx, parts.v[k]))))
     else
       nc_add(ctx, &out, include_line(ctx, item))

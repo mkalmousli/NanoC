@@ -46,7 +46,7 @@
     NcValue values = nc_eval(m, input, env, depth, true)
     if values.kind != NC_LIST
       nc_fail(ctx, nc_line(c), "for requires a list")
-    for usize i = 0; i < values.count; ++i
+    for i:usize in 0..values.count
       NcEnv *scope = nc_env(ctx, env)
       nc_bind(ctx, scope, id, values.items[i])
       out = nc_run(m, body, scope, depth + 1)

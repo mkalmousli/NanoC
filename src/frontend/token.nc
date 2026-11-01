@@ -15,21 +15,21 @@
 // Concatenates token text.
 @f nc_join(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     nc_addn(c, &b, ts.v[i].s, ts.v[i].n)
   nc_add(c, &b, "")
   b.v
 // Drops whitespace tokens.
 @f nc_significant(NcContext *c, NcTokens ts) NcTokens
   NcTokens out = {0}
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     if ts.v[i].kind != NC_SPACE
       NC_PUSH(c, out, ts.v[i])
   out
 // Joins tokens as spaced words.
 @f nc_words(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     NcToken t = ts.v[i]
     nc_alias(&t)
     cstr s = nil
@@ -54,6 +54,6 @@
   b.v
 // Records identifier tokens.
 @f nc_names(NcContext *c, NcTokens ts) void
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     if ts.v[i].kind == NC_WORD and !nc_has_token(&c->names, ts.v[i])
       nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)

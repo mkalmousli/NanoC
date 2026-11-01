@@ -45,7 +45,7 @@ char *nc_program_control(NcContext *ctx, NcTokens ts, int line) {
         return nc_format(ctx, "for %s in range(%s,%s)", id, nc_join(ctx, low), nc_join(ctx,
                 nc_slice(rest, range.pos, rest.n)));
     }
-    if (!rest.n) {
+    if (! rest.n) {
         nc_fail(ctx, line, "for needs a range or list");
     }
     return nc_format(ctx, "for %s in %s", id, nc_join(ctx, rest));

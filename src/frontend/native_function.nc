@@ -13,7 +13,7 @@
     return body
   NcTokens ts = nc_lex(ctx, body, line)
   NcBuffer b = {0}
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     NcToken t = ts.v[i]
     if t.kind == NC_PUNCT && nc_is(t, "=>")
       nc_add(ctx, &b, "return ")

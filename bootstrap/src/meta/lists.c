@@ -10,9 +10,13 @@ NcValue nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line) {
         nc_arity(c, a, 1, line);
         NcTokens ts = nc_lex(c, nc_meta_text(c, a.v[0], line), line);
         NcValues out = {0};
-        for (size_t i = 0; i < ts.n; ++i) {
-            if (ts.v[i].kind != NC_SPACE) {
-                NC_PUSH(c, out, nc_value_text(NC_CODE, nc_text(c, ts.v[i])));
+        {
+            size_t nanoc_start_1 = (0);
+            size_t nanoc_end_2 = (ts.n);
+            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                if (ts.v[i].kind != NC_SPACE) {
+                    NC_PUSH(c, out, nc_value_text(NC_CODE, nc_text(c, ts.v[i])));
+                }
             }
         }
         nc_check(c, out.n * 8, line);

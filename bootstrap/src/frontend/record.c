@@ -33,8 +33,12 @@ static char *field_text(NcContext *ctx, NcTokens ts) {
     NcGroups names = nc_split(ctx, parts.v[0], ",");
     NcBuffer out = {0};
     nc_printf(ctx, &out, "%s ", nc_trim(ctx, type));
-    for (size_t i = 0; i < names.n; ++i) {
-        nc_printf(ctx, &out, "%s%s%s", i ? "," : "", stars, nc_trim(ctx, nc_join(ctx, names.v[i])));
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (names.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            nc_printf(ctx, &out, "%s%s%s", i ? "," : "", stars, nc_trim(ctx, nc_join(ctx, names.v[i])));
+        }
     }
     nc_add(ctx, &out, ";");
     return out.v;
@@ -46,14 +50,22 @@ static char *record_fields(NcContext *ctx, NcCursor *c, NcHeader h, NcTokens hea
     NcBuffer out = {0};
     if (head.n) {
         NcGroups fs = nc_split(ctx, head, ";");
-        for (size_t i = 0; i < fs.n; ++i) {
-            nc_add(ctx, &out, field_text(ctx, fs.v[i]));
+        {
+            size_t nanoc_start_3 = (0);
+            size_t nanoc_end_4 = (fs.n);
+            for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+                nc_add(ctx, &out, field_text(ctx, fs.v[i]));
+            }
         }
         return out.v;
     }
     NcLines lines = nc_body_lines(c, h.line, h.indent);
-    for (size_t i = 0; i < lines.n; ++i) {
-        nc_add(ctx, &out, field_text(ctx, lines.v[i].ts));
+    {
+        size_t nanoc_start_5 = (0);
+        size_t nanoc_end_6 = (lines.n);
+        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
+            nc_add(ctx, &out, field_text(ctx, lines.v[i].ts));
+        }
     }
     return out.v;
 }
@@ -70,8 +82,12 @@ char *nc_record(NcContext *ctx, NcCursor *c, char kind) {
             nc_add(ctx, &items, nc_join(ctx, head));
         } else {
             NcLines lines = nc_body_lines(c, h.line, h.indent);
-            for (size_t i = 0; i < lines.n; ++i) {
-                nc_printf(ctx, &items, "%s%s", i ? "," : "", nc_join(ctx, lines.v[i].ts));
+            {
+                size_t nanoc_start_7 = (0);
+                size_t nanoc_end_8 = (lines.n);
+                for (size_t i = nanoc_start_7; i < nanoc_end_8; ++i) {
+                    nc_printf(ctx, &items, "%s%s", i ? "," : "", nc_join(ctx, lines.v[i].ts));
+                }
             }
         }
         return nc_format(ctx, "typedef enum { %s } %s;\n", items.v ? items.v : "", name);

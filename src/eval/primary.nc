@@ -23,7 +23,7 @@
     else
       NcGroups groups = nc_split(c, nc_group(&e->c, "[", "]"), ",")
       NcValues list = {0}
-      for usize i = 0; i < groups.n; ++i
+      for i:usize in 0..groups.n
         NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       out = nc_list(list)
   elif t.kind == NC_WORD
@@ -37,7 +37,7 @@
     elif nc_at(&e->c, "(")
       NcGroups groups = nc_split(c, nc_group(&e->c, "(", ")"), ",")
       NcValues args = {0}
-      for usize i = 0; i < groups.n; ++i
+      for i:usize in 0..groups.n
         NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       if active
         out = nc_call(e->m, nc_text(c, t), args, e->depth + 1, t.line)
@@ -47,7 +47,7 @@
     nc_fail(c, t.line, "expected a compile-time expression")
   while nc_at(&e->c, "[")
     NcValue index = nc_eval(e->m, nc_group(&e->c, "[", "]"), e->env, e->depth + 1, active)
-    if !active
+    if not active
       continue
     int64_t n = nc_numeric(c, index, t.line)
     usize size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0

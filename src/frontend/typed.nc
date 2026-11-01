@@ -13,23 +13,23 @@
   if !*type
     nc_fail(ctx, nc_line(&c), "expected C type")
   NcTokens types = nc_lex(ctx, type, input.n ? input.v[0].line : 1)
-  for usize i = 0; i < types.n; ++i
+  for i:usize in 0..types.n
     NcToken t = types.v[i]
     if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",") || nc_is(t, ";") || nc_is(t, "{")
       || nc_is(t, "}"))
       nc_fail(ctx, t.line, "use an ordinary C declaration for complex declarators")
   char *init = ""
   if nc_eat(&c, "=")
-    if !initialized
+    if not initialized
       nc_fail(ctx, nc_line(&c), "parameter defaults are not supported")
     char *expr = nc_trim(ctx, nc_join(ctx, nc_slice(input, c.pos, input.n)))
     if !*expr
       nc_fail(ctx, nc_line(&c), "missing initializer")
     init = nc_format(ctx, " = %s", expr)
-  if !names.n
+  if not names.n
     nc_fail(ctx, nc_line(&c), "missing declaration name")
   NcBuffer out = {0}
-  for usize i = 0; i < names.n; ++i
+  for i:usize in 0..names.n
     NcCursor name = {ctx, names.v[i], 0}
     char *id = nc_name(&name)
     if !nc_end(&name)
@@ -45,7 +45,7 @@
   NcGroups parts = nc_split(ctx, ts, ",")
   NcTokens pending = {0}
   NcBuffer out = {0}
-  for usize i = 0; i < parts.n; ++i
+  for i:usize in 0..parts.n
     if pending.n
       NC_PUSH(ctx, pending, nc_token(",", 1, NC_PUNCT))
     bool colon = false
@@ -54,7 +54,7 @@
       NC_PUSH(ctx, pending, t)
       if nc_is(t, ":")
         colon = true
-    if !colon
+    if not colon
       continue
     if out.n
       nc_add(ctx, &out, ", ")

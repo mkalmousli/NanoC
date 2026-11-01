@@ -8,7 +8,7 @@
   snprintf(stop, sizeof stop, "%s/share/nanoc", prefix)
   while strlen(dir) > strlen(stop)
     char *slash = strrchr(dir, '/')
-    if !slash
+    if not slash
       return
     *slash = 0
     if rmdir(dir)
@@ -19,7 +19,7 @@
   char list[PATH_MAX]
   snprintf(list, sizeof list, "%s/share/nanoc/install.manifest", prefix)
   FILE *f = fopen(list, "r")
-  if !f
+  if not f
     return 0
   char line[PATH_MAX]
   while fgets(line, sizeof line, f)

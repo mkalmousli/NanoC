@@ -16,7 +16,7 @@
 @f nc_statement(NcContext *c, NcLayoutLine line, bool tail) char *
   NcTokens ts = line.ts
   NcTokens items = nc_significant(c, ts)
-  if !items.n
+  if not items.n
     return ""
   if nc_is(items.v[items.n - 1], ";")
     usize last = ts.n
@@ -24,7 +24,7 @@
       --last
     ts.n = last - 1
     items = nc_significant(c, ts)
-  if !items.n
+  if not items.n
     return ";"
   char *first = nc_text(c, items.v[0])
   if !strcmp(first, "intent")
@@ -41,7 +41,7 @@
     declaration = true
   elif (items.n > 1 and items.v[0].kind == NC_WORD
     && (nc_is(items.v[1], ":") || nc_is(items.v[1], ",")))
-    for usize i = 0; i < items.n; ++i
+    for i:usize in 0..items.n
       if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":"))
         && (i + 1 == items.n || !nc_is(items.v[i + 1], ":")))
         declaration = true
@@ -49,12 +49,12 @@
     if tail
       nc_fail(c, line.line, "value function needs a final expression")
     return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, true), line.line)))
-  for usize i = 0; i < ts.n; ++i
+  for i:usize in 0..ts.n
     if ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")
       if tail
         nc_fail(c, line.line, "value function needs a final expression")
       NcTokens normalized = {0}
-      for usize j = 0; j < ts.n; ++j
+      for j:usize in 0..ts.n
         NC_PUSH(c, normalized,
           nc_is(ts.v[j], ":=") ? nc_token("=", ts.v[j].line, NC_PUNCT) : ts.v[j])
       char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), true)
@@ -74,7 +74,7 @@
     return nc_join(c, ts)
   if tail
     const char *decls[] = {"int", "char", "void", "float", "double", "struct", "typedef", "static"}
-    for usize i = 0; i < 8; ++i
+    for i:usize in 0..8
       if !strcmp(first, decls[i])
         nc_fail(c, line.line, "value function needs a final expression")
     return nc_format(c, "return %s;", code)

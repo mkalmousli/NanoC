@@ -14,7 +14,7 @@
   if nc_header_at(c, "(", header.line)
     args = nc_split(ctx, nc_group(c, "(", ")"), ",")
   NcMap names = {0}
-  for usize i = 0; i < args.n; ++i
+  for i:usize in 0..args.n
     NcCursor a = {ctx, args.v[i], 0}
     nc_need(&a, "$")
     NcParam p = {.name = nc_name(&a)}

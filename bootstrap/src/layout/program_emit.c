@@ -20,7 +20,7 @@ static bool function_node(NcContext *c, NcNode n) {
 
 static bool value_line(NcContext *c, NcTokens ts) {
     NcTokens sig = nc_significant(c, ts);
-    if (!sig.n) {
+    if (! sig.n) {
         return 0;
     }
     const char *statements[] = {"emit", "log", "assert", "write", "mkdir", "remove", "again",
@@ -31,15 +31,19 @@ static bool value_line(NcContext *c, NcTokens ts) {
         }
     }
     int level = 0;
-    for (size_t i = 0; i < sig.n; ++i) {
-        NcToken t = sig.v[i];
-        if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
-            ++level;
-        } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
-            --level;
-        } else if (!level && (nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t,
-                "--") || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0])))) {
-            return 0;
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (sig.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            NcToken t = sig.v[i];
+            if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
+                ++level;
+            } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
+                --level;
+            } else if (!level && (nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t,
+                    "--") || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0])))) {
+                return 0;
+            }
         }
     }
     bool function = (sig.n > 1 && sig.v[1].kind == NC_WORD && (nc_is(sig.v[0], "f") || nc_is(sig.v[0],
@@ -55,44 +59,52 @@ char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
     nc_depth(ctx, depth, nodes.n ? nodes.v[0].head.line : 1, "program layout");
     NcBuffer out = {0};
     int line = nodes.n ? nodes.v[0].head.line : 1;
-    for (size_t i = 0; i < nodes.n; ++i) {
-        NcNode n = nodes.v[i];
-        while (line < n.head.line) {
-            nc_add(ctx, &out, "\n");
-            ++line;
-        }
-        size_t start = out.n;
-        if (!n.children.n) {
-            NcTokens ts = n.head.ts;
-            char *text = nc_trim(ctx, nc_join(ctx, ts));
-            bool function = function_node(ctx, n);
-            bool returning = tail && i + 1 == nodes.n && value_line(ctx, ts);
-            nc_printf(ctx, &out, "%s%s%s\n", returning ? "return " : "", text, *text && text[strlen(text) - 1] == '}' && function ? "" : ";");
-        } else {
-            bool function = function_node(ctx, n);
-            bool loop = starts(ctx, n, "for") || starts(ctx, n, "while");
-            bool has_next_branch = (i + 1 < nodes.n && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx,
-                    nodes.v[i + 1], "else")));
-            bool last = tail && !loop && (i + 1 == nodes.n || has_next_branch);
-            char *header = nc_program_control(ctx, n.head.ts, n.head.line);
-            nc_printf(ctx, &out, "%s {\n", header);
-            for (int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad) {
+    {
+        size_t nanoc_start_3 = (0);
+        size_t nanoc_end_4 = (nodes.n);
+        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+            NcNode n = nodes.v[i];
+            while (line < n.head.line) {
                 nc_add(ctx, &out, "\n");
-            }
-            char *body = nc_emit_program(ctx, n.children, function || last, depth + 1);
-            size_t size = strlen(body);
-            if (size && body[size - 1] == '\n') {
-                --size;
-            }
-            nc_addn(ctx, &out, body, size);
-            nc_add(ctx, &out, "}\n");
-        }
-        for (size_t j = start; j < out.n; ++j) {
-            if (out.v[j] == '\n') {
                 ++line;
             }
+            size_t start = out.n;
+            if (! n.children.n) {
+                NcTokens ts = n.head.ts;
+                char *text = nc_trim(ctx, nc_join(ctx, ts));
+                bool function = function_node(ctx, n);
+                bool returning = tail && i + 1 == nodes.n && value_line(ctx, ts);
+                nc_printf(ctx, &out, "%s%s%s\n", returning ? "return " : "", text, *text && text[strlen(text) - 1] == '}' && function ? "" : ";");
+            } else {
+                bool function = function_node(ctx, n);
+                bool loop = starts(ctx, n, "for") || starts(ctx, n, "while");
+                bool has_next_branch = (i + 1 < nodes.n && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx,
+                        nodes.v[i + 1], "else")));
+                bool last = tail && !loop && (i + 1 == nodes.n || has_next_branch);
+                char *header = nc_program_control(ctx, n.head.ts, n.head.line);
+                nc_printf(ctx, &out, "%s {\n", header);
+                for (int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad) {
+                    nc_add(ctx, &out, "\n");
+                }
+                char *body = nc_emit_program(ctx, n.children, function || last, depth + 1);
+                size_t size = strlen(body);
+                if (size && body[size - 1] == '\n') {
+                    --size;
+                }
+                nc_addn(ctx, &out, body, size);
+                nc_add(ctx, &out, "}\n");
+            }
+            {
+                size_t nanoc_start_5 = (start);
+                size_t nanoc_end_6 = (out.n);
+                for (size_t j = nanoc_start_5; j < nanoc_end_6; ++j) {
+                    if (out.v[j] == '\n') {
+                        ++line;
+                    }
+                }
+            }
+            nc_check(ctx, out.n, n.head.line);
         }
-        nc_check(ctx, out.n, n.head.line);
     }
     nc_add(ctx, &out, "");
     return out.v;

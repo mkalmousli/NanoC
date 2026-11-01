@@ -15,7 +15,7 @@
   snprintf(share, sizeof share, "%s/share/nanoc", prefix)
   mg_forget(prefix, name)
   bool ok = true
-  for int i = 0; i < n; ++i
+  for i in 0..n
     char from[PATH_MAX * 2]
     snprintf(from, sizeof from, "%s/%s", share, t[i].src)
     if nc_copy_file(from, t[i].dst)
@@ -27,7 +27,7 @@
   ok
 // Tells if name is among the args.
 @f mg_named(int argc, char **argv, int first, cstr name) static bool
-  for int i = first; i < argc; ++i
+  for i in first..argc
     if !strcmp(argv[i], name)
       return true
   false
@@ -49,7 +49,7 @@
     return nc_editor_list(prefix)
   bool all = false
   int named = 0
-  for int i = first; i < argc; ++i
+  for i in first..argc
     if !strcmp(argv[i], "--all")
       all = true
     else
@@ -66,7 +66,7 @@
     cstr name = nc_editor_name(i)
     bool picked = (all or mg_named(argc, argv, first, name)
       or (!named and !remove and mg_detected(name)))
-    if !picked
+    if not picked
       continue
     acted += 1
     if remove

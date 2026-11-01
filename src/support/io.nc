@@ -8,7 +8,7 @@
   if st.st_size < 0 or (uintmax_t)st.st_size > c->max_output
     nc_fail(c, 1, "input limit exceeded")
   FILE *f = fopen(path, "rb")
-  if !f
+  if not f
     nc_fail(c, 0, "cannot read %s: %s", path, strerror(errno))
   NcBuffer b = {0}
   char block[8192]

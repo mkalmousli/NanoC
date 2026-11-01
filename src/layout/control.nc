@@ -24,7 +24,7 @@
 @f nc_control(NcContext *ctx, NcTokens ts, int line) char *
   char *source = nc_trim(ctx, nc_words(ctx, ts))
   usize len = strlen(source)
-  if !len
+  if not len
     nc_fail(ctx, line, "empty control header")
   char *header = nc_trim(ctx, nc_string(ctx, source, source[len - 1] == ':' ? len - 1 : len))
   NcCursor c = {ctx, nc_lex(ctx, header, line), 0}
@@ -55,7 +55,7 @@
     char *id = nc_name(&c), *type = "int"
     bool typed = nc_eat(&c, ":")
     if typed
-      type = nc_name(&c)
+      type = nc_alias_name(ctx, nc_name(&c))
     (void)nc_eat(&c, "in")
     char *bounds = nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))
     bool range = false

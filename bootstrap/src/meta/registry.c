@@ -27,9 +27,13 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL}, {"str", "
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
 bool nc_builtin_known(const char *name) {
-    for (size_t i = 0; i < nc_spec_count; ++i) {
-        if (!strcmp(name, nc_specs[i].name)) {
-            return 1;
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (nc_spec_count);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            if (!strcmp(name, nc_specs[i].name)) {
+                return 1;
+            }
         }
     }
     return 0;
@@ -38,10 +42,14 @@ bool nc_builtin_known(const char *name) {
 // Calls a registered builtin.
 
 NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) {
-    for (size_t i = 0; i < nc_spec_count; ++i) {
-        const NcSpec *s = &nc_specs[i];
-        if (!strcmp(name, s->name) && s->function) {
-            return s->function(m, name, args, line);
+    {
+        size_t nanoc_start_3 = (0);
+        size_t nanoc_end_4 = (nc_spec_count);
+        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+            const NcSpec *s = &nc_specs[i];
+            if (!strcmp(name, s->name) && s->function) {
+                return s->function(m, name, args, line);
+            }
         }
     }
     nc_fail(m->ctx, line, "unknown compile-time function: %s", name);
@@ -63,7 +71,7 @@ void nc_effect(NcMachine *m, int line) {
     if (m->phase != NC_BT) {
         nc_fail(m->ctx, line, "host effects require @bt");
     }
-    if (!m->ctx->effects) {
+    if (! m->ctx->effects) {
         nc_fail(m->ctx, line, "host effects disabled by --check or --no-effects");
     }
 }

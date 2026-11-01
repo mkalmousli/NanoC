@@ -6,7 +6,7 @@
   if managed >= 0
     return managed
   NcContext *c = calloc(1, sizeof *c)
-  if !c
+  if not c
     fputs("out of memory\n", stderr)
     return 1
   nc_init(c, "")
@@ -43,8 +43,8 @@
         fputs(generated, stdout)
       else
         nc_write(c, o.output, generated)
-      if !o.json
-        for usize i = 0; i < c->logs.n; ++i
+      if not o.json
+        for i:usize in 0..c->logs.n
           fprintf(stderr, "%s\n", c->logs.v[i])
   if ferror(stdout)
     code = 1

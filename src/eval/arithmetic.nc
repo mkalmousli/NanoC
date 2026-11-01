@@ -5,21 +5,21 @@
   bool overflow = false
   if !strcmp(op, "+")
     overflow = (y > 0 and x > INT64_MAX - y) or (y < 0 and x < INT64_MIN - y)
-    if !overflow
+    if not overflow
       return x + y
   elif !strcmp(op, "-")
     overflow = (y < 0 and x > INT64_MAX + y) or (y > 0 and x < INT64_MIN + y)
-    if !overflow
+    if not overflow
       return x - y
   elif !strcmp(op, "*")
     if x > 0
       overflow = y > 0 ? x > INT64_MAX / y : y < INT64_MIN / x
     elif x < 0
       overflow = y > 0 ? x < INT64_MIN / y : y < 0 && x < INT64_MAX / y
-    if !overflow
+    if not overflow
       return x * y
   elif !strcmp(op, "/") || !strcmp(op, "%")
-    if !y
+    if not y
       nc_fail(c, line, "division by zero")
     if x == INT64_MIN and y == -1
       overflow = true

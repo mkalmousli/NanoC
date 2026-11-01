@@ -5,17 +5,21 @@
 
 // Tells if the node starts with s.
 static bool lead(NcNode n, const char *s) {
-    for (size_t i = 0; i < n.head.ts.n; ++i) {
-        if (n.head.ts.v[i].kind != NC_SPACE) {
-            if (nc_is(n.head.ts.v[i], "else")) {
-                size_t next = i + 1;
-                while (next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE) {
-                    ++next;
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (n.head.ts.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            if (n.head.ts.v[i].kind != NC_SPACE) {
+                if (nc_is(n.head.ts.v[i], "else")) {
+                    size_t next = i + 1;
+                    while (next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE) {
+                        ++next;
+                    }
+                    bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if");
+                    return !strcmp(s, condition ? "elif" : "else");
                 }
-                bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if");
-                return !strcmp(s, condition ? "elif" : "else");
+                return nc_is(n.head.ts.v[i], s);
             }
-            return nc_is(n.head.ts.v[i], s);
         }
     }
     return 0;
@@ -72,7 +76,7 @@ char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
             i = last + 1;
             continue;
         }
-        if (!node.children.n) {
+        if (! node.children.n) {
             if (node.head.raw || nc_meta_line(node.head)) {
                 nc_marker(c, &out, node.head.line);
                 nc_add(c, &out, nc_join(c, node.head.ts));

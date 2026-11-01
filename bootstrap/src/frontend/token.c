@@ -30,8 +30,12 @@ NcTokens nc_slice(NcTokens ts, size_t a, size_t b) {
 
 char *nc_join(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
-    for (size_t i = 0; i < ts.n; ++i) {
-        nc_addn(c, &b, ts.v[i].s, ts.v[i].n);
+    {
+        size_t nanoc_start_1 = (0);
+        size_t nanoc_end_2 = (ts.n);
+        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            nc_addn(c, &b, ts.v[i].s, ts.v[i].n);
+        }
     }
     nc_add(c, &b, "");
     return b.v;
@@ -41,9 +45,13 @@ char *nc_join(NcContext *c, NcTokens ts) {
 
 NcTokens nc_significant(NcContext *c, NcTokens ts) {
     NcTokens out = {0};
-    for (size_t i = 0; i < ts.n; ++i) {
-        if (ts.v[i].kind != NC_SPACE) {
-            NC_PUSH(c, out, ts.v[i]);
+    {
+        size_t nanoc_start_3 = (0);
+        size_t nanoc_end_4 = (ts.n);
+        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
+            if (ts.v[i].kind != NC_SPACE) {
+                NC_PUSH(c, out, ts.v[i]);
+            }
         }
     }
     return out;
@@ -53,29 +61,33 @@ NcTokens nc_significant(NcContext *c, NcTokens ts) {
 
 char *nc_words(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
-    for (size_t i = 0; i < ts.n; ++i) {
-        NcToken t = ts.v[i];
-        nc_alias(&t);
-        const char * s = NULL;
-        if (t.kind == NC_WORD) {
-            if (nc_is(t, "and")) {
-                s = "&&";
-            } else if (nc_is(t, "or")) {
-                s = "||";
-            } else if (nc_is(t, "not")) {
-                s = "!";
-            } else if (nc_is(t, "true")) {
-                s = "1";
-            } else if (nc_is(t, "false")) {
-                s = "0";
-            } else if (nc_is(t, "nil")) {
-                s = "NULL";
+    {
+        size_t nanoc_start_5 = (0);
+        size_t nanoc_end_6 = (ts.n);
+        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
+            NcToken t = ts.v[i];
+            nc_alias(&t);
+            const char * s = NULL;
+            if (t.kind == NC_WORD) {
+                if (nc_is(t, "and")) {
+                    s = "&&";
+                } else if (nc_is(t, "or")) {
+                    s = "||";
+                } else if (nc_is(t, "not")) {
+                    s = "!";
+                } else if (nc_is(t, "true")) {
+                    s = "1";
+                } else if (nc_is(t, "false")) {
+                    s = "0";
+                } else if (nc_is(t, "nil")) {
+                    s = "NULL";
+                }
             }
-        }
-        if (s) {
-            nc_add(c, &b, s);
-        } else {
-            nc_addn(c, &b, t.s, t.n);
+            if (s) {
+                nc_add(c, &b, s);
+            } else {
+                nc_addn(c, &b, t.s, t.n);
+            }
         }
     }
     nc_add(c, &b, "");
@@ -85,9 +97,13 @@ char *nc_words(NcContext *c, NcTokens ts) {
 // Records identifier tokens.
 
 void nc_names(NcContext *c, NcTokens ts) {
-    for (size_t i = 0; i < ts.n; ++i) {
-        if (ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])) {
-            nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1);
+    {
+        size_t nanoc_start_7 = (0);
+        size_t nanoc_end_8 = (ts.n);
+        for (size_t i = nanoc_start_7; i < nanoc_end_8; ++i) {
+            if (ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])) {
+                nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1);
+            }
         }
     }
 }

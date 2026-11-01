@@ -7,7 +7,7 @@ extern int nc_std;
   NcBuffer out = {0}
   c->need_stdio = true
   nc_add(c, &out, "{ ")
-  for size_t i = 0; i < parts.n; ++i
+  for i:usize in 0..parts.n
     char *a = nc_trim(c, nc_join(c, parts.v[i]))
     if i
       nc_add(c, &out, "putchar(' '); ")

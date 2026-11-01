@@ -25,15 +25,19 @@ static bool mg_install(const char *prefix, const char *name) {
     snprintf(share, sizeof share, "%s/share/nanoc", prefix);
     mg_forget(prefix, name);
     bool ok = 1;
-    for (int i = 0; i < n; ++i) {
-        char from[PATH_MAX * 2];
-        snprintf(from, sizeof from, "%s/%s", share, t[i].src);
-        if (nc_copy_file(from, t[i].dst)) {
-            mg_remember(prefix, name, t[i].dst);
-            nc_ui_line(1, name, t[i].dst);
-        } else {
-            nc_ui_line(0, name, t[i].dst);
-            ok = 0;
+    {
+        int nanoc_start_1 = (0);
+        int nanoc_end_2 = (n);
+        for (int i = nanoc_start_1; i < nanoc_end_2; ++i) {
+            char from[PATH_MAX * 2];
+            snprintf(from, sizeof from, "%s/%s", share, t[i].src);
+            if (nc_copy_file(from, t[i].dst)) {
+                mg_remember(prefix, name, t[i].dst);
+                nc_ui_line(1, name, t[i].dst);
+            } else {
+                nc_ui_line(0, name, t[i].dst);
+                ok = 0;
+            }
         }
     }
     return ok;
@@ -42,9 +46,13 @@ static bool mg_install(const char *prefix, const char *name) {
 // Tells if name is among the args.
 
 static bool mg_named(int argc, char **argv, int first, const char *name) {
-    for (int i = first; i < argc; ++i) {
-        if (!strcmp(argv[i], name)) {
-            return 1;
+    {
+        int nanoc_start_3 = (first);
+        int nanoc_end_4 = (argc);
+        for (int i = nanoc_start_3; i < nanoc_end_4; ++i) {
+            if (!strcmp(argv[i], name)) {
+                return 1;
+            }
         }
     }
     return 0;
@@ -75,16 +83,20 @@ int nc_editor_command(int argc, char **argv, const char *prefix) {
     }
     bool all = 0;
     int named = 0;
-    for (int i = first; i < argc; ++i) {
-        if (!strcmp(argv[i], "--all")) {
-            all = 1;
-        } else {
-            if (!nc_known_editor(argv[i])) {
-                fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n",
-                        argv[i]);
-                return 2;
+    {
+        int nanoc_start_5 = (first);
+        int nanoc_end_6 = (argc);
+        for (int i = nanoc_start_5; i < nanoc_end_6; ++i) {
+            if (!strcmp(argv[i], "--all")) {
+                all = 1;
+            } else {
+                if (!nc_known_editor(argv[i])) {
+                    fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n",
+                            argv[i]);
+                    return 2;
+                }
+                named += 1;
             }
-            named += 1;
         }
     }
     if (remove && !all && !named) {
@@ -96,7 +108,7 @@ int nc_editor_command(int argc, char **argv, const char *prefix) {
     for (size_t i = 0; nc_editor_name(i); ++i) {
         const char * name = nc_editor_name(i);
         bool picked = (all || mg_named(argc, argv, first, name) || (!named && !remove && mg_detected(name)));
-        if (!picked) {
+        if (! picked) {
             continue;
         }
         acted += 1;

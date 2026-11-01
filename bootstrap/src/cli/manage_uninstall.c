@@ -14,7 +14,7 @@ static void mg_prune(const char *prefix, const char *path) {
     snprintf(stop, sizeof stop, "%s/share/nanoc", prefix);
     while (strlen(dir) > strlen(stop)) {
         char *slash = strrchr(dir, '/');
-        if (!slash) {
+        if (! slash) {
             return;
         }
         *slash = 0;
@@ -31,7 +31,7 @@ static int mg_remove_recorded(const char *prefix) {
     char list[PATH_MAX];
     snprintf(list, sizeof list, "%s/share/nanoc/install.manifest", prefix);
     FILE *f = fopen(list, "r");
-    if (!f) {
+    if (! f) {
         return 0;
     }
     char line[PATH_MAX];

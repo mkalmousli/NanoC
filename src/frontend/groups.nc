@@ -31,7 +31,7 @@
       cstr open = nc_text(c->ctx, t)
       const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}"
       NcTokens body = nc_group(c, open, close)
-      for usize i = 0; i < body.n; ++i
+      for i:usize in 0..body.n
         NC_PUSH(c->ctx, out, body.v[i])
       NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT))
     if c->pos < c->ts.n and c->ts.v[c->pos].kind == NC_SPACE

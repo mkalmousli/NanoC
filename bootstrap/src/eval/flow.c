@@ -64,15 +64,19 @@ NcFlow nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *
         if (values.kind != NC_LIST) {
             nc_fail(ctx, nc_line(c), "for requires a list");
         }
-        for (size_t i = 0; i < values.count; ++i) {
-            NcEnv *scope = nc_env(ctx, env);
-            nc_bind(ctx, scope, id, values.items[i]);
-            out = nc_run(m, body, scope, depth + 1);
-            if (out.returning) {
-                return out;
-            }
-            if (out.breaking) {
-                return (NcFlow){0};
+        {
+            size_t nanoc_start_1 = (0);
+            size_t nanoc_end_2 = (values.count);
+            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
+                NcEnv *scope = nc_env(ctx, env);
+                nc_bind(ctx, scope, id, values.items[i]);
+                out = nc_run(m, body, scope, depth + 1);
+                if (out.returning) {
+                    return out;
+                }
+                if (out.breaking) {
+                    return (NcFlow){0};
+                }
             }
         }
     }
