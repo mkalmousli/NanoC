@@ -39,6 +39,10 @@
   mg_add(t, n, "editors/vscode/package.json", dir, "package.json")
   mg_add(t, n, "editors/vscode/language-configuration.json", dir, "language-configuration.json")
   mg_add(t, n, "editors/vscode/syntaxes/nanoc.tmLanguage.json", dir, "syntaxes/nanoc.tmLanguage.json")
+  mg_add(t, n, "editors/vscode/icon.png", dir, "icon.png")
+  mg_add(t, n, "editors/vscode/README.md", dir, "README.md")
+  mg_add(t, n, "editors/vscode/icons/nanoc.svg", dir, "icons/nanoc.svg")
+  mg_add(t, n, "editors/vscode/snippets/nanoc.code-snippets", dir, "snippets/nanoc.code-snippets")
 @f mg_vscode(NcTarget *t, int *n, const char *home) void
   const char *bases[] = {".vscode", ".vscode-oss", ".cursor"}
   int found = 0

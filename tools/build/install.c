@@ -10,6 +10,8 @@ static const char *installed[] = {
     "share/nanoc/install.sh",
     "share/nanoc/editors/vscode/package.json", "share/nanoc/editors/vscode/language-configuration.json",
     "share/nanoc/editors/vscode/syntaxes/nanoc.tmLanguage.json",
+    "share/nanoc/editors/vscode/icon.png", "share/nanoc/editors/vscode/README.md",
+    "share/nanoc/editors/vscode/icons/nanoc.svg", "share/nanoc/editors/vscode/snippets/nanoc.code-snippets",
     "share/nanoc/editors/vim/nanoc.vim", "share/nanoc/editors/vim/ftdetect/nanoc.vim",
     "share/nanoc/editors/emacs/nanoc-mode.el", "share/nanoc/editors/micro/nanoc.yaml",
     "share/nanoc/editors/nano/nanoc.nanorc", "share/nanoc/editors/sublime/NanoC.sublime-syntax",
