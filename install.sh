@@ -68,7 +68,7 @@ step() {
     i=0
     while kill -0 "$pid" 2>/dev/null; do
         if [ "$TTY" = 1 ]; then
-            printf '\r  %b%s%b [%s] %s %s' "$C" "$(spin_char $i)" "$N" "$(bar)" "$label" "$D…$N"
+            printf '\r  %b%s%b [%s] %s %b…%b' "$C" "$(spin_char $i)" "$N" "$(bar)" "$label" "$D" "$N"
         fi
         i=$(( i + 1 )); sleep 0.1
     done
