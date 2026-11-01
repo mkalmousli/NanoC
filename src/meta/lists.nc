@@ -1,35 +1,28 @@
 // List and slice builtins.
 #include "nanoc/nanoc.h"
 // Runs list builtins.
-@f nc_meta_lists(
-  NcMachine *m, const char *name, NcValues a, int line
-) NcValue
+@f nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "lex")
     nc_arity(c, a, 1, line)
-    NcTokens ts = nc_lex(c, nc_meta_text(c, a.v[0], line),
-      line)
+    NcTokens ts = nc_lex(c, nc_meta_text(c, a.v[0], line), line)
     NcValues out = {0}
     for size_t i = 0; i < ts.n; ++i
       if ts.v[i].kind != NC_SPACE
-        NC_PUSH(c, out,
-          nc_value_text(NC_CODE, nc_text(c, ts.v[i])))
+        NC_PUSH(c, out, nc_value_text(NC_CODE, nc_text(c, ts.v[i])))
     nc_check(c, out.n * 8, line)
     return nc_list(out)
   if !strcmp(name, "slice")
     if a.n != 2 && a.n != 3
       nc_fail(c, line, "slice expects value,start[,end]")
     NcValue v = a.v[0]
-    size_t size = (v.kind == NC_LIST ? v.count
-      : strlen(nc_meta_text(c, v, line)))
+    size_t size = v.kind == NC_LIST ? v.count : strlen(nc_meta_text(c, v, line))
     int64_t start = nc_numeric(c, a.v[1], line)
-    int64_t end = (a.n == 3 ? nc_numeric(c, a.v[2], line)
-      : (int64_t)size)
+    int64_t end = a.n == 3 ? nc_numeric(c, a.v[2], line) : (int64_t)size
     if start < 0 || end < start || (uint64_t)end > size
       nc_fail(c, line, "invalid slice bounds")
     if v.kind != NC_LIST
-      return nc_value_text(v.kind,
-        nc_string(c, v.text + start, (size_t)(end - start)))
+      return nc_value_text(v.kind, nc_string(c, v.text + start, (size_t)(end - start)))
     NcValues out = {0}
     for size_t i = (size_t)start; i < (size_t)end; ++i
       NC_PUSH(c, out, v.items[i])

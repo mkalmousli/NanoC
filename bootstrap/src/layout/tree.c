@@ -22,7 +22,7 @@ NcNodes nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth
             }
             node.children = nc_tree(c, lines, i, lines.v[*i].indent, depth + 1);
         } else if (*i < lines.n && lines.v[*i].indent > indent) {
-            nc_fail(c, lines.v[*i].line, "unexpected indentation; block headers end with " "':'");
+            nc_fail(c, lines.v[*i].line, "unexpected indentation; block headers end with ':'");
         }
         NC_PUSH(c, out, node);
     }

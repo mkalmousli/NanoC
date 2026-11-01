@@ -15,8 +15,7 @@
   for int i = 1; i + 1 < argc; ++i
     if !strcmp(argv[i], "--")
       break
-    if (!strcmp(argv[i], "--diagnostics")
-      && !strcmp(argv[i + 1], "json"))
+    if !strcmp(argv[i], "--diagnostics") && !strcmp(argv[i + 1], "json")
       json = true
   int code = 0
   if setjmp(c->trap)

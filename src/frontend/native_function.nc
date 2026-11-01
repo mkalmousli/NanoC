@@ -3,16 +3,12 @@
 // Reads a function return type.
 @f return_type(NcCursor *c, int line) static NcTokens
   size_t start = c->pos
-  while (nc_same_line(c, line)
-    && !nc_header_at(c, "=>", line)
-    && !nc_header_at(c, "=", line)
+  while (nc_same_line(c, line) && !nc_header_at(c, "=>", line) && !nc_header_at(c, "=", line)
     && !nc_header_at(c, "{", line))
     (void)nc_take(c)
   nc_slice(c->ts, start, c->pos)
 // Rewrites the final return.
-@f lower_returns(
-  NcContext *ctx, char *body, int line
-) static char *
+@f lower_returns(NcContext *ctx, char *body, int line) static char *
   if !strstr(body, "=>")
     return body
   NcTokens ts = nc_lex(ctx, body, line)
@@ -26,55 +22,42 @@
   nc_add(ctx, &b, "")
   b.v
 // Expands a native function.
-@f nc_native_function(
-  NcContext *ctx, NcCursor *c, size_t depth
-) char *
+@f nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) char *
   NcHeader header = nc_header(c)
   int definition_line = header.line
   char *name = nc_name(c)
   char *params = ctx->cpp ? "" : "void"
   if nc_header_at(c, "(", header.line)
-    params = nc_native_parameters(ctx,
-      nc_group(c, "(", ")"))
+    params = nc_native_parameters(ctx, nc_group(c, "(", ")"))
     header.line = c->ts.v[c->pos - 1].line
   char *type = "void"
   bool arrow = nc_header_eat(c, "->", header.line)
   if (arrow
     || (
-      nc_same_line(c, header.line)
-      && !nc_header_at(c, "=", header.line)
-      && !nc_header_at(c, "=>", header.line)
-      && !nc_header_at(c, "{", header.line)))
-    type = nc_trim(ctx,
-      nc_join(ctx, return_type(c, header.line)))
+      nc_same_line(c, header.line) && !nc_header_at(c, "=", header.line)
+      && !nc_header_at(c, "=>", header.line) && !nc_header_at(c, "{", header.line)))
+    type = nc_trim(ctx, nc_join(ctx, return_type(c, header.line)))
   if !*type
     nc_fail(ctx, header.line, "missing return type")
-  NcTokens result = nc_significant(ctx,
-    nc_lex(ctx, type, header.line))
+  NcTokens result = nc_significant(ctx, nc_lex(ctx, type, header.line))
   bool value = !nc_is(result.v[result.n - 1], "void")
-  NC_PUSH(ctx, ctx->symbols,
-    ((NcSymbol){name, params, type, "", definition_line}))
+  NC_PUSH(ctx, ctx->symbols, ((NcSymbol){name, params, type, "", definition_line}))
   char *body
   if nc_header_eat(c, "=>", header.line)
     char *expr = nc_join(ctx, nc_until(c, ";"))
     nc_need(c, ";")
-    body = nc_format(ctx, "%s%s;", value ? "return " : "",
-      expr)
+    body = nc_format(ctx, "%s%s;", value ? "return " : "", expr)
   else
     bool expression = nc_header_eat(c, "=", header.line)
     size_t next = c->pos
     while next < c->ts.n && c->ts.v[next].kind == NC_SPACE
       ++next
     if expression && nc_same_line(c, header.line)
-      body = nc_format(ctx, "%s%s;", value ? "return " : "",
-        nc_join(ctx, nc_line_expression(c)))
+      body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_line_expression(c)))
     elif next < c->ts.n && nc_is(c->ts.v[next], "{")
       body = nc_join(ctx, nc_group(c, "{", "}"))
     else
-      body = nc_emit_block(ctx,
-        nc_indented_nodes(c, header, false), value, 0)
-  char *expanded = nc_expand(ctx,
-    nc_lex(ctx, body, header.line), depth)
-  nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name,
-    params,
+      body = nc_emit_block(ctx, nc_indented_nodes(c, header, false), value, 0)
+  char *expanded = nc_expand(ctx, nc_lex(ctx, body, header.line), depth)
+  nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name, params,
     lower_returns(ctx, expanded, header.line))

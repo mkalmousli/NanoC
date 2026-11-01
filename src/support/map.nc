@@ -31,9 +31,7 @@
     slot = (slot + 1) & (m->cap - 1)
   false
 // Stores a key in a map.
-@f nc_put(
-  NcContext *c, NcMap *m, const char *key, void *value
-) void
+@f nc_put(NcContext *c, NcMap *m, const char *key, void *value) void
   if !m->cap || m->n >= m->cap / 2
     NcMap old = *m
     m->cap = old.cap ? old.cap * 2 : 16

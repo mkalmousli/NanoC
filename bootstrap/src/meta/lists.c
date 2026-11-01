@@ -23,9 +23,9 @@ NcValue nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line) {
             nc_fail(c, line, "slice expects value,start[,end]");
         }
         NcValue v = a.v[0];
-        size_t size = (v.kind == NC_LIST ? v.count : strlen(nc_meta_text(c, v, line)));
+        size_t size = v.kind == NC_LIST ? v.count : strlen(nc_meta_text(c, v, line));
         int64_t start = nc_numeric(c, a.v[1], line);
-        int64_t end = (a.n == 3 ? nc_numeric(c, a.v[2], line) : (int64_t)size);
+        int64_t end = a.n == 3 ? nc_numeric(c, a.v[2], line) : (int64_t)size;
         if (start < 0 || end < start || (uint64_t)end > size) {
             nc_fail(c, line, "invalid slice bounds");
         }

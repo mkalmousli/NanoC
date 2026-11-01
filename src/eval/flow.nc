@@ -12,9 +12,7 @@
     else
       (void)nc_group(c, "{", "}")
 // Runs an if/elif/else chain.
-@f nc_conditional(
-  NcMachine *m, NcCursor *c, NcEnv *env, size_t depth
-) NcFlow
+@f nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth) NcFlow
   NcTokens cond = nc_group(c, "(", ")")
   NcTokens yes = nc_group(c, "{", "}"), no = {0}
   if nc_eat(c, "else")
@@ -25,20 +23,15 @@
     else
       no = nc_group(c, "{", "}")
   bool choose = nc_truth(nc_eval(m, cond, env, depth, true))
-  nc_run(m, choose ? yes : no, nc_env(m->ctx, env),
-    depth + 1)
+  nc_run(m, choose ? yes : no, nc_env(m->ctx, env), depth + 1)
 // Runs a for or while loop.
-@f nc_loop(
-  NcMachine *m, NcCursor *c, NcEnv *env, size_t depth,
-  const char *name
-) NcFlow
+@f nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *name) NcFlow
   NcContext *ctx = m->ctx
   NcFlow out = {0}
   if !strcmp(name, "for") && nc_at(c, "(")
     return nc_c_for(m, c, env, depth)
   if !strcmp(name, "while")
-    NcTokens cond = nc_group(c, "(", ")"), body = nc_group(
-      c, "{", "}")
+    NcTokens cond = nc_group(c, "(", ")"), body = nc_group(c, "{", "}")
     while nc_truth(nc_eval(m, cond, env, depth, true))
       nc_depth(ctx, depth, nc_line(c), "compile-time")
       out = nc_run(m, body, nc_env(ctx, env), depth + 1)
@@ -49,8 +42,7 @@
   else
     char *id = nc_name(c)
     nc_need(c, "in")
-    NcTokens input = nc_until(c, "{"), body = nc_group(c,
-      "{", "}")
+    NcTokens input = nc_until(c, "{"), body = nc_group(c, "{", "}")
     NcValue values = nc_eval(m, input, env, depth, true)
     if values.kind != NC_LIST
       nc_fail(ctx, nc_line(c), "for requires a list")

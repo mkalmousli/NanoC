@@ -41,7 +41,7 @@ void *nc_alloc(NcContext *c, size_t size) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     size_t charged = capacity + sizeof *p;
-    size_t limit = (c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128);
+    size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128;
     if (limit < 1024 * 1024) {
         limit = 1024 * 1024;
     }

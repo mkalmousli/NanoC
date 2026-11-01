@@ -3,9 +3,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 // Creates the parent directories.
-@f directories(
-  NcContext *c, const char *path, int line
-) static void
+@f directories(NcContext *c, const char *path, int line) static void
   char *copy = nc_string(c, path, strlen(path))
   if !*copy
     nc_fail(c, line, "empty directory path")
@@ -15,15 +13,12 @@
     char last = *p
     *p = 0
     if mkdir(copy, 0755) && errno != EEXIST
-      nc_fail(c, line, "cannot create directory %s: %s",
-        copy, strerror(errno))
+      nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
     *p = last
     if !last
       break
 // Runs file builtins.
-@f nc_meta_files(
-  NcMachine *m, const char *name, NcValues a, int line
-) NcValue
+@f nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "file")
     nc_arity(c, a, 0, line)
@@ -36,15 +31,12 @@
     struct stat st
     return nc_boolean(stat(path, &st) == 0)
   if !strcmp(name, "env")
-    return nc_value_text(NC_STRING,
-      getenv(path) ? getenv(path) : "")
+    return nc_value_text(NC_STRING, getenv(path) ? getenv(path) : "")
   nc_effect(m, line)
   if !strcmp(name, "write")
     nc_write(c, path, nc_meta_text(c, a.v[1], line))
   elif !strcmp(name, "mkdir")
     directories(c, path, line)
-  elif (!strcmp(name, "remove") && remove(path)
-    && errno != ENOENT)
-    nc_fail(c, line, "cannot remove %s: %s", path,
-      strerror(errno))
+  elif !strcmp(name, "remove") && remove(path) && errno != ENOENT
+    nc_fail(c, line, "cannot remove %s: %s", path, strerror(errno))
   nc_integer(0)

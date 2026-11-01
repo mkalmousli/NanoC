@@ -7,7 +7,7 @@
 // Rewrites := with a typeof.
 char *nc_infer(NcContext *c, NcTokens ts, int line) {
     NcTokens items = nc_significant(c, ts);
-    size_t i = (items.n > 1 && (nc_is(items.v[0], "+") || nc_is(items.v[0], "-")) ? 1 : 0);
+    size_t i = items.n > 1 && (nc_is(items.v[0], "+") || nc_is(items.v[0], "-")) ? 1 : 0;
     if (items.n == i + 1) {
         NcToken t = items.v[i];
         if (t.kind == NC_LITERAL && t.n && t.s[0] == '"') {
@@ -18,8 +18,8 @@ char *nc_infer(NcContext *c, NcTokens ts, int line) {
         }
         if (t.kind == NC_NUMBER) {
             char *s = nc_text(c, t), *end;
-            char *signed_text = (i ? nc_format(c, "%.*s%s", (int)items.v[0].n, items.v[0].s,
-                    s) : s);
+            char *signed_text = i ? nc_format(c, "%.*s%s", (int)items.v[0].n, items.v[0].s,
+                    s) : s;
             errno = 0;
             long long n = strtoll(signed_text, &end, 10);
             if (!errno && !*end && n >= INT32_MIN && n <= INT32_MAX) {
@@ -37,7 +37,7 @@ char *nc_infer(NcContext *c, NcTokens ts, int line) {
     if (c->cpp) {
         return "auto";
     }
-    nc_fail(c, line, "type needed: use 'name:CType = expression' for " "nonliteral initializers");
+    nc_fail(c, line, "type needed: use 'name:CType = expression' for nonliteral initializers");
     return NULL;
 }
 
@@ -54,7 +54,7 @@ NcTokens nc_declaration(NcContext *ctx, NcTokens ts, int line) {
             colon = 1;
         }
     }
-    char *type = (colon ? "" : nc_format(ctx, ":%s", nc_infer(ctx, init, line)));
+    char *type = colon ? "" : nc_format(ctx, ":%s", nc_infer(ctx, init, line));
     return nc_lex(ctx, nc_format(ctx, "%s%s=%s", nc_join(ctx, names), type, nc_join(ctx, init)),
             line);
 }

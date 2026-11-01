@@ -55,7 +55,7 @@ char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, si
                 if (!values) {
                     nc_fail(ctx, t.line, "unknown macro capture: $%s", name);
                 }
-                size_t n = (b->variadic && !strcmp(name, b->variadic) ? index : 0);
+                size_t n = b->variadic && !strcmp(name, b->variadic) ? index : 0;
                 if (n == SIZE_MAX) {
                     nc_fail(ctx, t.line, "variadic capture requires repetition");
                 }

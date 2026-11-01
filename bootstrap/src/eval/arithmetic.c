@@ -7,20 +7,20 @@
 int64_t nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line) {
     bool overflow = 0;
     if (!strcmp(op, "+")) {
-        overflow = ((y > 0 && x > INT64_MAX - y) || (y < 0 && x < INT64_MIN - y));
+        overflow = (y > 0 && x > INT64_MAX - y) || (y < 0 && x < INT64_MIN - y);
         if (!overflow) {
             return x + y;
         }
     } else if (!strcmp(op, "-")) {
-        overflow = ((y < 0 && x > INT64_MAX + y) || (y > 0 && x < INT64_MIN + y));
+        overflow = (y < 0 && x > INT64_MAX + y) || (y > 0 && x < INT64_MIN + y);
         if (!overflow) {
             return x - y;
         }
     } else if (!strcmp(op, "*")) {
         if (x > 0) {
-            overflow = (y > 0 ? x > INT64_MAX / y : y < INT64_MIN / x);
+            overflow = y > 0 ? x > INT64_MAX / y : y < INT64_MIN / x;
         } else if (x < 0) {
-            overflow = (y > 0 ? x < INT64_MIN / y : y < 0 && x < INT64_MAX / y);
+            overflow = y > 0 ? x < INT64_MIN / y : y < 0 && x < INT64_MAX / y;
         }
         if (!overflow) {
             return x * y;

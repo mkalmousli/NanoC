@@ -1,7 +1,6 @@
 // Arena allocation for one compile.
 #include "nanoc/nanoc.h"
-struct NcAllocation {NcAllocation *next; size_t used,
-  capacity; max_align_t align; };
+struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t align; };
 // Sets up a context.
 @f nc_init(NcContext *c, const char *file) void
   memset(c, 0, sizeof *c)
@@ -28,8 +27,7 @@ struct NcAllocation {NcAllocation *next; size_t used,
   if capacity > SIZE_MAX - sizeof *p
     nc_fail(c, 0, "allocation limit exceeded")
   size_t charged = capacity + sizeof *p
-  size_t limit = (c->max_output > SIZE_MAX / 128 ? SIZE_MAX
-    : c->max_output * 128)
+  size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128
   if limit < 1024 * 1024
     limit = 1024 * 1024
   if charged > limit || c->allocated > limit - charged
@@ -50,10 +48,7 @@ struct NcAllocation {NcAllocation *next; size_t used,
     c->allocations = p->next
     free(p)
 // Grows an array by one.
-@f nc_grow(
-  NcContext *c, const void *old, size_t n, size_t *cap,
-  size_t width
-) void *
+@f nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) void *
   size_t next = *cap ? *cap * 2 : 8
   if next < *cap || next > SIZE_MAX / width
     nc_fail(c, 0, "allocation limit exceeded")

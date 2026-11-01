@@ -26,31 +26,23 @@
   size_t len = strlen(source)
   if !len
     nc_fail(ctx, line, "empty control header")
-  char *header = nc_trim(ctx,
-    nc_string(ctx, source,
-      source[len - 1] == ':' ? len - 1 : len))
+  char *header = nc_trim(ctx, nc_string(ctx, source, source[len - 1] == ':' ? len - 1 : len))
   NcCursor c = {ctx, nc_lex(ctx, header, line), 0}
   char *name = nc_name(&c)
-  char *rest = nc_trim(ctx,
-    nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n)))
-  if (!strcmp(name, "if") || !strcmp(name, "while")
-    || !strcmp(name, "elif"))
+  char *rest = nc_trim(ctx, nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n)))
+  if !strcmp(name, "if") || !strcmp(name, "while") || !strcmp(name, "elif")
     if !*rest
       nc_fail(ctx, line, "missing condition")
-    return nc_format(ctx, "%s %s",
-      !strcmp(name, "elif") ? "else if" : name,
-      paren(ctx, rest))
+    return nc_format(ctx, "%s %s", !strcmp(name, "elif") ? "else if" : name, paren(ctx, rest))
   if !strcmp(name, "unless") || !strcmp(name, "until")
     if !*rest
       nc_fail(ctx, line, "missing condition")
-    return nc_format(ctx, "%s (!(%s))",
-      name[1] == 'n' && name[2] == 'l' ? "if" : "while", rest)
+    return nc_format(ctx, "%s (!(%s))", name[1] == 'n' && name[2] == 'l' ? "if" : "while", rest)
   if !strcmp(name, "loop")
     return nc_format(ctx, "for (;;)")
   if !strcmp(name, "else")
     if nc_eat(&c, "if")
-      return nc_format(ctx, "else if %s", paren(ctx,
-        nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))))
+      return nc_format(ctx, "else if %s", paren(ctx, nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))))
     if *rest
       nc_fail(ctx, line, "else takes no condition")
     return "else"
@@ -65,15 +57,13 @@
     if typed
       type = nc_name(&c)
     (void)nc_eat(&c, "in")
-    char *bounds = nc_join(ctx,
-      nc_slice(c.ts, c.pos, c.ts.n))
+    char *bounds = nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))
     bool range = false
     for size_t i = c.pos; i < c.ts.n; ++i
       if nc_is(c.ts.v[i], "..")
         range = true
     if ctx->cpp && !range
-      return nc_format(ctx, "for (%s%s %s : %s)",
-        typed ? type : "auto", typed ? "&" : "&&", id,
+      return nc_format(ctx, "for (%s%s %s : %s)", typed ? type : "auto", typed ? "&" : "&&", id,
         bounds)
     NcBuffer out = {0}
     for size_t i = 0; bounds[i]; ++i
@@ -83,7 +73,6 @@
       else
         nc_addn(ctx, &out, bounds + i, 1)
     nc_add(ctx, &out, "")
-    return nc_format(ctx, "@for (%s %s in %s)", type, id,
-      out.v)
+    return nc_format(ctx, "@for (%s %s in %s)", type, id, out.v)
   nc_fail(ctx, line, "unsupported block header: %s", name)
   NULL

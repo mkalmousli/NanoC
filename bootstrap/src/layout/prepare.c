@@ -44,7 +44,7 @@ NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program) {
     NcLines out = {0};
     for (size_t i = 0; i < input.n; ++i) {
         NcLayoutLine line = input.v[i];
-        bool block = (i + 1 < input.n && input.v[i + 1].indent > line.indent);
+        bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent;
         bool ext = block && nc_extension_line(line);
         bool meta = nc_meta_line(line) || ext;
         if (!program && meta) {

@@ -1,9 +1,7 @@
 // Growable text buffers.
 #include "nanoc/nanoc.h"
 // Appends n bytes.
-@f nc_addn(
-  NcContext *c, NcBuffer *b, const char *s, size_t n
-) void
+@f nc_addn(NcContext *c, NcBuffer *b, const char *s, size_t n) void
   if n > SIZE_MAX - b->n - 1
     nc_fail(c, 0, "output limit exceeded")
   size_t need = b->n + n + 1
@@ -17,9 +15,7 @@
 @f nc_add(NcContext *c, NcBuffer *b, const char *s) void
   nc_addn(c, b, s, strlen(s))
 // Appends formatted text.
-@f nc_printf(
-  NcContext *c, NcBuffer *b, const char *format, ...
-) void
+@f nc_printf(NcContext *c, NcBuffer *b, const char *format, ...) void
   va_list a, copy
   va_start(a, format)
   va_copy(copy, a)

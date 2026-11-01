@@ -54,6 +54,5 @@
 // Records identifier tokens.
 @f nc_names(NcContext *c, NcTokens ts) void
   for size_t i = 0; i < ts.n; ++i
-    if (ts.v[i].kind == NC_WORD
-      && !nc_has_token(&c->names, ts.v[i]))
+    if ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])
       nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)

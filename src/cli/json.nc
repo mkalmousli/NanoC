@@ -18,8 +18,7 @@
   fputs("{\"schemaVersion\":1,\"ok\":true,\"file\":", out)
   nc_json_string(out, c->file)
   fprintf(out,
-    ",\"validation\":\"expansion-only\",\"language\":\"%s"
-    "\",\"generatedBytes\":%zu,\"symbols\":[",
+    ",\"validation\":\"expansion-only\",\"language\":\"%s\",\"generatedBytes\":%zu,\"symbols\":[",
     c->cpp ? "c++17" : "c11", bytes)
   for size_t i = 0; i < c->symbols.n; ++i
     NcSymbol s = c->symbols.v[i]
@@ -42,9 +41,7 @@
   fputs("],\"diagnostics\":[]}\n", out)
 // Writes one JSON diagnostic.
 @f nc_diagnostic(FILE *out, NcContext *c) void
-  fputs(
-    "{\"schemaVersion\":1,\"ok\":false,\"diagnostics\":[{"
-    "\"code\":", out)
+  fputs("{\"schemaVersion\":1,\"ok\":false,\"diagnostics\":[{\"code\":", out)
   nc_json_string(out, c->code ? c->code : "NC_INPUT")
   fputs(",\"severity\":\"error\",\"file\":", out)
   nc_json_string(out, c->file)

@@ -25,7 +25,7 @@ char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) 
     }
     NcTokens body = nc_group(c, "{", "}");
     char *start = nc_fresh(ctx, "start"), *end = nc_fresh(ctx, "end");
-    return nc_format(ctx, "{ %s %s = (%s); %s %s = (%s); for (%s %s = %s; %s < " "%s; ++%s) {%s} }",
+    return nc_format(ctx, "{ %s %s = (%s); %s %s = (%s); for (%s %s = %s; %s < %s; ++%s) {%s} }",
             type, start, low, type, end, high, type, id, start, id, end, id, nc_expand(ctx,
             body, depth));
 }

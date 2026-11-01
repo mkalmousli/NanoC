@@ -11,7 +11,7 @@ NcValue nc_expression(NcExpr *e, int minimum, bool active) {
     NcValue out = nc_integer(0);
     if (nc_at(&e->c, "!") || nc_at(&e->c, "-") || nc_at(&e->c, "+")) {
         NcToken op = nc_take(&e->c);
-        bool min_literal = (nc_is(op, "-") && nc_at(&e->c, "9223372036854775808"));
+        bool min_literal = nc_is(op, "-") && nc_at(&e->c, "9223372036854775808");
         NcValue a;
         if (min_literal) {
             (void)nc_take(&e->c);
@@ -43,7 +43,7 @@ NcValue nc_expression(NcExpr *e, int minimum, bool active) {
         bool execute = (active && !((nc_is(op, "&&") && !nc_truth(out)) || (nc_is(op, "||") && nc_truth(out))));
         NcValue rhs = nc_expression(e, precedence + 1, execute);
         if (active) {
-            out = (execute ? nc_binary(c, op, out, rhs, op.line) : nc_boolean(nc_is(op, "||")));
+            out = execute ? nc_binary(c, op, out, rhs, op.line) : nc_boolean(nc_is(op, "||"));
         }
     }
     if (active && out.kind == NC_LIST) {

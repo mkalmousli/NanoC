@@ -10,7 +10,7 @@ _Noreturn void nc_fail(NcContext *c, int line, const char *format, ...) {
     vsnprintf(c->detail, sizeof c->detail, format, args);
     va_end(args);
     c->error_line = line;
-    c->code = (strstr(c->detail, "limit") ? "NC_LIMIT" : line > 0 ? "NC_SYNTAX" : "NC_INPUT");
+    c->code = strstr(c->detail, "limit") ? "NC_LIMIT" : line > 0 ? "NC_SYNTAX" : "NC_INPUT";
     snprintf(c->error, sizeof c->error, "%s:%d: %s", c->file, line, c->detail);
     for (size_t i = c->frame_count; i; --i) {
         size_t used = strlen(c->error);

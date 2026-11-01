@@ -44,7 +44,7 @@ bool mg_detected(const char *name) {
         return nc_have_command("nano");
     }
     if (!strcmp(name, "sublime")) {
-        return (nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir)));
+        return nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir));
     }
     return 0;
 }

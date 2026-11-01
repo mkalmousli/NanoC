@@ -24,8 +24,7 @@
   for size_t i = 0; i < t.n; ++i
     lines += t.s[i] == '\n'
   p->space = true
-  if (lines > 1 && !p->top && !p->paren && p->stmt
-    && !p->comment)
+  if lines > 1 && !p->top && !p->paren && p->stmt && !p->comment
     p->gap = true
 // Handles ";" and ",".
 @f separator(NcPretty *p, NcToken t) static void
@@ -70,8 +69,7 @@
   p->comment = false
   bool punct = t.kind == NC_PUNCT && t.n == 1
   char ch = punct ? t.s[0] : 0
-  if ((ch && strchr(")],;", ch)) || nc_pp_prev_punct(p, "(")
-    || nc_pp_prev_punct(p, "["))
+  if (ch && strchr(")],;", ch)) || nc_pp_prev_punct(p, "(") || nc_pp_prev_punct(p, "[")
     p->space = false
   if ch == '{'
     nc_pp_open(p, t)
@@ -94,7 +92,9 @@
     if ch == '?'
       ++p->ternary
     if ch == '('
-      p->ctl[p->paren & 255] = (nc_pp_prev_is(p, "if") || nc_pp_prev_is(p, "for") || nc_pp_prev_is(p, "while") || nc_pp_prev_is(p, "switch"))
+      p->ctl[
+        p->paren & 255] = (nc_pp_prev_is(p, "if") || nc_pp_prev_is(p, "for")
+        || nc_pp_prev_is(p, "while") || nc_pp_prev_is(p, "switch"))
       ++p->paren
     elif ch == ')' && p->paren
       --p->paren

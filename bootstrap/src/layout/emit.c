@@ -12,7 +12,7 @@ static bool lead(NcNode n, const char *s) {
                 while (next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE) {
                     ++next;
                 }
-                bool condition = (next < n.head.ts.n && nc_is(n.head.ts.v[next], "if"));
+                bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if");
                 return !strcmp(s, condition ? "elif" : "else");
             }
             return nc_is(n.head.ts.v[i], s);
@@ -75,7 +75,7 @@ char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
             nc_add(c, &out, nc_statement(c, node.head, returning));
         } else {
             if (returning && (!lead(node, "if") || !lead(nodes.v[last], "else"))) {
-                nc_fail(c, node.head.line, "value function needs a final expression or " "exhaustive if/else");
+                nc_fail(c, node.head.line, "value function needs a final expression or exhaustive if/else");
             }
             for (size_t branch = i; branch <= last; ++branch) {
                 NcNode n = nodes.v[branch];

@@ -66,14 +66,14 @@ char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
             NcTokens ts = n.head.ts;
             char *text = nc_trim(ctx, nc_join(ctx, ts));
             bool function = function_node(ctx, n);
-            bool returning = (tail && i + 1 == nodes.n && value_line(ctx, ts));
+            bool returning = tail && i + 1 == nodes.n && value_line(ctx, ts);
             nc_printf(ctx, &out, "%s%s%s\n", returning ? "return " : "", text, *text && text[strlen(text) - 1] == '}' && function ? "" : ";");
         } else {
             bool function = function_node(ctx, n);
-            bool loop = (starts(ctx, n, "for") || starts(ctx, n, "while"));
+            bool loop = starts(ctx, n, "for") || starts(ctx, n, "while");
             bool has_next_branch = (i + 1 < nodes.n && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx,
                     nodes.v[i + 1], "else")));
-            bool last = (tail && !loop && (i + 1 == nodes.n || has_next_branch));
+            bool last = tail && !loop && (i + 1 == nodes.n || has_next_branch);
             char *header = nc_program_control(ctx, n.head.ts, n.head.line);
             nc_printf(ctx, &out, "%s {\n", header);
             for (int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad) {

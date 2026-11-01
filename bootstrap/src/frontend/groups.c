@@ -14,7 +14,7 @@ NcTokens nc_group(NcCursor *c, const char *open, const char *close) {
         if (t.kind != NC_PUNCT) {
             continue;
         }
-        const char *end = (nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL);
+        const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL;
         if (end) {
             NC_PUSH(c->ctx, stack, (char *)end);
         } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
@@ -40,7 +40,7 @@ NcTokens nc_until(NcCursor *c, const char *delimiter) {
         if (t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))) {
             --c->pos;
             const char *open = nc_text(c->ctx, t);
-            const char *close = (nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}");
+            const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}";
             NcTokens body = nc_group(c, open, close);
             for (size_t i = 0; i < body.n; ++i) {
                 NC_PUSH(c->ctx, out, body.v[i]);

@@ -25,11 +25,11 @@ NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) {
 // Reads a @m body.
 
 NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program) {
-    header.line = (c->pos ? c->ts.v[c->pos - 1].line : header.line);
+    header.line = c->pos ? c->ts.v[c->pos - 1].line : header.line;
     bool old = nc_header_eat(c, "=>", header.line);
     *program = old || nc_header_eat(c, "=", header.line);
     if (*program && !nc_header_at(c, "{", header.line) && nc_same_line(c, header.line)) {
-        NcTokens expr = (old ? nc_until(c, ";") : nc_line_expression(c));
+        NcTokens expr = old ? nc_until(c, ";") : nc_line_expression(c);
         if (old) {
             nc_need(c, ";");
         }

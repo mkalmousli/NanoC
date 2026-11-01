@@ -14,9 +14,7 @@
       else
         char *name = nc_name(&c)
         if active
-          nc_add(ctx, &out,
-            nc_value_code(ctx,
-              nc_lookup(ctx, e->env, name, t.line), t.line))
+          nc_add(ctx, &out, nc_value_code(ctx, nc_lookup(ctx, e->env, name, t.line), t.line))
     else
       nc_addn(ctx, &out, t.s, t.n)
     nc_check(ctx, out.n, t.line)

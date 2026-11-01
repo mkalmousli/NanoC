@@ -1,10 +1,7 @@
 // Substitutes macro arguments.
 #include "nanoc/nanoc.h"
 // Substitutes macro parameters.
-@f nc_substitute(
-  NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth,
-  size_t index
-) char *
+@f nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index) char *
   nc_depth(ctx, depth, 1, "substitution")
   NcCursor c = {ctx, ts, 0}
   NcBuffer out = {0}
@@ -22,17 +19,14 @@
         separator = nc_text(ctx, nc_take(&c))
       nc_need(&c, "*")
       if !b->variadic
-        nc_fail(ctx, t.line,
-          "repetition requires a variadic parameter")
+        nc_fail(ctx, t.line, "repetition requires a variadic parameter")
       if index != SIZE_MAX
-        nc_fail(ctx, t.line,
-          "nested repetitions are not supported")
+        nc_fail(ctx, t.line, "nested repetitions are not supported")
       NcGroups *values = nc_get(&b->values, b->variadic)
       for size_t i = 0; i < values->n; ++i
         if i
           nc_add(ctx, &out, separator)
-        nc_add(ctx, &out,
-          nc_substitute(ctx, body, b, depth + 1, i))
+        nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i))
         nc_check(ctx, out.n, t.line)
     else
       char *name = nc_name(&c)
@@ -40,8 +34,7 @@
         NcCursor h = {ctx, nc_group(&c, "(", ")"), 0}
         char *id = nc_name(&h)
         if !nc_end(&h)
-          nc_fail(ctx, t.line,
-            "fresh requires one identifier")
+          nc_fail(ctx, t.line, "fresh requires one identifier")
         char *fresh = nc_get(&b->fresh, id)
         if !fresh
           fresh = nc_fresh(ctx, id)
@@ -50,13 +43,10 @@
       else
         NcGroups *values = nc_get(&b->values, name)
         if !values
-          nc_fail(ctx, t.line, "unknown macro capture: $%s",
-            name)
-        size_t n = (b->variadic
-          && !strcmp(name, b->variadic) ? index : 0)
+          nc_fail(ctx, t.line, "unknown macro capture: $%s", name)
+        size_t n = b->variadic && !strcmp(name, b->variadic) ? index : 0
         if n == SIZE_MAX
-          nc_fail(ctx, t.line,
-            "variadic capture requires repetition")
+          nc_fail(ctx, t.line, "variadic capture requires repetition")
         if n >= values->n
           nc_fail(ctx, t.line, "missing macro capture")
         nc_add(ctx, &out, nc_join(ctx, values->v[n]))

@@ -33,27 +33,21 @@
       t.kind = NC_WORD
       while 1
         ++i
-        if !(
-          isalnum((unsigned char)s[i]) || s[i] == '_'
-          || (unsigned char)s[i] >= 128)
+        if !(isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128)
           break
-    elif (isdigit(ch)
-      || (ch == '.' && isdigit((unsigned char)s[i + 1])))
+    elif isdigit(ch) || (ch == '.' && isdigit((unsigned char)s[i + 1]))
       t.kind = NC_NUMBER
       ++i
       while s[i]
-        if (isalnum((unsigned char)s[i]) || s[i] == '_'
-          || (s[i] == '.' && strncmp(s + i, "..", 2)))
+        if isalnum((unsigned char)s[i]) || s[i] == '_' || (s[i] == '.' && strncmp(s + i, "..", 2))
           ++i
-        elif ((s[i] == '+' || s[i] == '-')
-          && strchr("eEpP", s[i - 1]))
+        elif (s[i] == '+' || s[i] == '-') && strchr("eEpP", s[i - 1])
           ++i
         else
           break
     else
-      const char *ops[] = {"...", "..", "->", "==", "!=",
-        "<=", ">=", "&&", "||", "=>", ":=", "++", "--",
-        "+=", "-=", "*=", "/=", "%="}
+      const char *ops[] = {"...", "..", "->", "==", "!=", "<=", ">=", "&&", "||", "=>", ":=", "++",
+        "--", "+=", "-=", "*=", "/=", "%="}
       ++i
       for size_t n = 0; n < sizeof ops / sizeof *ops; ++n
         if !strncmp(s + start, ops[n], strlen(ops[n]))

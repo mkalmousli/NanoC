@@ -25,7 +25,7 @@ NcValue nc_builtin_range(NcMachine *m, NcValues args, int line) {
     if (args.n != 1 && args.n != 2) {
         nc_fail(c, line, "range expects one or two integers");
     }
-    int64_t start = (args.n == 2 ? nc_numeric(c, args.v[0], line) : 0);
+    int64_t start = args.n == 2 ? nc_numeric(c, args.v[0], line) : 0;
     int64_t end = nc_numeric(c, args.v[args.n - 1], line);
     NcValues list = {0};
     for (int64_t i = start; i < end; ++i) {

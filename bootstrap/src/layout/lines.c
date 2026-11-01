@@ -40,7 +40,7 @@ NcLayoutLine nc_logical_line(NcCursor *c) {
         if (t.kind != NC_PUNCT) {
             continue;
         }
-        const char *end = (nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL);
+        const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL;
         if (end) {
             NC_PUSH(c->ctx, stack, (char *)end);
         } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {

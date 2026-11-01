@@ -16,7 +16,7 @@ NcFlow nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) {
         while (next < ts.n && ts.v[next].kind == NC_SPACE) {
             ++next;
         }
-        bool define_f = (nc_is(t, "f") && next < ts.n && ts.v[next].kind == NC_WORD);
+        bool define_f = nc_is(t, "f") && next < ts.n && ts.v[next].kind == NC_WORD;
         if (nc_is(t, ";")) {
             continue;
         }

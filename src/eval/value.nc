@@ -12,8 +12,7 @@
   (NcValue){.kind = kind, .text = s}
 // Makes a list value.
 @f nc_list(NcValues items) NcValue
-  NcValue v = {.kind = NC_LIST, .items = items.v,
-    .count = items.n, .height = 1}
+  NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1}
   for size_t i = 0; i < items.n; ++i
     if items.v[i].height + 1 > v.height
       v.height = items.v[i].height + 1
@@ -31,9 +30,7 @@
     nc_fail(c, line, "expected an integer")
   v.n
 // Renders a value as text.
-@f nc_display(
-  NcContext *c, NcValue v, size_t depth, int line
-) char *
+@f nc_display(NcContext *c, NcValue v, size_t depth, int line) char *
   nc_depth(c, depth, line, "value")
   if v.kind == NC_INT
     return nc_format(c, "%" PRId64, v.n)
@@ -46,25 +43,21 @@
   for size_t i = 0; i < v.count; ++i
     if i
       nc_add(c, &b, ", ")
-    nc_add(c, &b,
-      nc_display(c, v.items[i], depth + 1, line))
+    nc_add(c, &b, nc_display(c, v.items[i], depth + 1, line))
     nc_check(c, b.n, line)
   nc_add(c, &b, "]")
   b.v
 // Renders a value as source code.
 @f nc_value_code(NcContext *c, NcValue v, int line) char *
   if v.kind == NC_LIST
-    nc_fail(c, line,
-      "lists require explicit repetition before emission")
+    nc_fail(c, line, "lists require explicit repetition before emission")
   if v.kind == NC_STRING
     return nc_quote(c, v.text)
   if v.kind == NC_BOOL
     return v.n ? "1" : "0"
   nc_display(c, v, 0, line)
 // Compares two values.
-@f nc_equal(
-  NcContext *c, NcValue a, NcValue b, size_t depth, int line
-) bool
+@f nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line) bool
   nc_depth(c, depth, line, "value")
   if a.kind != b.kind
     return false

@@ -30,11 +30,11 @@ int nc_update_command(const char *prefix) {
         return 1;
     }
     char cmd[PATH_MAX * 4];
-    snprintf(cmd, sizeof cmd, "git clone -q --depth 1 https://github.com/mkalmousli/" "NanoC.git '%s/NanoC'",
+    snprintf(cmd, sizeof cmd, "git clone -q --depth 1 https://github.com/mkalmousli/NanoC.git '%s/NanoC'",
             dir);
     int rc = nc_update_cmd(cmd, "Fetching the latest NanoC");
     if (rc == 0) {
-        snprintf(cmd, sizeof cmd, "cd '%s/NanoC' && cc -std=c11 -O2 build.c -o " "builder && ./builder install --prefix '%s'",
+        snprintf(cmd, sizeof cmd, "cd '%s/NanoC' && cc -std=c11 -O2 build.c -o builder && ./builder install --prefix '%s'",
                 dir, prefix);
         rc = nc_update_cmd(cmd, "Building and installing");
     }

@@ -56,7 +56,7 @@ static int mg_remove_recorded(const char *prefix) {
 
 int nc_uninstall_command(int argc, char **argv, const char *prefix) {
     bool yes = argc && !strcmp(argv[0], "--yes");
-    printf("Remove NanoC from %s, including editor " "integrations?\n", prefix);
+    printf("Remove NanoC from %s, including editor integrations?\n", prefix);
     if (!yes && !nc_confirm("Continue?")) {
         puts("Cancelled.");
         return 1;
@@ -76,6 +76,6 @@ int nc_uninstall_command(int argc, char **argv, const char *prefix) {
     char top[PATH_MAX * 2];
     snprintf(top, sizeof top, "%s/share", prefix);
     rmdir(top);
-    printf("Removed %d NanoC files. Your source projects were " "not touched.\n", files);
+    printf("Removed %d NanoC files. Your source projects were not touched.\n", files);
     return 0;
 }

@@ -6,5 +6,4 @@
   for size_t i = 0; i < c->symbols.n; ++i
     NcSymbol s = c->symbols.v[i]
     if strncmp(s.returns, "static", 6)
-      fprintf(out, "%s%s%s(%s);\n", s.returns,
-        nc_sep(s.returns), s.name, s.params)
+      fprintf(out, "%s%s%s(%s);\n", s.returns, nc_sep(s.returns), s.name, s.params)

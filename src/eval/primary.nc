@@ -17,21 +17,16 @@
   elif t.kind == NC_LITERAL
     if t.s[0] != '"'
       nc_fail(c, t.line, "expected a string literal")
-    out = nc_value_text(NC_STRING,
-      nc_unquote(c, nc_text(c, t), t.line))
+    out = nc_value_text(NC_STRING, nc_unquote(c, nc_text(c, t), t.line))
   elif nc_is(t, "(") || nc_is(t, "[")
     --e->c.pos
     if nc_is(t, "(")
-      out = nc_eval(e->m, nc_group(&e->c, "(", ")"), e->env,
-        e->depth + 1, active)
+      out = nc_eval(e->m, nc_group(&e->c, "(", ")"), e->env, e->depth + 1, active)
     else
-      NcGroups groups = nc_split(c,
-        nc_group(&e->c, "[", "]"), ",")
+      NcGroups groups = nc_split(c, nc_group(&e->c, "[", "]"), ",")
       NcValues list = {0}
       for size_t i = 0; i < groups.n; ++i
-        NC_PUSH(c, list,
-          nc_eval(e->m, groups.v[i], e->env, e->depth + 1,
-            active))
+        NC_PUSH(c, list, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       out = nc_list(list)
   elif t.kind == NC_WORD
     if nc_is(t, "true")
@@ -40,37 +35,28 @@
       out = nc_boolean(false)
     elif nc_is(t, "quote")
       bool paren = nc_at(&e->c, "(")
-      out = nc_quotation(e,
-        nc_group(&e->c, paren ? "(" : "{",
-          paren ? ")" : "}"), active)
+      out = nc_quotation(e, nc_group(&e->c, paren ? "(" : "{", paren ? ")" : "}"), active)
     elif nc_at(&e->c, "(")
-      NcGroups groups = nc_split(c,
-        nc_group(&e->c, "(", ")"), ",")
+      NcGroups groups = nc_split(c, nc_group(&e->c, "(", ")"), ",")
       NcValues args = {0}
       for size_t i = 0; i < groups.n; ++i
-        NC_PUSH(c, args,
-          nc_eval(e->m, groups.v[i], e->env, e->depth + 1,
-            active))
+        NC_PUSH(c, args, nc_eval(e->m, groups.v[i], e->env, e->depth + 1, active))
       if active
-        out = nc_call(e->m, nc_text(c, t), args,
-          e->depth + 1, t.line)
+        out = nc_call(e->m, nc_text(c, t), args, e->depth + 1, t.line)
     elif active
       out = nc_lookup(c, e->env, nc_text(c, t), t.line)
   else
     nc_fail(c, t.line, "expected a compile-time expression")
   while nc_at(&e->c, "[")
-    NcValue index = nc_eval(e->m, nc_group(&e->c, "[", "]"),
-      e->env, e->depth + 1, active)
+    NcValue index = nc_eval(e->m, nc_group(&e->c, "[", "]"), e->env, e->depth + 1, active)
     if !active
       continue
     int64_t n = nc_numeric(c, index, t.line)
-    size_t size = (out.kind == NC_LIST ? out.count
-      : out.kind == NC_STRING ? strlen(out.text) : 0)
+    size_t size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0
     if n < 0 || (uint64_t)n >= size
       nc_fail(c, t.line, "invalid compile-time index")
     if out.kind == NC_LIST
       out = out.items[n]
     else
-      out = nc_value_text(NC_STRING,
-        nc_string(c, out.text + n, 1))
+      out = nc_value_text(NC_STRING, nc_string(c, out.text + n, 1))
   out

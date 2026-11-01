@@ -66,9 +66,9 @@ NcOptions nc_options(NcContext *c, int argc, char **argv) {
             } else if (!strcmp(arg, "--max-depth")) {
                 c->max_depth = positive(c, value);
             } else if (!strcmp(arg, "--max-steps")) {
-                c->max_steps = (!strcmp(value, "0") ? 0 : positive(c, value));
+                c->max_steps = !strcmp(value, "0") ? 0 : positive(c, value);
             } else if (!strcmp(arg, "--max-passes")) {
-                c->max_passes = (!strcmp(value, "0") ? 0 : positive(c, value));
+                c->max_passes = !strcmp(value, "0") ? 0 : positive(c, value);
             } else {
                 c->max_output = positive(c, value);
             }

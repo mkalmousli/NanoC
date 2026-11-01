@@ -37,7 +37,7 @@ char *nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t dept
         args = nc_split(ctx, nc_group(c, "(", ")"), ",");
     }
     nc_block_argument(ctx, c, m, &args, c->pos ? c->ts.v[c->pos - 1].line : line, indent);
-    bool variadic = (m->params.n && m->params.v[m->params.n - 1].variadic);
+    bool variadic = m->params.n && m->params.v[m->params.n - 1].variadic;
     size_t fixed = m->params.n - (size_t)variadic;
     if (args.n < fixed || (!variadic && args.n != fixed)) {
         nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name);

@@ -32,8 +32,7 @@
 @f nc_need(NcCursor *c, const char *s) void
   NcToken t = nc_take(c)
   if !nc_is(t, s)
-    nc_fail(c->ctx, t.line, "expected '%s', got '%.*s'", s,
-      (int)t.n, t.s)
+    nc_fail(c->ctx, t.line, "expected '%s', got '%.*s'", s, (int)t.n, t.s)
 // Consumes an identifier.
 @f nc_name(NcCursor *c) char *
   NcToken t = nc_take(c)

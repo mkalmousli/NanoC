@@ -4,17 +4,12 @@
 #include <string.h>
 #include <unistd.h>
 // Prints an ok/fail status line.
-@f nc_ui_line(
-  bool ok, const char *name, const char *where
-) void
+@f nc_ui_line(bool ok, const char *name, const char *where) void
   bool tty = isatty(1)
-  const char *mark = (ok ? (tty ? "\033[32m✓\033[0m" : "✓")
-    : (tty ? "\033[31m✗\033[0m" : "✗"))
+  const char *mark = ok ? (tty ? "\033[32m✓\033[0m" : "✓") : (tty ? "\033[31m✗\033[0m" : "✗")
   printf("  %s %-9s %s\n", mark, name, where)
 // Installs editor files for a name.
-@f mg_install(
-  const char *prefix, const char *name
-) static bool
+@f mg_install(const char *prefix, const char *name) static bool
   NcTarget t[16]
   int n = nc_targets(name, t)
   if n <= 0
@@ -34,32 +29,23 @@
       ok = false
   ok
 // Tells if name is among the args.
-@f mg_named(
-  int argc, char **argv, int first, const char *name
-) static bool
+@f mg_named(int argc, char **argv, int first, const char *name) static bool
   for int i = first; i < argc; ++i
     if !strcmp(argv[i], name)
       return true
   false
 // Lists known editors.
 @f nc_editor_list(const char *prefix) static int
-  printf("  %-9s %-10s %s\n", "EDITOR", "DETECTED",
-    "INSTALLED")
+  printf("  %-9s %-10s %s\n", "EDITOR", "DETECTED", "INSTALLED")
   for size_t i = 0; nc_editor_name(i); ++i
     const char *name = nc_editor_name(i)
-    printf("  %-9s %-10s %s\n", name,
-      mg_detected(name) ? "yes" : "no",
+    printf("  %-9s %-10s %s\n", name, mg_detected(name) ? "yes" : "no",
       mg_installed(prefix, name) ? "yes" : "no")
   0
 // Runs the editors subcommand.
-@f nc_editor_command(
-  int argc, char **argv, const char *prefix
-) int
+@f nc_editor_command(int argc, char **argv, const char *prefix) int
   int first = 0
-  bool remove = (argc
-    && (
-      !strcmp(argv[0], "remove")
-      || !strcmp(argv[0], "uninstall")))
+  bool remove = argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall"))
   if argc && (remove || !strcmp(argv[0], "install"))
     first = 1
   if argc && !strcmp(argv[0], "list")
@@ -71,9 +57,7 @@
       all = true
     else
       if !nc_known_editor(argv[i])
-        fprintf(stderr,
-          "nanoc editor: unknown editor %s (try: nanoc "
-          "editor list)\n", argv[i])
+        fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n", argv[i])
         return 2
       named += 1
   if remove && !all && !named
@@ -95,7 +79,5 @@
     elif !mg_install(prefix, name)
       status = 1
   if !acted && !remove
-    puts(
-      "No supported editors detected. Name one: nanoc "
-      "editor install vim")
+    puts("No supported editors detected. Name one: nanoc editor install vim")
   status

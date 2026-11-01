@@ -1,9 +1,7 @@
 // The @f function form.
 #include "nanoc/nanoc.h"
 // Expands a @f function.
-@f nc_function(
-  NcContext *ctx, NcCursor *c, size_t depth
-) char *
+@f nc_function(NcContext *ctx, NcCursor *c, size_t depth) char *
   int line = nc_line(c)
   size_t previous = c->pos ? c->pos - 1 : 0
   while previous && !nc_is(c->ts.v[previous], "@")
@@ -37,18 +35,13 @@
       NcLayoutLine first = nc_logical_line(c)
       NcNode node = {.head = first}
       NcNodes nodes = {&node, 1, 1}
-      body = nc_emit_block(ctx, nodes,
-        strcmp(returns, "void") != 0, 0)
+      body = nc_emit_block(ctx, nodes, strcmp(returns, "void") != 0, 0)
     else
       NcLines lines = nc_body_lines(c, header_line, indent)
       size_t i = 0
-      NcNodes nodes = nc_tree(ctx, lines, &i,
-        lines.v[0].indent, 0)
+      NcNodes nodes = nc_tree(ctx, lines, &i, lines.v[0].indent, 0)
       if i != lines.n
-        nc_fail(ctx, lines.v[i].line,
-          "inconsistent indentation")
-      body = nc_emit_block(ctx, nodes,
-        strcmp(returns, "void") != 0, 0)
+        nc_fail(ctx, lines.v[i].line, "inconsistent indentation")
+      body = nc_emit_block(ctx, nodes, strcmp(returns, "void") != 0, 0)
     body = nc_expand(ctx, nc_lex(ctx, body, 1), depth)
-  nc_format(ctx, "%s%s%s(%s) {%s}", returns, nc_sep(returns),
-    id, args, body)
+  nc_format(ctx, "%s%s%s(%s) {%s}", returns, nc_sep(returns), id, args, body)

@@ -38,8 +38,7 @@
   while n && isspace((unsigned char)t.s[n - 1])
     --n
   bool marker = !strncmp(t.s, "#line", 5)
-  if (!marker && !p->last_dir && p->out.n && !p->top
-    && !p->paren)
+  if !marker && !p->last_dir && p->out.n && !p->top && !p->paren
     nc_pp_blank(p)
   nc_pp_nl(p)
   nc_addn(p->c, &p->out, t.s, n)

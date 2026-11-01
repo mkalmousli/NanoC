@@ -42,7 +42,7 @@ bool mg_sublime_dir(char *out) {
     struct utsname u;
     uname(&u);
     if (!strcmp(u.sysname, "Darwin")) {
-        snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime " "Text/Packages/User",
+        snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User",
                 home);
     } else {
         snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home);

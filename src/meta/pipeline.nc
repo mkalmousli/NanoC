@@ -15,8 +15,7 @@
     ctx->symbols = (NcSymbols){0}
     const char *prepared = nc_build_stage(ctx, current)
     ctx->source = prepared
-    char *output = nc_expand(ctx, nc_lex(ctx, prepared, 1),
-      0)
+    char *output = nc_expand(ctx, nc_lex(ctx, prepared, 1), 0)
     if !ctx->again && !ctx->next_source
       return output
     current = ctx->next_source ? ctx->next_source : prepared

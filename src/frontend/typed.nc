@@ -5,31 +5,24 @@
   size_t n = strlen(type)
   n && type[n - 1] == '*' ? "" : " "
 // Parses a typed declaration.
-@f nc_typed(
-  NcContext *ctx, NcTokens input, bool initialized
-) char *
+@f nc_typed(NcContext *ctx, NcTokens input, bool initialized) char *
   NcCursor c = {ctx, input, 0}
   NcGroups names = nc_split(ctx, nc_until(&c, ":"), ",")
   nc_need(&c, ":")
   char *type = nc_trim(ctx, nc_join(ctx, nc_until(&c, "=")))
   if !*type
     nc_fail(ctx, nc_line(&c), "expected C type")
-  NcTokens types = nc_lex(ctx, type,
-    input.n ? input.v[0].line : 1)
+  NcTokens types = nc_lex(ctx, type, input.n ? input.v[0].line : 1)
   for size_t i = 0; i < types.n; ++i
     NcToken t = types.v[i]
-    if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",")
-      || nc_is(t, ";") || nc_is(t, "{") || nc_is(t, "}"))
-      nc_fail(ctx, t.line,
-        "use an ordinary C declaration for complex "
-        "declarators")
+    if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",") || nc_is(t, ";") || nc_is(t, "{")
+      || nc_is(t, "}"))
+      nc_fail(ctx, t.line, "use an ordinary C declaration for complex declarators")
   char *init = ""
   if nc_eat(&c, "=")
     if !initialized
-      nc_fail(ctx, nc_line(&c),
-        "parameter defaults are not supported")
-    char *expr = nc_trim(ctx,
-      nc_join(ctx, nc_slice(input, c.pos, input.n)))
+      nc_fail(ctx, nc_line(&c), "parameter defaults are not supported")
+    char *expr = nc_trim(ctx, nc_join(ctx, nc_slice(input, c.pos, input.n)))
     if !*expr
       nc_fail(ctx, nc_line(&c), "missing initializer")
     init = nc_format(ctx, " = %s", expr)
@@ -40,12 +33,10 @@
     NcCursor name = {ctx, names.v[i], 0}
     char *id = nc_name(&name)
     if !nc_end(&name)
-      nc_fail(ctx, nc_line(&name),
-        "expected a declaration name")
+      nc_fail(ctx, nc_line(&name), "expected a declaration name")
     if i
       nc_add(ctx, &out, initialized ? "; " : ", ")
-    nc_printf(ctx, &out, "%s%s%s%s", type, nc_sep(type), id,
-      init)
+    nc_printf(ctx, &out, "%s%s%s%s", type, nc_sep(type), id, init)
   out.v
 // Parses a parameter list.
 @f nc_parameters(NcContext *ctx, NcTokens ts) char *
@@ -70,6 +61,5 @@
     nc_add(ctx, &out, nc_typed(ctx, pending, false))
     pending = (NcTokens){0}
   if pending.n
-    nc_fail(ctx, pending.v[0].line,
-      "parameters require explicit types")
+    nc_fail(ctx, pending.v[0].line, "parameters require explicit types")
   out.v

@@ -64,7 +64,7 @@ NcValue nc_primary(NcExpr *e, bool active) {
             continue;
         }
         int64_t n = nc_numeric(c, index, t.line);
-        size_t size = (out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0);
+        size_t size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0;
         if (n < 0 || (uint64_t)n >= size) {
             nc_fail(c, t.line, "invalid compile-time index");
         }

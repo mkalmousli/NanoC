@@ -9,7 +9,7 @@
 // Prints an ok/fail status line.
 void nc_ui_line(bool ok, const char *name, const char *where) {
     bool tty = isatty(1);
-    const char *mark = (ok ? (tty ? "\033[32m✓\033[0m" : "✓") : (tty ? "\033[31m✗\033[0m" : "✗"));
+    const char *mark = ok ? (tty ? "\033[32m✓\033[0m" : "✓") : (tty ? "\033[31m✗\033[0m" : "✗");
     printf("  %s %-9s %s\n", mark, name, where);
 }
 
@@ -66,7 +66,7 @@ static int nc_editor_list(const char *prefix) {
 
 int nc_editor_command(int argc, char **argv, const char *prefix) {
     int first = 0;
-    bool remove = (argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall")));
+    bool remove = argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall"));
     if (argc && (remove || !strcmp(argv[0], "install"))) {
         first = 1;
     }
@@ -80,7 +80,7 @@ int nc_editor_command(int argc, char **argv, const char *prefix) {
             all = 1;
         } else {
             if (!nc_known_editor(argv[i])) {
-                fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc " "editor list)\n",
+                fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n",
                         argv[i]);
                 return 2;
             }
@@ -110,7 +110,7 @@ int nc_editor_command(int argc, char **argv, const char *prefix) {
         }
     }
     if (!acted && !remove) {
-        puts("No supported editors detected. Name one: nanoc " "editor install vim");
+        puts("No supported editors detected. Name one: nanoc editor install vim");
     }
     return status;
 }

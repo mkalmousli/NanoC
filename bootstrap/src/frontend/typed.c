@@ -24,7 +24,7 @@ char *nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
         NcToken t = types.v[i];
         if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",") || nc_is(t, ";") || nc_is(t, "{") || nc_is(t,
                 "}")) {
-            nc_fail(ctx, t.line, "use an ordinary C declaration for complex " "declarators");
+            nc_fail(ctx, t.line, "use an ordinary C declaration for complex declarators");
         }
     }
     char *init = "";

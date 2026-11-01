@@ -5,8 +5,7 @@
 #include <unistd.h>
 // Gets the install manifest path.
 @f mg_manifest(const char *prefix, char *out) static void
-  snprintf(out, PATH_MAX, "%s/share/nanoc/editors.manifest",
-    prefix)
+  snprintf(out, PATH_MAX, "%s/share/nanoc/editors.manifest", prefix)
 // Tells if an editor is present.
 @f mg_detected(const char *name) bool
   char home[PATH_MAX]
@@ -32,8 +31,7 @@
   if !strcmp(name, "nano")
     return nc_have_command("nano")
   if !strcmp(name, "sublime")
-    return (nc_have_command("subl")
-      || (mg_sublime_dir(dir) && nc_exists(dir)))
+    return nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir))
   false
 // Tells if an editor is installed.
 @f mg_installed(const char *prefix, const char *name) bool
@@ -75,9 +73,7 @@
   fclose(out)
   rename(tmp, path)
 // Records an installed file.
-@f mg_remember(
-  const char *prefix, const char *name, const char *dst
-) void
+@f mg_remember(const char *prefix, const char *name, const char *dst) void
   char path[PATH_MAX]
   mg_manifest(prefix, path)
   FILE *f = fopen(path, "a")

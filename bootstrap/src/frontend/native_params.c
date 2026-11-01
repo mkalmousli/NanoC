@@ -25,7 +25,7 @@ char *nc_native_parameters(NcContext *ctx, NcTokens ts) {
         }
         NcToken name = part.v[part.n - 1];
         if (name.kind != NC_WORD) {
-            nc_fail(ctx, name.line, "use a typedef or ordinary C for complex " "parameters");
+            nc_fail(ctx, name.line, "use a typedef or ordinary C for complex parameters");
         }
         if (part.n > 1) {
             size_t last = groups.v[i].n;

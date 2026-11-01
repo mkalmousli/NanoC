@@ -22,8 +22,7 @@
       c->effects = false
     elif (!positional
       && (
-        !strcmp(arg, "--no-effects")
-        || !strcmp(arg, "--line-directives")
+        !strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives")
         || !strcmp(arg, "--prototypes")))
       if !strcmp(arg, "--prototypes")
         o.prototypes = true
@@ -32,18 +31,13 @@
       else
         c->effects = false
     elif (!positional
-      && (
-        !strcmp(arg, "--help") || !strcmp(arg, "--version")
-        || !strcmp(arg, "--describe")))
+      && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg, "--describe")))
       o.action = arg
     elif (!positional
       && (
-        !strcmp(arg, "-o") || !strcmp(arg, "--lang")
-        || !strcmp(arg, "--emit")
-        || !strcmp(arg, "--diagnostics")
-        || !strcmp(arg, "--max-depth")
-        || !strcmp(arg, "--max-steps")
-        || !strcmp(arg, "--max-passes")
+        !strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg, "--emit")
+        || !strcmp(arg, "--diagnostics") || !strcmp(arg, "--max-depth")
+        || !strcmp(arg, "--max-steps") || !strcmp(arg, "--max-passes")
         || !strcmp(arg, "--max-output")))
       if ++i == argc
         nc_fail(c, 0, "missing value for %s", arg)
@@ -65,11 +59,9 @@
       elif !strcmp(arg, "--max-depth")
         c->max_depth = positive(c, value)
       elif !strcmp(arg, "--max-steps")
-        c->max_steps = (!strcmp(value, "0") ? 0
-          : positive(c, value))
+        c->max_steps = !strcmp(value, "0") ? 0 : positive(c, value)
       elif !strcmp(arg, "--max-passes")
-        c->max_passes = (!strcmp(value, "0") ? 0
-          : positive(c, value))
+        c->max_passes = !strcmp(value, "0") ? 0 : positive(c, value)
       else
         c->max_output = positive(c, value)
     elif !positional && *arg == '-'

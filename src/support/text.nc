@@ -53,8 +53,7 @@
       elif ch == 't'
         ch = '\t'
       elif ch != '\\' && ch != '"'
-        nc_fail(c, line,
-          "unsupported compile-time string escape")
+        nc_fail(c, line, "unsupported compile-time string escape")
     nc_addn(c, &b, &ch, 1)
   nc_add(c, &b, "")
   b.v

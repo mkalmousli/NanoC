@@ -16,7 +16,7 @@ bool nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken 
     NcToken op = c->ts.v[c->pos];
     bool bind = nc_is(op, ":="), assign = nc_is(op, "=");
     bool step = nc_is(op, "++") || nc_is(op, "--");
-    bool augment = (op.n == 2 && op.s[1] == '=' && strchr("+-*/%", op.s[0]));
+    bool augment = op.n == 2 && op.s[1] == '=' && strchr("+-*/%", op.s[0]);
     if (!bind && !assign && !step && !augment) {
         c->pos = saved;
         return 0;
@@ -24,7 +24,7 @@ bool nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken 
     (void)nc_take(c);
     NcContext *ctx = m->ctx;
     char *id = nc_text(ctx, name);
-    NcValue value = (step ? nc_integer(1) : nc_eval(m, nc_until(c, ";"), env, depth, 1));
+    NcValue value = step ? nc_integer(1) : nc_eval(m, nc_until(c, ";"), env, depth, 1);
     if (step || augment) {
         NcToken binary = nc_token(nc_string(ctx, op.s, 1), op.line, NC_PUNCT);
         value = nc_binary(ctx, binary, nc_lookup(ctx, env, id, name.line), value, name.line);

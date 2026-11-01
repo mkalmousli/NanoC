@@ -19,17 +19,12 @@ typedef struct { NcTokens *v; size_t n, cap; } Programs;
         ++next
       if next < ts.n && nc_is(ts.v[next], "bt")
         c.pos = next + 1
-        NC_PUSH(ctx, programs,
-          nc_meta_body(&c, nc_header(&c), true, false))
+        NC_PUSH(ctx, programs, nc_meta_body(&c, nc_header(&c), true, false))
         for size_t i = start; i < c.pos; ++i
           for size_t j = 0; j < ts.v[i].n; ++j
-            nc_add(ctx, &bare,
-              ts.v[i].s[j] == '\n' ? "\n" : " ")
+            nc_add(ctx, &bare, ts.v[i].s[j] == '\n' ? "\n" : " ")
         continue
-      if (next < ts.n
-        && (
-          nc_is(ts.v[next], "m")
-          || nc_is(ts.v[next], "macro")))
+      if next < ts.n && (nc_is(ts.v[next], "m") || nc_is(ts.v[next], "macro"))
         c.pos = next + 1
         NcHeader header = nc_header(&c)
         (void)nc_name(&c)
@@ -54,12 +49,10 @@ typedef struct { NcTokens *v; size_t n, cap; } Programs;
   for size_t i = 0; i < programs.n; ++i
     if ctx->frame_count == 256
       nc_fail(ctx, 1, "build depth limit exceeded")
-    char *frame = nc_format(ctx,
-      "while executing @bt at %s:%d", ctx->file,
+    char *frame = nc_format(ctx, "while executing @bt at %s:%d", ctx->file,
       programs.v[i].n ? programs.v[i].v[0].line : 1)
     ctx->frames[ctx->frame_count++] = frame
-    nc_add(ctx, &prelude,
-      nc_program(ctx, programs.v[i], NULL, NC_BT, 1))
+    nc_add(ctx, &prelude, nc_program(ctx, programs.v[i], NULL, NC_BT, 1))
     --ctx->frame_count
     if ctx->next_source
       ctx->source = ctx->next_source

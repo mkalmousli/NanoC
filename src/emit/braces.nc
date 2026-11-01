@@ -12,8 +12,8 @@
     return 'i'
   if !p->has_prev || nc_pp_prev_is(p, "else") || nc_pp_prev_is(p, "do")
     return 'b'
-  if (nc_pp_prev_punct(p, ";") || nc_pp_prev_punct(p, "{")
-    || nc_pp_prev_punct(p, "}") || nc_pp_prev_punct(p, ":"))
+  if (nc_pp_prev_punct(p, ";") || nc_pp_prev_punct(p, "{") || nc_pp_prev_punct(p, "}")
+    || nc_pp_prev_punct(p, ":"))
     return 'b'
   if nc_pp_prev_punct(p, ")")
     return p->ctl[255] || !p->top ? 'b' : 'i'

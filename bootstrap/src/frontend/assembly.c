@@ -43,7 +43,7 @@ char *nc_assembly(NcContext *ctx, NcCursor *c) {
         }
         if (section < 4) {
             if (section <= last) {
-                nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, " "labels, once each");
+                nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, labels, once each");
             }
             sections[section] = nc_trim(ctx, nc_join(ctx, nc_slice(row.ts, row.pos, row.ts.n)));
             if (!*sections[section]) {
@@ -52,7 +52,7 @@ char *nc_assembly(NcContext *ctx, NcCursor *c) {
             last = section;
         } else {
             if (last >= 0) {
-                nc_fail(ctx, line.line, "assembly instructions must precede operand " "sections");
+                nc_fail(ctx, line.line, "assembly instructions must precede operand sections");
             }
             char *text = nc_trim(ctx, nc_join(ctx, line.ts));
             if (first.kind == NC_LITERAL && first.s[0] == '"') {

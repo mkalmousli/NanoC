@@ -18,8 +18,7 @@
   while *p
     const char *end = strchr(p, ':')
     size_t n = end ? (size_t)(end - p) : strlen(p)
-    snprintf(out, PATH_MAX, "%.*s/%s", (int)n, n ? p : ".",
-      name)
+    snprintf(out, PATH_MAX, "%.*s/%s", (int)n, n ? p : ".", name)
     if access(out, X_OK) == 0
       return true
     p = end ? end + 1 : p + n
