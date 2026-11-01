@@ -1,60 +1,62 @@
-// JSON output and diagnostic reports.
+// Diagnostic reports built with the JSON writer.
 #include "nanoc/nanoc.h"
-// Writes a JSON string literal.
-@f nc_json_string(FILE *out, const char *s) void
-  fputc('"', out)
-  for ; *s; ++s
-    unsigned char ch = (unsigned char)*s
-    if ch == '"' || ch == '\\'
-      fputc('\\', out)
-      fputc(ch, out)
-    elif ch < 32
-      fprintf(out, "\\u%04x", ch)
-    else
-      fputc(ch, out)
-  fputc('"', out)
+// Writes the compiler logs as an array under "logs".
+@f logs(NcJson *w, NcContext *c) static void
+  jw_key(w, "logs")
+  jw_open(w, '[')
+  for size_t i = 0; i < c->logs.n; ++i
+    jw_str(w, c->logs.v[i])
+  jw_close(w, ']')
 // Prints a diagnostic report.
 @f nc_report(FILE *out, NcContext *c, size_t bytes) void
-  fputs("{\"schemaVersion\":1,\"ok\":true,\"file\":", out)
-  nc_json_string(out, c->file)
-  fprintf(out,
-    ",\"validation\":\"expansion-only\",\"language\":\"%s\",\"generatedBytes\":%zu,\"symbols\":[",
-    c->cpp ? "c++17" : "c11", bytes)
+  NcJson w
+  jw_start(&w, out)
+  jw_open(&w, '{')
+  jw_ki(&w, "schemaVersion", 1)
+  jw_kb(&w, "ok", true)
+  jw_ks(&w, "file", c->file)
+  jw_ks(&w, "validation", "expansion-only")
+  jw_ks(&w, "language", c->cpp ? "c++17" : "c11")
+  jw_ki(&w, "generatedBytes", (long)bytes)
+  jw_key(&w, "symbols")
+  jw_open(&w, '[')
   for size_t i = 0; i < c->symbols.n; ++i
     NcSymbol s = c->symbols.v[i]
-    if i
-      fputc(',', out)
-    fputs("{\"name\":", out)
-    nc_json_string(out, s.name)
-    fprintf(out, ",\"line\":%d,\"parameters\":", s.line)
-    nc_json_string(out, s.params)
-    fputs(",\"returnType\":", out)
-    nc_json_string(out, s.returns)
-    fputs(",\"intent\":", out)
-    nc_json_string(out, s.intent)
-    fputc('}', out)
-  fprintf(out, "],\"passes\":%zu,\"logs\":[", c->pass)
-  for size_t i = 0; i < c->logs.n; ++i
-    if i
-      fputc(',', out)
-    nc_json_string(out, c->logs.v[i])
-  fputs("],\"diagnostics\":[]}\n", out)
+    jw_open(&w, '{')
+    jw_ks(&w, "name", s.name)
+    jw_ki(&w, "line", s.line)
+    jw_ks(&w, "parameters", s.params)
+    jw_ks(&w, "returnType", s.returns)
+    jw_ks(&w, "intent", s.intent)
+    jw_close(&w, '}')
+  jw_close(&w, ']')
+  jw_ki(&w, "passes", (long)c->pass)
+  logs(&w, c)
+  jw_kr(&w, "diagnostics", "[]")
+  jw_close(&w, '}')
+  fputc('\n', out)
 // Writes one JSON diagnostic.
 @f nc_diagnostic(FILE *out, NcContext *c) void
-  fputs("{\"schemaVersion\":1,\"ok\":false,\"diagnostics\":[{\"code\":", out)
-  nc_json_string(out, c->code ? c->code : "NC_INPUT")
-  fputs(",\"severity\":\"error\",\"file\":", out)
-  nc_json_string(out, c->file)
-  fprintf(out, ",\"line\":%d,\"message\":", c->error_line)
-  nc_json_string(out, c->detail)
-  fputs(",\"trace\":[", out)
+  NcJson w
+  jw_start(&w, out)
+  jw_open(&w, '{')
+  jw_ki(&w, "schemaVersion", 1)
+  jw_kb(&w, "ok", false)
+  jw_key(&w, "diagnostics")
+  jw_open(&w, '[')
+  jw_open(&w, '{')
+  jw_ks(&w, "code", c->code ? c->code : "NC_INPUT")
+  jw_ks(&w, "severity", "error")
+  jw_ks(&w, "file", c->file)
+  jw_ki(&w, "line", c->error_line)
+  jw_ks(&w, "message", c->detail)
+  jw_key(&w, "trace")
+  jw_open(&w, '[')
   for size_t i = c->frame_count; i; --i
-    if i != c->frame_count
-      fputc(',', out)
-    nc_json_string(out, c->frames[i - 1])
-  fputs("]}],\"logs\":[", out)
-  for size_t i = 0; i < c->logs.n; ++i
-    if i
-      fputc(',', out)
-    nc_json_string(out, c->logs.v[i])
-  fputs("]}\n", out)
+    jw_str(&w, c->frames[i - 1])
+  jw_close(&w, ']')
+  jw_close(&w, '}')
+  jw_close(&w, ']')
+  logs(&w, c)
+  jw_close(&w, '}')
+  fputc('\n', out)

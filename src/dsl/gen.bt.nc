@@ -2,7 +2,7 @@
 // JSON:  o([k,v,k,v..]) object, a([..]) array, r(text) raw token (true, 1, null).
 //        Plain strings become JSON strings; nested o/a/r results pass through.
 // Files: put(path, text) creates parent directories first (named out below).
-f q(s) = "\""+replace(replace(s,"\\","\\\\"),"\"","\\\"")+"\""
+f q(s) = "\""+replace(replace(replace(s,"\\","\\\\"),"\"","\\\""),"\n","\\n")+"\""
 f raw(s) = "\t"+s
 f r(s) = "\t"+s
 f j(v)
