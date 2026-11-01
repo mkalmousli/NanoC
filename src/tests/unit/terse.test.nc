@@ -17,6 +17,7 @@
   test_program("#include <vector>\n@f main int\n  xs:=std::vector<int>(3,2)\n  sum:=0\n" "  for x xs\n    sum+=x\n  sum!=6\n", "", true)
   test_program("#include <vector>\n@f main int\n  bits:=std::vector<bool>(3)\n" "  for bit bits\n    bit=true\n  !bits[0] || !bits[1] || !bits[2]\n", "", true)
   test_program("@m repeat($n,$body:block)\n  for(int $fresh(i)=0;$fresh(i)<$n;$fresh(i)++) $body\n" "@m scope($body:block)\n  $body\n@m three=3\n@f main int\n  count:=0\n  @repeat(@three)\n" "    @scope\n      count++\n  count!=3\n", "", false)
+  test_program("@f add(i32 a,b) i32 = a+b\n@f main int\n  u8 x=200\n  f64 y=1.5\n  cstr s=\"hi\"\n  add(x,2)!=202 || y!=1.5 || s[1]!='i'\n", "", false)
   test_reject("@f main int\n0\n", "indented function body", 0, 0, 0)
   test_reject("@f main int\n  x:=0\n    x\n", "unexpected indentation", 0, 0, 0)
   test_reject("@f main int\n  if 1\n    0\n", "exhaustive", 0, 0, 0)

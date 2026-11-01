@@ -90,6 +90,35 @@ int main(void) {
 }
 ```
 
+## Short type names
+
+`i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 byte cstr usize isize` are plain C type words inside NanoC code, so the output builds with any C compiler and needs no extra header (`usize`/`isize` need `stddef.h`). Unmarked C is never rewritten.
+
+```nanoc
+#include <stdio.h>
+@f add(i32 a,b) i32 = a+b
+@f main int
+  u8 x=200
+  cstr s="hi"
+  printf("%s %d\n",s,add(x,2))
+  0
+```
+
+```c
+#include <stdio.h>
+
+int add(int a, int b) {
+    return a+b;
+}
+
+int main(void) {
+    unsigned char x=200;
+    const char * s="hi";
+    printf("%s %d\n",s,add(x,2));
+    return 0;
+}
+```
+
 ## Inference and ranges
 
 `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.

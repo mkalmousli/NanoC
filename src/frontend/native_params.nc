@@ -23,7 +23,7 @@
       size_t last = groups.v[i].n
       while last && groups.v[i].v[last - 1].kind == NC_SPACE
         --last
-      type = nc_trim(ctx, nc_join(ctx, nc_slice(groups.v[i], 0, last - 1)))
+      type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, nc_slice(groups.v[i], 0, last - 1))))
     if !type || !*type
       nc_fail(ctx, name.line, "first parameter in a group needs a C type")
     nc_printf(ctx, &out, "%s%s%.*s", type, nc_sep(type), (int)name.n, name.s)

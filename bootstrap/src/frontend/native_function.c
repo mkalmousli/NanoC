@@ -48,7 +48,7 @@ char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
     bool arrow = nc_header_eat(c, "->", header.line);
     if (arrow || (nc_same_line(c, header.line) && !nc_header_at(c, "=", header.line) && !nc_header_at(c,
             "=>", header.line) && !nc_header_at(c, "{", header.line))) {
-        type = nc_trim(ctx, nc_join(ctx, return_type(c, header.line)));
+        type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, return_type(c, header.line))));
     }
     if (!*type) {
         nc_fail(ctx, header.line, "missing return type");
@@ -58,7 +58,7 @@ char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
     NC_PUSH(ctx, ctx->symbols, ((NcSymbol){name, params, type, "", definition_line}));
     char *body;
     if (nc_header_eat(c, "=>", header.line)) {
-        char *expr = nc_join(ctx, nc_until(c, ";"));
+        char *expr = nc_join(ctx, nc_aliased(ctx, nc_until(c, ";")));
         nc_need(c, ";");
         body = nc_format(ctx, "%s%s;", value ? "return " : "", expr);
     } else {
@@ -68,9 +68,10 @@ char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
             ++next;
         }
         if (expression && nc_same_line(c, header.line)) {
-            body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_line_expression(c)));
+            body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_aliased(ctx,
+                    nc_line_expression(c))));
         } else if (next < c->ts.n && nc_is(c->ts.v[next], "{")) {
-            body = nc_join(ctx, nc_group(c, "{", "}"));
+            body = nc_join(ctx, nc_aliased(ctx, nc_group(c, "{", "}")));
         } else {
             body = nc_emit_block(ctx, nc_indented_nodes(c, header, 0), value, 0);
         }

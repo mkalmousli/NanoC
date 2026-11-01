@@ -55,6 +55,7 @@ char *nc_words(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
     for (size_t i = 0; i < ts.n; ++i) {
         NcToken t = ts.v[i];
+        nc_alias(&t);
         const char *s = NULL;
         if (t.kind == NC_WORD) {
             if (nc_is(t, "and")) {

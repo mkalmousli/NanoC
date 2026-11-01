@@ -28,9 +28,9 @@
     if k == 3
       nc_add(test_state.mem, &source, "@macro twice($x:tokens){(($x)+($x))}\n")
     for int i = 0; i < 10000; ++i
-      const char *formats[] = {"int f%d(int x){return x+%d;}\n", "@fn f%d(x:int)->int{return x+%d;}\n",
-        "@fn f%d(x:int):int = x+%d\n", "int f%d(int x){return @twice!(x+%d);}\n",
-        "@f f%d(int x) int = x+%d\n"}
+      const char *formats[] = {"int h%d(int x){return x+%d;}\n", "@fn h%d(x:int)->int{return x+%d;}\n",
+        "@fn h%d(x:int):int = x+%d\n", "int h%d(int x){return @twice!(x+%d);}\n",
+        "@f h%d(int x) int = x+%d\n"}
       nc_printf(test_state.mem, &source, formats[k], i, i)
     size_t size = 0
     char *input = nc_format(test_state.mem, "build/bench-data/%s.nc", cases[k])

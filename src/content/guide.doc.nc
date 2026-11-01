@@ -31,6 +31,16 @@ lesson values VALUES | Blocks produce values | Values
       else
         0
     @f main int = sign(-9)!=-1
+lesson types SHORT TYPES | Short type names | Types
+  p `i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 byte cstr usize isize` are plain C type words inside NanoC code, so the output builds with any C compiler and needs no extra header (`usize`/`isize` need `stddef.h`). Unmarked C is never rewritten.
+  code nanoc c
+    #include <stdio.h>
+    @f add(i32 a,b) i32 = a+b
+    @f main int
+      u8 x=200
+      cstr s="hi"
+      printf("%s %d\n",s,add(x,2))
+      0
 lesson locals LOCALS & LOOPS | Inference and ranges | Locals
   p `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.
   code nanoc c
