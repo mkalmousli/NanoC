@@ -33,6 +33,6 @@
     if !type || !*type
       nc_fail(ctx, name.line,
         "first parameter in a group needs a C type")
-    nc_printf(ctx, &out, "%s %.*s", type, (int)name.n,
-      name.s)
+    nc_printf(ctx, &out, "%s%s%.*s", type, nc_sep(type),
+      (int)name.n, name.s)
   out.v

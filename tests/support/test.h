@@ -22,6 +22,7 @@ bool test_json(const char *);
 void test_programs(void);
 void test_invalid(void);
 void test_preservation(void);
+void test_emit(void);
 void test_arithmetic(void);
 void test_generated(void);
 void test_cli(void);

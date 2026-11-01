@@ -1,5 +1,16 @@
 // Statement lines to C.
 #include "nanoc/nanoc.h"
+// Tells if the statement starts with the ret keyword.
+@f nc_is_ret(NcContext *c, NcTokens items) bool
+  if !nc_is(items.v[0], "ret")
+    return false
+  if items.n == 1
+    return true
+  char *next = nc_text(c, items.v[1])
+  size_t n = strlen(next)
+  if next[0] == '=' || next[n - 1] == '='
+    return false
+  strcmp(next, ".") && strcmp(next, "->") && strcmp(next, "[") && strcmp(next, "++") && strcmp(next, "--")
 // Converts one statement to C.
 @f nc_statement(
   NcContext *c, NcLayoutLine line, bool tail
@@ -63,6 +74,9 @@
       return nc_format(c, "%s;",
         nc_words(c, nc_lex(c, typed, line.line)))
   char *code = nc_trim(c, nc_words(c, ts))
+  if nc_is_ret(c, items)
+    code = nc_trim(c, nc_format(c, "return %s", code + 3))
+    first = "return"
   if !strcmp(first, "=>")
     return nc_format(c, "return %s;", nc_trim(c, code + 2))
   if (!strcmp(first, "return") || !strcmp(first, "break")

@@ -63,7 +63,7 @@ void b_selfhost(BOptions o) {
     b_cc(o, &sources, "build/stage1-nanoc", "-Ibuild/include", false);
     b_paths_free(&sources);
     b_generate("build/stage1-nanoc", "build/stage2");
-    b_fixed_point("build/stage1", "build/stage2");
+    if (!getenv("NC_RESEED")) b_fixed_point("build/stage1", "build/stage2");
     b_walk(&sources, "build/stage2/src", ".c");
     b_cc(o, &sources, "build/nanoc", "-Ibuild/include", false);
     b_paths_free(&sources);

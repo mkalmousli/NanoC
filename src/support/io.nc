@@ -18,7 +18,7 @@
   NcBuffer b = {0}
   char block[8192]
   size_t n
-  while (n = fread(block, 1, sizeof block, f))
+  while (n = fread(block, 1, sizeof block, f)) != 0
     if b.n > c->max_output || n > c->max_output - b.n
       fclose(f)
       nc_fail(c, 1, "input limit exceeded")

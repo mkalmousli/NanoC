@@ -39,6 +39,7 @@
     elif (!positional
       && (
         !strcmp(arg, "-o") || !strcmp(arg, "--lang")
+        || !strcmp(arg, "--emit")
         || !strcmp(arg, "--diagnostics")
         || !strcmp(arg, "--max-depth")
         || !strcmp(arg, "--max-steps")
@@ -49,6 +50,10 @@
       char *value = argv[i]
       if !strcmp(arg, "-o")
         o.output = value
+      elif !strcmp(arg, "--emit")
+        if strcmp(value, "normal") && strcmp(value, "mini")
+          nc_fail(c, 0, "--emit requires normal or mini")
+        c->mini = !strcmp(value, "mini")
       elif !strcmp(arg, "--lang")
         if strcmp(value, "c") && strcmp(value, "c++")
           nc_fail(c, 0, "--lang requires c or c++")

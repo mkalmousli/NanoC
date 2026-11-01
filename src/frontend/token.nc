@@ -43,6 +43,8 @@
         s = "1"
       elif nc_is(t, "false")
         s = "0"
+      elif nc_is(t, "nil")
+        s = "NULL"
     if s
       nc_add(c, &b, s)
     else

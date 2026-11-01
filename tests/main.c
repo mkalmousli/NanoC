@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
     if (argc > 1 && !strcmp(argv[1], "--bench")) test_benchmark();
     else {
         test_preservation();
+        test_emit();
         test_arithmetic();
         test_invalid();
         test_programs();

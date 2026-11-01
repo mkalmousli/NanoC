@@ -19,6 +19,8 @@
     "writes/commands (implied by --check)\n"
     "  --prototypes        Print prototypes of non-static "
     "functions\n"
+    "  --emit MODE         normal (readable C, default) "
+    "or mini (smallest C)\n"
     "  --line-directives   Emit #line markers mapping C "
     "back to NanoC lines\n"
     "  --max-depth N       Expansion/evaluation nesting "

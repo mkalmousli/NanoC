@@ -32,6 +32,11 @@ Indent consistently (any width); tabs are rejected. Blank lines/comments are ign
   C++: `for x container` binds auto&&. Explicit C loops also work without outer
   parentheses: `for int i=0;i<n;i++`. Use `break` / `continue` normally.
 - Conditions: `if`, `elif` / `else if`, `else`, `while`; use C operators.
+- Shortcuts: `ret x` (return), `nil` (NULL), `and`/`or`/`not`, `unless c`
+  (`if !(c)`), `until c` (`while !(c)`), `loop` (`for (;;)`),
+  `@inc stdio, "mine.h", <sys/x.h>` (one `#include` per item; bare names become `<name.h>`).
+- Output: `--emit normal` (default, indented readable C) or `--emit mini`
+  (comments and layout stripped, smallest valid C for compile speed).
 - Existing arrow/brace/indent-colon syntax stays compatible; new code can omit it.
 - Assembly: indented `@asm` instructions; `out`/`in`/`clobber`/`labels` sections.
   Optional `volatile`/`inline`/`goto`; [assembly card](assembly.md), `--describe asm`.

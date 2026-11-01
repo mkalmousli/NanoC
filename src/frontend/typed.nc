@@ -1,5 +1,9 @@
 // Typed declarations with inference.
 #include "nanoc/nanoc.h"
+// Separator between a type and a name: none after "*".
+@f nc_sep(const char *type) const char *
+  size_t n = strlen(type)
+  n && type[n - 1] == '*' ? "" : " "
 // Parses a typed declaration.
 @f nc_typed(
   NcContext *ctx, NcTokens input, bool initialized
@@ -40,7 +44,8 @@
         "expected a declaration name")
     if i
       nc_add(ctx, &out, initialized ? "; " : ", ")
-    nc_printf(ctx, &out, "%s %s%s", type, id, init)
+    nc_printf(ctx, &out, "%s%s%s%s", type, nc_sep(type), id,
+      init)
   out.v
 // Parses a parameter list.
 @f nc_parameters(NcContext *ctx, NcTokens ts) char *

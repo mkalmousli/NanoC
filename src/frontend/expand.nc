@@ -35,6 +35,9 @@
           NULL, NC_BT, depth + 1)
       elif !strcmp(name, "f")
         generated = nc_native_function(ctx, &c, depth + 1)
+      elif (!strcmp(name, "inc")
+        && !nc_get(&ctx->macros, name))
+        generated = nc_include(ctx, &c)
       elif !strcmp(name, "asm")
         generated = nc_assembly(ctx, &c)
       elif (!strcmp(name, "fn") || !strcmp(name, "let")
@@ -56,5 +59,6 @@
   if !strchr(input, '@')
     ctx->pass = 1
     ctx->source = input
-    return (char *)input
-  nc_pipeline(ctx, input)
+    return ctx->mini ? nc_mini(ctx, input) : (char *)input
+  char *output = nc_pipeline(ctx, input)
+  strcmp(output, input) || ctx->mini ? nc_style(ctx, output) : output

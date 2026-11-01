@@ -1,5 +1,25 @@
 // Control statements: if, for, while.
 #include "nanoc/nanoc.h"
+// Tells if one parenthesis pair spans all of s.
+@f enclosed(const char *s) static bool
+  if *s != '('
+    return false
+  int depth = 0
+  for size_t i = 0; s[i]; ++i
+    if s[i] == '"' || s[i] == '\''
+      char quote = s[i++]
+      while s[i] && s[i] != quote
+        i += s[i] == '\\' && s[i + 1] ? 2 : 1
+      if !s[i]
+        return false
+    elif s[i] == '('
+      ++depth
+    elif s[i] == ')' && --depth == 0
+      return !s[i + 1]
+  false
+// Wraps a condition in parentheses unless already wrapped.
+@f paren(NcContext *ctx, const char *s) static char *
+  enclosed(s) ? nc_format(ctx, "%s", s) : nc_format(ctx, "(%s)", s)
 // Rewrites a control statement.
 @f nc_control(NcContext *ctx, NcTokens ts, int line) char *
   char *source = nc_trim(ctx, nc_words(ctx, ts))
@@ -17,12 +37,20 @@
     || !strcmp(name, "elif"))
     if !*rest
       nc_fail(ctx, line, "missing condition")
-    return nc_format(ctx, "%s (%s)",
-      !strcmp(name, "elif") ? "else if" : name, rest)
+    return nc_format(ctx, "%s %s",
+      !strcmp(name, "elif") ? "else if" : name,
+      paren(ctx, rest))
+  if !strcmp(name, "unless") || !strcmp(name, "until")
+    if !*rest
+      nc_fail(ctx, line, "missing condition")
+    return nc_format(ctx, "%s (!(%s))",
+      name[1] == 'n' && name[2] == 'l' ? "if" : "while", rest)
+  if !strcmp(name, "loop")
+    return nc_format(ctx, "for (;;)")
   if !strcmp(name, "else")
     if nc_eat(&c, "if")
-      return nc_format(ctx, "else if (%s)",
-        nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n)))
+      return nc_format(ctx, "else if %s", paren(ctx,
+        nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))))
     if *rest
       nc_fail(ctx, line, "else takes no condition")
     return "else"

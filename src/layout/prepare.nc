@@ -54,7 +54,10 @@
     NcToken first = ts.v[0], last = ts.v[ts.n - 1]
     bool control = (nc_is(first, "if")
       || nc_is(first, "elif") || nc_is(first, "else")
-      || nc_is(first, "while") || nc_is(first, "for"))
+      || nc_is(first, "while") || nc_is(first, "for")
+      || (nc_is(first, "loop") && ts.n == 1)
+      || ((nc_is(first, "unless") || nc_is(first, "until"))
+        && ts.n > 1 && !nc_is(ts.v[1], "=")))
     bool function = (program
       && (nc_is(first, "f") || nc_is(first, "fn"))
       && ts.n >= 2 && ts.v[1].kind == NC_WORD)
