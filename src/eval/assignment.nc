@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken name) bool
   if name.kind != NC_WORD
     return false

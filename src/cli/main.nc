@@ -1,4 +1,4 @@
-#include "nanoc/cli.h"
+#include "nanoc/nanoc.h"
 #include "nanoc/manage.h"
 @f main(int argc, char **argv) int
   int managed = nc_manage(argc, argv)
@@ -35,7 +35,9 @@
             nc_fail(c, 0, "unknown describe topic: %s", o.input)
         else
           char *generated = nc_transpile(c, nc_read(c, o.input))
-          if o.check
+          if o.prototypes
+            nc_prototypes(c, stdout)
+          elif o.check
             if o.json
               nc_report(stdout, c, strlen(generated))
           else

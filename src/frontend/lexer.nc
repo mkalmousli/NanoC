@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_lex(NcContext *c, const char *s, int line) NcTokens
   NcTokens out = {0}
   size_t i = 0

@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_group(NcCursor *c, const char *open, const char *close) NcTokens
   nc_need(c, open)
   size_t start = c->pos

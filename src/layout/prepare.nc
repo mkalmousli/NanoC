@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_extension_line(NcLayoutLine line) bool
   size_t i = 0
   while i < line.ts.n && line.ts.v[i].kind == NC_SPACE

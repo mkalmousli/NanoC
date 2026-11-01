@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_trim(NcContext *c, const char *s) char *
   while isspace((unsigned char)*s)
     ++s

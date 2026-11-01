@@ -1,6 +1,6 @@
-#include "nanoc/macro.h"
-#include "nanoc/layout.h"
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 @f nc_expand(NcContext *ctx, NcTokens ts, size_t depth) char *
   nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "expansion")
   nc_names(ctx, ts)

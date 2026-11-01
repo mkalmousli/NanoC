@@ -1,0 +1,10 @@
+typedef enum { NC_INT, NC_BOOL, NC_STRING, NC_CODE, NC_LIST } NcValueKind;
+typedef struct NcValue NcValue;
+struct NcValue { NcValueKind kind; int64_t n; char *text; NcValue *items; size_t count, height; };
+typedef struct { NcValue *v; size_t n, cap; } NcValues;
+typedef struct NcEnv { struct NcEnv *parent; NcMap values; } NcEnv;
+typedef struct { NcStrings params; NcTokens body; NcEnv *closure; } NcCtFunction;
+typedef enum { NC_CT, NC_BT, NC_MACRO } NcPhase;
+typedef struct { NcContext *ctx; NcMap functions; NcBuffer output; NcEnv *root; NcPhase phase; size_t depth; } NcMachine;
+typedef struct { bool returning; NcValue value; bool breaking, continuing; } NcFlow;
+typedef struct { NcCursor c; NcMachine *m; NcEnv *env; size_t depth; } NcExpr;

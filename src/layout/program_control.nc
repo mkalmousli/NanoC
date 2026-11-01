@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_program_control(NcContext *ctx, NcTokens ts, int line) char *
   NcTokens sig = nc_significant(ctx, ts)
   if sig.n && nc_is(sig.v[sig.n - 1], ":")

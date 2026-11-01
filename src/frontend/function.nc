@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_function(NcContext *ctx, NcCursor *c, size_t depth) char *
   int line = nc_line(c)
   size_t previous = c->pos ? c->pos - 1 : 0

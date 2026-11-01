@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line) int64_t
   bool overflow = false
   if !strcmp(op, "+")

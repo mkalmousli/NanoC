@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_program_text(NcContext *ctx, const char *text, int line) NcTokens
   NcCursor c = {ctx, nc_lex(ctx, text, line), 0}
   if nc_end(&c)

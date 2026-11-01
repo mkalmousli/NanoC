@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_addn(NcContext *c, NcBuffer *b, const char *s, size_t n) void
   if n > SIZE_MAX - b->n - 1
     nc_fail(c, 0, "output limit exceeded")

@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_expression(NcExpr *e, int minimum, bool active) NcValue
   ++e->depth
   NcContext *c = e->m->ctx

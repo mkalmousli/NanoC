@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_builtin_tokens(NcMachine *m, const char *name, NcValue v, int line) NcValue
   NcContext *c = m->ctx
   if v.kind != NC_STRING

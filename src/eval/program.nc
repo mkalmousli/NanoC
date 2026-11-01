@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_program(NcContext *ctx, NcTokens ts, NcEnv *env, NcPhase phase, size_t depth) char *
   NcMachine m = {.ctx = ctx, .root = env ? env : nc_env(ctx, NULL), .phase = phase, .depth = depth}
   NcFlow flow = nc_run(&m, ts, m.root, depth)

@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 const NcBuiltinSpec nc_builtin_specs[] = {
     {"emit", "emit(text|tokens)", "all", NULL}, {"str", "str(value)", "all", NULL},
     {"tokens", "tokens(text)", "all", NULL}, {"ident", "ident(text)", "all", NULL},

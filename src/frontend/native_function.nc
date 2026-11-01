@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f return_type(NcCursor *c, int line) static NcTokens
   size_t start = c->pos
   while nc_same_line(c, line) && !nc_header_at(c, "=>", line) && !nc_header_at(c, "=", line) && !nc_header_at(c, "{", line)

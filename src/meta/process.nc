@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 @f nc_meta_process(NcMachine *m, const char *name, NcValues a, int line) NcValue
   nc_effect(m, line)
   NcValue result

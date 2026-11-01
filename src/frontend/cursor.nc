@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_skip(NcCursor *c) void
   while c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE
     ++c->pos

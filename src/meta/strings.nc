@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 @f nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   nc_arity(c, a, (!strcmp(name, "replace") || !strcmp(name, "rename")) ? 3 : 2, line)

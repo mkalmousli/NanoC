@@ -1,6 +1,6 @@
 #ifndef NC_TEST_H
 #define NC_TEST_H
-#include "nanoc/cli.h"
+#include "nanoc/nanoc.h"
 #include <unistd.h>
 #include <sys/stat.h>
 typedef struct { int status; char *out, *err; } TestResult;

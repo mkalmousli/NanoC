@@ -1,5 +1,5 @@
-#include "nanoc/cli.h"
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 @f spec(FILE *out, const NcBuiltinSpec *s) static void
   fputs("{\"name\":", out)
   nc_json_string(out, s->name)

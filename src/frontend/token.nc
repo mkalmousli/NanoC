@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_is(NcToken t, const char *s) bool
   t.n == strlen(s) && !memcmp(t.s, s, t.n)
 @f nc_text(NcContext *c, NcToken t) char *

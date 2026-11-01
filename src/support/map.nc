@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f hash(const char *s) static size_t
   size_t h = 2166136261u
   for ; *s; ++s

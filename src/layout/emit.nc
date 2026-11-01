@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f lead(NcNode n, const char *s) static bool
   for size_t i = 0; i < n.head.ts.n; ++i
     if n.head.ts.v[i].kind != NC_SPACE

@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>

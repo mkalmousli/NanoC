@@ -1,4 +1,4 @@
-#include "nanoc/cli.h"
+#include "nanoc/nanoc.h"
 @f nc_json_string(FILE *out, const char *s) void
   fputc('"', out)
   for ; *s; ++s

@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 #include <sys/stat.h>
 #include <errno.h>
 @f directories(NcContext *c, const char *path, int line) static void

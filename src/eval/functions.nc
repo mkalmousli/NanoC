@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 @f nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) void
   NcContext *ctx = m->ctx
   char *name = nc_name(c)

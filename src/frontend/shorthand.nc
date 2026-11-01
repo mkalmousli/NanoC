@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) char *
   if !strcmp(name, "fn")
     return nc_function(ctx, c, depth)

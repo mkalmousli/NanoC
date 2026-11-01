@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 struct NcAllocation {
     NcAllocation *next;
     size_t used, capacity;

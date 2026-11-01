@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_logical_line(NcCursor *c) NcLayoutLine
   size_t whitespace = c->pos
   nc_skip(c)

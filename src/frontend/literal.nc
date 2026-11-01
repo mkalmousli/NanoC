@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_literal_start(const char *s, size_t i, bool cpp) size_t
   if s[i] == '"' || s[i] == '\''
     return 1

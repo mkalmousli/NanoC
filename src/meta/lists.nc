@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 @f nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "lex")

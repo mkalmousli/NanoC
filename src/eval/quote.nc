@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_quotation(NcExpr *e, NcTokens ts, bool active) NcValue
   NcContext *ctx = e->m->ctx
   NcCursor c = {ctx, ts, 0}

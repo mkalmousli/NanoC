@@ -1,5 +1,5 @@
-#include "nanoc/macro.h"
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 @f validate(NcContext *ctx, NcParam p, NcTokens ts) static void
   NcCursor c = {ctx, ts, 0}
   if !strcmp(p.kind, "ident")

@@ -1,5 +1,5 @@
-#include "nanoc/meta.h"
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 @f nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
   if !strcmp(name, "source") || !strcmp(name, "again") || !strcmp(name, "pass")

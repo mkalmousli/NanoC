@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_typed(NcContext *ctx, NcTokens input, bool initialized) char *
   NcCursor c = {ctx, input, 0}
   NcGroups names = nc_split(ctx, nc_until(&c, ":"), ",")

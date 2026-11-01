@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_native_parameters(NcContext *ctx, NcTokens ts) char *
   NcGroups groups = nc_split(ctx, ts, ",")
   if !groups.n

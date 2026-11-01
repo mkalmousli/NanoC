@@ -1,4 +1,4 @@
-#include "nanoc/macro.h"
+#include "nanoc/nanoc.h"
 @f nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index) char *
   nc_depth(ctx, depth, 1, "substitution")
   NcCursor c = {ctx, ts, 0}

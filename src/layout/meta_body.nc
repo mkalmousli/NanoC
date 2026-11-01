@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) NcTokens
   size_t next = c->pos
   while next < c->ts.n && c->ts.v[next].kind == NC_SPACE

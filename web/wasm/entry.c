@@ -1,6 +1,6 @@
 /* Browser entry: transpile one NanoC source string to C. Errors trap (no
    longjmp in the browser build); the host reads the message with nc_web_error. */
-#include "nanoc/cli.h"
+#include "nanoc/nanoc.h"
 #include <string.h>
 
 static NcContext *last;

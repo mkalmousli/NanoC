@@ -40,7 +40,7 @@ void b_compile(BOptions o, bool tests) {
         b_walk(&sources, "tests/unit", ".c");
         b_walk(&sources, "tests/integration", ".c");
         b_walk(&sources, "tests", "/main.c");
-        b_cc(o, &sources, "build/tests", "-Iinclude", true);
+        b_cc(o, &sources, "build/tests", "-Ibuild/include", true);
         b_paths_free(&sources);
         return;
     }

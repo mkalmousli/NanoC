@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f skip_conditional(NcCursor *c, size_t depth) static void
   nc_depth(c->ctx, depth, nc_line(c), "conditional")
   nc_need(c, "if")

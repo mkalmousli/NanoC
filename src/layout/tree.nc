@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth) NcNodes
   nc_depth(c, depth, lines.v[*i].line, "layout")
   NcNodes out = {0}

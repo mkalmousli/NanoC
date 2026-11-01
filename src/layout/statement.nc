@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_statement(NcContext *c, NcLayoutLine line, bool tail) char *
   NcTokens ts = line.ts, items = nc_significant(c, ts)
   if !items.n

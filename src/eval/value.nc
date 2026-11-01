@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 #include <inttypes.h>
 @f nc_integer(int64_t n) NcValue
   (NcValue){.kind = NC_INT, .n = n}

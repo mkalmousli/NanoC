@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 #include <errno.h>
 @f nc_infer(NcContext *c, NcTokens ts, int line) char *
   NcTokens items = nc_significant(c, ts)

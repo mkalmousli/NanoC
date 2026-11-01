@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f starts(NcContext *c, NcNode n, const char *word) static bool
   NcTokens ts = nc_significant(c, n.head.ts)
   ts.n && nc_is(ts.v[0], word)

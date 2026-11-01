@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_env(NcContext *c, NcEnv *parent) NcEnv *
   NcEnv *e = nc_alloc(c, sizeof *e)
   e->parent = parent

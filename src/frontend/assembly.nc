@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_assembly(NcContext *ctx, NcCursor *c) char *
   NcHeader header = nc_header(c)
   NcBuffer qualifiers = {0}, code = {0}

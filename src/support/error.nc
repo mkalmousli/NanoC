@@ -1,4 +1,4 @@
-#include "nanoc/core.h"
+#include "nanoc/nanoc.h"
 @f nc_fail(NcContext *c, int line, const char *format, ...) _Noreturn void
   va_list args
   va_start(args, format)

@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <unistd.h>

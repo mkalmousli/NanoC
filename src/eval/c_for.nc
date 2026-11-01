@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f statement(NcContext *c, NcTokens ts) static NcTokens
   nc_lex(c, nc_format(c, "%s;", nc_join(c, ts)), ts.n ? ts.v[0].line : 1)
 @f nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth) NcFlow

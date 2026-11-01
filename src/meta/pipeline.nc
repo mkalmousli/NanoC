@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 @f nc_pipeline(NcContext *ctx, const char *input) char *
   const char *current = input
   for ;;

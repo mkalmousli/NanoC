@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_control(NcContext *ctx, NcTokens ts, int line) char *
   char *source = nc_trim(ctx, nc_words(ctx, ts))
   size_t len = strlen(source)

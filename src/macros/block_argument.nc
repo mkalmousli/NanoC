@@ -1,5 +1,5 @@
-#include "nanoc/macro.h"
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 @f nc_block_argument(NcContext *ctx, NcCursor *c, NcMacro *m, NcGroups *args, int line, int indent) void
   if !m->params.n || args->n + 1 != m->params.n
     return

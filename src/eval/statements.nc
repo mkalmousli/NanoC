@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) NcFlow
   NcContext *ctx = m->ctx
   nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time")

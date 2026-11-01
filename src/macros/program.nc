@@ -1,5 +1,5 @@
-#include "nanoc/macro.h"
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 @f nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth) char *
   NcEnv *env = nc_env(ctx, NULL)
   for size_t i = 0; i < macro->params.n; ++i

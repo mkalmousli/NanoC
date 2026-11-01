@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 @f nc_precedence(NcToken t) int
   if nc_is(t, "||")
     return 1

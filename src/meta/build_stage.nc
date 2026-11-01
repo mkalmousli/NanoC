@@ -1,5 +1,5 @@
-#include "nanoc/meta.h"
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
+#include "nanoc/nanoc.h"
 typedef struct { NcTokens *v; size_t n, cap; } Programs;
 @f nc_build_stage(NcContext *ctx, const char *source) char *
   if !strstr(source, "bt")

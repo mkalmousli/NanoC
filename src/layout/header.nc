@@ -1,4 +1,4 @@
-#include "nanoc/layout.h"
+#include "nanoc/nanoc.h"
 @f nc_header(const NcCursor *c) NcHeader
   size_t i = c->pos ? c->pos - 1 : 0
   while i && !nc_is(c->ts.v[i], "@")

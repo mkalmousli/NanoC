@@ -1,4 +1,4 @@
-#include "nanoc/eval.h"
+#include "nanoc/nanoc.h"
 #include <errno.h>
 #include <inttypes.h>
 @f nc_primary(NcExpr *e, bool active) NcValue

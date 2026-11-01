@@ -1,4 +1,4 @@
-#include "nanoc/meta.h"
+#include "nanoc/nanoc.h"
 @f nc_arity(NcContext *c, NcValues args, size_t n, int line) void
   if args.n != n
     nc_fail(c, line, "wrong builtin argument count")

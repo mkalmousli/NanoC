@@ -44,11 +44,11 @@ static void readable(const char *source, const char *target) {
 }
 void b_snapshot(void) {
     BPaths sources={0},headers={0};
-    b_walk(&sources,"src",".nc"); b_walk(&headers,"include",".h");
+    b_walk(&sources,"src",".nc"); b_walk(&headers,"build/include",".h");
     b_remove("bootstrap/src"); b_remove("bootstrap/include");
     for(size_t i=0;i<sources.n;++i){char a[PATH_MAX],b[PATH_MAX];
         b_path(a,"build/stage3",sources.v[i]);strcpy(a+strlen(a)-2,"c");
         b_path(b,"bootstrap",sources.v[i]);strcpy(b+strlen(b)-2,"c");readable(a,b);}
-    for(size_t i=0;i<headers.n;++i){char b[PATH_MAX];b_path(b,"bootstrap",headers.v[i]);b_copy(headers.v[i],b);}
+    for(size_t i=0;i<headers.n;++i){char b[PATH_MAX];b_path(b,"bootstrap",headers.v[i]+6);b_copy(headers.v[i],b);}
     b_paths_free(&sources);b_paths_free(&headers);puts("Refreshed readable C bootstrap");
 }

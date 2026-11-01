@@ -1,0 +1,21 @@
+typedef struct { char *name, *params, *returns, *intent; int line; } NcSymbol;
+typedef struct { NcSymbol *v; size_t n, cap; } NcSymbols;
+struct NcContext {
+    const char *file;
+    bool cpp;
+    size_t max_depth, max_steps, max_output, steps, serial, allocated;
+    size_t max_passes, pass;
+    bool effects, again, lines;
+    const char *source, *next_source;
+    NcMap state;
+    NcStrings logs;
+    NcAllocation *allocations;
+    NcMap names, macros;
+    NcSymbols symbols;
+    jmp_buf trap;
+    char error[16384], detail[2048];
+    const char *code;
+    int error_line;
+    char *frames[256];
+    size_t frame_count;
+};

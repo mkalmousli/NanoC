@@ -45,19 +45,27 @@ void b_fixed_point(const char *a, const char *b) {
     printf("Verified %zu modules: %s == %s\n", sources.n, a, b);
     b_paths_free(&sources);
 }
+/* Generate include/nanoc/*.h with the given compiler. */
+static void b_headers(const char *compiler, const char *out) {
+    if (setenv("NC_BIN", compiler, 1) || setenv("NC_OUT", out, 1)) b_die("cannot set header environment");
+    char *args[] = {(char *)compiler, "tools/headers.nc", "-o", "build/headers.c", NULL};
+    if (b_run(args)) b_die("header generation failed");
+}
 void b_selfhost(BOptions o) {
     BPaths sources = {0};
     b_walk(&sources, "bootstrap/src", ".c");
     b_cc(o, &sources, "build/stage0", "-Ibootstrap/include", false);
     b_paths_free(&sources);
+    b_remove("build/include");
+    b_headers("build/stage0", "build/include");
     b_generate("build/stage0", "build/stage1");
     b_walk(&sources, "build/stage1/src", ".c");
-    b_cc(o, &sources, "build/stage1-nanoc", "-Iinclude", false);
+    b_cc(o, &sources, "build/stage1-nanoc", "-Ibuild/include", false);
     b_paths_free(&sources);
     b_generate("build/stage1-nanoc", "build/stage2");
     b_fixed_point("build/stage1", "build/stage2");
     b_walk(&sources, "build/stage2/src", ".c");
-    b_cc(o, &sources, "build/nanoc", "-Iinclude", false);
+    b_cc(o, &sources, "build/nanoc", "-Ibuild/include", false);
     b_paths_free(&sources);
     b_generate("build/nanoc", "build/stage3");
     b_fixed_point("build/stage2", "build/stage3");
