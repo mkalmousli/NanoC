@@ -13,32 +13,25 @@
     if min_literal
       (void)nc_take(&e->c)
       a = nc_integer(INT64_MIN)
-    else
-      a = nc_expression(e, 7, active)
+    else a = nc_expression(e, 7, active)
     if active
-      if nc_is(op, "!")
-        out = nc_boolean(!nc_truth(a))
+      if nc_is(op, "!") then out = nc_boolean(!nc_truth(a))
       else
         int64_t n = nc_numeric(c, a, nc_line(&e->c))
-        if nc_is(op, "-") && !min_literal
-          n = nc_arithmetic(c, "-", 0, n, op.line)
+        if nc_is(op, "-") && !min_literal then n = nc_arithmetic(c, "-", 0, n, op.line)
         out = nc_integer(n)
-  else
-    out = nc_primary(e, active)
+  else out = nc_primary(e, active)
   while !nc_end(&e->c)
     NcToken op = e->c.ts.v[e->c.pos]
     int precedence = nc_precedence(op)
-    if precedence < minimum
-      break
+    if precedence < minimum then break
     (void)nc_take(&e->c)
     bool execute = (active
       && !((nc_is(op, "&&") && !nc_truth(out)) || (nc_is(op, "||") && nc_truth(out))))
     NcValue rhs = nc_expression(e, precedence + 1, execute)
-    if active
-      out = execute ? nc_binary(c, op, out, rhs, op.line) : nc_boolean(nc_is(op, "||"))
+    if active then out = execute ? nc_binary(c, op, out, rhs, op.line) : nc_boolean(nc_is(op, "||"))
   if active and out.kind == NC_LIST
-    if out.height > c->max_depth
-      nc_fail(c, nc_line(&e->c), "value depth limit exceeded")
+    if out.height > c->max_depth then nc_fail(c, nc_line(&e->c), "value depth limit exceeded")
     nc_check(c, out.count * 8, nc_line(&e->c))
   --e->depth
   out
@@ -47,6 +40,5 @@
   nc_depth(m->ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time")
   NcExpr e = {{m->ctx, ts, 0}, m, env, depth}
   NcValue out = nc_expression(&e, 0, active)
-  if !nc_end(&e.c)
-    nc_fail(m->ctx, nc_line(&e.c), "unexpected expression token")
+  if !nc_end(&e.c) then nc_fail(m->ctx, nc_line(&e.c), "unexpected expression token")
   out

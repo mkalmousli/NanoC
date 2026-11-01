@@ -9,10 +9,8 @@
     NcValue value
     if p.variadic
       NcValues items = {0}
-      for j:usize in 0..values->n
-        NC_PUSH(ctx, items, nc_value_text(NC_CODE, nc_join(ctx, values->v[j])))
+      for j:usize in 0..values->n then NC_PUSH(ctx, items, nc_value_text(NC_CODE, nc_join(ctx, values->v[j])))
       value = nc_list(items)
-    else
-      value = nc_value_text(NC_CODE, nc_join(ctx, values->v[0]))
+    else value = nc_value_text(NC_CODE, nc_join(ctx, values->v[0]))
     nc_bind(ctx, env, p.name, value)
   nc_program(ctx, macro->body, env, NC_MACRO, depth)

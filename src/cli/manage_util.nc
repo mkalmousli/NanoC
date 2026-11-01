@@ -7,15 +7,13 @@
 // Finds a command on PATH.
 @f nc_search(cstr name, char *out) static bool
   const char *path = getenv("PATH")
-  if not path
-    return false
+  if not path then return false
   cstr p = path
   while *p
     const char *end = strchr(p, ':')
     usize n = end ? (usize)(end - p) : strlen(p)
     snprintf(out, PATH_MAX, "%.*s/%s", (int)n, n ? p : ".", name)
-    if access(out, X_OK) == 0
-      return true
+    if access(out, X_OK) == 0 then return true
     p = end ? end + 1 : p + n
   false
 // Tells if a command is on PATH.
@@ -26,17 +24,13 @@
 @f nc_prefix(cstr argv0, char *out) bool
   char exe[PATH_MAX]
   if strchr(argv0, '/')
-    if !realpath(argv0, exe)
-      return false
-  elif !nc_search(argv0, exe)
-    return false
+    if !realpath(argv0, exe) then return false
+  elif !nc_search(argv0, exe) then return false
   char *slash = strrchr(exe, '/')
-  if not slash
-    return false
+  if not slash then return false
   *slash = 0
   slash = strrchr(exe, '/')
-  if not slash
-    return false
+  if not slash then return false
   *slash = 0
   snprintf(out, PATH_MAX, "%s", exe)
   true
@@ -47,17 +41,14 @@
   for char *p = copy + 1; *p; ++p
     if *p == '/'
       *p = 0
-      if mkdir(copy, 0755) and errno != EEXIST
-        return false
+      if mkdir(copy, 0755) and errno != EEXIST then return false
       *p = '/'
-  if mkdir(copy, 0755) and errno != EEXIST
-    return false
+  if mkdir(copy, 0755) and errno != EEXIST then return false
   true
 // Copies one file.
 @f nc_copy_file(cstr from, cstr to) bool
   FILE *in = fopen(from, "rb")
-  if not in
-    return false
+  if not in then return false
   char dir[PATH_MAX]
   snprintf(dir, sizeof dir, "%s", to)
   char *slash = strrchr(dir, '/')
@@ -74,8 +65,7 @@
   bool ok = true
   size_t n = fread(buf, 1, sizeof buf, in)
   while n
-    if fwrite(buf, 1, n, out) != n
-      ok = false
+    if fwrite(buf, 1, n, out) != n then ok = false
     n = fread(buf, 1, sizeof buf, in)
   fclose(in)
   return fclose(out) == 0 and ok
@@ -84,6 +74,5 @@
   printf("%s [y/N] ", question)
   fflush(stdout)
   char line[16]
-  if !fgets(line, sizeof line, stdin)
-    return false
+  if !fgets(line, sizeof line, stdin) then return false
   line[0] == 'y' || line[0] == 'Y'

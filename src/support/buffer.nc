@@ -2,13 +2,10 @@
 @use "nanoc/nanoc"
 // Appends n bytes.
 @f nc_addn(NcContext *c, NcBuffer *b, cstr s, usize n) void
-  if n > SIZE_MAX - b->n - 1
-    nc_fail(c, 0, "output limit exceeded")
+  if n > SIZE_MAX - b->n - 1 then nc_fail(c, 0, "output limit exceeded")
   usize need = b->n + n + 1
-  while b->cap < need
-    b->v = nc_grow(c, b->v, b->n, &b->cap, 1)
-  if n
-    memcpy(b->v + b->n, s, n)
+  while b->cap < need then b->v = nc_grow(c, b->v, b->n, &b->cap, 1)
+  if n then memcpy(b->v + b->n, s, n)
   b->n += n
   b->v[b->n] = 0
 // Appends a string.
@@ -21,8 +18,7 @@
   va_copy(copy, a)
   int size = vsnprintf(nil, 0, format, copy)
   va_end(copy)
-  if size < 0
-    nc_fail(c, 0, "formatting failed")
+  if size < 0 then nc_fail(c, 0, "formatting failed")
   char *s = nc_alloc(c, (usize)size + 1)
   vsnprintf(s, (usize)size + 1, format, a)
   va_end(a)
@@ -30,8 +26,7 @@
 // Finishes a buffer as a string.
 @f nc_string(NcContext *c, cstr s, usize n) char *
   char *p = nc_alloc(c, n + 1)
-  if n
-    memcpy(p, s, n)
+  if n then memcpy(p, s, n)
   p
 // Formats text into a new string.
 @f nc_format(NcContext *c, cstr format, ...) char *
@@ -40,8 +35,7 @@
   va_copy(copy, a)
   int size = vsnprintf(nil, 0, format, copy)
   va_end(copy)
-  if size < 0
-    nc_fail(c, 0, "formatting failed")
+  if size < 0 then nc_fail(c, 0, "formatting failed")
   char *s = nc_alloc(c, (usize)size + 1)
   vsnprintf(s, (usize)size + 1, format, a)
   va_end(a)

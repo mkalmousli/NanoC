@@ -241,6 +241,29 @@ int main(void) {
 }
 ```
 
+## One-line blocks
+
+`if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too. The output is still ordinary braced C.
+
+```nanoc
+@f sign(int x) int
+  if x < 0 then ret -1
+  elif x > 0 then ret 1
+  else ret 0
+```
+
+```c
+int sign(int x) {
+    if (x < 0) {
+        return -1;
+    } else if (x > 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+```
+
 ## Switch without the noise
 
 `match x` takes arms of comma-separated values with an indented body, and `else` for the default. No `break`, no fallthrough. It becomes a plain C `switch`.

@@ -3,8 +3,7 @@
 // Tokens of a header line without its closing colon.
 @f bare(NcContext *c, NcLayoutLine line) static NcTokens
   NcTokens ts = nc_significant(c, line.ts)
-  if ts.n && nc_is(ts.v[ts.n - 1], ":")
-    --ts.n
+  if ts.n && nc_is(ts.v[ts.n - 1], ":") then --ts.n
   ts
 // Emits "match x" with arms "a, b" (indented bodies) and an optional "else" arm.
 @f nc_match(NcContext *c, NcNode node, usize depth) char *
@@ -15,12 +14,10 @@
   for i:usize in 0..node.children.n
     NcNode arm = node.children.v[i]
     NcTokens labels = bare(c, arm.head)
-    if labels.n == 1 && nc_is(labels.v[0], "else")
-      nc_add(c, &out, "default:")
+    if labels.n == 1 && nc_is(labels.v[0], "else") then nc_add(c, &out, "default:")
     else
       NcGroups items = nc_split(c, labels, ",")
-      for k:usize in 0..items.n
-        nc_printf(c, &out, "case %s:", nc_trim(c, nc_join(c, items.v[k])))
+      for k:usize in 0..items.n then nc_printf(c, &out, "case %s:", nc_trim(c, nc_join(c, items.v[k])))
     nc_printf(c, &out, " {%s} break;\n", nc_emit_block(c, arm.children, false, depth + 1))
   nc_add(c, &out, "}\n")
   out.v

@@ -3,8 +3,7 @@
 // Finds the user home directory.
 @f mg_home(char *out) bool
   const char *home = getenv("HOME")
-  if !home or !*home
-    return false
+  if !home or !*home then return false
   snprintf(out, PATH_MAX, "%s", home)
   true
 // Finds the user config directory.
@@ -14,21 +13,18 @@
     snprintf(out, PATH_MAX, "%s", xdg)
     return true
   char home[PATH_MAX]
-  if !mg_home(home)
-    return false
+  if !mg_home(home) then return false
   snprintf(out, PATH_MAX, "%s/.config", home)
   true
 // Finds the Sublime packages dir.
 @f mg_sublime_dir(char *out) bool
   char home[PATH_MAX]
-  if !mg_home(home)
-    return false
+  if !mg_home(home) then return false
   struct utsname u
   uname(&u)
   if !strcmp(u.sysname, "Darwin")
     snprintf(out, PATH_MAX, "%s/Library/Application Support/Sublime Text/Packages/User", home)
-  else
-    snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home)
+  else snprintf(out, PATH_MAX, "%s/.config/sublime-text/Packages/User", home)
   true
 // Adds a file to the targets.
 @f mg_add(NcTarget *t, int *n, cstr src, cstr dir, cstr rel) void

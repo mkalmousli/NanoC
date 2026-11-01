@@ -2,30 +2,24 @@
 @use "nanoc/nanoc"
 // Tells if the statement starts with the ret keyword.
 @f nc_is_ret(NcContext *c, NcTokens items) bool
-  if !nc_is(items.v[0], "ret")
-    return false
-  if items.n == 1
-    return true
+  if !nc_is(items.v[0], "ret") then return false
+  if items.n == 1 then return true
   char *next = nc_text(c, items.v[1])
   usize n = strlen(next)
-  if next[0] == '=' || next[n - 1] == '='
-    return false
+  if next[0] == '=' || next[n - 1] == '=' then return false
   strcmp(next, ".") && strcmp(next, "->") && strcmp(next, "[") && strcmp(next, "++") && strcmp(next,
     "--")
 // Converts one statement to C.
 @f nc_statement(NcContext *c, NcLayoutLine line, bool tail) char *
   NcTokens ts = line.ts
   NcTokens items = nc_significant(c, ts)
-  if not items.n
-    return ""
+  if not items.n then return ""
   if nc_is(items.v[items.n - 1], ";")
     usize last = ts.n
-    while last and ts.v[last - 1].kind == NC_SPACE
-      --last
+    while last and ts.v[last - 1].kind == NC_SPACE then --last
     ts.n = last - 1
     items = nc_significant(c, ts)
-  if not items.n
-    return ";"
+  if not items.n then return ";"
   char *first = nc_text(c, items.v[0])
   if !strcmp(first, "intent")
     if items.n != 2 || items.v[1].kind != NC_LITERAL || items.v[1].s[0] != '"'
@@ -46,13 +40,11 @@
         && (i + 1 == items.n || !nc_is(items.v[i + 1], ":")))
         declaration = true
   if declaration
-    if tail
-      nc_fail(c, line.line, "value function needs a final expression")
+    if tail then nc_fail(c, line.line, "value function needs a final expression")
     return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, true), line.line)))
   for i:usize in 0..ts.n
     if ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")
-      if tail
-        nc_fail(c, line.line, "value function needs a final expression")
+      if tail then nc_fail(c, line.line, "value function needs a final expression")
       NcTokens normalized = {0}
       for j:usize in 0..ts.n
         NC_PUSH(c, normalized,
@@ -60,22 +52,18 @@
       char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), true)
       return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)))
   char *code = nc_trim(c, nc_words(c, ts))
-  if !strcmp(first, "say") && items.n > 1
-    return nc_say(c, nc_trim(c, code + 3), line.line)
+  if !strcmp(first, "say") && items.n > 1 then return nc_say(c, nc_trim(c, code + 3), line.line)
   if nc_is_ret(c, items)
     code = nc_trim(c, nc_format(c, "return %s", code + 3))
     first = "return"
-  if !strcmp(first, "=>")
-    return nc_format(c, "return %s;", nc_trim(c, code + 2))
+  if !strcmp(first, "=>") then return nc_format(c, "return %s;", nc_trim(c, code + 2))
   if (!strcmp(first, "return") || !strcmp(first, "break") || !strcmp(first, "continue")
     || !strcmp(first, "goto") || !strcmp(first, "throw"))
     return nc_format(c, "%s;", code)
-  if items.v[0].kind == NC_DIRECTIVE
-    return nc_join(c, ts)
+  if items.v[0].kind == NC_DIRECTIVE then return nc_join(c, ts)
   if tail
     const char *decls[] = {"int", "char", "void", "float", "double", "struct", "typedef", "static"}
     for i:usize in 0..8
-      if !strcmp(first, decls[i])
-        nc_fail(c, line.line, "value function needs a final expression")
+      if !strcmp(first, decls[i]) then nc_fail(c, line.line, "value function needs a final expression")
     return nc_format(c, "return %s;", code)
   nc_format(c, "%s;", code)

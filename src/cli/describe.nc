@@ -35,8 +35,7 @@
   if !strcmp(topic, "builtins")
     jw_key(&w, "builtins")
     jw_open(&w, '[')
-    for i:usize in 0..nc_spec_count
-      spec(&w, &nc_specs[i])
+    for i:usize in 0..nc_spec_count then spec(&w, &nc_specs[i])
     jw_close(&w, ']')
   else
     if !*topic

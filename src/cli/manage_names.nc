@@ -7,33 +7,26 @@
 // Tells if an editor name exists.
 @f nc_known_editor(cstr name) bool
   for usize i = 0; nc_editor_name(i); ++i
-    if !strcmp(name, nc_editor_name(i))
-      return true
+    if !strcmp(name, nc_editor_name(i)) then return true
   false
 // Lists install targets of an editor.
 @f nc_targets(cstr editor, NcTarget *t) int
   char home[PATH_MAX]
   char cfg[PATH_MAX]
   char dir[PATH_MAX]
-  if !nc_known_editor(editor) or !mg_home(home) or !mg_config(cfg)
-    return -1
+  if !nc_known_editor(editor) or !mg_home(home) or !mg_config(cfg) then return -1
   int n = 0
-  if !strcmp(editor, "vscode")
-    mg_vscode(t, &n, home)
+  if !strcmp(editor, "vscode") then mg_vscode(t, &n, home)
   if !strcmp(editor, "vim") || !strcmp(editor, "neovim")
-    if !strcmp(editor, "vim")
-      snprintf(dir, sizeof dir, "%s/.vim", home)
-    else
-      snprintf(dir, sizeof dir, "%s/nvim", cfg)
+    if !strcmp(editor, "vim") then snprintf(dir, sizeof dir, "%s/.vim", home)
+    else snprintf(dir, sizeof dir, "%s/nvim", cfg)
     mg_add(t, &n, "editors/vim/nanoc.vim", dir, "syntax/nanoc.vim")
     mg_add(t, &n, "editors/vim/ftdetect/nanoc.vim", dir, "ftdetect/nanoc.vim")
   if !strcmp(editor, "emacs")
     char emacs[PATH_MAX]
     snprintf(emacs, sizeof emacs, "%s/.emacs.d", home)
-    if nc_exists(emacs)
-      snprintf(dir, sizeof dir, "%s/lisp", emacs)
-    else
-      snprintf(dir, sizeof dir, "%s/emacs/lisp", cfg)
+    if nc_exists(emacs) then snprintf(dir, sizeof dir, "%s/lisp", emacs)
+    else snprintf(dir, sizeof dir, "%s/emacs/lisp", cfg)
     mg_add(t, &n, "editors/emacs/nanoc-mode.el", dir, "nanoc-mode.el")
   if !strcmp(editor, "micro")
     snprintf(dir, sizeof dir, "%s/micro/syntax", cfg)

@@ -9,14 +9,11 @@
     NcToken t = ts.v[c.pos++]
     nc_step(ctx, t.line)
     if t.kind == NC_PUNCT && nc_is(t, "$")
-      if nc_eat(&c, "$")
-        nc_add(ctx, &out, "$")
+      if nc_eat(&c, "$") then nc_add(ctx, &out, "$")
       else
         char *name = nc_name(&c)
-        if active
-          nc_add(ctx, &out, nc_value_code(ctx, nc_lookup(ctx, e->env, name, t.line), t.line))
-    else
-      nc_addn(ctx, &out, t.s, t.n)
+        if active then nc_add(ctx, &out, nc_value_code(ctx, nc_lookup(ctx, e->env, name, t.line), t.line))
+    else nc_addn(ctx, &out, t.s, t.n)
     nc_check(ctx, out.n, t.line)
   nc_add(ctx, &out, "")
   nc_value_text(NC_CODE, out.v)

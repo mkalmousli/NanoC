@@ -11,11 +11,9 @@
     usize i = 0
     while i < 3 and strcmp(name, names[i])
       ++i
-    if i == 3 or seen[i]
-      nc_fail(ctx, header.line, "invalid or repeated assembly qualifier: %s", name)
+    if i == 3 or seen[i] then nc_fail(ctx, header.line, "invalid or repeated assembly qualifier: %s", name)
     seen[i] = true
-    if i == 2
-      jump = true
+    if i == 2 then jump = true
     nc_printf(ctx, &qualifiers, " %s", i == 2 ? "goto" : i == 0 ? "__volatile__" : "__inline__")
   NcLines lines = nc_body_lines(c, header.line, header.indent)
   char *sections[4] = {"", "", "", ""}
@@ -25,8 +23,7 @@
   for i:usize in 0..lines.n
     NcLayoutLine line = lines.v[i]
     nc_step(ctx, line.line)
-    if line.indent != lines.v[0].indent
-      nc_fail(ctx, line.line, "inconsistent assembly indentation")
+    if line.indent != lines.v[0].indent then nc_fail(ctx, line.line, "inconsistent assembly indentation")
     NcCursor row = {ctx, line.ts, 0}
     NcToken first = nc_take(&row)
     int section = 0
@@ -36,28 +33,20 @@
       if section <= last
         nc_fail(ctx, line.line, "assembly sections must be out, in, clobber, labels, once each")
       sections[section] = nc_trim(ctx, nc_join(ctx, nc_slice(row.ts, row.pos, row.ts.n)))
-      if !*sections[section]
-        nc_fail(ctx, line.line, "empty assembly section")
+      if !*sections[section] then nc_fail(ctx, line.line, "empty assembly section")
       last = section
     else
-      if last >= 0
-        nc_fail(ctx, line.line, "assembly instructions must precede operand sections")
+      if last >= 0 then nc_fail(ctx, line.line, "assembly instructions must precede operand sections")
       char *text = nc_trim(ctx, nc_join(ctx, line.ts))
-      if first.kind == NC_LITERAL && first.s[0] == '"'
-        nc_printf(ctx, &code, "%s ", text)
-      else
-        nc_printf(ctx, &code, "%s ", nc_quote(ctx, nc_format(ctx, "%s\n", text)))
+      if first.kind == NC_LITERAL && first.s[0] == '"' then nc_printf(ctx, &code, "%s ", text)
+      else nc_printf(ctx, &code, "%s ", nc_quote(ctx, nc_format(ctx, "%s\n", text)))
       instructions = true
     nc_check(ctx, code.n, line.line)
-  if not instructions
-    nc_fail(ctx, header.line, "assembly needs instructions or a quoted template")
-  if jump and !*sections[3]
-    nc_fail(ctx, header.line, "assembly goto needs labels")
-  if !jump and *sections[3]
-    nc_fail(ctx, header.line, "assembly labels require goto")
+  if not instructions then nc_fail(ctx, header.line, "assembly needs instructions or a quoted template")
+  if jump and !*sections[3] then nc_fail(ctx, header.line, "assembly goto needs labels")
+  if !jump and *sections[3] then nc_fail(ctx, header.line, "assembly labels require goto")
   NcBuffer out = {0}
   nc_printf(ctx, &out, "__asm__%s (%s", qualifiers.v ? qualifiers.v : "", code.v)
-  for int i = 0; i <= last; ++i
-    nc_printf(ctx, &out, " : %s", sections[i])
+  for int i = 0; i <= last; ++i then nc_printf(ctx, &out, " : %s", sections[i])
   nc_add(ctx, &out, ");\n")
   out.v

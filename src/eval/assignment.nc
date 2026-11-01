@@ -2,8 +2,7 @@
 @use "nanoc/nanoc"
 // Runs name = expr when present.
 @f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, NcToken name) bool
-  if name.kind != NC_WORD
-    return false
+  if name.kind != NC_WORD then return false
   usize saved = c->pos
   if nc_end(c)
     c->pos = saved
@@ -23,9 +22,7 @@
     NcToken binary = nc_token(nc_string(ctx, op.s, 1), op.line, NC_PUNCT)
     value = nc_binary(ctx, binary, nc_lookup(ctx, env, id, name.line), value, name.line)
   if bind
-    if nc_get(&env->values, id)
-      nc_fail(ctx, name.line, "duplicate compile-time variable: %s", id)
+    if nc_get(&env->values, id) then nc_fail(ctx, name.line, "duplicate compile-time variable: %s", id)
     nc_bind(ctx, env, id, value)
-  else
-    nc_assign(ctx, env, id, value, name.line)
+  else nc_assign(ctx, env, id, value, name.line)
   true

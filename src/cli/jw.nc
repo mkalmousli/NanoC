@@ -7,8 +7,7 @@
   w->more[0] = false
 // Writes the comma owed before the next value, if any.
 @f jw_sep(NcJson *w) static void
-  if w->more[w->depth]
-    fputc(',', w->out)
+  if w->more[w->depth] then fputc(',', w->out)
   w->more[w->depth] = true
 // Writes a JSON string literal.
 @f jw_text(NcJson *w, cstr s) void
@@ -18,10 +17,8 @@
     if ch == '"' || ch == '\\'
       fputc('\\', w->out)
       fputc(ch, w->out)
-    elif ch < 32
-      fprintf(w->out, "\\u%04x", ch)
-    else
-      fputc(ch, w->out)
+    elif ch < 32 then fprintf(w->out, "\\u%04x", ch)
+    else fputc(ch, w->out)
   fputc('"', w->out)
 // Opens an object or array (open is '{' or '[').
 @f jw_open(NcJson *w, char open) void

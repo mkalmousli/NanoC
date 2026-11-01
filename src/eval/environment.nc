@@ -14,8 +14,7 @@
 @f nc_lookup(NcContext *c, NcEnv *e, cstr name, int line) NcValue
   for ; e; e = e->parent
     NcValue *p = nc_get(&e->values, name)
-    if p
-      return *p
+    if p then return *p
   nc_fail(c, line, "unknown compile-time variable: %s", name)
   (NcValue){0}
 // Updates an existing variable.

@@ -8,28 +8,23 @@
   snprintf(stop, sizeof stop, "%s/share/nanoc", prefix)
   while strlen(dir) > strlen(stop)
     char *slash = strrchr(dir, '/')
-    if not slash
-      return
+    if not slash then return
     *slash = 0
-    if rmdir(dir)
-      return
+    if rmdir(dir) then return
 // Deletes recorded files.
 @f mg_remove_recorded(cstr prefix) static int
   int count = 0
   char list[PATH_MAX]
   snprintf(list, sizeof list, "%s/share/nanoc/install.manifest", prefix)
   FILE *f = fopen(list, "r")
-  if not f
-    return 0
+  if not f then return 0
   char line[PATH_MAX]
   while fgets(line, sizeof line, f)
     line[strcspn(line, "\n")] = 0
-    if !*line || !strcmp(line, "share/nanoc/install.manifest")
-      continue
+    if !*line || !strcmp(line, "share/nanoc/install.manifest") then continue
     char path[PATH_MAX]
     snprintf(path, sizeof path, "%s/%s", prefix, line)
-    if !remove(path)
-      count += 1
+    if !remove(path) then count += 1
     mg_prune(prefix, path)
   fclose(f)
   remove(list)

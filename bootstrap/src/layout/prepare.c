@@ -41,6 +41,7 @@ bool nc_meta_line(NcLayoutLine line) {
 // Marks lines before tree building.
 
 NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program) {
+    input = nc_split_inline(ctx, input);
     NcLines out = {0};
     int match_at = -1, arm_at = -1;
     {

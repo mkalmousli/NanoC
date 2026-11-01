@@ -4,8 +4,7 @@
 @f logs(NcJson *w, NcContext *c) static void
   jw_key(w, "logs")
   jw_open(w, '[')
-  for i:usize in 0..c->logs.n
-    jw_str(w, c->logs.v[i])
+  for i:usize in 0..c->logs.n then jw_str(w, c->logs.v[i])
   jw_close(w, ']')
 // Prints a diagnostic report.
 @f nc_report(FILE *out, NcContext *c, usize bytes) void
@@ -52,8 +51,7 @@
   jw_ks(&w, "message", c->detail)
   jw_key(&w, "trace")
   jw_open(&w, '[')
-  for usize i = c->frame_count; i; --i
-    jw_str(&w, c->frames[i - 1])
+  for usize i = c->frame_count; i; --i then jw_str(&w, c->frames[i - 1])
   jw_close(&w, ']')
   jw_close(&w, '}')
   jw_close(&w, ']')

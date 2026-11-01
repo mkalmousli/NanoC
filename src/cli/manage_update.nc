@@ -27,6 +27,5 @@
       prefix)
     rc = nc_update_cmd(cmd, "Building and installing")
   snprintf(cmd, sizeof cmd, "rm -rf '%s'", dir)
-  if system(cmd)
-    fputs("nanoc: could not remove the temporary clone\n", stderr)
+  if system(cmd) then fputs("nanoc: could not remove the temporary clone\n", stderr)
   rc

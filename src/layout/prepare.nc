@@ -5,8 +5,7 @@
   usize i = 0
   while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
-  if i == line.ts.n || !nc_is(line.ts.v[i++], "@")
-    return false
+  if i == line.ts.n || !nc_is(line.ts.v[i++], "@") then return false
   while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
   i < line.ts.n and line.ts.v[i].kind == NC_WORD
@@ -15,22 +14,20 @@
   usize i = 0
   while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
-  if i == line.ts.n || !nc_is(line.ts.v[i++], "@")
-    return false
+  if i == line.ts.n || !nc_is(line.ts.v[i++], "@") then return false
   while i < line.ts.n and line.ts.v[i].kind == NC_SPACE
     ++i
-  if i == line.ts.n
-    return false
+  if i == line.ts.n then return false
   NcToken t = line.ts.v[i]
   nc_is(t, "ct") || nc_is(t, "bt") || nc_is(t, "m") || nc_is(t, "macro")
 // Marks lines before tree building.
 @f nc_prepare_lines(NcContext *ctx, NcLines input, bool program) NcLines
+  input = nc_split_inline(ctx, input)
   NcLines out = {0}
   int match_at = -1, arm_at = -1
   for i:usize in 0..input.n
     NcLayoutLine line = input.v[i]
-    if line.indent <= match_at
-      match_at = arm_at = -1
+    if line.indent <= match_at then match_at = arm_at = -1
     bool block = i + 1 < input.n and input.v[i + 1].indent > line.indent
     bool ext = block and nc_extension_line(line)
     bool meta = nc_meta_line(line) or ext
@@ -45,8 +42,7 @@
       NC_PUSH(ctx, out, line)
       continue
     NcTokens ts = nc_significant(ctx, line.ts)
-    if not ts.n
-      continue
+    if not ts.n then continue
     NcToken first = ts.v[0], last = ts.v[ts.n - 1]
     bool control = (nc_is(first, "if") || nc_is(first, "elif") || nc_is(first, "else")
       || nc_is(first, "while") || nc_is(first, "for") || (nc_is(first, "loop") && ts.n == 1)
@@ -56,20 +52,17 @@
       match_at = line.indent
       arm_at = input.v[i + 1].indent
       control = true
-    if arm
-      control = true
+    if arm then control = true
     bool function = (program && (nc_is(first, "f") || nc_is(first, "fn")) && ts.n >= 2
       and ts.v[1].kind == NC_WORD)
     bool expression = false
     if function
       for j:usize in 0..ts.n
-        if nc_is(ts.v[j], "=") || nc_is(ts.v[j], "=>")
-          expression = true
+        if nc_is(ts.v[j], "=") || nc_is(ts.v[j], "=>") then expression = true
     if ((control || (function && !expression)) && !nc_is(last, ":")
       && (block || (!nc_is(last, "}") && !nc_is(last, ";"))))
       NcTokens copy = {0}
-      for j:usize in 0..line.ts.n
-        NC_PUSH(ctx, copy, line.ts.v[j])
+      for j:usize in 0..line.ts.n then NC_PUSH(ctx, copy, line.ts.v[j])
       NC_PUSH(ctx, copy, nc_token(":", line.line, NC_PUNCT))
       line.ts = copy
     NC_PUSH(ctx, out, line)

@@ -5,6 +5,5 @@
   NcHeader h = nc_header(c)
   NcLines lines = nc_body_lines(c, h.line, h.indent)
   NcBuffer out = {0}
-  for i:usize in 0..lines.n
-    nc_printf(ctx, &out, "%s\n", nc_join(ctx, lines.v[i].ts))
+  for i:usize in 0..lines.n then nc_printf(ctx, &out, "%s\n", nc_join(ctx, lines.v[i].ts))
   out.v

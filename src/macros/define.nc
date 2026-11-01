@@ -7,12 +7,10 @@
   if (!strcmp(name, "fn") || !strcmp(name, "let") || !strcmp(name, "for") || !strcmp(name, "macro")
     || !strcmp(name, "ct") || !strcmp(name, "m") || !strcmp(name, "f") || !strcmp(name, "bt"))
     nc_fail(ctx, nc_line(c), "reserved extension name")
-  if nc_get(&ctx->macros, name)
-    nc_fail(ctx, nc_line(c), "duplicate macro: %s", name)
+  if nc_get(&ctx->macros, name) then nc_fail(ctx, nc_line(c), "duplicate macro: %s", name)
   NcMacro *m = nc_alloc(ctx, sizeof *m)
   NcGroups args = {0}
-  if nc_header_at(c, "(", header.line)
-    args = nc_split(ctx, nc_group(c, "(", ")"), ",")
+  if nc_header_at(c, "(", header.line) then args = nc_split(ctx, nc_group(c, "(", ")"), ",")
   NcMap names = {0}
   for i:usize in 0..args.n
     NcCursor a = {ctx, args.v[i], 0}

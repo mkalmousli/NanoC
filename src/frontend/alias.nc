@@ -7,8 +7,7 @@ int nc_std;
     {"i64", "long long"}, {"u8", "unsigned char"}, {"u16", "unsigned short"}, {"u32", "unsigned"},
     {"u64", "unsigned long long"}, {"f32", "float"}, {"f64", "double"}, {"usize", "size_t"},
     {"isize", "ptrdiff_t"}, {"byte", "unsigned char"}, {"cstr", "const char *"}}
-  if t->kind != NC_WORD or t->n < 2 or t->n > 5
-    return
+  if t->kind != NC_WORD or t->n < 2 or t->n > 5 then return
   for k:usize 0..sizeof map / sizeof *map
     if strlen(map[k][0]) == t->n and !strncmp(t->s, map[k][0], t->n)
       if nc_std == 89 && strstr(map[k][1], "long long")

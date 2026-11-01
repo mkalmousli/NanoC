@@ -3,18 +3,14 @@
 // Runs token-list builtins.
 @f nc_builtin_tokens(NcMachine *m, cstr name, NcValue v, int line) NcValue
   NcContext *c = m->ctx
-  if v.kind != NC_STRING
-    nc_fail(c, line, "%s requires a string", name)
-  if strcmp(name, "tokens") && !nc_identifier(v.text)
-    nc_fail(c, line, "invalid identifier: %s", v.text)
-  if !strcmp(name, "tokens")
-    (void)nc_lex(c, v.text, line)
+  if v.kind != NC_STRING then nc_fail(c, line, "%s requires a string", name)
+  if strcmp(name, "tokens") && !nc_identifier(v.text) then nc_fail(c, line, "invalid identifier: %s", v.text)
+  if !strcmp(name, "tokens") then (void)nc_lex(c, v.text, line)
   nc_value_text(NC_CODE, !strcmp(name, "fresh") ? nc_fresh(c, v.text) : v.text)
 // Runs the range builtin.
 @f nc_builtin_range(NcMachine *m, NcValues args, int line) NcValue
   NcContext *c = m->ctx
-  if args.n != 1 and args.n != 2
-    nc_fail(c, line, "range expects one or two integers")
+  if args.n != 1 and args.n != 2 then nc_fail(c, line, "range expects one or two integers")
   int64_t start = args.n == 2 ? nc_numeric(c, args.v[0], line) : 0
   int64_t end = nc_numeric(c, args.v[args.n - 1], line)
   NcValues list = {0}

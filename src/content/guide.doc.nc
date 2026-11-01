@@ -73,6 +73,13 @@ lesson defer DEFER | Cleanup that cannot be forgotten | Defer
         ret 7
       3
     @f main int = work(1)!=7
+lesson inline INLINE | One-line blocks | Inline
+  p `if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too. The output is still ordinary braced C.
+  code nanoc c
+    @f sign(int x) int
+      if x < 0 then ret -1
+      elif x > 0 then ret 1
+      else ret 0
 lesson match MATCH | Switch without the noise | Match
   p `match x` takes arms of comma-separated values with an indented body, and `else` for the default. No `break`, no fallthrough. It becomes a plain C `switch`.
   code nanoc c

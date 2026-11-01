@@ -9,16 +9,13 @@
   nc_slice(c->ts, start, c->pos)
 // Rewrites the final return.
 @f lower_returns(NcContext *ctx, char *body, int line) static char *
-  if !strstr(body, "=>")
-    return body
+  if !strstr(body, "=>") then return body
   NcTokens ts = nc_lex(ctx, body, line)
   NcBuffer b = {0}
   for i:usize in 0..ts.n
     NcToken t = ts.v[i]
-    if t.kind == NC_PUNCT && nc_is(t, "=>")
-      nc_add(ctx, &b, "return ")
-    else
-      nc_addn(ctx, &b, t.s, t.n)
+    if t.kind == NC_PUNCT && nc_is(t, "=>") then nc_add(ctx, &b, "return ")
+    else nc_addn(ctx, &b, t.s, t.n)
   nc_add(ctx, &b, "")
   b.v
 // Expands a native function.
@@ -37,8 +34,7 @@
       nc_same_line(c, header.line) && !nc_header_at(c, "=", header.line)
       && !nc_header_at(c, "=>", header.line) && !nc_header_at(c, "{", header.line)))
     type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, return_type(c, header.line))))
-  if !*type
-    nc_fail(ctx, header.line, "missing return type")
+  if !*type then nc_fail(ctx, header.line, "missing return type")
   NcTokens result = nc_significant(ctx, nc_lex(ctx, type, header.line))
   bool value = !nc_is(result.v[result.n - 1], "void")
   NC_PUSH(ctx, ctx->symbols, ((NcSymbol){name, params, type, "", definition_line}))
@@ -58,8 +54,7 @@
       body = nc_format(ctx, "%s%s;", value ? "return " : "", nc_join(ctx, nc_aliased(ctx, nc_line_expression(c))))
     elif next < c->ts.n && nc_is(c->ts.v[next], "{")
       body = nc_join(ctx, nc_aliased(ctx, nc_group(c, "{", "}")))
-    else
-      body = nc_emit_block(ctx, nc_indented_nodes(c, header, false), value, 0)
+    else body = nc_emit_block(ctx, nc_indented_nodes(c, header, false), value, 0)
   char *expanded = nc_expand(ctx, nc_lex(ctx, body, header.line), depth)
   nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name, params,
     lower_returns(ctx, expanded, header.line))

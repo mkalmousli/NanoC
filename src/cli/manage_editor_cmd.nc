@@ -9,8 +9,7 @@
 @f mg_install(cstr prefix, cstr name) static bool
   NcTarget t[16]
   int n = nc_targets(name, t)
-  if n <= 0
-    return false
+  if n <= 0 then return false
   char share[PATH_MAX * 2]
   snprintf(share, sizeof share, "%s/share/nanoc", prefix)
   mg_forget(prefix, name)
@@ -28,8 +27,7 @@
 // Tells if name is among the args.
 @f mg_named(int argc, char **argv, int first, cstr name) static bool
   for i in first..argc
-    if !strcmp(argv[i], name)
-      return true
+    if !strcmp(argv[i], name) then return true
   false
 // Lists known editors.
 @f nc_editor_list(cstr prefix) static int
@@ -43,15 +41,12 @@
 @f nc_editor_command(int argc, char **argv, cstr prefix) int
   int first = 0
   bool remove = argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall"))
-  if argc && (remove || !strcmp(argv[0], "install"))
-    first = 1
-  if argc && !strcmp(argv[0], "list")
-    return nc_editor_list(prefix)
+  if argc && (remove || !strcmp(argv[0], "install")) then first = 1
+  if argc && !strcmp(argv[0], "list") then return nc_editor_list(prefix)
   bool all = false
   int named = 0
   for i in first..argc
-    if !strcmp(argv[i], "--all")
-      all = true
+    if !strcmp(argv[i], "--all") then all = true
     else
       if !nc_known_editor(argv[i])
         fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n", argv[i])
@@ -66,15 +61,12 @@
     cstr name = nc_editor_name(i)
     bool picked = (all or mg_named(argc, argv, first, name)
       or (!named and !remove and mg_detected(name)))
-    if not picked
-      continue
+    if not picked then continue
     acted += 1
     if remove
       if mg_installed(prefix, name)
         mg_forget(prefix, name)
         printf("  - %s removed\n", name)
-    elif !mg_install(prefix, name)
-      status = 1
-  if !acted and !remove
-    puts("No supported editors detected. Name one: nanoc editor install vim")
+    elif !mg_install(prefix, name) then status = 1
+  if !acted and !remove then puts("No supported editors detected. Name one: nanoc editor install vim")
   status

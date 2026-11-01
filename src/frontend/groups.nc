@@ -8,16 +8,12 @@
   NC_PUSH(c->ctx, stack, (char *)close)
   while c->pos < c->ts.n
     NcToken t = c->ts.v[c->pos++]
-    if t.kind != NC_PUNCT
-      continue
+    if t.kind != NC_PUNCT then continue
     const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL
-    if end
-      NC_PUSH(c->ctx, stack, (char *)end)
+    if end then NC_PUSH(c->ctx, stack, (char *)end)
     elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
-      if !nc_is(t, stack.v[stack.n - 1])
-        nc_fail(c->ctx, t.line, "mismatched delimiter")
-      if !--stack.n
-        return nc_slice(c->ts, start, c->pos - 1)
+      if !nc_is(t, stack.v[stack.n - 1]) then nc_fail(c->ctx, t.line, "mismatched delimiter")
+      if !--stack.n then return nc_slice(c->ts, start, c->pos - 1)
   nc_fail(c->ctx, nc_line(c), "unterminated '%s'", open)
   (NcTokens){0}
 // Takes tokens until a delimiter.
@@ -31,11 +27,9 @@
       cstr open = nc_text(c->ctx, t)
       const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}"
       NcTokens body = nc_group(c, open, close)
-      for i:usize in 0..body.n
-        NC_PUSH(c->ctx, out, body.v[i])
+      for i:usize in 0..body.n then NC_PUSH(c->ctx, out, body.v[i])
       NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT))
-    if c->pos < c->ts.n and c->ts.v[c->pos].kind == NC_SPACE
-      NC_PUSH(c->ctx, out, c->ts.v[c->pos++])
+    if c->pos < c->ts.n and c->ts.v[c->pos].kind == NC_SPACE then NC_PUSH(c->ctx, out, c->ts.v[c->pos++])
   out
 // Splits tokens at a delimiter.
 @f nc_split(NcContext *ctx, NcTokens ts, cstr delimiter) NcGroups
@@ -43,8 +37,6 @@
   NcGroups out = {0}
   while !nc_end(&c)
     NC_PUSH(ctx, out, nc_until(&c, delimiter))
-    if !nc_eat(&c, delimiter)
-      break
-    if nc_end(&c)
-      NC_PUSH(ctx, out, ((NcTokens){0}))
+    if !nc_eat(&c, delimiter) then break
+    if nc_end(&c) then NC_PUSH(ctx, out, ((NcTokens){0}))
   out

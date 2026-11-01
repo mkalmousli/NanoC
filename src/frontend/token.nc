@@ -15,16 +15,14 @@
 // Concatenates token text.
 @f nc_join(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for i:usize in 0..ts.n
-    nc_addn(c, &b, ts.v[i].s, ts.v[i].n)
+  for i:usize in 0..ts.n then nc_addn(c, &b, ts.v[i].s, ts.v[i].n)
   nc_add(c, &b, "")
   b.v
 // Drops whitespace tokens.
 @f nc_significant(NcContext *c, NcTokens ts) NcTokens
   NcTokens out = {0}
   for i:usize in 0..ts.n
-    if ts.v[i].kind != NC_SPACE
-      NC_PUSH(c, out, ts.v[i])
+    if ts.v[i].kind != NC_SPACE then NC_PUSH(c, out, ts.v[i])
   out
 // Joins tokens as spaced words.
 @f nc_words(NcContext *c, NcTokens ts) char *
@@ -34,22 +32,14 @@
     nc_alias(&t)
     cstr s = nil
     if t.kind == NC_WORD
-      if nc_is(t, "and")
-        s = "&&"
-      elif nc_is(t, "or")
-        s = "||"
-      elif nc_is(t, "not")
-        s = "!"
-      elif nc_is(t, "true")
-        s = "1"
-      elif nc_is(t, "false")
-        s = "0"
-      elif nc_is(t, "nil")
-        s = "NULL"
-    if s
-      nc_add(c, &b, s)
-    else
-      nc_addn(c, &b, t.s, t.n)
+      if nc_is(t, "and") then s = "&&"
+      elif nc_is(t, "or") then s = "||"
+      elif nc_is(t, "not") then s = "!"
+      elif nc_is(t, "true") then s = "1"
+      elif nc_is(t, "false") then s = "0"
+      elif nc_is(t, "nil") then s = "NULL"
+    if s then nc_add(c, &b, s)
+    else nc_addn(c, &b, t.s, t.n)
   nc_add(c, &b, "")
   b.v
 // Records identifier tokens.

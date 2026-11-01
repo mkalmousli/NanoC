@@ -5,8 +5,7 @@
   usize next = c->pos
   while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
     ++next
-  if next < c->ts.n && nc_is(c->ts.v[next], "{")
-    return nc_group(c, "{", "}")
+  if next < c->ts.n && nc_is(c->ts.v[next], "{") then return nc_group(c, "{", "}")
   (void)nc_header_eat(c, ":", header.line)
   if not program
     usize start = c->pos
@@ -21,7 +20,6 @@
   *program = old || nc_header_eat(c, "=", header.line)
   if *program && !nc_header_at(c, "{", header.line) && nc_same_line(c, header.line)
     NcTokens expr = old ? nc_until(c, ";") : nc_line_expression(c)
-    if old
-      nc_need(c, ";")
+    if old then nc_need(c, ";")
     return nc_lex(c->ctx, nc_format(c->ctx, "return %s;", nc_join(c->ctx, expr)), header.line)
   nc_meta_body(c, header, *program, true)

@@ -11,20 +11,17 @@
 // Tells if a line is a value.
 @f value_line(NcContext *c, NcTokens ts) static bool
   NcTokens sig = nc_significant(c, ts)
-  if not sig.n
-    return false
+  if not sig.n then return false
   const char *statements[] = {"emit", "log", "assert", "write", "mkdir", "remove", "again",
     "rewrite", "put"}
   for size_t i = 0; i < sizeof statements / sizeof *statements; ++i
-    if nc_is(sig.v[0], statements[i])
-      return false
+    if nc_is(sig.v[0], statements[i]) then return false
   int level = 0
   for i:usize in 0..sig.n
     NcToken t = sig.v[i]
     if nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")
       ++level
-    elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
-      --level
+    elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}") then --level
     elif (!level
       and (
         nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t, "--")
@@ -61,12 +58,10 @@
       bool last = tail and !loop and (i + 1 == nodes.n or has_next_branch)
       char *header = nc_program_control(ctx, n.head.ts, n.head.line)
       nc_printf(ctx, &out, "%s {\n", header)
-      for int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad
-        nc_add(ctx, &out, "\n")
+      for int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad then nc_add(ctx, &out, "\n")
       char *body = nc_emit_program(ctx, n.children, function or last, depth + 1)
       usize size = strlen(body)
-      if size && body[size - 1] == '\n'
-        --size
+      if size && body[size - 1] == '\n' then --size
       nc_addn(ctx, &out, body, size)
       nc_add(ctx, &out, "}\n")
     for j:usize in start..out.n

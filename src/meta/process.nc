@@ -12,8 +12,7 @@
     NC_PUSH(m->ctx, argv, nc_value_text(NC_STRING, (char *)nc_meta_text(m->ctx, a.v[0], line)))
     NC_PUSH(m->ctx, outer, nc_list(argv))
     result = nc_host_run(m, outer, line)
-  else
-    result = nc_host_run(m, a, line)
+  else result = nc_host_run(m, a, line)
   if !strcmp(name, "exec")
     i64 code = (i64) result.items[0].n
     if result.items[0].n

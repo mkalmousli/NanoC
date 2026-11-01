@@ -14,15 +14,12 @@
   false
 // Starts a new C line (and #line).
 @f nc_marker(NcContext *c, NcBuffer *b, int line) void
-  if c->lines
-    nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file))
-  else
-    nc_add(c, b, "\n")
+  if c->lines then nc_printf(c, b, "\n#line %d %s\n", line, nc_quote(c, c->file))
+  else nc_add(c, b, "\n")
 // Emits a block of nodes as C.
 @f nc_emit_block(NcContext *c, NcNodes nodes, bool tail, usize depth) char *
   nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout")
-  if !nodes.n and tail
-    nc_fail(c, 1, "value function needs a final expression")
+  if !nodes.n and tail then nc_fail(c, 1, "value function needs a final expression")
   NcBuffer out = {0}
   usize i = 0
   while i < nodes.n
@@ -32,8 +29,7 @@
     if lead(node, "if") && node.children.n
       while (last + 1 < nodes.n
         && (lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1], "else")))
-        if lead(nodes.v[last], "else")
-          nc_fail(c, nodes.v[last + 1].head.line, "branch after else")
+        if lead(nodes.v[last], "else") then nc_fail(c, nodes.v[last + 1].head.line, "branch after else")
         ++last
         if !nodes.v[last].children.n
           nc_fail(c, nodes.v[last].head.line, "branch needs ':' and an indented block")
@@ -44,8 +40,7 @@
       break
     bool returning = tail and last + 1 == nodes.n
     if lead(node, "match") && node.children.n
-      if returning
-        nc_fail(c, node.head.line, "match is a statement; end the function with a value")
+      if returning then nc_fail(c, node.head.line, "match is a statement; end the function with a value")
       nc_marker(c, &out, node.head.line)
       nc_add(c, &out, nc_match(c, node, depth))
       i = last + 1

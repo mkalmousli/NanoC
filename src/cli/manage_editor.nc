@@ -8,8 +8,7 @@
   char home[PATH_MAX]
   char cfg[PATH_MAX]
   char dir[PATH_MAX]
-  if !mg_home(home) or !mg_config(cfg)
-    return false
+  if !mg_home(home) or !mg_config(cfg) then return false
   if !strcmp(name, "vscode")
     snprintf(dir, sizeof dir, "%s/.vscode", home)
     return nc_exists(dir) || nc_have_command("code")
@@ -25,24 +24,20 @@
   if !strcmp(name, "micro")
     snprintf(dir, sizeof dir, "%s/micro", cfg)
     return nc_exists(dir) || nc_have_command("micro")
-  if !strcmp(name, "nano")
-    return nc_have_command("nano")
-  if !strcmp(name, "sublime")
-    return nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir))
+  if !strcmp(name, "nano") then return nc_have_command("nano")
+  if !strcmp(name, "sublime") then return nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir))
   false
 // Tells if an editor is installed.
 @f mg_installed(cstr prefix, cstr name) bool
   char path[PATH_MAX]
   mg_manifest(prefix, path)
   FILE *f = fopen(path, "r")
-  if not f
-    return false
+  if not f then return false
   char line[PATH_MAX + 64]
   bool found = false
   usize len = strlen(name)
   while fgets(line, sizeof line, f)
-    if !strncmp(line, name, len) && line[len] == ' '
-      found = true
+    if !strncmp(line, name, len) && line[len] == ' ' then found = true
   fclose(f)
   found
 // Drops an editor from the manifest.
@@ -52,8 +47,7 @@
   mg_manifest(prefix, path)
   snprintf(tmp, sizeof tmp, "%s.tmp", path)
   FILE *in = fopen(path, "r")
-  if not in
-    return
+  if not in then return
   FILE *out = fopen(tmp, "w")
   if not out
     fclose(in)
@@ -62,10 +56,8 @@
   usize len = strlen(name)
   while fgets(line, sizeof line, in)
     line[strcspn(line, "\n")] = 0
-    if !strncmp(line, name, len) && line[len] == ' '
-      remove(line + len + 1)
-    else
-      fputs(line, out)
+    if !strncmp(line, name, len) && line[len] == ' ' then remove(line + len + 1)
+    else fputs(line, out)
   fclose(in)
   fclose(out)
   rename(tmp, path)

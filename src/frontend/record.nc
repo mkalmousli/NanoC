@@ -5,8 +5,7 @@
   NcTokens ts = {0}
   while c->pos < c->ts.n
     NcToken t = c->ts.v[c->pos]
-    if t.kind == NC_SPACE && memchr(t.s, '\n', t.n)
-      break
+    if t.kind == NC_SPACE && memchr(t.s, '\n', t.n) then break
     NC_PUSH(c->ctx, ts, t)
     ++c->pos
   ts
@@ -32,12 +31,10 @@
   NcBuffer out = {0}
   if head.n
     NcGroups fs = nc_split(ctx, head, ";")
-    for i:usize in 0..fs.n
-      nc_add(ctx, &out, field_text(ctx, fs.v[i]))
+    for i:usize in 0..fs.n then nc_add(ctx, &out, field_text(ctx, fs.v[i]))
     return out.v
   NcLines lines = nc_body_lines(c, h.line, h.indent)
-  for i:usize in 0..lines.n
-    nc_add(ctx, &out, field_text(ctx, lines.v[i].ts))
+  for i:usize in 0..lines.n then nc_add(ctx, &out, field_text(ctx, lines.v[i].ts))
   out.v
 // Expands "@s Name fields", "@u Name fields" or "@e Name items" (or the indented block form).
 @f nc_record(NcContext *ctx, NcCursor *c, char kind) char *
@@ -46,12 +43,10 @@
   NcTokens head = rest_of_line(c)
   if kind == 'e'
     NcBuffer items = {0}
-    if head.n
-      nc_add(ctx, &items, nc_join(ctx, head))
+    if head.n then nc_add(ctx, &items, nc_join(ctx, head))
     else
       NcLines lines = nc_body_lines(c, h.line, h.indent)
-      for i:usize in 0..lines.n
-        nc_printf(ctx, &items, "%s%s", i ? "," : "", nc_join(ctx, lines.v[i].ts))
+      for i:usize in 0..lines.n then nc_printf(ctx, &items, "%s%s", i ? "," : "", nc_join(ctx, lines.v[i].ts))
     return nc_format(ctx, "typedef enum { %s } %s;\n", items.v ? items.v : "", name)
   const char *word = kind == 's' ? "struct" : "union"
   nc_format(ctx, "typedef %s %s %s;\n%s %s { %s };\n", word, name, name, word, name,

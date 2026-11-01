@@ -13,18 +13,14 @@
     while next < ts.n and ts.v[next].kind == NC_SPACE
       ++next
     bool define_f = nc_is(t, "f") && next < ts.n && ts.v[next].kind == NC_WORD
-    if nc_is(t, ";")
-      continue
-    if nc_is(t, "fn") || define_f
-      nc_ct_define(m, &c, env)
+    if nc_is(t, ";") then continue
+    if nc_is(t, "fn") || define_f then nc_ct_define(m, &c, env)
     elif nc_is(t, "if")
       out = nc_conditional(m, &c, env, depth)
-      if out.returning or out.breaking or out.continuing
-        return out
+      if out.returning or out.breaking or out.continuing then return out
     elif nc_is(t, "for") || nc_is(t, "while")
       out = nc_loop(m, &c, env, depth, nc_text(ctx, t))
-      if out.returning or out.breaking or out.continuing
-        return out
+      if out.returning or out.breaking or out.continuing then return out
     elif nc_is(t, "break") || nc_is(t, "continue")
       nc_need(&c, ";")
       return (NcFlow){.breaking = nc_is(t, "break"), .continuing = nc_is(t, "continue")}
@@ -35,8 +31,7 @@
     elif nc_is(t, "let")
       char *id = nc_name(&c)
       nc_need(&c, "=")
-      if nc_get(&env->values, id)
-        nc_fail(ctx, t.line, "duplicate compile-time variable: %s", id)
+      if nc_get(&env->values, id) then nc_fail(ctx, t.line, "duplicate compile-time variable: %s", id)
       nc_bind(ctx, env, id, nc_eval(m, nc_until(&c, ";"), env, depth, true))
       nc_need(&c, ";")
     else

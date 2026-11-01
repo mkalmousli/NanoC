@@ -15,16 +15,13 @@
   longjmp(c->trap, 1)
 // Counts a step against the limit.
 @f nc_step(NcContext *c, int line) void
-  if c->max_steps and c->steps == c->max_steps
-    nc_fail(c, line, "compile-time step limit exceeded")
+  if c->max_steps and c->steps == c->max_steps then nc_fail(c, line, "compile-time step limit exceeded")
   if c->steps != SIZE_MAX
     ++c->steps
 // Checks the output size limit.
 @f nc_check(NcContext *c, usize bytes, int line) void
-  if bytes > c->max_output
-    nc_fail(c, line, "output limit exceeded")
+  if bytes > c->max_output then nc_fail(c, line, "output limit exceeded")
 // Checks the nesting limit.
 @f nc_depth(NcContext *c, usize depth, int line, cstr kind) void
-  if depth > c->max_depth or depth > 512
-    nc_fail(c, line, "%s depth limit exceeded", kind)
+  if depth > c->max_depth or depth > 512 then nc_fail(c, line, "%s depth limit exceeded", kind)
   nc_step(c, line)

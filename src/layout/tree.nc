@@ -6,8 +6,7 @@
   NcNodes out = {0}
   while *i < lines.n and lines.v[*i].indent >= indent
     NcLayoutLine line = lines.v[*i]
-    if line.indent != indent
-      nc_fail(c, line.line, "inconsistent indentation")
+    if line.indent != indent then nc_fail(c, line.line, "inconsistent indentation")
     nc_step(c, line.line)
     NcNode node = {.head = line}
     ++*i

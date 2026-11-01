@@ -13,28 +13,22 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
 // Allocates tracked memory.
 @f nc_alloc(NcContext *c, usize size) void *
   usize align = _Alignof(max_align_t)
-  if size > SIZE_MAX - align
-    nc_fail(c, 0, "allocation limit exceeded")
+  if size > SIZE_MAX - align then nc_fail(c, 0, "allocation limit exceeded")
   size = (size + align - 1) / align * align
-  if not size
-    size = align
+  if not size then size = align
   NcAllocation *p = c->allocations
   if p and size <= p->capacity - p->used
     void *data = (u8 *)(p + 1) + p->used
     p->used += size
     return data
   usize capacity = size > 65536 ? size : 65536
-  if capacity > SIZE_MAX - sizeof *p
-    nc_fail(c, 0, "allocation limit exceeded")
+  if capacity > SIZE_MAX - sizeof *p then nc_fail(c, 0, "allocation limit exceeded")
   size_t charged = capacity + sizeof *p
   size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128
-  if limit < 1024 * 1024
-    limit = 1024 * 1024
-  if charged > limit or c->allocated > limit - charged
-    nc_fail(c, 0, "allocation limit exceeded")
+  if limit < 1024 * 1024 then limit = 1024 * 1024
+  if charged > limit or c->allocated > limit - charged then nc_fail(c, 0, "allocation limit exceeded")
   p = calloc(1, charged)
-  if not p
-    nc_fail(c, 0, "out of memory")
+  if not p then nc_fail(c, 0, "out of memory")
   p->next = c->allocations
   p->capacity = capacity
   p->used = size
@@ -50,10 +44,8 @@ struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t alig
 // Grows an array by one.
 @f nc_grow(NcContext *c, const void *old, usize n, usize *cap, usize width) void *
   usize next = *cap ? *cap * 2 : 8
-  if next < *cap || next > SIZE_MAX / width
-    nc_fail(c, 0, "allocation limit exceeded")
+  if next < *cap || next > SIZE_MAX / width then nc_fail(c, 0, "allocation limit exceeded")
   void *p = nc_alloc(c, next * width)
-  if n
-    memcpy(p, old, n * width)
+  if n then memcpy(p, old, n * width)
   *cap = next
   p

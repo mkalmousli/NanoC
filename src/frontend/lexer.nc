@@ -20,8 +20,7 @@
     elif !strncmp(s + i, "/*", 2)
       t.kind = NC_SPACE
       const char *end = strstr(s + i + 2, "*/")
-      if not end
-        nc_fail(c, line, "unterminated comment")
+      if not end then nc_fail(c, line, "unterminated comment")
       i = (usize)(end - s) + 2
     elif ch == '#' && bol
       t.kind = NC_DIRECTIVE
@@ -33,8 +32,7 @@
       t.kind = NC_WORD
       while 1
         ++i
-        if !(isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128)
-          break
+        if !(isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128) then break
     elif isdigit(ch) || (ch == '.' && isdigit((unsigned char)s[i + 1]))
       t.kind = NC_NUMBER
       ++i
@@ -43,8 +41,7 @@
           ++i
         elif (s[i] == '+' || s[i] == '-') && strchr("eEpP", s[i - 1])
           ++i
-        else
-          break
+        else break
     else
       const char *ops[] = {"...", "..", "->", "==", "!=", "<=", ">=", "&&", "||", "=>", ":=", "++",
         "--", "+=", "-=", "*=", "/=", "%="}
@@ -63,9 +60,7 @@
       else
         ++column
     if t.kind == NC_SPACE
-      if newline
-        bol = true
-    else
-      bol = t.kind == NC_DIRECTIVE && s[i - 1] == '\n'
+      if newline then bol = true
+    else bol = t.kind == NC_DIRECTIVE && s[i - 1] == '\n'
     NC_PUSH(c, out, t)
   out

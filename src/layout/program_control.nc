@@ -3,13 +3,11 @@
 // Rewrites a program control header.
 @f nc_program_control(NcContext *ctx, NcTokens ts, int line) char *
   NcTokens sig = nc_significant(ctx, ts)
-  if sig.n && nc_is(sig.v[sig.n - 1], ":")
-    --sig.n
+  if sig.n && nc_is(sig.v[sig.n - 1], ":") then --sig.n
   NcCursor c = {ctx, sig, 0}
   char *name = nc_name(&c)
   if !strcmp(name, "else")
-    if nc_end(&c)
-      return "else"
+    if nc_end(&c) then return "else"
     nc_need(&c, "if")
     return nc_format(ctx, "else if (%s)", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
   if !strcmp(name, "if") || !strcmp(name, "while") || !strcmp(name, "elif")
@@ -19,11 +17,9 @@
     char *id = nc_name(&c)
     return nc_format(ctx, "f %s%s", id,
       nc_end(&c) ? "()" : nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
-  if nc_at(&c, "(")
-    return nc_format(ctx, "for %s", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
+  if nc_at(&c, "(") then return nc_format(ctx, "for %s", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
   for usize i = c.pos; i < sig.n; ++i
-    if nc_is(sig.v[i], ";")
-      return nc_format(ctx, "for (%s)", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
+    if nc_is(sig.v[i], ";") then return nc_format(ctx, "for (%s)", nc_join(ctx, nc_slice(sig, c.pos, sig.n)))
   char *id = nc_name(&c)
   (void)nc_eat(&c, "in")
   NcTokens rest = nc_slice(sig, c.pos, sig.n)
@@ -33,6 +29,5 @@
     (void)nc_eat(&range, "<")
     return nc_format(ctx, "for %s in range(%s,%s)", id, nc_join(ctx, low),
       nc_join(ctx, nc_slice(rest, range.pos, rest.n)))
-  if not rest.n
-    nc_fail(ctx, line, "for needs a range or list")
+  if not rest.n then nc_fail(ctx, line, "for needs a range or list")
   nc_format(ctx, "for %s in %s", id, nc_join(ctx, rest))

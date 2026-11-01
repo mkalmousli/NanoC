@@ -31,25 +31,20 @@ const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
 @f nc_builtin_known(cstr name) bool
   for i:usize in 0..nc_spec_count
-    if !strcmp(name, nc_specs[i].name)
-      return true
+    if !strcmp(name, nc_specs[i].name) then return true
   false
 // Calls a registered builtin.
 @f nc_extra_builtin(NcMachine *m, cstr name, NcValues args, int line) NcValue
   for i:usize in 0..nc_spec_count
     const NcSpec *s = &nc_specs[i]
-    if !strcmp(name, s->name) and s->function
-      return s->function(m, name, args, line)
+    if !strcmp(name, s->name) and s->function then return s->function(m, name, args, line)
   nc_fail(m->ctx, line, "unknown compile-time function: %s", name)
   (NcValue){0}
 // Gets a value as text.
 @f nc_meta_text(NcContext *c, NcValue v, int line) cstr 
-  if v.kind != NC_STRING and v.kind != NC_CODE
-    nc_fail(c, line, "expected text or tokens")
+  if v.kind != NC_STRING and v.kind != NC_CODE then nc_fail(c, line, "expected text or tokens")
   v.text
 // Fails unless host effects are on.
 @f nc_effect(NcMachine *m, int line) void
-  if m->phase != NC_BT
-    nc_fail(m->ctx, line, "host effects require @bt")
-  if not m->ctx->effects
-    nc_fail(m->ctx, line, "host effects disabled by --check or --no-effects")
+  if m->phase != NC_BT then nc_fail(m->ctx, line, "host effects require @bt")
+  if not m->ctx->effects then nc_fail(m->ctx, line, "host effects disabled by --check or --no-effects")
