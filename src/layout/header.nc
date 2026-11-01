@@ -28,16 +28,12 @@
   while c->pos < c->ts.n
     NcToken t = c->ts.v[c->pos]
     if t.kind == NC_SPACE && memchr(t.s, '\n', t.n) then break
-    if t.kind == NC_PUNCT && nc_is(t, ";")
-      ++c->pos
-      break
+    if t.kind == NC_PUNCT && nc_is(t, ";") then ++c->pos; break
     if t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))
       usize start = c->pos
       (void)nc_group(c, nc_text(c->ctx, t), nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}")
       for i:usize in start..c->pos then NC_PUSH(c->ctx, ts, c->ts.v[i])
-    else
-      NC_PUSH(c->ctx, ts, t)
-      ++c->pos
+    else NC_PUSH(c->ctx, ts, t); ++c->pos
   while ts.n and ts.v[ts.n - 1].kind == NC_SPACE then --ts.n
   if not ts.n then nc_fail(c->ctx, nc_line(c), "missing expression")
   ts

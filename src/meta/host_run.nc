@@ -15,12 +15,8 @@
   strcpy(err_path, "/tmp/nanoc-err-XXXXXX")
   int out = mkstemp(out_path), err = mkstemp(err_path)
   if out < 0 or err < 0
-    if out >= 0
-      close(out)
-      unlink(out_path)
-    if err >= 0
-      close(err)
-      unlink(err_path)
+    if out >= 0 then close(out); unlink(out_path)
+    if err >= 0 then close(err); unlink(err_path)
     nc_fail(c, line, "cannot create process capture files")
   pid_t pid = fork()
   if not pid
@@ -57,9 +53,7 @@
       for usize n = 0; n < sizes[i];
         ssize_t got = read(fds[i], texts[i] + n, sizes[i] - n)
         if got < 0 and errno == EINTR then continue
-        if got <= 0
-          valid = false
-          break
+        if got <= 0 then valid = false; break
         n += (usize)got
   else valid = false
   close(out)

@@ -28,12 +28,8 @@ static void space(NcPretty *p, NcToken t) {
         return;
     }
     size_t lines = 0;
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (t.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            lines += t.s[i] == '\n';
-        }
+    for (size_t i = (0), nanoc_end_1 = (t.n); i < nanoc_end_1; ++i) {
+        lines += t.s[i] == '\n';
     }
     p->space = 1;
     if (lines > 1 && !p->top && !p->paren && p->stmt && !p->comment) {
@@ -153,15 +149,11 @@ char *nc_pretty(NcContext *c, const char *text) {
     p->bol = 1;
     p->stmt = 1;
     NcTokens ts = nc_lex(c, text, 1);
-    {
-        size_t nanoc_start_3 = (0);
-        size_t nanoc_end_4 = (ts.n);
-        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-            if (ts.v[i].kind == NC_SPACE) {
-                space(p, ts.v[i]);
-            } else {
-                nc_pp_token(p, ts.v[i]);
-            }
+    for (size_t i = (0), nanoc_end_2 = (ts.n); i < nanoc_end_2; ++i) {
+        if (ts.v[i].kind == NC_SPACE) {
+            space(p, ts.v[i]);
+        } else {
+            nc_pp_token(p, ts.v[i]);
         }
     }
     if (p->after == 4) {

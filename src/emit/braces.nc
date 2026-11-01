@@ -54,8 +54,6 @@
   p->after = 0
   if after == 0 or after == 3 then return
   bool word = t.kind == NC_WORD
-  if (after == 1 && word && nc_is(t, "else")) || (after == 2 && word && nc_is(t, "while"))
-    p->space = true
-    return
+  if (after == 1 && word && nc_is(t, "else")) || (after == 2 && word && nc_is(t, "while")) then p->space = true; return
   nc_pp_end(p)
   if after == 4 then nc_pp_blank(p)

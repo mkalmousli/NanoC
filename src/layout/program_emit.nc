@@ -38,9 +38,7 @@
   int line = nodes.n ? nodes.v[0].head.line : 1
   for i:usize in 0..nodes.n
     NcNode n = nodes.v[i]
-    while line < n.head.line
-      nc_add(ctx, &out, "\n")
-      ++line
+    while line < n.head.line then nc_add(ctx, &out, "\n"); ++line
     usize start = out.n
     if not n.children.n
       NcTokens ts = n.head.ts

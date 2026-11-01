@@ -25,31 +25,27 @@ static bool apart(char a, char b) {
 char *nc_mini(NcContext *c, const char *text) {
     NcTokens ts = nc_lex(c, text, 1);
     NcBuffer out = {0};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (ts.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            NcToken t = ts.v[i];
-            if (t.kind == NC_SPACE) {
-                continue;
+    for (size_t i = (0), nanoc_end_1 = (ts.n); i < nanoc_end_1; ++i) {
+        NcToken t = ts.v[i];
+        if (t.kind == NC_SPACE) {
+            continue;
+        }
+        size_t n = t.n;
+        if (t.kind == NC_DIRECTIVE) {
+            while (n && isspace((unsigned char)t.s[n - 1])) {
+                --n;
             }
-            size_t n = t.n;
-            if (t.kind == NC_DIRECTIVE) {
-                while (n && isspace((unsigned char)t.s[n - 1])) {
-                    --n;
-                }
-                if (out.n && out.v[out.n - 1] != '\n') {
-                    nc_add(c, &out, "\n");
-                }
-                nc_addn(c, &out, t.s, n);
+            if (out.n && out.v[out.n - 1] != '\n') {
                 nc_add(c, &out, "\n");
-                continue;
-            }
-            if (out.n && apart(out.v[out.n - 1], t.s[0])) {
-                nc_add(c, &out, " ");
             }
             nc_addn(c, &out, t.s, n);
+            nc_add(c, &out, "\n");
+            continue;
         }
+        if (out.n && apart(out.v[out.n - 1], t.s[0])) {
+            nc_add(c, &out, " ");
+        }
+        nc_addn(c, &out, t.s, n);
     }
     if (out.n && out.v[out.n - 1] != '\n') {
         nc_add(c, &out, "\n");

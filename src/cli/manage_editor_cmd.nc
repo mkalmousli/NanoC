@@ -17,12 +17,8 @@
   for i in 0..n
     char from[PATH_MAX * 2]
     snprintf(from, sizeof from, "%s/%s", share, t[i].src)
-    if nc_copy_file(from, t[i].dst)
-      mg_remember(prefix, name, t[i].dst)
-      nc_ui_line(true, name, t[i].dst)
-    else
-      nc_ui_line(false, name, t[i].dst)
-      ok = false
+    if nc_copy_file(from, t[i].dst) then mg_remember(prefix, name, t[i].dst); nc_ui_line(true, name, t[i].dst)
+    else nc_ui_line(false, name, t[i].dst); ok = false
   ok
 // Tells if name is among the args.
 @f mg_named(int argc, char **argv, int first, cstr name) static bool
@@ -52,9 +48,7 @@
         fprintf(stderr, "nanoc editor: unknown editor %s (try: nanoc editor list)\n", argv[i])
         return 2
       named += 1
-  if remove and !all and !named
-    fputs("usage: nanoc editor remove NAME|--all\n", stderr)
-    return 2
+  if remove and !all and !named then fputs("usage: nanoc editor remove NAME|--all\n", stderr); return 2
   int status = 0
   int acted = 0
   for usize i = 0; nc_editor_name(i); ++i
@@ -64,9 +58,7 @@
     if not picked then continue
     acted += 1
     if remove
-      if mg_installed(prefix, name)
-        mg_forget(prefix, name)
-        printf("  - %s removed\n", name)
+      if mg_installed(prefix, name) then mg_forget(prefix, name); printf("  - %s removed\n", name)
     elif !mg_install(prefix, name) then status = 1
   if !acted and !remove then puts("No supported editors detected. Name one: nanoc editor install vim")
   status

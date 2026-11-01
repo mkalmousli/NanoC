@@ -33,9 +33,7 @@
 @f nc_uninstall_command(int argc, char **argv, cstr prefix) int
   bool yes = argc && !strcmp(argv[0], "--yes")
   printf("Remove NanoC from %s, including editor integrations?\n", prefix)
-  if !yes && !nc_confirm("Continue?")
-    puts("Cancelled.")
-    return 1
+  if !yes && !nc_confirm("Continue?") then puts("Cancelled."); return 1
   char *editors[] = {"remove", "--all"}
   nc_editor_command(2, editors, prefix)
   int files = mg_remove_recorded(prefix)

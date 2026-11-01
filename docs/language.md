@@ -3,12 +3,11 @@
 
 ## Hello, NanoC
 
-Save this as `hello.nc`. Lines starting with `#` pass through unchanged, so any C header works.
+Save this as `hello.nc`. `say` prints its arguments and brings in `stdio.h` by itself. Lines starting with `#` pass through unchanged, so plain C headers work too.
 
 ```nanoc
-#include <stdio.h>
 @f main int
-  puts("Hello from NanoC!")
+  say "Hello from NanoC!"
   0
 ```
 
@@ -16,7 +15,10 @@ Save this as `hello.nc`. Lines starting with `#` pass through unchanged, so any 
 #include <stdio.h>
 
 int main(void) {
-    puts("Hello from NanoC!");
+    {
+        fputs("Hello from NanoC!", stdout);
+        putchar('\n');
+    }
     return 0;
 }
 ```
@@ -28,13 +30,12 @@ int main(void) {
 The return type goes after the parameters, with no arrow. Omit it for `void`. Group parameters that share a type with a comma. A one-line body can be an `=` expression.
 
 ```nanoc
-#include <stdio.h>
 @f add(int a,b) int = a+b
-@f greet(char *name)
-  printf("hi %s\n",name)
+@f greet(cstr name)
+  say "hi", name
 @f main int
   greet("NanoC")
-  printf("%d\n",add(2,3))
+  say add(2,3)
   0
 ```
 
@@ -45,13 +46,27 @@ int add(int a, int b) {
     return a+b;
 }
 
-void greet(char *name) {
-    printf("hi %s\n",name);
+void greet(const char *name) {
+    {
+        fputs("hi", stdout);
+        putchar(' ');
+        printf(_Generic((name), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), name);
+        putchar('\n');
+    }
 }
 
 int main(void) {
     greet("NanoC");
-    printf("%d\n",add(2,3));
+    {
+        printf(_Generic((add(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), add(2,3));
+        putchar('\n');
+    }
     return 0;
 }
 ```
@@ -95,12 +110,11 @@ int main(void) {
 `i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 byte cstr usize isize` are plain C type words inside NanoC code, so the output builds with any C compiler and needs no extra header (`usize`/`isize` need `stddef.h`). Unmarked C is never rewritten.
 
 ```nanoc
-#include <stdio.h>
 @f add(i32 a,b) i32 = a+b
 @f main int
   u8 x=200
   cstr s="hi"
-  printf("%s %d\n",s,add(x,2))
+  say s, add(x,2)
   0
 ```
 
@@ -114,7 +128,18 @@ int add(int a, int b) {
 int main(void) {
     unsigned char x=200;
     const char * s="hi";
-    printf("%s %d\n",s,add(x,2));
+    {
+        printf(_Generic((s), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
+                char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
+                unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
+                s);
+        putchar(' ');
+        printf(_Generic((add(x,2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), add(x,2));
+        putchar('\n');
+    }
     return 0;
 }
 ```
@@ -309,12 +334,10 @@ int main(void) {
 `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.
 
 ```nanoc
-#include <stdio.h>
 @f main int
   total:=0
-  for i 1..6
-    total+=i
-  printf("%d\n",total)
+  for i 1..6 then total+=i
+  say "total", total
   0
 ```
 
@@ -323,14 +346,18 @@ int main(void) {
 
 int main(void) {
     int total = 0;
-    {
-        int nanoc_start_1 = (1);
-        int nanoc_end_2 = (6);
-        for (int i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            total+=i;
-        }
+    for (int i = (1), nanoc_end_1 = (6); i < nanoc_end_1; ++i) {
+        total+=i;
     }
-    printf("%d\n",total);
+    {
+        fputs("total", stdout);
+        putchar(' ');
+        printf(_Generic((total), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), total);
+        putchar('\n');
+    }
     return 0;
 }
 ```
@@ -339,14 +366,13 @@ int main(void) {
 - Typed range: `for i:usize 0..n`. Bounds are evaluated once.
 - Plain C loops still work: `for int i=0;i<n;i++`. `loop` is `for (;;)`, `unless c` is `if !(c)`, `until c` is `while !(c)`.
 - C++ iterates containers: `for value values`.
-- Shortcuts: `nil` is NULL, `and`/`or`/`not` are `&&`/`||`/`!`, `@inc stdio, "mine.h", <sys/x.h>` includes headers (bare names become `<name.h>`).
+- Shortcuts: `nil` is NULL, `and`/`or`/`not` are `&&`/`||`/`!`, `@use stdio, "mine", <sys/x.h>` includes headers (bare names become `<name.h>`).
 
 ## Token templates
 
 `@m` defines a template. `$x` captures a token. A macro with `=` and no parameters is a named constant.
 
 ```nanoc
-#include <stdio.h>
 @m twice($x)
   (($x)*2)
 @m answer = 42
@@ -354,7 +380,7 @@ int main(void) {
   @f $name($type a,b) $type = a>b?a:b
 @maxfn(max_int,int)
 @f main int
-  printf("%d %d\n",@twice(@answer),max_int(2,3))
+  say @twice(@answer), max_int(2,3)
   0
 ```
 
@@ -366,7 +392,18 @@ int max_int(int a, int b) {
 }
 
 int main(void) {
-    printf("%d %d\n", ((42)*2),max_int(2,3));
+    {
+        printf(_Generic((((42)*2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), ((42)*2));
+        putchar(' ');
+        printf(_Generic((max_int(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), max_int(2,3));
+        putchar('\n');
+    }
     return 0;
 }
 ```
@@ -380,13 +417,12 @@ Captures: `$x` / `$x:tokens`, `$x:ident`, `$x:block`; a last `$xs...` is a list.
 An indented `@ct` block runs during expansion. `emit` writes NanoC back into the source, so you can generate functions in a loop.
 
 ```nanoc
-#include <stdio.h>
 @ct
   f square(n) = n*n
   for i 1..5
     emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
 @f main int
-  printf("%d\n",square_4())
+  say square_4()
   0
 ```
 
@@ -410,7 +446,13 @@ int square_4(void) {
 }
 
 int main(void) {
-    printf("%d\n",square_4());
+    {
+        printf(_Generic((square_4()), char *: "%s", const char *: "%s", float: "%g", double: "%g",
+                long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
+                long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
+                default: "%d"), square_4());
+        putchar('\n');
+    }
     return 0;
 }
 ```
@@ -452,8 +494,7 @@ Full syntax and examples: `nanoc --describe asm` or the [assembly card](https://
 Headers work unchanged. Use `--lang c++` to emit C++17 and get range loops over standard containers. `--emit mini` strips comments and layout for the smallest C.
 
 ```nanoc
-#include <vector>
-#include <iostream>
+@use vector, iostream
 @f main int
   values:=std::vector<int>(3,2)
   sum:=0

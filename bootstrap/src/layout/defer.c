@@ -12,13 +12,9 @@ static bool is_void(NcContext *c) {
 static char *value_type(NcContext *c) {
     char *t = c->ret_type ? c->ret_type : "";
     const char *q[] = {"static ", "inline ", "extern ", "_Noreturn "};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (4);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            while (!strncmp(t, q[i], strlen(q[i]))) {
-                t += strlen(q[i]);
-            }
+    for (size_t i = (0), nanoc_end_1 = (4); i < nanoc_end_1; ++i) {
+        while (!strncmp(t, q[i], strlen(q[i]))) {
+            t += strlen(q[i]);
         }
     }
     return t;

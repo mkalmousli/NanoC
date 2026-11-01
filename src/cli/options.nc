@@ -15,9 +15,7 @@ extern int nc_std;
   for i in 1..argc
     char *arg = argv[i]
     if !positional && !strcmp(arg, "--") then positional = true
-    elif !positional && !strcmp(arg, "--check")
-      o.check = true
-      c->effects = false
+    elif !positional && !strcmp(arg, "--check") then o.check = true; c->effects = false
     elif (!positional
       and (
         !strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives")
@@ -54,8 +52,6 @@ extern int nc_std;
       else c->max_output = positive(c, value)
     elif !positional && *arg == '-' then nc_fail(c, 0, "unknown option: %s", arg)
     elif *o.input then nc_fail(c, 0, "expected one input file")
-    else
-      o.input = arg
-      c->file = arg
+    else o.input = arg; c->file = arg
   if !*o.action and !*o.input then nc_fail(c, 0, "missing input file; use --help")
   o

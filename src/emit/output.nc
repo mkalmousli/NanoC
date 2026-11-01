@@ -7,9 +7,7 @@
     for i:usize in 0..width then nc_add(p->c, &p->out, " ")
     p->col = width
     p->bol = false
-  elif p->space
-    nc_add(p->c, &p->out, " ")
-    ++p->col
+  elif p->space then nc_add(p->c, &p->out, " "); ++p->col
   p->space = false
   nc_addn(p->c, &p->out, s, n)
   p->col += n

@@ -21,12 +21,8 @@
       const char *end = strstr(s + i + 2, "*/")
       if not end then nc_fail(c, line, "unterminated comment")
       i = (usize)(end - s) + 2
-    elif ch == '#' && bol
-      t.kind = NC_DIRECTIVE
-      i = nc_line_end(s, i)
-    elif nc_literal_start(s, i, c->cpp)
-      t.kind = NC_LITERAL
-      i = nc_literal_end(c, s, i, line)
+    elif ch == '#' && bol then t.kind = NC_DIRECTIVE; i = nc_line_end(s, i)
+    elif nc_literal_start(s, i, c->cpp) then t.kind = NC_LITERAL; i = nc_literal_end(c, s, i, line)
     elif isalpha(ch) || ch == '_' || ch >= 128
       t.kind = NC_WORD
       while 1
@@ -46,16 +42,11 @@
         "--", "+=", "-=", "*=", "/=", "%="}
       ++i
       for size_t n = 0; n < sizeof ops / sizeof *ops; ++n
-        if !strncmp(s + start, ops[n], strlen(ops[n]))
-          i = start + strlen(ops[n])
-          break
+        if !strncmp(s + start, ops[n], strlen(ops[n])) then i = start + strlen(ops[n]); break
     t.n = i - start
     bool newline = false
     for n:usize in start..i
-      if s[n] == '\n'
-        ++line
-        column = 1
-        newline = true
+      if s[n] == '\n' then ++line; column = 1; newline = true
       else
         ++column
     if t.kind == NC_SPACE

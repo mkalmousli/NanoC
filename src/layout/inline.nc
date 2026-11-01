@@ -45,9 +45,7 @@
     NcLayoutLine line = input.v[i]
     bool block = i + 1 < input.n and input.v[i + 1].indent > line.indent
     int at = block ? -1 : inline_split(line.ts)
-    if at < 0
-      NC_PUSH(ctx, out, line)
-      continue
+    if at < 0 then NC_PUSH(ctx, out, line); continue
     NcLayoutLine head = line, body = line
     usize first = inline_first(line.ts)
     usize cut = (usize)at + 1
@@ -58,9 +56,7 @@
     body.indent += 2
     NC_PUSH(ctx, out, head)
     int e = inline_else(body.ts)
-    if e < 0
-      NC_PUSH(ctx, out, body)
-      continue
+    if e < 0 then NC_PUSH(ctx, out, body); continue
     NcLayoutLine alt = line, rest = body
     rest.ts = nc_slice(body.ts, e + 1, body.ts.n)
     body.ts = nc_slice(body.ts, 0, e)

@@ -38,10 +38,7 @@
 // Transpiles source text to C.
 @f nc_transpile(NcContext *ctx, cstr input) char *
   nc_check(ctx, strlen(input), 1)
-  if !strchr(input, '@')
-    ctx->pass = 1
-    ctx->source = input
-    return ctx->mini ? nc_mini(ctx, input) : (char *)input
+  if !strchr(input, '@') then ctx->pass = 1; ctx->source = input; return ctx->mini ? nc_mini(ctx, input) : (char *)input
   char *output = nc_pipeline(ctx, input)
   char *prelude = nc_prelude(ctx)
   if *prelude and !strstr(output, prelude) then output = nc_format(ctx, "%s%s", prelude, output)

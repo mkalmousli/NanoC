@@ -54,13 +54,9 @@
   char *slash = strrchr(dir, '/')
   if slash
     *slash = 0
-    if !nc_make_dirs(dir)
-      fclose(in)
-      return false
+    if !nc_make_dirs(dir) then fclose(in); return false
   FILE *out = fopen(to, "wb")
-  if not out
-    fclose(in)
-    return false
+  if not out then fclose(in); return false
   char buf[8192]
   bool ok = true
   size_t n = fread(buf, 1, sizeof buf, in)

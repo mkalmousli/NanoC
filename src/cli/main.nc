@@ -5,9 +5,7 @@
   int managed = nc_manage(argc, argv)
   if managed >= 0 then return managed
   NcContext *c = calloc(1, sizeof *c)
-  if not c
-    fputs("out of memory\n", stderr)
-    return 1
+  if not c then fputs("out of memory\n", stderr); return 1
   nc_init(c, "")
   bool json = false
   for int i = 1; i + 1 < argc; ++i

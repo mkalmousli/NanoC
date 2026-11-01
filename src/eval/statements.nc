@@ -34,9 +34,7 @@
       nc_bind(ctx, env, id, nc_eval(m, nc_until(&c, ";"), env, depth, true))
       nc_need(&c, ";")
     else
-      if !nc_assignment(m, &c, env, depth, t)
-        --c.pos
-        (void)nc_eval(m, nc_until(&c, ";"), env, depth, true)
+      if !nc_assignment(m, &c, env, depth, t) then --c.pos; (void)nc_eval(m, nc_until(&c, ";"), env, depth, true)
       nc_need(&c, ";")
   out
 // Expands a compile-time block.

@@ -67,17 +67,13 @@ NcTokens nc_lex(NcContext *c, const char *s, int line) {
         }
         t.n = i - start;
         bool newline = 0;
-        {
-            size_t nanoc_start_1 = (start);
-            size_t nanoc_end_2 = (i);
-            for (size_t n = nanoc_start_1; n < nanoc_end_2; ++n) {
-                if (s[n] == '\n') {
-                    ++line;
-                    column = 1;
-                    newline = 1;
-                } else {
-                    ++column;
-                }
+        for (size_t n = (start), nanoc_end_1 = (i); n < nanoc_end_1; ++n) {
+            if (s[n] == '\n') {
+                ++line;
+                column = 1;
+                newline = 1;
+            } else {
+                ++column;
             }
         }
         if (t.kind == NC_SPACE) {

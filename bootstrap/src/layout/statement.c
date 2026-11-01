@@ -56,14 +56,10 @@ char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
         declaration = 1;
     } else if (items.n > 1 && items.v[0].kind == NC_WORD && (nc_is(items.v[1], ":") || nc_is(items.v[1],
             ","))) {
-        {
-            size_t nanoc_start_1 = (0);
-            size_t nanoc_end_2 = (items.n);
-            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":")) && (i + 1 == items.n || !nc_is(items.v[i + 1],
-                        ":"))) {
-                    declaration = 1;
-                }
+        for (size_t i = (0), nanoc_end_1 = (items.n); i < nanoc_end_1; ++i) {
+            if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":")) && (i + 1 == items.n || !nc_is(items.v[i + 1],
+                    ":"))) {
+                declaration = 1;
             }
         }
     }
@@ -73,26 +69,17 @@ char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
         }
         return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, 1), line.line)));
     }
-    {
-        size_t nanoc_start_3 = (0);
-        size_t nanoc_end_4 = (ts.n);
-        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-            if (ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")) {
-                if (tail) {
-                    nc_fail(c, line.line, "value function needs a final expression");
-                }
-                NcTokens normalized = {0};
-                {
-                    size_t nanoc_start_5 = (0);
-                    size_t nanoc_end_6 = (ts.n);
-                    for (size_t j = nanoc_start_5; j < nanoc_end_6; ++j) {
-                        NC_PUSH(c, normalized, nc_is(ts.v[j], ":=") ? nc_token("=", ts.v[j].line,
-                                NC_PUNCT) : ts.v[j]);
-                    }
-                }
-                char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), 1);
-                return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)));
+    for (size_t i = (0), nanoc_end_2 = (ts.n); i < nanoc_end_2; ++i) {
+        if (ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")) {
+            if (tail) {
+                nc_fail(c, line.line, "value function needs a final expression");
             }
+            NcTokens normalized = {0};
+            for (size_t j = (0), nanoc_end_3 = (ts.n); j < nanoc_end_3; ++j) {
+                NC_PUSH(c, normalized, nc_is(ts.v[j], ":=") ? nc_token("=", ts.v[j].line, NC_PUNCT) : ts.v[j]);
+            }
+            char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), 1);
+            return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)));
         }
     }
     char *code = nc_trim(c, nc_words(c, ts));
@@ -116,13 +103,9 @@ char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
     if (tail) {
         const char *decls[] = {"int", "char", "void", "float", "double", "struct", "typedef",
                 "static"};
-        {
-            size_t nanoc_start_7 = (0);
-            size_t nanoc_end_8 = (8);
-            for (size_t i = nanoc_start_7; i < nanoc_end_8; ++i) {
-                if (!strcmp(first, decls[i])) {
-                    nc_fail(c, line.line, "value function needs a final expression");
-                }
+        for (size_t i = (0), nanoc_end_4 = (8); i < nanoc_end_4; ++i) {
+            if (!strcmp(first, decls[i])) {
+                nc_fail(c, line.line, "value function needs a final expression");
             }
         }
         return nc_format(c, "return %s;", code);

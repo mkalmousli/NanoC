@@ -14,20 +14,16 @@ void nc_alias(NcToken *t) {
     if (t->kind != NC_WORD || t->n < 2 || t->n > 5) {
         return;
     }
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (sizeof map / sizeof *map);
-        for (size_t k = nanoc_start_1; k < nanoc_end_2; ++k) {
-            if (strlen(map[k][0]) == t->n && !strncmp(t->s, map[k][0], t->n)) {
-                if (nc_std == 89 && strstr(map[k][1], "long long")) {
-                    t->s = map[k][1][0] == 'u' ? "unsigned long" : "long";
-                    t->n = strlen(t->s);
-                    return;
-                }
-                t->s = map[k][1];
-                t->n = strlen(map[k][1]);
+    for (size_t k = (0), nanoc_end_1 = (sizeof map / sizeof *map); k < nanoc_end_1; ++k) {
+        if (strlen(map[k][0]) == t->n && !strncmp(t->s, map[k][0], t->n)) {
+            if (nc_std == 89 && strstr(map[k][1], "long long")) {
+                t->s = map[k][1][0] == 'u' ? "unsigned long" : "long";
+                t->n = strlen(t->s);
                 return;
             }
+            t->s = map[k][1];
+            t->n = strlen(map[k][1]);
+            return;
         }
     }
 }
@@ -44,14 +40,10 @@ char *nc_alias_name(NcContext *c, const char *name) {
 
 NcTokens nc_aliased(NcContext *c, NcTokens ts) {
     NcTokens out = {0};
-    {
-        size_t nanoc_start_3 = (0);
-        size_t nanoc_end_4 = (ts.n);
-        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-            NcToken t = ts.v[i];
-            nc_alias(&t);
-            NC_PUSH(c, out, t);
-        }
+    for (size_t i = (0), nanoc_end_2 = (ts.n); i < nanoc_end_2; ++i) {
+        NcToken t = ts.v[i];
+        nc_alias(&t);
+        NC_PUSH(c, out, t);
     }
     return out;
 }

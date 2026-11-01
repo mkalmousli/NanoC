@@ -1,4 +1,3 @@
-#include <stdio.h>
 @f main int
-  puts("Hello from NanoC!")
+  say "Hello from NanoC!", 6 * 7, 1.5
   0

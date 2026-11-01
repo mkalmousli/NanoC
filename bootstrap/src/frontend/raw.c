@@ -7,12 +7,8 @@ char *nc_raw(NcContext *ctx, NcCursor *c) {
     NcHeader h = nc_header(c);
     NcLines lines = nc_body_lines(c, h.line, h.indent);
     NcBuffer out = {0};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (lines.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            nc_printf(ctx, &out, "%s\n", nc_join(ctx, lines.v[i].ts));
-        }
+    for (size_t i = (0), nanoc_end_1 = (lines.n); i < nanoc_end_1; ++i) {
+        nc_printf(ctx, &out, "%s\n", nc_join(ctx, lines.v[i].ts));
     }
     return out.v;
 }

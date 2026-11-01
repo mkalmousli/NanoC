@@ -29,9 +29,7 @@
     NcGroups *values = nc_alloc(ctx, sizeof *values)
     usize end = p.variadic ? args.n : i + 1
     if p.variadic then b.variadic = p.name
-    for j:usize in i..end
-      validate(ctx, p, args.v[j])
-      NC_PUSH(ctx, *values, args.v[j])
+    for j:usize in i..end then validate(ctx, p, args.v[j]); NC_PUSH(ctx, *values, args.v[j])
     nc_put(ctx, &b.values, p.name, values)
   char *generated = (m->program ? nc_macro_program(ctx, m, &b, depth)
     : nc_substitute(ctx, m->body, &b, depth, SIZE_MAX))

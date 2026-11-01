@@ -58,12 +58,8 @@ NcTokens nc_line_expression(NcCursor *c) {
         if (t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))) {
             size_t start = c->pos;
             (void)nc_group(c, nc_text(c->ctx, t), nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}");
-            {
-                size_t nanoc_start_1 = (start);
-                size_t nanoc_end_2 = (c->pos);
-                for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                    NC_PUSH(c->ctx, ts, c->ts.v[i]);
-                }
+            for (size_t i = (start), nanoc_end_1 = (c->pos); i < nanoc_end_1; ++i) {
+                NC_PUSH(c->ctx, ts, c->ts.v[i]);
             }
         } else {
             NC_PUSH(c->ctx, ts, t);

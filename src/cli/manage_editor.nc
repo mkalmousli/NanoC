@@ -8,21 +8,11 @@
   char cfg[PATH_MAX]
   char dir[PATH_MAX]
   if !mg_home(home) or !mg_config(cfg) then return false
-  if !strcmp(name, "vscode")
-    snprintf(dir, sizeof dir, "%s/.vscode", home)
-    return nc_exists(dir) || nc_have_command("code")
-  if !strcmp(name, "vim")
-    snprintf(dir, sizeof dir, "%s/.vim", home)
-    return nc_exists(dir) || nc_have_command("vim")
-  if !strcmp(name, "neovim")
-    snprintf(dir, sizeof dir, "%s/nvim", cfg)
-    return nc_exists(dir) || nc_have_command("nvim")
-  if !strcmp(name, "emacs")
-    snprintf(dir, sizeof dir, "%s/.emacs.d", home)
-    return nc_have_command("emacs") || nc_exists(dir)
-  if !strcmp(name, "micro")
-    snprintf(dir, sizeof dir, "%s/micro", cfg)
-    return nc_exists(dir) || nc_have_command("micro")
+  if !strcmp(name, "vscode") then snprintf(dir, sizeof dir, "%s/.vscode", home); return nc_exists(dir) || nc_have_command("code")
+  if !strcmp(name, "vim") then snprintf(dir, sizeof dir, "%s/.vim", home); return nc_exists(dir) || nc_have_command("vim")
+  if !strcmp(name, "neovim") then snprintf(dir, sizeof dir, "%s/nvim", cfg); return nc_exists(dir) || nc_have_command("nvim")
+  if !strcmp(name, "emacs") then snprintf(dir, sizeof dir, "%s/.emacs.d", home); return nc_have_command("emacs") || nc_exists(dir)
+  if !strcmp(name, "micro") then snprintf(dir, sizeof dir, "%s/micro", cfg); return nc_exists(dir) || nc_have_command("micro")
   if !strcmp(name, "nano") then return nc_have_command("nano")
   if !strcmp(name, "sublime") then return nc_have_command("subl") || (mg_sublime_dir(dir) && nc_exists(dir))
   false
@@ -48,9 +38,7 @@
   FILE *in = fopen(path, "r")
   if not in then return
   FILE *out = fopen(tmp, "w")
-  if not out
-    fclose(in)
-    return
+  if not out then fclose(in); return
   char line[PATH_MAX + 64]
   usize len = strlen(name)
   while fgets(line, sizeof line, in)
@@ -64,6 +52,4 @@
   char path[PATH_MAX]
   mg_manifest(prefix, path)
   FILE *f = fopen(path, "a")
-  if f
-    fprintf(f, "%s %s\n", name, dst)
-    fclose(f)
+  if f then fprintf(f, "%s %s\n", name, dst); fclose(f)

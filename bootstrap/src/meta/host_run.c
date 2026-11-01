@@ -19,12 +19,8 @@ NcValue nc_host_run(NcMachine *m, NcValues a, int line) {
     }
     NcValue list = a.v[0];
     char **argv = nc_alloc(c, (list.count + 1) * sizeof *argv);
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (list.count);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            argv[i] = (char *)nc_meta_text(c, list.items[i], line);
-        }
+    for (size_t i = (0), nanoc_end_1 = (list.count); i < nanoc_end_1; ++i) {
+        argv[i] = (char *)nc_meta_text(c, list.items[i], line);
     }
     const char * cwd = a.n == 2 ? nc_meta_text(c, a.v[1], line) : NULL;
     char out_path[32];

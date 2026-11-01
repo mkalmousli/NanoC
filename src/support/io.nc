@@ -11,9 +11,7 @@
   char block[8192]
   usize n
   while (n = fread(block, 1, sizeof block, f)) != 0
-    if b.n > c->max_output or n > c->max_output - b.n
-      fclose(f)
-      nc_fail(c, 1, "input limit exceeded")
+    if b.n > c->max_output or n > c->max_output - b.n then fclose(f); nc_fail(c, 1, "input limit exceeded")
     nc_addn(c, &b, block, n)
   bool bad = ferror(f)
   fclose(f)
@@ -31,9 +29,7 @@
   while done < n
     ssize_t written = write(fd, contents + done, n - done)
     if written < 0 and errno == EINTR then continue
-    if written <= 0
-      bad = true
-      break
+    if written <= 0 then bad = true; break
     done += (usize)written
   if close(fd) then bad = true
   if !bad and !rename(temporary, path) then return

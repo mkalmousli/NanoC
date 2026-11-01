@@ -41,12 +41,8 @@ NcTokens nc_until(NcCursor *c, const char *delimiter) {
             const char * open = nc_text(c->ctx, t);
             const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}";
             NcTokens body = nc_group(c, open, close);
-            {
-                size_t nanoc_start_1 = (0);
-                size_t nanoc_end_2 = (body.n);
-                for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                    NC_PUSH(c->ctx, out, body.v[i]);
-                }
+            for (size_t i = (0), nanoc_end_1 = (body.n); i < nanoc_end_1; ++i) {
+                NC_PUSH(c->ctx, out, body.v[i]);
             }
             NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT));
         }

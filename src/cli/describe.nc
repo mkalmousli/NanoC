@@ -19,15 +19,10 @@
 @f nc_describe(FILE *out, cstr topic) bool
   NcJson w
   jw_start(&w, out)
-  if !strcmp(topic, "asm")
-    fprintf(out, "%s\n", ASM_CARD)
-    return true
+  if !strcmp(topic, "asm") then fprintf(out, "%s\n", ASM_CARD); return true
   if *topic && strcmp(topic, "syntax") && strcmp(topic, "builtins")
     for i:usize in 0..nc_spec_count
-      if !strcmp(topic, nc_specs[i].name)
-        spec(&w, &nc_specs[i])
-        fputc('\n', out)
-        return true
+      if !strcmp(topic, nc_specs[i].name) then spec(&w, &nc_specs[i]); fputc('\n', out); return true
     return false
   jw_open(&w, '{')
   jw_ki(&w, "schemaVersion", 1)

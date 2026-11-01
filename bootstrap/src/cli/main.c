@@ -58,12 +58,8 @@ int main(int argc, char **argv) {
                 nc_write(c, o.output, generated);
             }
             if (! o.json) {
-                {
-                    size_t nanoc_start_1 = (0);
-                    size_t nanoc_end_2 = (c->logs.n);
-                    for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                        fprintf(stderr, "%s\n", c->logs.v[i]);
-                    }
+                for (size_t i = (0), nanoc_end_1 = (c->logs.n); i < nanoc_end_1; ++i) {
+                    fprintf(stderr, "%s\n", c->logs.v[i]);
                 }
             }
         }

@@ -14,9 +14,7 @@
   char *text = nc_trim(ctx, nc_join(ctx, ts))
   if parts.n != 2 then return *text ? nc_format(ctx, "%s;", nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, ts)))) : ""
   char *type = nc_trim(ctx, nc_join(ctx, parts.v[1])), *stars = nc_format(ctx, "")
-  while *type == '*'
-    stars = nc_format(ctx, "%s*", stars)
-    ++type
+  while *type == '*' then stars = nc_format(ctx, "%s*", stars); ++type
   NcGroups names = nc_split(ctx, parts.v[0], ",")
   NcBuffer out = {0}
   nc_printf(ctx, &out, "%s ", nc_trim(ctx, type))

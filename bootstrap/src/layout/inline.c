@@ -5,13 +5,9 @@
 // Tells if a word starts a block that may take an inline body.
 bool inline_head(NcToken t) {
     const char * k[] = {"if", "elif", "else", "while", "for", "unless", "until"};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (7);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            if (nc_is(t, k[i])) {
-                return 1;
-            }
+    for (size_t i = (0), nanoc_end_1 = (7); i < nanoc_end_1; ++i) {
+        if (nc_is(t, k[i])) {
+            return 1;
         }
     }
     return 0;
@@ -35,18 +31,14 @@ int inline_split(NcTokens ts) {
         return -1;
     }
     int depth = 0;
-    {
-        size_t nanoc_start_3 = (f);
-        size_t nanoc_end_4 = (ts.n);
-        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-            NcToken t = ts.v[i];
-            if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
-                ++depth;
-            } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
-                --depth;
-            } else if (! depth && nc_is(t, "then") && i > f) {
-                return i;
-            }
+    for (size_t i = (f), nanoc_end_2 = (ts.n); i < nanoc_end_2; ++i) {
+        NcToken t = ts.v[i];
+        if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
+            ++depth;
+        } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
+            --depth;
+        } else if (! depth && nc_is(t, "then") && i > f) {
+            return i;
         }
     }
     if (nc_is(ts.v[f], "else") && f + 1 < ts.n) {
@@ -65,18 +57,14 @@ int inline_split(NcTokens ts) {
 
 int inline_else(NcTokens ts) {
     int depth = 0;
-    {
-        size_t nanoc_start_5 = (0);
-        size_t nanoc_end_6 = (ts.n);
-        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
-            NcToken t = ts.v[i];
-            if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
-                ++depth;
-            } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
-                --depth;
-            } else if (! depth && i > 0 && nc_is(t, "else")) {
-                return i;
-            }
+    for (size_t i = (0), nanoc_end_3 = (ts.n); i < nanoc_end_3; ++i) {
+        NcToken t = ts.v[i];
+        if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
+            ++depth;
+        } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
+            --depth;
+        } else if (! depth && i > 0 && nc_is(t, "else")) {
+            return i;
         }
     }
     return -1;
@@ -86,41 +74,37 @@ int inline_else(NcTokens ts) {
 
 NcLines nc_split_inline(NcContext *ctx, NcLines input) {
     NcLines out = {0};
-    {
-        size_t nanoc_start_7 = (0);
-        size_t nanoc_end_8 = (input.n);
-        for (size_t i = nanoc_start_7; i < nanoc_end_8; ++i) {
-            NcLayoutLine line = input.v[i];
-            bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent;
-            int at = block ? -1 : inline_split(line.ts);
-            if (at < 0) {
-                NC_PUSH(ctx, out, line);
-                continue;
-            }
-            NcLayoutLine head = line, body = line;
-            size_t first = inline_first(line.ts);
-            size_t cut = (size_t)at + 1;
-            head.ts = nc_slice(line.ts, 0, at == (int)first ? cut : (size_t)at);
-            while (cut < line.ts.n && line.ts.v[cut].kind == NC_SPACE) {
-                ++cut;
-            }
-            body.ts = nc_slice(line.ts, cut, line.ts.n);
-            body.indent += 2;
-            NC_PUSH(ctx, out, head);
-            int e = inline_else(body.ts);
-            if (e < 0) {
-                NC_PUSH(ctx, out, body);
-                continue;
-            }
-            NcLayoutLine alt = line, rest = body;
-            rest.ts = nc_slice(body.ts, e + 1, body.ts.n);
-            body.ts = nc_slice(body.ts, 0, e);
-            alt.ts = nc_slice(line.ts, 0, 0);
-            NC_PUSH(ctx, alt.ts, nc_token("else", line.line, NC_WORD));
-            NC_PUSH(ctx, out, body);
-            NC_PUSH(ctx, out, alt);
-            NC_PUSH(ctx, out, rest);
+    for (size_t i = (0), nanoc_end_4 = (input.n); i < nanoc_end_4; ++i) {
+        NcLayoutLine line = input.v[i];
+        bool block = i + 1 < input.n && input.v[i + 1].indent > line.indent;
+        int at = block ? -1 : inline_split(line.ts);
+        if (at < 0) {
+            NC_PUSH(ctx, out, line);
+            continue;
         }
+        NcLayoutLine head = line, body = line;
+        size_t first = inline_first(line.ts);
+        size_t cut = (size_t)at + 1;
+        head.ts = nc_slice(line.ts, 0, at == (int)first ? cut : (size_t)at);
+        while (cut < line.ts.n && line.ts.v[cut].kind == NC_SPACE) {
+            ++cut;
+        }
+        body.ts = nc_slice(line.ts, cut, line.ts.n);
+        body.indent += 2;
+        NC_PUSH(ctx, out, head);
+        int e = inline_else(body.ts);
+        if (e < 0) {
+            NC_PUSH(ctx, out, body);
+            continue;
+        }
+        NcLayoutLine alt = line, rest = body;
+        rest.ts = nc_slice(body.ts, e + 1, body.ts.n);
+        body.ts = nc_slice(body.ts, 0, e);
+        alt.ts = nc_slice(line.ts, 0, 0);
+        NC_PUSH(ctx, alt.ts, nc_token("else", line.line, NC_WORD));
+        NC_PUSH(ctx, out, body);
+        NC_PUSH(ctx, out, alt);
+        NC_PUSH(ctx, out, rest);
     }
     return out;
 }

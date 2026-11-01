@@ -28,16 +28,12 @@ char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, si
                 nc_fail(ctx, t.line, "nested repetitions are not supported");
             }
             NcGroups *values = nc_get(&b->values, b->variadic);
-            {
-                size_t nanoc_start_1 = (0);
-                size_t nanoc_end_2 = (values->n);
-                for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                    if (i) {
-                        nc_add(ctx, &out, separator);
-                    }
-                    nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i));
-                    nc_check(ctx, out.n, t.line);
+            for (size_t i = (0), nanoc_end_1 = (values->n); i < nanoc_end_1; ++i) {
+                if (i) {
+                    nc_add(ctx, &out, separator);
                 }
+                nc_add(ctx, &out, nc_substitute(ctx, body, b, depth + 1, i));
+                nc_check(ctx, out.n, t.line);
             }
         } else {
             char *name = nc_name(&c);

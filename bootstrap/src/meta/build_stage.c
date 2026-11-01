@@ -29,13 +29,9 @@ char *nc_build_stage(NcContext *ctx, const char *source) {
             if (next < ts.n && nc_is(ts.v[next], "bt")) {
                 c.pos = next + 1;
                 NC_PUSH(ctx, programs, nc_meta_body(&c, nc_header(&c), 1, 0));
-                {
-                    size_t nanoc_start_1 = (start);
-                    size_t nanoc_end_2 = (c.pos);
-                    for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                        for (size_t j = 0; j < ts.v[i].n; ++j) {
-                            nc_add(ctx, &bare, ts.v[i].s[j] == '\n' ? "\n" : " ");
-                        }
+                for (size_t i = (start), nanoc_end_1 = (c.pos); i < nanoc_end_1; ++i) {
+                    for (size_t j = 0; j < ts.v[i].n; ++j) {
+                        nc_add(ctx, &bare, ts.v[i].s[j] == '\n' ? "\n" : " ");
                     }
                 }
                 continue;
@@ -57,12 +53,8 @@ char *nc_build_stage(NcContext *ctx, const char *source) {
                 (void)nc_meta_body(&c, nc_header(&c), 1, 0);
             }
         }
-        {
-            size_t nanoc_start_3 = (start);
-            size_t nanoc_end_4 = (c.pos);
-            for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-                nc_addn(ctx, &bare, ts.v[i].s, ts.v[i].n);
-            }
+        for (size_t i = (start), nanoc_end_2 = (c.pos); i < nanoc_end_2; ++i) {
+            nc_addn(ctx, &bare, ts.v[i].s, ts.v[i].n);
         }
     }
     if (! programs.n) {
@@ -72,22 +64,18 @@ char *nc_build_stage(NcContext *ctx, const char *source) {
     nc_add(ctx, &bare, "");
     ctx->source = bare.v;
     NcBuffer prelude = {0};
-    {
-        size_t nanoc_start_5 = (0);
-        size_t nanoc_end_6 = (programs.n);
-        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
-            if (ctx->frame_count == 256) {
-                nc_fail(ctx, 1, "build depth limit exceeded");
-            }
-            char *frame = nc_format(ctx, "while executing @bt at %s:%d", ctx->file, programs.v[i].n ? programs.v[i].v[0].line : 1);
-            ctx->frames[ctx->frame_count++] = frame;
-            nc_add(ctx, &prelude, nc_program(ctx, programs.v[i], NULL, NC_BT, 1));
-            --ctx->frame_count;
-            if (ctx->next_source) {
-                ctx->source = ctx->next_source;
-                ctx->next_source = NULL;
-                ctx->again = 0;
-            }
+    for (size_t i = (0), nanoc_end_3 = (programs.n); i < nanoc_end_3; ++i) {
+        if (ctx->frame_count == 256) {
+            nc_fail(ctx, 1, "build depth limit exceeded");
+        }
+        char *frame = nc_format(ctx, "while executing @bt at %s:%d", ctx->file, programs.v[i].n ? programs.v[i].v[0].line : 1);
+        ctx->frames[ctx->frame_count++] = frame;
+        nc_add(ctx, &prelude, nc_program(ctx, programs.v[i], NULL, NC_BT, 1));
+        --ctx->frame_count;
+        if (ctx->next_source) {
+            ctx->source = ctx->next_source;
+            ctx->next_source = NULL;
+            ctx->again = 0;
         }
     }
     if (prelude.n) {

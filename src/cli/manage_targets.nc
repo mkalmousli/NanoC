@@ -9,9 +9,7 @@
 // Finds the user config directory.
 @f mg_config(char *out) bool
   const char *xdg = getenv("XDG_CONFIG_HOME")
-  if xdg and *xdg
-    snprintf(out, PATH_MAX, "%s", xdg)
-    return true
+  if xdg and *xdg then snprintf(out, PATH_MAX, "%s", xdg); return true
   char home[PATH_MAX]
   if !mg_home(home) then return false
   snprintf(out, PATH_MAX, "%s/.config", home)
@@ -49,10 +47,5 @@
   for i in 0..3
     char base[PATH_MAX]
     snprintf(base, sizeof base, "%s/%s", home, bases[i])
-    if nc_exists(base)
-      mg_vscode_at(t, n, base)
-      found += 1
-  if not found
-    char base[PATH_MAX]
-    snprintf(base, sizeof base, "%s/.vscode", home)
-    mg_vscode_at(t, n, base)
+    if nc_exists(base) then mg_vscode_at(t, n, base); found += 1
+  if not found then char base[PATH_MAX]; snprintf(base, sizeof base, "%s/.vscode", home); mg_vscode_at(t, n, base)

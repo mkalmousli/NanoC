@@ -42,26 +42,18 @@ char *nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t dept
         nc_fail(ctx, nc_line(c), "wrong argument count for @%s", name);
     }
     NcBindings b = {0};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (m->params.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            NcParam p = m->params.v[i];
-            NcGroups *values = nc_alloc(ctx, sizeof *values);
-            size_t end = p.variadic ? args.n : i + 1;
-            if (p.variadic) {
-                b.variadic = p.name;
-            }
-            {
-                size_t nanoc_start_3 = (i);
-                size_t nanoc_end_4 = (end);
-                for (size_t j = nanoc_start_3; j < nanoc_end_4; ++j) {
-                    validate(ctx, p, args.v[j]);
-                    NC_PUSH(ctx, *values, args.v[j]);
-                }
-            }
-            nc_put(ctx, &b.values, p.name, values);
+    for (size_t i = (0), nanoc_end_1 = (m->params.n); i < nanoc_end_1; ++i) {
+        NcParam p = m->params.v[i];
+        NcGroups *values = nc_alloc(ctx, sizeof *values);
+        size_t end = p.variadic ? args.n : i + 1;
+        if (p.variadic) {
+            b.variadic = p.name;
         }
+        for (size_t j = (i), nanoc_end_2 = (end); j < nanoc_end_2; ++j) {
+            validate(ctx, p, args.v[j]);
+            NC_PUSH(ctx, *values, args.v[j]);
+        }
+        nc_put(ctx, &b.values, p.name, values);
     }
     char *generated = (m->program ? nc_macro_program(ctx, m, &b, depth) : nc_substitute(ctx,
             m->body, &b, depth, SIZE_MAX));

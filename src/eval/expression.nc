@@ -9,9 +9,7 @@
     NcToken op = nc_take(&e->c)
     bool min_literal = nc_is(op, "-") && nc_at(&e->c, "9223372036854775808")
     NcValue a
-    if min_literal
-      (void)nc_take(&e->c)
-      a = nc_integer(INT64_MIN)
+    if min_literal then (void)nc_take(&e->c); a = nc_integer(INT64_MIN)
     else a = nc_expression(e, 7, active)
     if active
       if nc_is(op, "!") then out = nc_boolean(!nc_truth(a))

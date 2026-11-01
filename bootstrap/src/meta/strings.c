@@ -16,19 +16,15 @@ NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line) {
         }
         NcTokens ts = nc_lex(c, text, line);
         NcBuffer out = {0};
-        {
-            size_t nanoc_start_1 = (0);
-            size_t nanoc_end_2 = (ts.n);
-            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                NcToken t = ts.v[i];
-                nc_step(c, line);
-                if (t.kind == NC_WORD && nc_is(t, needle)) {
-                    nc_add(c, &out, to);
-                } else {
-                    nc_addn(c, &out, t.s, t.n);
-                }
-                nc_check(c, out.n, line);
+        for (size_t i = (0), nanoc_end_1 = (ts.n); i < nanoc_end_1; ++i) {
+            NcToken t = ts.v[i];
+            nc_step(c, line);
+            if (t.kind == NC_WORD && nc_is(t, needle)) {
+                nc_add(c, &out, to);
+            } else {
+                nc_addn(c, &out, t.s, t.n);
             }
+            nc_check(c, out.n, line);
         }
         nc_add(c, &out, "");
         return nc_value_text(a.v[0].kind, out.v);

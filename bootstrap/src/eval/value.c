@@ -26,13 +26,9 @@ NcValue nc_value_text(NcValueKind kind, char *s) {
 
 NcValue nc_list(NcValues items) {
     NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (items.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            if (items.v[i].height + 1 > v.height) {
-                v.height = items.v[i].height + 1;
-            }
+    for (size_t i = (0), nanoc_end_1 = (items.n); i < nanoc_end_1; ++i) {
+        if (items.v[i].height + 1 > v.height) {
+            v.height = items.v[i].height + 1;
         }
     }
     return v;
@@ -74,16 +70,12 @@ char *nc_display(NcContext *c, NcValue v, size_t depth, int line) {
     }
     NcBuffer b = {0};
     nc_add(c, &b, "[");
-    {
-        size_t nanoc_start_3 = (0);
-        size_t nanoc_end_4 = (v.count);
-        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-            if (i) {
-                nc_add(c, &b, ", ");
-            }
-            nc_add(c, &b, nc_display(c, v.items[i], depth + 1, line));
-            nc_check(c, b.n, line);
+    for (size_t i = (0), nanoc_end_2 = (v.count); i < nanoc_end_2; ++i) {
+        if (i) {
+            nc_add(c, &b, ", ");
         }
+        nc_add(c, &b, nc_display(c, v.items[i], depth + 1, line));
+        nc_check(c, b.n, line);
     }
     nc_add(c, &b, "]");
     return b.v;
@@ -120,13 +112,9 @@ bool nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line) {
     if (a.count != b.count) {
         return 0;
     }
-    {
-        size_t nanoc_start_5 = (0);
-        size_t nanoc_end_6 = (a.count);
-        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
-            if (!nc_equal(c, a.items[i], b.items[i], depth + 1, line)) {
-                return 0;
-            }
+    for (size_t i = (0), nanoc_end_3 = (a.count); i < nanoc_end_3; ++i) {
+        if (!nc_equal(c, a.items[i], b.items[i], depth + 1, line)) {
+            return 0;
         }
     }
     return 1;

@@ -13,8 +13,5 @@
   int64_t start = args.n == 2 ? nc_numeric(c, args.v[0], line) : 0
   int64_t end = nc_numeric(c, args.v[args.n - 1], line)
   NcValues list = {0}
-  for int64_t i = start; i < end; ++i
-    nc_step(c, line)
-    nc_check(c, (list.n + 1) * 8, line)
-    NC_PUSH(c, list, nc_integer(i))
+  for int64_t i = start; i < end; ++i then nc_step(c, line); nc_check(c, (list.n + 1) * 8, line); NC_PUSH(c, list, nc_integer(i))
   nc_list(list)

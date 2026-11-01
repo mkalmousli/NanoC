@@ -10,23 +10,15 @@ size_t nc_literal_start(const char *s, size_t i, bool cpp) {
     const char *raw[] = {"R\"", "u8R\"", "uR\"", "UR\"", "LR\""};
     const char *normal[] = {"u8\"", "u\"", "U\"", "L\"", "u'", "U'", "L'"};
     if (cpp) {
-        {
-            size_t nanoc_start_1 = (0);
-            size_t nanoc_end_2 = (5);
-            for (size_t n = nanoc_start_1; n < nanoc_end_2; ++n) {
-                if (!strncmp(s + i, raw[n], strlen(raw[n]))) {
-                    return strlen(raw[n]);
-                }
+        for (size_t n = (0), nanoc_end_1 = (5); n < nanoc_end_1; ++n) {
+            if (!strncmp(s + i, raw[n], strlen(raw[n]))) {
+                return strlen(raw[n]);
             }
         }
     }
-    {
-        size_t nanoc_start_3 = (0);
-        size_t nanoc_end_4 = (7);
-        for (size_t n = nanoc_start_3; n < nanoc_end_4; ++n) {
-            if (!strncmp(s + i, normal[n], strlen(normal[n]))) {
-                return strlen(normal[n]);
-            }
+    for (size_t n = (0), nanoc_end_2 = (7); n < nanoc_end_2; ++n) {
+        if (!strncmp(s + i, normal[n], strlen(normal[n]))) {
+            return strlen(normal[n]);
         }
     }
     return 0;

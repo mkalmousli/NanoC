@@ -9,12 +9,8 @@ void nc_pp_put(NcPretty *p, const char *s, size_t n) {
         if (p->cont) {
             width += 8;
         }
-        {
-            size_t nanoc_start_1 = (0);
-            size_t nanoc_end_2 = (width);
-            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                nc_add(p->c, &p->out, " ");
-            }
+        for (size_t i = (0), nanoc_end_1 = (width); i < nanoc_end_1; ++i) {
+            nc_add(p->c, &p->out, " ");
         }
         p->col = width;
         p->bol = 0;

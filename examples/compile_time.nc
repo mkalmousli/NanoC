@@ -1,11 +1,10 @@
-#include <stdio.h>
+@use std
+// Runs while compiling: the table below is computed by the compiler, not at run time.
 @ct
-  f square(n) = n*n
-  for i 1..5
-    emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
+  vals:=[]
+  for i 0..8
+    vals = push(vals, str(i * i))
+  emit("static const int squares[] = {" + join(vals, ", ") + "};")
 @f main int
-  sum:=0
-  for i 0..4
-    sum+=i
-  printf("sum=%d, square_4=%d\n",sum,square_4())
+  for i 0..8 then say "square", i, "=", squares[i]
   0

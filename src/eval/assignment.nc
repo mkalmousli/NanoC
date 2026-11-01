@@ -3,16 +3,12 @@
 @f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, usize depth, NcToken name) bool
   if name.kind != NC_WORD then return false
   usize saved = c->pos
-  if nc_end(c)
-    c->pos = saved
-    return false
+  if nc_end(c) then c->pos = saved; return false
   NcToken op = c->ts.v[c->pos]
   bool bind = nc_is(op, ":="), assign = nc_is(op, "=")
   bool step = nc_is(op, "++") || nc_is(op, "--")
   bool augment = op.n == 2 && op.s[1] == '=' && strchr("+-*/%", op.s[0])
-  if !bind and !assign and !step and !augment
-    c->pos = saved
-    return false
+  if !bind and !assign and !step and !augment then c->pos = saved; return false
   (void)nc_take(c)
   NcContext *ctx = m->ctx
   char *id = nc_text(ctx, name)

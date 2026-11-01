@@ -9,9 +9,7 @@ extern int nc_std;
   for i:usize in 0..parts.n
     char *a = nc_trim(c, nc_join(c, parts.v[i]))
     if i then nc_add(c, &out, "putchar(' '); ")
-    if *a == '"'
-      nc_printf(c, &out, "fputs(%s, stdout); ", a)
-      continue
+    if *a == '"' then nc_printf(c, &out, "fputs(%s, stdout); ", a); continue
     if nc_std == 89 or nc_std == 99 then nc_fail(c, line, "say of a value needs --std c11 or newer")
     nc_printf(c, &out, "printf(_Generic((%s), char *: \"%%s\", const char *: \"%%s\", "
       "float: \"%%g\", double: \"%%g\", long double: \"%%Lg\", char: \"%%c\", "

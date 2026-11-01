@@ -34,12 +34,8 @@ bool nc_has_token(const NcMap *m, NcToken t) {
         return 0;
     }
     size_t h = 2166136261u;
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (t.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            h = (h ^ (unsigned char)t.s[i]) * 16777619u;
-        }
+    for (size_t i = (0), nanoc_end_1 = (t.n); i < nanoc_end_1; ++i) {
+        h = (h ^ (unsigned char)t.s[i]) * 16777619u;
     }
     size_t slot = h & (m->cap - 1);
     while (m->v[slot].key) {
@@ -60,13 +56,9 @@ void nc_put(NcContext *c, NcMap *m, const char *key, void *value) {
         m->cap = old.cap ? old.cap * 2 : 16;
         m->v = nc_alloc(c, m->cap * sizeof *m->v);
         m->n = 0;
-        {
-            size_t nanoc_start_3 = (0);
-            size_t nanoc_end_4 = (old.cap);
-            for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-                if (old.v[i].key) {
-                    nc_put(c, m, old.v[i].key, old.v[i].value);
-                }
+        for (size_t i = (0), nanoc_end_2 = (old.cap); i < nanoc_end_2; ++i) {
+            if (old.v[i].key) {
+                nc_put(c, m, old.v[i].key, old.v[i].value);
             }
         }
     }

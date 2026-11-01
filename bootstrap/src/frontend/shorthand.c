@@ -2,7 +2,19 @@
 #include "nanoc/nanoc.h"
 
 // Shorthand forms such as fn.
+// Tells if the loop variable name is used inside a bound expression.
+bool shadows(NcContext *ctx, const char *bound, const char *id) {
+    NcTokens ts = nc_lex(ctx, bound, 1);
+    for (size_t i = (0), nanoc_end_1 = (ts.n); i < nanoc_end_1; ++i) {
+        if (ts.v[i].kind == NC_WORD && nc_is(ts.v[i], id)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 // Expands shorthand forms.
+
 char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) {
     if (!strcmp(name, "fn")) {
         return nc_function(ctx, c, depth);
@@ -23,7 +35,12 @@ char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) 
         nc_fail(ctx, nc_line(c), "range requires two bounds");
     }
     NcTokens body = nc_group(c, "{", "}");
-    char *start = nc_fresh(ctx, "start"), *end = nc_fresh(ctx, "end");
+    char *end = nc_fresh(ctx, "end");
+    if (! shadows(ctx, low, id) && ! shadows(ctx, high, id)) {
+        return nc_format(ctx, "for (%s %s = (%s), %s = (%s); %s < %s; ++%s) {%s}", type, id,
+                low, end, high, id, end, id, nc_expand(ctx, body, depth));
+    }
+    char *start = nc_fresh(ctx, "start");
     return nc_format(ctx, "{ %s %s = (%s); %s %s = (%s); for (%s %s = %s; %s < %s; ++%s) {%s} }",
             type, start, low, type, end, high, type, id, start, id, end, id, nc_expand(ctx,
             body, depth));

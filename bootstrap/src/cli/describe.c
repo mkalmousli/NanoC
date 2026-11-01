@@ -26,15 +26,11 @@ bool nc_describe(FILE *out, const char *topic) {
         return 1;
     }
     if (*topic && strcmp(topic, "syntax") && strcmp(topic, "builtins")) {
-        {
-            size_t nanoc_start_1 = (0);
-            size_t nanoc_end_2 = (nc_spec_count);
-            for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-                if (!strcmp(topic, nc_specs[i].name)) {
-                    spec(&w, &nc_specs[i]);
-                    fputc('\n', out);
-                    return 1;
-                }
+        for (size_t i = (0), nanoc_end_1 = (nc_spec_count); i < nanoc_end_1; ++i) {
+            if (!strcmp(topic, nc_specs[i].name)) {
+                spec(&w, &nc_specs[i]);
+                fputc('\n', out);
+                return 1;
             }
         }
         return 0;
@@ -44,12 +40,8 @@ bool nc_describe(FILE *out, const char *topic) {
     if (!strcmp(topic, "builtins")) {
         jw_key(&w, "builtins");
         jw_open(&w, '[');
-        {
-            size_t nanoc_start_3 = (0);
-            size_t nanoc_end_4 = (nc_spec_count);
-            for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-                spec(&w, &nc_specs[i]);
-            }
+        for (size_t i = (0), nanoc_end_2 = (nc_spec_count); i < nanoc_end_2; ++i) {
+            spec(&w, &nc_specs[i]);
         }
         jw_close(&w, ']');
     } else {

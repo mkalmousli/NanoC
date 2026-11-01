@@ -51,9 +51,7 @@
         bounds)
     NcBuffer out = {0}
     for usize i = 0; bounds[i]; ++i
-      if !strncmp(bounds + i, "..<", 3)
-        nc_add(ctx, &out, "..")
-        i += 2
+      if !strncmp(bounds + i, "..<", 3) then nc_add(ctx, &out, ".."); i += 2
       else nc_addn(ctx, &out, bounds + i, 1)
     nc_add(ctx, &out, "")
     return nc_format(ctx, "@for (%s %s in %s)", type, id, out.v)

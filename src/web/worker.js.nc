@@ -1,7 +1,7 @@
 // Runs the real NanoC compiler (compiled to WebAssembly) off the main thread.
 // A fresh instance per request: compile errors trap, so state never leaks between runs.
 let mod
-const ready = fetch('nanoc.wasm').then(r => r.arrayBuffer()).then(b => WebAssembly.compile(b)).then(m => (mod = m))
+const ready = fetch('nanoc.wasm', { cache: 'no-cache' }).then(r => r.ok && /wasm|octet/.test(r.headers.get('content-type') || 'wasm') ? r.arrayBuffer() : Promise.reject(new Error('nanoc.wasm is not published with this build of the site'))).then(b => WebAssembly.compile(b)).then(m => (mod = m))
 const dec = new TextDecoder()
 onmessage = async e =>
   const { id, src } = e.data

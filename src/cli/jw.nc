@@ -13,9 +13,7 @@
   fputc('"', w->out)
   for ; *s; ++s
     u8 ch = (u8)*s
-    if ch == '"' || ch == '\\'
-      fputc('\\', w->out)
-      fputc(ch, w->out)
+    if ch == '"' || ch == '\\' then fputc('\\', w->out); fputc(ch, w->out)
     elif ch < 32 then fprintf(w->out, "\\u%04x", ch) else fputc(ch, w->out)
   fputc('"', w->out)
 // Opens an object or array (open is '{' or '[').

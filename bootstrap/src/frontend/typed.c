@@ -19,15 +19,11 @@ char *nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
         nc_fail(ctx, nc_line(&c), "expected C type");
     }
     NcTokens types = nc_lex(ctx, type, input.n ? input.v[0].line : 1);
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (types.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            NcToken t = types.v[i];
-            if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",") || nc_is(t, ";") || nc_is(t,
-                    "{") || nc_is(t, "}")) {
-                nc_fail(ctx, t.line, "use an ordinary C declaration for complex declarators");
-            }
+    for (size_t i = (0), nanoc_end_1 = (types.n); i < nanoc_end_1; ++i) {
+        NcToken t = types.v[i];
+        if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, ",") || nc_is(t, ";") || nc_is(t, "{") || nc_is(t,
+                "}")) {
+            nc_fail(ctx, t.line, "use an ordinary C declaration for complex declarators");
         }
     }
     char *init = "";
@@ -45,20 +41,16 @@ char *nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
         nc_fail(ctx, nc_line(&c), "missing declaration name");
     }
     NcBuffer out = {0};
-    {
-        size_t nanoc_start_3 = (0);
-        size_t nanoc_end_4 = (names.n);
-        for (size_t i = nanoc_start_3; i < nanoc_end_4; ++i) {
-            NcCursor name = {ctx, names.v[i], 0};
-            char *id = nc_name(&name);
-            if (!nc_end(&name)) {
-                nc_fail(ctx, nc_line(&name), "expected a declaration name");
-            }
-            if (i) {
-                nc_add(ctx, &out, initialized ? "; " : ", ");
-            }
-            nc_printf(ctx, &out, "%s%s%s%s", type, nc_sep(type), id, init);
+    for (size_t i = (0), nanoc_end_2 = (names.n); i < nanoc_end_2; ++i) {
+        NcCursor name = {ctx, names.v[i], 0};
+        char *id = nc_name(&name);
+        if (!nc_end(&name)) {
+            nc_fail(ctx, nc_line(&name), "expected a declaration name");
         }
+        if (i) {
+            nc_add(ctx, &out, initialized ? "; " : ", ");
+        }
+        nc_printf(ctx, &out, "%s%s%s%s", type, nc_sep(type), id, init);
     }
     return out.v;
 }
@@ -72,30 +64,26 @@ char *nc_parameters(NcContext *ctx, NcTokens ts) {
     NcGroups parts = nc_split(ctx, ts, ",");
     NcTokens pending = {0};
     NcBuffer out = {0};
-    {
-        size_t nanoc_start_5 = (0);
-        size_t nanoc_end_6 = (parts.n);
-        for (size_t i = nanoc_start_5; i < nanoc_end_6; ++i) {
-            if (pending.n) {
-                NC_PUSH(ctx, pending, nc_token(",", 1, NC_PUNCT));
-            }
-            bool colon = 0;
-            for (size_t j = 0; j < parts.v[i].n; ++j) {
-                NcToken t = parts.v[i].v[j];
-                NC_PUSH(ctx, pending, t);
-                if (nc_is(t, ":")) {
-                    colon = 1;
-                }
-            }
-            if (! colon) {
-                continue;
-            }
-            if (out.n) {
-                nc_add(ctx, &out, ", ");
-            }
-            nc_add(ctx, &out, nc_typed(ctx, pending, 0));
-            pending = (NcTokens){0};
+    for (size_t i = (0), nanoc_end_3 = (parts.n); i < nanoc_end_3; ++i) {
+        if (pending.n) {
+            NC_PUSH(ctx, pending, nc_token(",", 1, NC_PUNCT));
         }
+        bool colon = 0;
+        for (size_t j = 0; j < parts.v[i].n; ++j) {
+            NcToken t = parts.v[i].v[j];
+            NC_PUSH(ctx, pending, t);
+            if (nc_is(t, ":")) {
+                colon = 1;
+            }
+        }
+        if (! colon) {
+            continue;
+        }
+        if (out.n) {
+            nc_add(ctx, &out, ", ");
+        }
+        nc_add(ctx, &out, nc_typed(ctx, pending, 0));
+        pending = (NcTokens){0};
     }
     if (pending.n) {
         nc_fail(ctx, pending.v[0].line, "parameters require explicit types");

@@ -22,76 +22,72 @@ static size_t positive(NcContext *c, const char *s) {
 NcOptions nc_options(NcContext *c, int argc, char **argv) {
     NcOptions o = {.input = "", .output = "-", .action = ""};
     bool positional = 0;
-    {
-        int nanoc_start_1 = (1);
-        int nanoc_end_2 = (argc);
-        for (int i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            char *arg = argv[i];
-            if (!positional && !strcmp(arg, "--")) {
-                positional = 1;
-            } else if (!positional && !strcmp(arg, "--check")) {
-                o.check = 1;
-                c->effects = 0;
-            } else if (!positional && (!strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives") || !strcmp(arg,
-                    "--prototypes"))) {
-                if (!strcmp(arg, "--prototypes")) {
-                    o.prototypes = 1;
-                } else if (!strcmp(arg, "--line-directives")) {
-                    c->lines = 1;
-                } else {
-                    c->effects = 0;
-                }
-            } else if (!positional && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg,
-                    "--describe"))) {
-                o.action = arg;
-            } else if (!positional && (!strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg,
-                    "--emit") || !strcmp(arg, "--diagnostics") || !strcmp(arg, "--std") || !strcmp(arg,
-                    "--max-depth") || !strcmp(arg, "--max-steps") || !strcmp(arg, "--max-passes") || !strcmp(arg,
-                    "--max-output"))) {
-                if (++i == argc) {
-                    nc_fail(c, 0, "missing value for %s", arg);
-                }
-                char *value = argv[i];
-                if (!strcmp(arg, "-o")) {
-                    o.output = value;
-                } else if (!strcmp(arg, "--emit")) {
-                    if (strcmp(value, "normal") && strcmp(value, "mini")) {
-                        nc_fail(c, 0, "--emit requires normal or mini");
-                    }
-                    c->mini = !strcmp(value, "mini");
-                } else if (!strcmp(arg, "--std")) {
-                    nc_std = !strcmp(value, "c89") ? 89 : !strcmp(value, "c99") ? 99 : !strcmp(value,
-                            "c11") ? 11 : !strcmp(value, "c17") ? 17 : 0;
-                    if (! nc_std) {
-                        nc_fail(c, 0, "--std requires c89, c99, c11 or c17");
-                    }
-                } else if (!strcmp(arg, "--lang")) {
-                    if (strcmp(value, "c") && strcmp(value, "c++")) {
-                        nc_fail(c, 0, "--lang requires c or c++");
-                    }
-                    c->cpp = !strcmp(value, "c++");
-                } else if (!strcmp(arg, "--diagnostics")) {
-                    if (strcmp(value, "json")) {
-                        nc_fail(c, 0, "--diagnostics requires json");
-                    }
-                    o.json = 1;
-                } else if (!strcmp(arg, "--max-depth")) {
-                    c->max_depth = positive(c, value);
-                } else if (!strcmp(arg, "--max-steps")) {
-                    c->max_steps = !strcmp(value, "0") ? 0 : positive(c, value);
-                } else if (!strcmp(arg, "--max-passes")) {
-                    c->max_passes = !strcmp(value, "0") ? 0 : positive(c, value);
-                } else {
-                    c->max_output = positive(c, value);
-                }
-            } else if (!positional && *arg == '-') {
-                nc_fail(c, 0, "unknown option: %s", arg);
-            } else if (*o.input) {
-                nc_fail(c, 0, "expected one input file");
+    for (int i = (1), nanoc_end_1 = (argc); i < nanoc_end_1; ++i) {
+        char *arg = argv[i];
+        if (!positional && !strcmp(arg, "--")) {
+            positional = 1;
+        } else if (!positional && !strcmp(arg, "--check")) {
+            o.check = 1;
+            c->effects = 0;
+        } else if (!positional && (!strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives") || !strcmp(arg,
+                "--prototypes"))) {
+            if (!strcmp(arg, "--prototypes")) {
+                o.prototypes = 1;
+            } else if (!strcmp(arg, "--line-directives")) {
+                c->lines = 1;
             } else {
-                o.input = arg;
-                c->file = arg;
+                c->effects = 0;
             }
+        } else if (!positional && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg,
+                "--describe"))) {
+            o.action = arg;
+        } else if (!positional && (!strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg,
+                "--emit") || !strcmp(arg, "--diagnostics") || !strcmp(arg, "--std") || !strcmp(arg,
+                "--max-depth") || !strcmp(arg, "--max-steps") || !strcmp(arg, "--max-passes") || !strcmp(arg,
+                "--max-output"))) {
+            if (++i == argc) {
+                nc_fail(c, 0, "missing value for %s", arg);
+            }
+            char *value = argv[i];
+            if (!strcmp(arg, "-o")) {
+                o.output = value;
+            } else if (!strcmp(arg, "--emit")) {
+                if (strcmp(value, "normal") && strcmp(value, "mini")) {
+                    nc_fail(c, 0, "--emit requires normal or mini");
+                }
+                c->mini = !strcmp(value, "mini");
+            } else if (!strcmp(arg, "--std")) {
+                nc_std = !strcmp(value, "c89") ? 89 : !strcmp(value, "c99") ? 99 : !strcmp(value,
+                        "c11") ? 11 : !strcmp(value, "c17") ? 17 : 0;
+                if (! nc_std) {
+                    nc_fail(c, 0, "--std requires c89, c99, c11 or c17");
+                }
+            } else if (!strcmp(arg, "--lang")) {
+                if (strcmp(value, "c") && strcmp(value, "c++")) {
+                    nc_fail(c, 0, "--lang requires c or c++");
+                }
+                c->cpp = !strcmp(value, "c++");
+            } else if (!strcmp(arg, "--diagnostics")) {
+                if (strcmp(value, "json")) {
+                    nc_fail(c, 0, "--diagnostics requires json");
+                }
+                o.json = 1;
+            } else if (!strcmp(arg, "--max-depth")) {
+                c->max_depth = positive(c, value);
+            } else if (!strcmp(arg, "--max-steps")) {
+                c->max_steps = !strcmp(value, "0") ? 0 : positive(c, value);
+            } else if (!strcmp(arg, "--max-passes")) {
+                c->max_passes = !strcmp(value, "0") ? 0 : positive(c, value);
+            } else {
+                c->max_output = positive(c, value);
+            }
+        } else if (!positional && *arg == '-') {
+            nc_fail(c, 0, "unknown option: %s", arg);
+        } else if (*o.input) {
+            nc_fail(c, 0, "expected one input file");
+        } else {
+            o.input = arg;
+            c->file = arg;
         }
     }
     if (!*o.action && !*o.input) {

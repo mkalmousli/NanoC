@@ -20,16 +20,12 @@ static char *lower_returns(NcContext *ctx, char *body, int line) {
     }
     NcTokens ts = nc_lex(ctx, body, line);
     NcBuffer b = {0};
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (ts.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            NcToken t = ts.v[i];
-            if (t.kind == NC_PUNCT && nc_is(t, "=>")) {
-                nc_add(ctx, &b, "return ");
-            } else {
-                nc_addn(ctx, &b, t.s, t.n);
-            }
+    for (size_t i = (0), nanoc_end_1 = (ts.n); i < nanoc_end_1; ++i) {
+        NcToken t = ts.v[i];
+        if (t.kind == NC_PUNCT && nc_is(t, "=>")) {
+            nc_add(ctx, &b, "return ");
+        } else {
+            nc_addn(ctx, &b, t.s, t.n);
         }
     }
     nc_add(ctx, &b, "");

@@ -13,9 +13,7 @@
     cstr key = nc_meta_text(c, a.v[0], line)
     NcValue *v = nc_get(&c->state, key)
     if !strcmp(name, "get") then return v ? *v : a.v[1]
-    if not v
-      v = nc_alloc(c, sizeof *v)
-      nc_put(c, &c->state, key, v)
+    if not v then v = nc_alloc(c, sizeof *v); nc_put(c, &c->state, key, v)
     *v = a.v[1]
     return a.v[1]
   if !strcmp(name, "assert")
@@ -29,9 +27,7 @@
   if !strcmp(name, "fail") then nc_fail(c, line, "%s", text)
   if !strcmp(name, "rewrite")
     nc_check(c, strlen(text), line)
-    if !c->source or strcmp(text, c->source)
-      c->next_source = text
-      c->again = true
+    if !c->source or strcmp(text, c->source) then c->next_source = text; c->again = true
   elif !strcmp(name, "log") then NC_PUSH(c, c->logs, (char *)text)
   elif !strcmp(name, "eval")
     nc_depth(c, m->depth + 1, line, "eval")

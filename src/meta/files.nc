@@ -14,9 +14,7 @@
 // Runs file builtins.
 @f nc_meta_files(NcMachine *m, cstr name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
-  if !strcmp(name, "file")
-    nc_arity(c, a, 0, line)
-    return nc_value_text(NC_STRING, (char *)c->file)
+  if !strcmp(name, "file") then nc_arity(c, a, 0, line); return nc_value_text(NC_STRING, (char *)c->file)
   nc_arity(c, a, !strcmp(name, "write") ? 2 : 1, line)
   cstr path = nc_meta_text(c, a.v[0], line)
   if !strcmp(name, "read") then return nc_value_text(NC_STRING, nc_read(c, path))

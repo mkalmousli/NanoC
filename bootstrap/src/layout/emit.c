@@ -4,21 +4,17 @@
 // Emits a layout tree as C.
 // Tells if the node starts with s.
 static bool lead(NcNode n, const char *s) {
-    {
-        size_t nanoc_start_1 = (0);
-        size_t nanoc_end_2 = (n.head.ts.n);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            if (n.head.ts.v[i].kind != NC_SPACE) {
-                if (nc_is(n.head.ts.v[i], "else")) {
-                    size_t next = i + 1;
-                    while (next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE) {
-                        ++next;
-                    }
-                    bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if");
-                    return !strcmp(s, condition ? "elif" : "else");
+    for (size_t i = (0), nanoc_end_1 = (n.head.ts.n); i < nanoc_end_1; ++i) {
+        if (n.head.ts.v[i].kind != NC_SPACE) {
+            if (nc_is(n.head.ts.v[i], "else")) {
+                size_t next = i + 1;
+                while (next < n.head.ts.n && n.head.ts.v[next].kind == NC_SPACE) {
+                    ++next;
                 }
-                return nc_is(n.head.ts.v[i], s);
+                bool condition = next < n.head.ts.n && nc_is(n.head.ts.v[next], "if");
+                return !strcmp(s, condition ? "elif" : "else");
             }
+            return nc_is(n.head.ts.v[i], s);
         }
     }
     return 0;

@@ -1,21 +1,19 @@
 lesson hello START | Hello, NanoC | Hello
-  p Save this as `hello.nc`. Lines starting with `#` pass through unchanged, so any C header works.
+  p Save this as `hello.nc`. `say` prints its arguments and brings in `stdio.h` by itself. Lines starting with `#` pass through unchanged, so plain C headers work too.
   code nanoc c
-    #include <stdio.h>
     @f main int
-      puts("Hello from NanoC!")
+      say "Hello from NanoC!"
       0
   note Build: `nanoc hello.nc -o hello.c && cc hello.c -o hello && ./hello`
 lesson functions FUNCTIONS | Bare return types | Functions
   p The return type goes after the parameters, with no arrow. Omit it for `void`. Group parameters that share a type with a comma. A one-line body can be an `=` expression.
   code nanoc c
-    #include <stdio.h>
     @f add(int a,b) int = a+b
-    @f greet(char *name)
-      printf("hi %s\n",name)
+    @f greet(cstr name)
+      say "hi", name
     @f main int
       greet("NanoC")
-      printf("%d\n",add(2,3))
+      say add(2,3)
       0
   list
     An indented body returns its final expression. No `return` needed; `ret x` is the short form when you want one.
@@ -34,12 +32,11 @@ lesson values VALUES | Blocks produce values | Values
 lesson types SHORT TYPES | Short type names | Types
   p `i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 byte cstr usize isize` are plain C type words inside NanoC code, so the output builds with any C compiler and needs no extra header (`usize`/`isize` need `stddef.h`). Unmarked C is never rewritten.
   code nanoc c
-    #include <stdio.h>
     @f add(i32 a,b) i32 = a+b
     @f main int
       u8 x=200
       cstr s="hi"
-      printf("%s %d\n",s,add(x,2))
+      say s, add(x,2)
       0
 lesson records RECORDS | One-line structs, enums, unions | Records
   p `@s` declares a struct, `@u` a union and `@e` an enum, each with its typedef. Fields are `names:type` (`*T` for pointers), inline separated by `;` or as an indented block.
@@ -95,23 +92,20 @@ lesson match MATCH | Switch without the noise | Match
 lesson locals LOCALS & LOOPS | Inference and ranges | Locals
   p `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.
   code nanoc c
-    #include <stdio.h>
     @f main int
       total:=0
-      for i 1..6
-        total+=i
-      printf("%d\n",total)
+      for i 1..6 then total+=i
+      say "total", total
       0
   list
     Spell the type when you need it: `int x=call()`. C++ uses `auto` for `:=`.
     Typed range: `for i:usize 0..n`. Bounds are evaluated once.
     Plain C loops still work: `for int i=0;i<n;i++`. `loop` is `for (;;)`, `unless c` is `if !(c)`, `until c` is `while !(c)`.
     C++ iterates containers: `for value values`.
-    Shortcuts: `nil` is NULL, `and`/`or`/`not` are `&&`/`||`/`!`, `@inc stdio, "mine.h", <sys/x.h>` includes headers (bare names become `<name.h>`).
+    Shortcuts: `nil` is NULL, `and`/`or`/`not` are `&&`/`||`/`!`, `@use stdio, "mine", <sys/x.h>` includes headers (bare names become `<name.h>`).
 lesson macros MACROS | Token templates | Macros
   p `@m` defines a template. `$x` captures a token. A macro with `=` and no parameters is a named constant.
   code nanoc c
-    #include <stdio.h>
     @m twice($x)
       (($x)*2)
     @m answer = 42
@@ -119,20 +113,19 @@ lesson macros MACROS | Token templates | Macros
       @f $name($type a,b) $type = a>b?a:b
     @maxfn(max_int,int)
     @f main int
-      printf("%d %d\n",@twice(@answer),max_int(2,3))
+      say @twice(@answer), max_int(2,3)
       0
   note Use `$fresh(tmp)` for generated names that must not collide. `$$` writes a literal `$`.
   p Captures: `$x` / `$x:tokens`, `$x:ident`, `$x:block`; a last `$xs...` is a list. Templates substitute `$x`, `$($xs),*`, `$fresh(tmp)`. An `=` selects a program: its last expression returns text, tokens, numbers or bools, or it can emit code. A final `$body:block` argument can be an indented body after the call.
 lesson ct COMPILE TIME | Generate code with `@ct` | Compile time
   p An indented `@ct` block runs during expansion. `emit` writes NanoC back into the source, so you can generate functions in a loop.
   code nanoc c
-    #include <stdio.h>
     @ct
       f square(n) = n*n
       for i 1..5
         emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
     @f main int
-      printf("%d\n",square_4())
+      say square_4()
       0
   p Programs use int64, bool, text, tokens and lists. Bind `x:=expr`, assign `x=expr`; controls are indented: `for i range(n)`, `if cond`, `while cond`. Functions are `f name(args) = expr` or an indented final expression. `quote(C tokens)` interpolates `$name`, `ident(text)` builds names, `eval(read(path))` loads a program library.
   p CT and macros expand recursively. `source()` reads the current snapshot, `rewrite(text)` repeats only on changed text, `again()` forces another pass, `get`/`put` keep state.
@@ -151,8 +144,7 @@ lesson asm ASSEMBLY | Inline assembly | Assembly
 lesson interop INTEROP | C++17 and C headers | Interop
   p Headers work unchanged. Use `--lang c++` to emit C++17 and get range loops over standard containers. `--emit mini` strips comments and layout for the smallest C.
   code nanoc
-    #include <vector>
-    #include <iostream>
+    @use vector, iostream
     @f main int
       values:=std::vector<int>(3,2)
       sum:=0

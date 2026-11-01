@@ -20,7 +20,5 @@
 @f nc_assign(NcContext *c, NcEnv *e, cstr name, NcValue value, int line) void
   for ; e; e = e->parent
     NcValue *p = nc_get(&e->values, name)
-    if p
-      *p = value
-      return
+    if p then *p = value; return
   nc_fail(c, line, "unknown compile-time variable: %s", name)

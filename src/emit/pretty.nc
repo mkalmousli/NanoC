@@ -26,13 +26,9 @@
     p->ternary = 0
     p->kw_type = false
     p->kw_enum = false
-    if !p->paren and !init
-      p->stmt = true
-      nc_pp_end(p)
+    if !p->paren and !init then p->stmt = true; nc_pp_end(p)
   elif !p->paren && p->top && p->kind[p->top - 1] == 'e' then nc_pp_end(p)
-  elif (p->paren or init) and p->col > 90
-    nc_pp_nl(p)
-    p->cont = true
+  elif (p->paren or init) and p->col > 90 then nc_pp_nl(p); p->cont = true
 // Handles ":" (case labels and ternaries).
 @f colon(NcPretty *p, NcToken t) static void
   nc_pp_put(p, t.s, 1)
@@ -45,9 +41,7 @@
     nc_pp_end(p)
 // Handles one significant token.
 @f nc_pp_token(NcPretty *p, NcToken t) static void
-  if t.kind == NC_DIRECTIVE
-    nc_pp_directive(p, t)
-    return
+  if t.kind == NC_DIRECTIVE then nc_pp_directive(p, t); return
   nc_pp_resolve(p, t)
   if p->last_dir
     p->last_dir = false
@@ -65,13 +59,9 @@
   else
     if t.kind == NC_WORD and !p->paren
       if p->stmt && (nc_is(t, "case") || nc_is(t, "default"))
-        if p->top and p->cases[p->top - 1]
-          p->cases[p->top - 1] = false
-          --p->ind
+        if p->top and p->cases[p->top - 1] then p->cases[p->top - 1] = false; --p->ind
         p->in_case = true
-      elif nc_is(t, "struct") || nc_is(t, "union") || nc_is(t, "enum")
-        p->kw_type = true
-        p->kw_enum = nc_is(t, "enum")
+      elif nc_is(t, "struct") || nc_is(t, "union") || nc_is(t, "enum") then p->kw_type = true; p->kw_enum = nc_is(t, "enum")
     if ch == '?'
       ++p->ternary
     if ch == '('
@@ -83,9 +73,7 @@
       --p->paren
       p->ctl[255] = p->ctl[p->paren & 255]
     nc_pp_put(p, t.s, t.n)
-  if t.kind != NC_SPACE
-    p->prev = t
-    p->has_prev = true
+  if t.kind != NC_SPACE then p->prev = t; p->has_prev = true
   if !punct || (ch != ';' && ch != '{' && ch != '}' && ch != ':') then p->stmt = false
 // Formats C text with indentation and line breaks.
 @f nc_pretty(NcContext *c, cstr text) char *

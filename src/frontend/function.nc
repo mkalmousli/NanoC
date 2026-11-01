@@ -9,9 +9,7 @@
   char *args = nc_parameters(ctx, nc_group(c, "(", ")"))
   char *returns = "void"
   bool compact = false
-  if nc_eat(c, ":")
-    returns = nc_trim(ctx, nc_join(ctx, nc_until(c, "=")))
-    compact = true
+  if nc_eat(c, ":") then returns = nc_trim(ctx, nc_join(ctx, nc_until(c, "="))); compact = true
   elif nc_eat(c, "->") then returns = nc_trim(ctx, nc_join(ctx, nc_until(c, "{")))
   elif nc_at(c, "=") then compact = true
   if !*returns then nc_fail(ctx, line, "missing return type")

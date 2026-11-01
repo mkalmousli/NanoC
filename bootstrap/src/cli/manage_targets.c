@@ -79,16 +79,12 @@ void mg_vscode_at(NcTarget *t, int *n, const char *base) {
 void mg_vscode(NcTarget *t, int *n, const char *home) {
     const char *bases[] = {".vscode", ".vscode-oss", ".cursor"};
     int found = 0;
-    {
-        int nanoc_start_1 = (0);
-        int nanoc_end_2 = (3);
-        for (int i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            char base[PATH_MAX];
-            snprintf(base, sizeof base, "%s/%s", home, bases[i]);
-            if (nc_exists(base)) {
-                mg_vscode_at(t, n, base);
-                found += 1;
-            }
+    for (int i = (0), nanoc_end_1 = (3); i < nanoc_end_1; ++i) {
+        char base[PATH_MAX];
+        snprintf(base, sizeof base, "%s/%s", home, bases[i]);
+        if (nc_exists(base)) {
+            mg_vscode_at(t, n, base);
+            found += 1;
         }
     }
     if (! found) {

@@ -10,18 +10,14 @@ NcLayoutLine nc_logical_line(NcCursor *c) {
         nc_fail(c->ctx, nc_line(c), "expected a logical line");
     }
     NcLayoutLine out = {.indent = c->ts.v[c->pos].column - 1, .line = nc_line(c)};
-    {
-        size_t nanoc_start_1 = (whitespace);
-        size_t nanoc_end_2 = (c->pos);
-        for (size_t i = nanoc_start_1; i < nanoc_end_2; ++i) {
-            NcToken t = c->ts.v[i];
-            size_t tail = t.n;
-            while (tail && t.s[tail - 1] != '\n') {
-                --tail;
-            }
-            if (memchr(t.s + tail, '\t', t.n - tail)) {
-                nc_fail(c->ctx, out.line, "use spaces for indentation");
-            }
+    for (size_t i = (whitespace), nanoc_end_1 = (c->pos); i < nanoc_end_1; ++i) {
+        NcToken t = c->ts.v[i];
+        size_t tail = t.n;
+        while (tail && t.s[tail - 1] != '\n') {
+            --tail;
+        }
+        if (memchr(t.s + tail, '\t', t.n - tail)) {
+            nc_fail(c->ctx, out.line, "use spaces for indentation");
         }
     }
     NcStrings stack = {0};

@@ -437,6 +437,7 @@ char *prelude_file(NcContext *ctx, const char *file);
 char *nc_prelude(NcContext *ctx);
 NcTokens nc_lex(NcContext *c, const char *s, int line);
 char *nc_native_parameters(NcContext *ctx, NcTokens ts);
+bool shadows(NcContext *ctx, const char *bound, const char *id);
 char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth);
 const char *nc_sep(const char *type);
 char *nc_typed(NcContext *ctx, NcTokens input, bool initialized);

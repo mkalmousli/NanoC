@@ -28,9 +28,7 @@
         char *id = nc_name(&h)
         if !nc_end(&h) then nc_fail(ctx, t.line, "fresh requires one identifier")
         char *fresh = nc_get(&b->fresh, id)
-        if not fresh
-          fresh = nc_fresh(ctx, id)
-          nc_put(ctx, &b->fresh, id, fresh)
+        if not fresh then fresh = nc_fresh(ctx, id); nc_put(ctx, &b->fresh, id, fresh)
         nc_add(ctx, &out, fresh)
       else
         NcGroups *values = nc_get(&b->values, name)

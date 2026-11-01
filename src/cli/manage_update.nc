@@ -8,15 +8,11 @@
   rc == 0 ? 0 : 1
 // Runs the update command.
 @f nc_update_command(cstr prefix) int
-  if !nc_have_command("git")
-    fputs("nanoc: update needs git\n", stderr)
-    return 1
+  if !nc_have_command("git") then fputs("nanoc: update needs git\n", stderr); return 1
   const char *tmp = getenv("TMPDIR")
   char dir[PATH_MAX]
   snprintf(dir, sizeof dir, "%s/nanoc-update-XXXXXX", tmp && *tmp ? tmp : "/tmp")
-  if !mkdtemp(dir)
-    fputs("nanoc: cannot create a temporary directory\n", stderr)
-    return 1
+  if !mkdtemp(dir) then fputs("nanoc: cannot create a temporary directory\n", stderr); return 1
   char cmd[PATH_MAX * 4]
   snprintf(cmd, sizeof cmd,
     "git clone -q --depth 1 https://github.com/mkalmousli/NanoC.git '%s/NanoC'", dir)
