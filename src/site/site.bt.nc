@@ -8,15 +8,6 @@
   mkdir("_site")
   exec(["cp","-r","docs/.","_site/"])
   eval(read("src/dsl/gen.bt.nc"))
-  eval(read("src/dsl/web.bt.nc"))
-  out("_site/style.css",css(read("src/web/style-a.css.nc"))+css(read("src/web/style-b.css.nc")))
-  for f ["app","play","compare","worker"]
-    out("_site/"+f+".js",js(read("src/web/"+f+".js.nc")))
-  out("_site/index.html",html(read("src/web/index-a.html.nc")+read("src/web/index-b.html.nc")))
-  for f ["compare","play"]
-    out("_site/"+f+".html",html(read("src/web/"+f+".html.nc")))
-  for f ["nav","footer","prism","lang-table"]
-    out("build/blocks/"+f+".html",html(read("src/web/blocks/"+f+".html.nc")))
   write("_site/.nojekyll","")
   exec(["git","checkout-index","-a","--prefix=_site/source/"])
   tracked:=split(exec(["git","ls-files"]),"\n")
@@ -79,4 +70,4 @@
   exec(["mkdir","-p","build/blocks"])
   exec([compiler,"src/docs.bt.nc","-o","build/docs.c"])
   for step ["examples","wasm","pages"]
-    exec([compiler,"src/site/"+step+".bt.nc","-o","build/site-"+step+".c"])
+    exec([compiler,"--max-steps","0","src/site/"+step+".bt.nc","-o","build/site-"+step+".c"])
