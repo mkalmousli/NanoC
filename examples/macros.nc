@@ -10,6 +10,6 @@
 @getter(height, h)
 @f main int
   s:Shape = {3, 4}
-  say "max", @max(3, 9), "clamp", @clamp(15, 0, 10), @clamp(-4, 0, 10)
-  say "w x h =", width(&s), height(&s)
+  printf("max %d clamp %d %d\n", @max(3, 9), @clamp(15, 0, 10), @clamp(-4, 0, 10))
+  printf("w x h = %g %g\n", width(&s), height(&s))
   0

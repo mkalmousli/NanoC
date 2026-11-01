@@ -41,7 +41,7 @@ section
       |   for i 0..10
       |     total+=clamp(i,2,7)
       |   total!=45
-    span [data-stat=badge] −7% lines vs C
+    span [data-stat=badge] fewer characters than C
       css
         position:absolute
         right:14px

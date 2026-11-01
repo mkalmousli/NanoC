@@ -50,7 +50,6 @@
       char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), true)
       return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)))
   char *code = nc_trim(c, nc_words(c, ts))
-  if !strcmp(first, "say") && items.n > 1 then return nc_say(c, nc_trim(c, code + 3), line.line)
   if nc_is_ret(c, items) then code = nc_trim(c, nc_format(c, "return %s", code + 3)); first = "return"
   if !strcmp(first, "=>") then return nc_format(c, "return %s;", nc_trim(c, code + 2))
   if (!strcmp(first, "return") || !strcmp(first, "break") || !strcmp(first, "continue")

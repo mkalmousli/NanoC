@@ -13,5 +13,5 @@
   k * s.size * s.size
 @f main int
   Shape shapes[3] = {{CIRCLE, 1}, {SQUARE, 2}, {TRIANGLE, 3}}
-  for i 0..3 then say "shape", i, "area", area(shapes[i])
+  for i 0..3 then printf("shape %d area %g\n", i, area(shapes[i]))
   0

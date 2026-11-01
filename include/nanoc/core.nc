@@ -18,7 +18,5 @@ struct NcContext {
     const char *code;
     int error_line;
     char *frames[256];
-    char *ret_type, *defers;
-    bool need_stdio;
     size_t frame_count;
 };

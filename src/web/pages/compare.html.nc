@@ -26,8 +26,7 @@ Page [title="NanoC vs C: side by side" desc="The same program in NanoC and the C
       function show(i)
         const ex = data[i]
         A.tabs.querySelectorAll('button').forEach((b, j) => b.classList.toggle('on', j === i))
-        const nl = lines(ex.nc), cl = lines(ex.c)
-        stats(A.stats, [['NanoC lines', nl], ['C lines', cl], ['NanoC bytes', bytes(ex.nc)], ['C bytes', bytes(ex.c)], ['fewer lines', signed(nl, cl), 1]])
+        stats(A.stats, [['NanoC chars', ex.nc.length], ['C chars', ex.c.length], ['NanoC lines', lines(ex.nc)], ['C lines', lines(ex.c)], ['fewer chars', signed(ex.nc.length, ex.c.length), 1]])
         for (const [el, text, lang] of [[A.ncCode, ex.nc, 'nanoc'], [A.cCode, ex.c, 'c']])
           el.textContent = text
           Prism.highlightElement(el)

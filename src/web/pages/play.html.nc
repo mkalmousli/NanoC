@@ -80,7 +80,7 @@ Page [title="NanoC playground: transpile in your browser" desc="Edit NanoC and w
         out.textContent = r.out
         Prism.highlightElement(out)
         const nc = src.value
-        stats(A.stats, [['NanoC lines', lines(nc)], ['C lines', lines(r.out)], ['NanoC bytes', bytes(nc)], ['C bytes', bytes(r.out)], ['compile time', r.ms < 1 ? '<1 ms' : Math.round(r.ms) + ' ms', 1]])
+        stats(A.stats, [['NanoC chars', nc.length], ['C chars', r.out.length], ['fewer chars', signed(nc.length, r.out.length), 1], ['NanoC lines', lines(nc)], ['C lines', lines(r.out)], ['compile time', r.ms < 1 ? '<1 ms' : Math.round(r.ms) + ' ms', 1]])
       function schedule()
         highlight()
         clearTimeout(timer)

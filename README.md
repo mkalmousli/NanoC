@@ -28,8 +28,9 @@ Installs only the files it created; it refuses to overwrite unrelated files.
 ## The language
 
 ```c
+@use std
 @f main int
-  say "Hello from NanoC!", 6 * 7, 1.5
+  printf("Hello from NanoC! %d %g\n", 6 * 7, 1.5)
   0
 
 ```

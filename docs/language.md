@@ -3,11 +3,12 @@
 
 ## Hello, NanoC
 
-Save this as `hello.nc`. `say` prints its arguments and brings in `stdio.h` by itself. Lines starting with `#` pass through unchanged, so plain C headers work too.
+Save this as `hello.nc`. `@use stdio` includes the header. Lines starting with `#` pass through unchanged, so plain C headers work too.
 
 ```nanoc
+@use stdio
 @f main int
-  say "Hello from NanoC!"
+  puts("Hello from NanoC!")
   0
 ```
 
@@ -28,37 +29,29 @@ The return type goes after the parameters, with no arrow. Omit it for `void`. Gr
 
 ```nanoc
 @f add(int a,b) int = a+b
+@use stdio
 @f greet(cstr name)
-  say "hi", name
+  printf("hi %s\n", name)
 @f main int
   greet("NanoC")
-  say add(2,3)
+  printf("%d\n", add(2,3))
   0
 ```
 
 ```c
-#include <stdio.h>
-
 int add(int a, int b) {
     return a+b;
 }
 
+#include <stdio.h>
+
 void greet(const char *name) {
-    fputs("hi ", stdout);
-    printf(_Generic((name), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
-            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
-            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
-            name);
-    putchar('\n');
+    printf("hi %s\n", name);
 }
 
 int main(void) {
     greet("NanoC");
-    printf(_Generic((add(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-            default: "%d"), add(2,3));
-    putchar('\n');
+    printf("%d\n", add(2,3));
     return 0;
 }
 ```
@@ -106,13 +99,11 @@ int main(void) {
 @f main int
   u8 x=200
   cstr s="hi"
-  say s, add(x,2)
+  printf("%s %d\n", s, add(x,2))
   0
 ```
 
 ```c
-#include <stdio.h>
-
 int add(int a, int b) {
     return a+b;
 }
@@ -120,16 +111,7 @@ int add(int a, int b) {
 int main(void) {
     unsigned char x=200;
     const char * s="hi";
-    printf(_Generic((s), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
-            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
-            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
-            s);
-    putchar(' ');
-    printf(_Generic((add(x,2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-            default: "%d"), add(x,2));
-    putchar('\n');
+    printf("%s %d\n", s, add(x,2));
     return 0;
 }
 ```
@@ -177,79 +159,52 @@ int main(void) {
 }
 ```
 
-## Printing, imports and escape hatch
+## Imports and escape hatch
 
-`say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `say` adds `stdio.h` itself. `@use a, b` includes several headers at once, `@use "mine"` is a local `mine.h`, and bundles expand to many: `std` (stdio, stdlib, string), `libc`, `posix`, `cxx`. In C++ the standard headers lose their `.h`: `@use vector`. A `.nanoc` file with a `use "nanoc/all"` line makes every module below it include those headers without writing `@use`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
+`@use a, b` includes several headers at once, `@use "mine"` is a local `mine.h`, and bundles expand to many: `std` (stdio, stdlib, string), `libc`, `posix`, `cxx`. In C++ the standard headers lose their `.h`: `@use vector`. A `.nanoc` file with a `use "nanoc/all"` line makes every module below it include those headers without writing `@use`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
 
 ```nanoc
 @c
   static int twice(int x) { return x*2; }
 @f main int
-  say "twice", twice(21), 1.5
+  printf("twice %d\n", twice(21))
+  0
+```
+
+```c
+static int twice(int x) {
+    return x*2;
+}
+
+int main(void) {
+    printf("twice %d\n", twice(21));
+    return 0;
+}
+```
+
+## Cleanup with a macro
+
+There is no built-in `defer`: a macro with a `$body:block` argument wraps an indented body, so cleanup is written once and cannot be forgotten.
+
+```nanoc
+@use stdio
+@m traced($name, $body:block)
+  for (int once_ = (puts("enter " $name), 1); once_; once_ = (puts("leave " $name), 0))
+    $body
+@f main int
+  @traced("work")
+    puts("inside")
   0
 ```
 
 ```c
 #include <stdio.h>
 
-static int twice(int x) {
-    return x*2;
-}
-
 int main(void) {
-    fputs("twice ", stdout);
-    printf(_Generic((twice(21)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-            default: "%d"), twice(21));
-    putchar(' ');
-    printf(_Generic((1.5), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
-            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
-            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
-            1.5);
-    putchar('\n');
-    return 0;
-}
-```
-
-## Cleanup that cannot be forgotten
-
-`defer stmt` runs the statement when its block ends and before every `ret` after it, last deferred first. A returned value is computed before the cleanup runs.
-
-```nanoc
-@use stdio
-@f work(int fail) int
-  puts("open")
-  defer puts("close")
-  if fail
-    ret 7
-  3
-@f main int = work(1)!=7
-```
-
-```c
-#include <stdio.h>
-
-int work(int fail) {
-    puts("open");
-    {
-        if (fail) {
-            {
-                int nanoc_ret_1 = (7);
-                puts("close");
-                return nanoc_ret_1;
-            }
-        }
-        {
-            int nanoc_ret_2 = (3);
-            puts("close");
-            return nanoc_ret_2;
-        }
+    for (int once_ = (puts("enter " "work"), 1); once_; once_ = (puts("leave " "work"), 0)) {
+        puts("inside");
     }
-}
-
-int main(void) {
-    return work(1)!=7;
+    return 0;
 }
 ```
 
@@ -320,24 +275,17 @@ int main(void) {
 @f main int
   total:=0
   for i 1..6 then total+=i
-  say "total", total
+  printf("total %d\n", total)
   0
 ```
 
 ```c
-#include <stdio.h>
-
 int main(void) {
     int total = 0;
     for (int i = (1), nanoc_end_1 = (6); i < nanoc_end_1; ++i) {
         total+=i;
     }
-    fputs("total ", stdout);
-    printf(_Generic((total), char *: "%s", const char *: "%s", float: "%g", double: "%g", long double: "%Lg",
-            char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u", long: "%ld",
-            unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu", default: "%d"),
-            total);
-    putchar('\n');
+    printf("total %d\n", total);
     return 0;
 }
 ```
@@ -360,28 +308,17 @@ int main(void) {
   @f $name($type a,b) $type = a>b?a:b
 @maxfn(max_int,int)
 @f main int
-  say @twice(@answer), max_int(2,3)
+  printf("%d %d\n", @twice(@answer), max_int(2,3))
   0
 ```
 
 ```c
-#include <stdio.h>
-
 int max_int(int a, int b) {
     return a>b?a:b;
 }
 
 int main(void) {
-    printf(_Generic((((42)*2)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-            default: "%d"), ((42)*2));
-    putchar(' ');
-    printf(_Generic((max_int(2,3)), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-            default: "%d"), max_int(2,3));
-    putchar('\n');
+    printf("%d %d\n", ((42)*2), max_int(2,3));
     return 0;
 }
 ```
@@ -400,13 +337,11 @@ An indented `@ct` block runs during expansion. `emit` writes NanoC back into the
   for i 1..5
     emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
 @f main int
-  say square_4()
+  printf("%d\n", square_4())
   0
 ```
 
 ```c
-#include <stdio.h>
-
 int square_1(void) {
     return 1;
 }
@@ -424,11 +359,7 @@ int square_4(void) {
 }
 
 int main(void) {
-    printf(_Generic((square_4()), char *: "%s", const char *: "%s", float: "%g", double: "%g",
-            long double: "%Lg", char: "%c", unsigned char: "%u", unsigned short: "%u", unsigned: "%u",
-            long: "%ld", unsigned long: "%lu", long long: "%lld", unsigned long long: "%llu",
-            default: "%d"), square_4());
-    putchar('\n');
+    printf("%d\n", square_4());
     return 0;
 }
 ```

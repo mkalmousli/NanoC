@@ -1,3 +1,4 @@
+@use std
 @f main int
-  say "Hello from NanoC!", 6 * 7, 1.5
+  printf("Hello from NanoC! %d %g\n", 6 * 7, 1.5)
   0

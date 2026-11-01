@@ -7,4 +7,4 @@ Section [id=vs kicker="How it compares" title="Not a new world.<br><em>A better 
     css | font-size:28px;margin:64px 0 20px
   Bars [as=bars]
     Html [src=build/blocks/ex-table.html]
-  Fine Method: non-blank lines and bytes of each example against the C the compiler emits. Generated at site build time ($built). <a href="compare.html">Read them side by side →</a>
+  Fine Method: total characters of each example against the C the compiler emits. Generated at site build time ($built). <a href="compare.html">Read them side by side →</a>

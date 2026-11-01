@@ -1,19 +1,21 @@
 lesson hello START | Hello, NanoC | Hello
-  p Save this as `hello.nc`. `say` prints its arguments and brings in `stdio.h` by itself. Lines starting with `#` pass through unchanged, so plain C headers work too.
+  p Save this as `hello.nc`. `@use stdio` includes the header. Lines starting with `#` pass through unchanged, so plain C headers work too.
   code nanoc c
+    @use stdio
     @f main int
-      say "Hello from NanoC!"
+      puts("Hello from NanoC!")
       0
   note Build: `nanoc hello.nc -o hello.c && cc hello.c -o hello && ./hello`
 lesson functions FUNCTIONS | Bare return types | Functions
   p The return type goes after the parameters, with no arrow. Omit it for `void`. Group parameters that share a type with a comma. A one-line body can be an `=` expression.
   code nanoc c
     @f add(int a,b) int = a+b
+    @use stdio
     @f greet(cstr name)
-      say "hi", name
+      printf("hi %s\n", name)
     @f main int
       greet("NanoC")
-      say add(2,3)
+      printf("%d\n", add(2,3))
       0
   list
     An indented body returns its final expression. No `return` needed; `ret x` is the short form when you want one.
@@ -36,7 +38,7 @@ lesson types SHORT TYPES | Short type names | Types
     @f main int
       u8 x=200
       cstr s="hi"
-      say s, add(x,2)
+      printf("%s %d\n", s, add(x,2))
       0
 lesson records RECORDS | One-line structs, enums, unions | Records
   p `@s` declares a struct, `@u` a union and `@e` an enum, each with its typedef. Fields are `names:type` (`*T` for pointers), inline separated by `;` or as an indented block.
@@ -51,25 +53,25 @@ lesson records RECORDS | One-line structs, enums, unions | Records
       Node n={3,NULL}
       Color c=blue
       p.x+p.y!=3 || n.val!=3 || c!=6
-lesson say SAY & RAW C | Printing, imports and escape hatch | Say
-  p `say a, b` prints values separated by spaces with a newline; formats come from the C11 `_Generic` type of each value. `say` adds `stdio.h` itself. `@use a, b` includes several headers at once, `@use "mine"` is a local `mine.h`, and bundles expand to many: `std` (stdio, stdlib, string), `libc`, `posix`, `cxx`. In C++ the standard headers lose their `.h`: `@use vector`. A `.nanoc` file with a `use "nanoc/all"` line makes every module below it include those headers without writing `@use`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
+lesson raw RAW C | Imports and escape hatch | Raw C
+  p `@use a, b` includes several headers at once, `@use "mine"` is a local `mine.h`, and bundles expand to many: `std` (stdio, stdlib, string), `libc`, `posix`, `cxx`. In C++ the standard headers lose their `.h`: `@use vector`. A `.nanoc` file with a `use "nanoc/all"` line makes every module below it include those headers without writing `@use`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
   code nanoc c
     @c
       static int twice(int x) { return x*2; }
     @f main int
-      say "twice", twice(21), 1.5
+      printf("twice %d\n", twice(21))
       0
-lesson defer DEFER | Cleanup that cannot be forgotten | Defer
-  p `defer stmt` runs the statement when its block ends and before every `ret` after it, last deferred first. A returned value is computed before the cleanup runs.
+lesson scope SCOPES | Cleanup with a macro | Scopes
+  p There is no built-in `defer`: a macro with a `$body:block` argument wraps an indented body, so cleanup is written once and cannot be forgotten.
   code nanoc c
     @use stdio
-    @f work(int fail) int
-      puts("open")
-      defer puts("close")
-      if fail
-        ret 7
-      3
-    @f main int = work(1)!=7
+    @m traced($name, $body:block)
+      for (int once_ = (puts("enter " $name), 1); once_; once_ = (puts("leave " $name), 0))
+        $body
+    @f main int
+      @traced("work")
+        puts("inside")
+      0
 lesson inline INLINE | One-line blocks | Inline
   p `if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too, and `if c then a else b` fits on one line. The output is still ordinary braced C.
   code nanoc c
@@ -95,7 +97,7 @@ lesson locals LOCALS & LOOPS | Inference and ranges | Locals
     @f main int
       total:=0
       for i 1..6 then total+=i
-      say "total", total
+      printf("total %d\n", total)
       0
   list
     Spell the type when you need it: `int x=call()`. C++ uses `auto` for `:=`.
@@ -113,7 +115,7 @@ lesson macros MACROS | Token templates | Macros
       @f $name($type a,b) $type = a>b?a:b
     @maxfn(max_int,int)
     @f main int
-      say @twice(@answer), max_int(2,3)
+      printf("%d %d\n", @twice(@answer), max_int(2,3))
       0
   note Use `$fresh(tmp)` for generated names that must not collide. `$$` writes a literal `$`.
   p Captures: `$x` / `$x:tokens`, `$x:ident`, `$x:block`; a last `$xs...` is a list. Templates substitute `$x`, `$($xs),*`, `$fresh(tmp)`. An `=` selects a program: its last expression returns text, tokens, numbers or bools, or it can emit code. A final `$body:block` argument can be an indented body after the call.
@@ -125,7 +127,7 @@ lesson ct COMPILE TIME | Generate code with `@ct` | Compile time
       for i 1..5
         emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
     @f main int
-      say square_4()
+      printf("%d\n", square_4())
       0
   p Programs use int64, bool, text, tokens and lists. Bind `x:=expr`, assign `x=expr`; controls are indented: `for i range(n)`, `if cond`, `while cond`. Functions are `f name(args) = expr` or an indented final expression. `quote(C tokens)` interpolates `$name`, `ident(text)` builds names, `eval(read(path))` loads a program library.
   p CT and macros expand recursively. `source()` reads the current snapshot, `rewrite(text)` repeats only on changed text, `again()` forces another pass, `get`/`put` keep state.

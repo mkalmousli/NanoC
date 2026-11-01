@@ -59,8 +59,8 @@
       if !contains(join(areas,","),area)
         areas=push(areas,area)
       put("files:"+area,get("files:"+area,0)+1)
-      put("nc:"+area,get("nc:"+area,0)+nl)
-      put("c:"+area,get("c:"+area,0)+cl)
+      put("nc:"+area,get("nc:"+area,0)+len(src))
+      put("c:"+area,get("c:"+area,0)+len(out))
       tn+=nl
       tb+=len(src)
       tc+=cl
@@ -69,7 +69,7 @@
   for a areas
     rows=push(rows,"{\"name\":\""+a+"\",\"files\":"+str(get("files:"+a,0))+",\"nc\":"+str(get("nc:"+a,0))+",\"c\":"+str(get("c:"+a,0))+"}")
   write("_site/stats.json","{\"generated\":\""+today+"\",\"files\":"+str(len(ncFiles))+",\"nc\":{\"lines\":"+str(tn)+",\"bytes\":"+str(tb)+"},\"c\":{\"lines\":"+str(tc)+",\"bytes\":"+str(tcb)+"},\"areas\":["+join(rows,",")+"]}\n")
-  log("stats: "+str(tn)+" nanoc lines, "+str(tc)+" c lines")
+  log("stats: "+str(tb)+" nanoc chars, "+str(tcb)+" c chars")
   exec(["mkdir","-p","build/blocks"])
   exec([compiler,"src/docs.bt.nc","-o","build/docs.c"])
   for step ["examples","wasm","pages"]

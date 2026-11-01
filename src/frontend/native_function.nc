@@ -37,8 +37,6 @@
   bool value = !nc_is(result.v[result.n - 1], "void")
   NC_PUSH(ctx, ctx->symbols, ((NcSymbol){name, params, type, "", definition_line}))
   char *body
-  ctx->ret_type = type
-  ctx->defers = nil
   if nc_header_eat(c, "=>", header.line)
     char *expr = nc_join(ctx, nc_aliased(ctx, nc_until(c, ";")))
     nc_need(c, ";")

@@ -6,5 +6,5 @@
     vals = push(vals, str(i * i))
   emit("static const int squares[] = {" + join(vals, ", ") + "};")
 @f main int
-  for i 0..8 then say "square", i, "=", squares[i]
+  for i 0..8 then printf("square %d = %d\n", i, squares[i])
   0

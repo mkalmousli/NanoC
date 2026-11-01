@@ -6,6 +6,6 @@
   p:Pair = {84, 36}
   small:u8 = 200
   big:i64 = 1L << 40
-  say "gcd", p.a, p.b, "=", gcd(p.a, p.b)
-  say "u8", small, "i64", (long)big
+  printf("gcd %d %d = %u\n", p.a, p.b, gcd(p.a, p.b))
+  printf("u8 %u i64 %ld\n", small, (long)big)
   0

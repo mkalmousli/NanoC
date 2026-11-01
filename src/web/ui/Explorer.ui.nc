@@ -151,9 +151,9 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
         A.cstat.textContent = ''
         return
       show(view, r.out, 'c')
-      const c = lines(r.out)
-      A.cstat.textContent = c + ' lines'
-      A.ratio.textContent = c && ncLines ? (ncLines <= c ? Math.round((1 - ncLines / c) * 100) + '% fewer lines than C' : 'longer than its C') : ''
+      const c = r.out.length
+      A.cstat.textContent = c + ' chars'
+      A.ratio.textContent = c && ncLines ? (ncLines <= c ? Math.round((1 - ncLines / c) * 100) + '% fewer characters than C' : 'longer than its C') : ''
     async function open(path)
       current = path
       render()
@@ -168,8 +168,8 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
         if (!r.ok) throw Error(String(r.status))
         const text = await r.text()
         if (current !== path) return
-        ncLines = lines(text)
-        A.ncstat.textContent = ncLines + ' lines'
+        ncLines = text.length
+        A.ncstat.textContent = ncLines + ' chars'
         show(A.ncview, text, 'nanoc')
         const cr = await fetch('c/' + path, FRESH)
         if (current !== path) return

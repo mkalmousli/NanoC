@@ -178,7 +178,7 @@ case @use stdio
     @c
       static int twice(int x) { return x*2; }
     @f main int
-      say "v", twice(2), 1.5
+      printf("v %d %g\n", twice(2), 1.5)
       twice(1)!=2
   prints
     v 4 1.5
@@ -220,36 +220,20 @@ reject spaces for indentation
     @f main int
     	0
 
-case defer runs at block end and before return
+case a block macro wraps its indented body
   nanoc
     @use stdio
-    @f open2(int fail) int
-      puts("open")
-      defer puts("close")
-      if fail
-        ret 7
-      3
+    @m traced($name, $body:block)
+      for (int once_ = (puts("enter " $name), 1); once_; once_ = (puts("leave " $name), 0))
+        $body
     @f main int
-      defer puts("bye")
-      printf("%d\n", open2(0))
-      printf("%d\n", open2(1))
+      @traced("job")
+        puts("inside")
       0
   prints
-    open
-    close
-    3
-    open
-    close
-    7
-    bye
-
-case say adds stdio itself
-  nanoc
-    @f main int
-      say "n", 5
-      0
-  prints
-    n 5
+    enter job
+    inside
+    leave job
 
 case match chooses an arm like switch
   nanoc
