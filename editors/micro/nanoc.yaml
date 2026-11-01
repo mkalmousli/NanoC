@@ -1,0 +1,27 @@
+# NanoC syntax for micro. Install with: sh editors/install.sh micro
+filetype: nanoc
+
+detect:
+    filename: "\\.nc$"
+
+rules:
+    - preproc: "@(f|fn|m|macro|ct|bt|asm)\\b"
+    - special: "@[A-Za-z_][A-Za-z_0-9]*"
+    - special: "\\$\\$|\\$[A-Za-z_][A-Za-z_0-9]*(:[A-Za-z_]+|\\.\\.\\.)?"
+    - statement: "\\b(if|elif|else|for|while|break|continue|return|goto)\\b"
+    - statement: "\\b(emit|quote|ident|fresh|rewrite|again|source|eval|assert|fail)\\b"
+    - type: "\\b(void|bool|char|short|int|long|float|double|signed|unsigned|auto|const|volatile|static|struct|union|enum|typedef|size_t)\\b"
+    - constant: "\\b(true|false|NULL|nullptr)\\b"
+    - constant: "\\b[0-9]+(\\.[0-9]+)?\\b|\\b0[xX][0-9a-fA-F]+\\b"
+    - constant.string:
+          start: "\""
+          end: "\""
+          skip: "\\\\."
+          rules:
+              - constant.specialChar: "\\\\."
+    - constant.string: "'(\\\\.|[^'])'"
+    - comment:
+          start: "/\\*"
+          end: "\\*/"
+          rules: []
+    - comment: "//.*"
