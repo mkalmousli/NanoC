@@ -1,5 +1,9 @@
 #include "nanoc/cli.h"
+#include "nanoc/manage.h"
 @f main(int argc, char **argv) int
+  int managed = nc_manage(argc, argv)
+  if managed >= 0
+    return managed
   NcContext *c = calloc(1, sizeof *c)
   if !c
     fputs("out of memory\n", stderr)

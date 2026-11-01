@@ -84,7 +84,9 @@ nanoc app.nc --check --diagnostics json</code></pre></article>
   <div class="s-cmds">
     <div><span class="s-label">Install</span><pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh | sh</code></pre></div>
     <div><span class="s-label">Uninstall</span><pre><code class="language-bash">curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh | sh -s -- uninstall</code></pre></div>
-    <div><span class="s-label">Editor support</span><pre><code class="language-bash">sh install.sh editor vim      # or vscode, neovim, emacs, micro, nano, sublime</code></pre></div>
+    <div><span class="s-label">Update / editors</span><pre><code class="language-bash">nanoc update                 # pull and rebuild the latest compiler
+nanoc editor list            # detected editors are installed by default
+nanoc editor install vim     # or vscode, neovim, emacs, micro, nano, sublime</code></pre></div>
   </div>
   <p class="s-sub">Prefer a checkout? <code>git clone https://github.com/mkalmousli/NanoC &amp;&amp; cd NanoC &amp;&amp; sh install.sh install</code>. Custom location: add <code>--prefix DIR</code>.</p>
 </section>
@@ -92,15 +94,15 @@ nanoc app.nc --check --diagnostics json</code></pre></article>
 <section class="s-editors wrap" id="editors">
   <div class="section-kicker">Highlighting everywhere you write</div>
   <h2 class="s-h2">Editors</h2>
-  <p class="s-sub">Each editor installs with one command and removes cleanly with <code>--uninstall</code>. See the <a class="textlink" href="https://github.com/mkalmousli/NanoC/tree/main/editors">editors folder ↗</a>.</p>
+  <p class="s-sub">The installer sets up every editor it detects. Add or remove any with <code>nanoc editor install|remove NAME</code>; <code>nanoc uninstall</code> removes everything NanoC placed. See the <a class="textlink" href="https://github.com/mkalmousli/NanoC/tree/main/editors">editors folder ↗</a>.</p>
   <div class="s-editor-grid">
-    <div class="s-editor"><b>VS Code</b><span>VS Code, VSCodium, Cursor</span><code>sh install.sh editor vscode</code></div>
-    <div class="s-editor"><b>Vim</b><span>syntax + filetype detection</span><code>sh install.sh editor vim</code></div>
-    <div class="s-editor"><b>Neovim</b><span>syntax + filetype detection</span><code>sh install.sh editor neovim</code></div>
-    <div class="s-editor"><b>Emacs</b><span>nanoc-mode, auto-mode for .nc</span><code>sh install.sh editor emacs</code></div>
-    <div class="s-editor"><b>micro</b><span>terminal editor, yaml syntax</span><code>sh install.sh editor micro</code></div>
-    <div class="s-editor"><b>GNU nano</b><span>nanorc colour rules</span><code>sh install.sh editor nano</code></div>
-    <div class="s-editor"><b>Sublime Text</b><span>Sublime Text 4 syntax</span><code>sh install.sh editor sublime</code></div>
+    <div class="s-editor"><b>VS Code</b><span>VS Code, VSCodium, Cursor</span><code>nanoc editor install vscode</code></div>
+    <div class="s-editor"><b>Vim</b><span>syntax + filetype detection</span><code>nanoc editor install vim</code></div>
+    <div class="s-editor"><b>Neovim</b><span>syntax + filetype detection</span><code>nanoc editor install neovim</code></div>
+    <div class="s-editor"><b>Emacs</b><span>nanoc-mode, auto-mode for .nc</span><code>nanoc editor install emacs</code></div>
+    <div class="s-editor"><b>micro</b><span>terminal editor, yaml syntax</span><code>nanoc editor install micro</code></div>
+    <div class="s-editor"><b>GNU nano</b><span>nanorc colour rules</span><code>nanoc editor install nano</code></div>
+    <div class="s-editor"><b>Sublime Text</b><span>Sublime Text 4 syntax</span><code>nanoc editor install sublime</code></div>
   </div>
 </section>
 

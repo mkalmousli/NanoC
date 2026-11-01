@@ -24,16 +24,16 @@
 curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh | sh
 ```
 
-Needs a POSIX shell and a C11 compiler (`cc`, `gcc` or `clang`). Installs `nanoc` to `~/.local/bin`.
+Needs a POSIX shell and a C11 compiler (`cc`, `gcc` or `clang`). Installs `nanoc` to `~/.local/bin` and sets up the editors it detects.
 
 | Task | Command |
 |---|---|
 | Install | `curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh \| sh` |
-| Uninstall | `curl -fsSL https://raw.githubusercontent.com/mkalmousli/NanoC/main/install.sh \| sh -s -- uninstall` |
-| Install from a checkout | `git clone https://github.com/mkalmousli/NanoC && cd NanoC && sh install.sh install` |
-| Uninstall from a checkout | `sh install.sh uninstall` (or `./builder uninstall`) |
-| Custom location | add `--prefix DIR` to any of the above |
-| Editor syntax | `sh install.sh editor vim` (see [Editors](#editors)) |
+| Update | `nanoc update` |
+| Uninstall | `nanoc uninstall` (asks first; `--yes` skips) |
+| Install from a checkout | `git clone https://github.com/mkalmousli/NanoC && cd NanoC && sh install.sh` |
+| Custom location | add `--prefix DIR` to the installer; `--no-editors` skips editor setup |
+| Editor syntax | `nanoc editor install vim` (see [Editors](#editors)) |
 
 Installs only the files it created; it refuses to overwrite unrelated files.
 
@@ -67,19 +67,25 @@ Output is ordinary C with no NanoC runtime. Full reference: [language card](docs
 
 ## Editors
 
-Syntax highlighting with one command each. Remove with `--uninstall` (e.g. `sh editors/install.sh vim --uninstall`).
+Syntax highlighting, installed by default for detected editors. Manage them with the compiler:
+
+```sh
+nanoc editor list              # detected and installed editors
+nanoc editor install vim       # or: install --all, or no args for detected editors
+nanoc editor remove vim        # or: remove --all
+```
 
 | Editor | Command | Installs to |
 |---|---|---|
-| VS Code, VSCodium, Cursor | `sh install.sh editor vscode` | extension folder under `~/.vscode`, `~/.vscode-oss`, `~/.cursor` |
-| Vim | `sh install.sh editor vim` | `~/.vim/syntax`, `~/.vim/ftdetect` |
-| Neovim | `sh install.sh editor neovim` | `$XDG_CONFIG_HOME/nvim` |
-| Emacs | `sh install.sh editor emacs` | `~/.emacs.d/lisp` (prints the `require` line) |
-| micro | `sh install.sh editor micro` | `$XDG_CONFIG_HOME/micro/syntax` |
-| GNU nano | `sh install.sh editor nano` | `~/.nano/nanoc.nanorc` (prints the `include` line) |
-| Sublime Text 4 | `sh install.sh editor sublime` | `Packages/User` |
+| VS Code, VSCodium, Cursor | `nanoc editor install vscode` | extension folder under `~/.vscode`, `~/.vscode-oss`, `~/.cursor` |
+| Vim | `nanoc editor install vim` | `~/.vim/syntax`, `~/.vim/ftdetect` |
+| Neovim | `nanoc editor install neovim` | `$XDG_CONFIG_HOME/nvim` |
+| Emacs | `nanoc editor install emacs` | `~/.emacs.d/lisp` (prints the `require` line) |
+| micro | `nanoc editor install micro` | `$XDG_CONFIG_HOME/micro/syntax` |
+| GNU nano | `nanoc editor install nano` | `~/.nano/nanoc.nanorc` (prints the `include` line) |
+| Sublime Text 4 | `nanoc editor install sublime` | `Packages/User` |
 
-List them with `sh install.sh editors`. Helix, Kate and JetBrains are not covered yet.
+List them with `nanoc editor list`. Helix, Kate and JetBrains are not covered yet.
 
 ## Repository map
 

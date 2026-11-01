@@ -6,7 +6,14 @@ static const char *installed[] = {
     "share/nanoc/examples/compile_time.nc", "share/nanoc/examples/interop.nc",
     "share/nanoc/examples/meta.nc", "share/nanoc/examples/build.nc",
     "share/nanoc/examples/compact.nc", "share/nanoc/docs/assembly.md",
-    "share/nanoc/docs/bootstrap.md", "share/nanoc/install.manifest"
+    "share/nanoc/docs/bootstrap.md",
+    "share/nanoc/install.sh",
+    "share/nanoc/editors/vscode/package.json", "share/nanoc/editors/vscode/language-configuration.json",
+    "share/nanoc/editors/vscode/syntaxes/nanoc.tmLanguage.json",
+    "share/nanoc/editors/vim/nanoc.vim", "share/nanoc/editors/vim/ftdetect/nanoc.vim",
+    "share/nanoc/editors/emacs/nanoc-mode.el", "share/nanoc/editors/micro/nanoc.yaml",
+    "share/nanoc/editors/nano/nanoc.nanorc", "share/nanoc/editors/sublime/NanoC.sublime-syntax",
+    "share/nanoc/install.manifest"
 };
 enum { INSTALLED_COUNT = sizeof installed / sizeof installed[0] };
 static bool manifest(const char *prefix, bool owned[INSTALLED_COUNT]) {
