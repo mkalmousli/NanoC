@@ -56,7 +56,7 @@ int64_t nc_numeric(NcContext *c, NcValue v, int line) {
 
 // Renders a value as text.
 
-char * nc_display(NcContext *c, NcValue v, size_t depth, int line) {
+char *nc_display(NcContext *c, NcValue v, size_t depth, int line) {
     nc_depth(c, depth, line, "value");
     if (v.kind == NC_INT) {
         return nc_format(c, "%" PRId64, v.n);
@@ -82,7 +82,7 @@ char * nc_display(NcContext *c, NcValue v, size_t depth, int line) {
 
 // Renders a value as source code.
 
-char * nc_value_code(NcContext *c, NcValue v, int line) {
+char *nc_value_code(NcContext *c, NcValue v, int line) {
     if (v.kind == NC_LIST) {
         nc_fail(c, line, "lists require explicit repetition before emission");
     }

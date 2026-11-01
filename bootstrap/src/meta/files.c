@@ -11,7 +11,7 @@ static void directories(NcContext *c, const char *path, int line) {
     if (!*copy) {
         nc_fail(c, line, "empty directory path");
     }
-    for (char *p = copy + 1; ; ++p) {
+    for (char *p = copy + 1;; ++p) {
         if (*p && *p != '/') {
             continue;
         }

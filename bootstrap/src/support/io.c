@@ -7,7 +7,7 @@
 #include <errno.h>
 
 // Reads a whole file.
-char * nc_read(NcContext *c, const char *path) {
+char *nc_read(NcContext *c, const char *path) {
     struct stat st;
     if (stat(path, &st)) {
         nc_fail(c, 0, "cannot read %s: %s", path, strerror(errno));

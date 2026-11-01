@@ -8,7 +8,7 @@ typedef struct {
     size_t n, cap;
 } Programs;
 // Runs BT code in the build stage.
-char * nc_build_stage(NcContext *ctx, const char *source) {
+char *nc_build_stage(NcContext *ctx, const char *source) {
     if (!strstr(source, "bt")) {
         ctx->source = source;
         return (char *)source;
@@ -35,7 +35,7 @@ char * nc_build_stage(NcContext *ctx, const char *source) {
                 }
                 continue;
             }
-            if (next < ts.n && ( nc_is(ts.v[next], "m") || nc_is(ts.v[next], "macro"))) {
+            if (next < ts.n && (nc_is(ts.v[next], "m") || nc_is(ts.v[next], "macro"))) {
                 c.pos = next + 1;
                 NcHeader header = nc_header(&c);
                 (void)nc_name(&c);

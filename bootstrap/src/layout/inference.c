@@ -5,7 +5,7 @@
 #include <errno.h>
 
 // Rewrites := with a typeof.
-char * nc_infer(NcContext *c, NcTokens ts, int line) {
+char *nc_infer(NcContext *c, NcTokens ts, int line) {
     NcTokens items = nc_significant(c, ts);
     size_t i = (items.n > 1 && (nc_is(items.v[0], "+") || nc_is(items.v[0], "-")) ? 1 : 0);
     if (items.n == i + 1) {

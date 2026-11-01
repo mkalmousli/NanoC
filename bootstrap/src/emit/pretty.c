@@ -95,6 +95,9 @@ static void nc_pp_token(NcPretty *p, NcToken t) {
     p->comment = 0;
     bool punct = t.kind == NC_PUNCT && t.n == 1;
     char ch = punct ? t.s[0] : 0;
+    if ((ch && strchr(")],;", ch)) || nc_pp_prev_punct(p, "(") || nc_pp_prev_punct(p, "[")) {
+        p->space = 0;
+    }
     if (ch == '{') {
         nc_pp_open(p, t);
     } else if (ch == '}') {
@@ -140,7 +143,7 @@ static void nc_pp_token(NcPretty *p, NcToken t) {
 
 // Formats C text with indentation and line breaks.
 
-char * nc_pretty(NcContext *c, const char *text) {
+char *nc_pretty(NcContext *c, const char *text) {
     NcPretty state = {0};
     NcPretty *p = &state;
     p->c = c;

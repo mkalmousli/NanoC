@@ -38,7 +38,7 @@ NcTokens nc_lex(NcContext *c, const char *s, int line) {
             t.kind = NC_WORD;
             while (1) {
                 ++i;
-                if (!( isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128)) {
+                if (!(isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128)) {
                     break;
                 }
             }

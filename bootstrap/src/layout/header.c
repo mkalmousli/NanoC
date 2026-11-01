@@ -29,7 +29,7 @@ bool nc_header_at(const NcCursor *c, const char *s, int line) {
     while (i < c->ts.n && c->ts.v[i].kind == NC_SPACE) {
         ++i;
     }
-    return i < c->ts.n && c->ts.v[i].line == line && nc_is( c->ts.v[i], s);
+    return i < c->ts.n && c->ts.v[i].line == line && nc_is(c->ts.v[i], s);
 }
 
 // Consumes s from the header.

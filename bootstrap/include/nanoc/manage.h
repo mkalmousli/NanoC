@@ -23,7 +23,7 @@ int main(int argc, char **argv);
 void nc_ui_line(bool ok, const char *name, const char *where);
 int nc_editor_command(int argc, char **argv, const char *prefix);
 int nc_manage(int argc, char **argv);
-const char * nc_editor_name(size_t i);
+const char *nc_editor_name(size_t i);
 bool nc_known_editor(const char *name);
 int nc_targets(const char *editor, NcTarget *t);
 bool mg_home(char *out);

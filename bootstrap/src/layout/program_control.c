@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Rewrites a program control header.
-char * nc_program_control(NcContext *ctx, NcTokens ts, int line) {
+char *nc_program_control(NcContext *ctx, NcTokens ts, int line) {
     NcTokens sig = nc_significant(ctx, ts);
     if (sig.n && nc_is(sig.v[sig.n - 1], ":")) {
         --sig.n;

@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Runs a program-style macro.
-char * nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth) {
+char *nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth) {
     NcEnv *env = nc_env(ctx, NULL);
     for (size_t i = 0; i < macro->params.n; ++i) {
         NcParam p = macro->params.v[i];

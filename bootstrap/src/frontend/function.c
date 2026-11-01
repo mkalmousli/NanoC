@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Expands a @f function.
-char * nc_function(NcContext *ctx, NcCursor *c, size_t depth) {
+char *nc_function(NcContext *ctx, NcCursor *c, size_t depth) {
     int line = nc_line(c);
     size_t previous = c->pos ? c->pos - 1 : 0;
     while (previous && !nc_is(c->ts.v[previous], "@")) {
@@ -54,5 +54,5 @@ char * nc_function(NcContext *ctx, NcCursor *c, size_t depth) {
         }
         body = nc_expand(ctx, nc_lex(ctx, body, 1), depth);
     }
-    return nc_format(ctx, "%s %s(%s) {%s}", returns, id, args, body);
+    return nc_format(ctx, "%s%s%s(%s) {%s}", returns, nc_sep(returns), id, args, body);
 }

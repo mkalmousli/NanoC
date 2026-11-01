@@ -5,7 +5,7 @@
 #include "nanoc/manage.h"
 
 // Gets the name of editor i.
-const char * nc_editor_name(size_t i) {
+const char *nc_editor_name(size_t i) {
     static const char *ids[] = {"vscode", "vim", "neovim", "emacs", "micro", "nano", "sublime",
             NULL};
     return ids[i];

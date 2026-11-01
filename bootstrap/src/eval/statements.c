@@ -60,7 +60,7 @@ NcFlow nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) {
 
 // Expands a compile-time block.
 
-char * nc_compile_time(NcContext *ctx, NcTokens ts, size_t depth) {
+char *nc_compile_time(NcContext *ctx, NcTokens ts, size_t depth) {
     return nc_expand(ctx, nc_lex(ctx, nc_program(ctx, ts, NULL, NC_CT, depth), ts.n ? ts.v[0].line : 1),
             depth);
 }

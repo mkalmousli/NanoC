@@ -27,7 +27,7 @@ void nc_define_macro(NcContext *ctx, NcCursor *c) {
         NcParam p = {.name = nc_name(&a)};
         p.kind = nc_eat(&a, ":") ? nc_name(&a) : "tokens";
         p.variadic = nc_eat(&a, "...");
-        if (!nc_end(&a) || ( strcmp(p.kind, "tokens") && strcmp(p.kind, "ident") && strcmp(p.kind,
+        if (!nc_end(&a) || (strcmp(p.kind, "tokens") && strcmp(p.kind, "ident") && strcmp(p.kind,
                 "block"))) {
             nc_fail(ctx, nc_line(&a), "expected ident, tokens, or block parameter");
         }

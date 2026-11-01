@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Expands shorthand forms.
-char * nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) {
+char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth) {
     if (!strcmp(name, "fn")) {
         return nc_function(ctx, c, depth);
     }

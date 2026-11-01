@@ -269,7 +269,7 @@ nanoc editor install vim</code></pre></div>
 <section id="source" class="wrap">
   <p class="kicker">Read the source</p>
   <h2>The compiler, <em>in NanoC.</em></h2>
-  <p class="sub">Browse the real files. Contents load from GitHub. Press <kbd>/</kbd> to search.</p>
+  <p class="sub">Every NanoC file of the compiler beside the C it generates, compiled live in your browser. Press <kbd>/</kbd> to search.</p>
   <div class="explorer">
     <div class="rail">
       <input id="search" type="search" placeholder="Filter files…" aria-label="Filter files">
@@ -277,8 +277,11 @@ nanoc editor install vim</code></pre></div>
       <div class="file-list" id="file-list"></div>
     </div>
     <div class="viewer">
-      <div class="viewer-head"><span id="selected-name">Loading…</span><a id="raw-link" href="https://github.com/mkalmousli/NanoC" target="_blank" rel="noopener">Open on GitHub ↗</a></div>
-      <div class="code-view" id="code-view"></div>
+      <div class="viewer-head"><span id="selected-name">Loading…</span><span id="ratio" class="ratio"></span><a id="raw-link" href="https://github.com/mkalmousli/NanoC" target="_blank" rel="noopener">Open on GitHub ↗</a></div>
+      <div class="pair">
+        <div class="half"><div class="half-head"><b>NanoC</b><span id="nc-stat"></span></div><div class="code-view" id="nc-view"></div></div>
+        <div class="half"><div class="half-head"><b>Generated C</b><span id="c-stat"></span></div><div class="code-view" id="c-view"></div></div>
+      </div>
     </div>
   </div>
 </section>

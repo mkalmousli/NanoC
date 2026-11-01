@@ -24,7 +24,7 @@ const NcSpec nc_specs[] = { {"emit", "emit(text|tokens)", "all", NULL}, {"str", 
         "bt", nc_meta_files}, {"run", "run(argv[,cwd]) -> [status,out,err]", "bt", nc_meta_process},
         {"exec", "exec(argv[,cwd]) -> stdout; fails on nonzero", "bt", nc_meta_process}, {"sh",
         "sh(command) -> [status,out,err]", "bt", nc_meta_process} };
-const size_t nc_spec_count = ( sizeof nc_specs / sizeof *nc_specs);
+const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
 bool nc_builtin_known(const char *name) {
     for (size_t i = 0; i < nc_spec_count; ++i) {
@@ -50,7 +50,7 @@ NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line
 
 // Gets a value as text.
 
-const char * nc_meta_text(NcContext *c, NcValue v, int line) {
+const char *nc_meta_text(NcContext *c, NcValue v, int line) {
     if (v.kind != NC_STRING && v.kind != NC_CODE) {
         nc_fail(c, line, "expected text or tokens");
     }

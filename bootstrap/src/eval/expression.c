@@ -40,7 +40,7 @@ NcValue nc_expression(NcExpr *e, int minimum, bool active) {
             break;
         }
         (void)nc_take(&e->c);
-        bool execute = (active && !( (nc_is(op, "&&") && !nc_truth(out)) || (nc_is(op, "||") && nc_truth(out))));
+        bool execute = (active && !((nc_is(op, "&&") && !nc_truth(out)) || (nc_is(op, "||") && nc_truth(out))));
         NcValue rhs = nc_expression(e, precedence + 1, execute);
         if (active) {
             out = (execute ? nc_binary(c, op, out, rhs, op.line) : nc_boolean(nc_is(op, "||")));

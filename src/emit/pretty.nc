@@ -70,6 +70,9 @@
   p->comment = false
   bool punct = t.kind == NC_PUNCT && t.n == 1
   char ch = punct ? t.s[0] : 0
+  if ((ch && strchr(")],;", ch)) || nc_pp_prev_punct(p, "(")
+    || nc_pp_prev_punct(p, "["))
+    p->space = false
   if ch == '{'
     nc_pp_open(p, t)
   elif ch == '}'

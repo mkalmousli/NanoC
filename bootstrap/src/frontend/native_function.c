@@ -15,7 +15,7 @@ static NcTokens return_type(NcCursor *c, int line) {
 
 // Rewrites the final return.
 
-static char * lower_returns(NcContext *ctx, char *body, int line) {
+static char *lower_returns(NcContext *ctx, char *body, int line) {
     if (!strstr(body, "=>")) {
         return body;
     }
@@ -35,7 +35,7 @@ static char * lower_returns(NcContext *ctx, char *body, int line) {
 
 // Expands a native function.
 
-char * nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
+char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
     NcHeader header = nc_header(c);
     int definition_line = header.line;
     char *name = nc_name(c);
@@ -46,7 +46,7 @@ char * nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
     }
     char *type = "void";
     bool arrow = nc_header_eat(c, "->", header.line);
-    if (arrow || ( nc_same_line(c, header.line) && !nc_header_at(c, "=", header.line) && !nc_header_at(c,
+    if (arrow || (nc_same_line(c, header.line) && !nc_header_at(c, "=", header.line) && !nc_header_at(c,
             "=>", header.line) && !nc_header_at(c, "{", header.line))) {
         type = nc_trim(ctx, nc_join(ctx, return_type(c, header.line)));
     }
@@ -76,6 +76,6 @@ char * nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
         }
     }
     char *expanded = nc_expand(ctx, nc_lex(ctx, body, header.line), depth);
-    return nc_format(ctx, "%s %s(%s) {%s}", type, name, params, lower_returns(ctx, expanded,
-            header.line));
+    return nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name, params, lower_returns(ctx,
+            expanded, header.line));
 }

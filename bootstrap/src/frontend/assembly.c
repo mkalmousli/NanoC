@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Expands an asm block to C.
-char * nc_assembly(NcContext *ctx, NcCursor *c) {
+char *nc_assembly(NcContext *ctx, NcCursor *c) {
     NcHeader header = nc_header(c);
     NcBuffer qualifiers = {0}, code = {0};
     bool jump = 0, seen[3] = {0};

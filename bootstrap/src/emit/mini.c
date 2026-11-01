@@ -23,7 +23,7 @@ static bool apart(char a, char b) {
 
 // Strips comments and layout; keeps one directive per line.
 
-char * nc_mini(NcContext *c, const char *text) {
+char *nc_mini(NcContext *c, const char *text) {
     NcTokens ts = nc_lex(c, text, 1);
     NcBuffer out = {0};
     for (size_t i = 0; i < ts.n; ++i) {
@@ -57,7 +57,7 @@ char * nc_mini(NcContext *c, const char *text) {
 
 // Applies the selected emit style to generated C.
 
-char * nc_style(NcContext *c, const char *text) {
+char *nc_style(NcContext *c, const char *text) {
     if (c->mini) {
         return nc_mini(c, text);
     }

@@ -104,7 +104,7 @@ NcValue nc_host_run(NcMachine *m, NcValues a, int line) {
         nc_fail(c, line, "command output must be text (NUL byte found)");
     }
     NcValues result = {0};
-    NC_PUSH(c, result, nc_integer( WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status)));
+    NC_PUSH(c, result, nc_integer(WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status)));
     NC_PUSH(c, result, nc_value_text(NC_STRING, stdout_text));
     NC_PUSH(c, result, nc_value_text(NC_STRING, stderr_text));
     return nc_list(result);

@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Creates a child scope.
-NcEnv * nc_env(NcContext *c, NcEnv *parent) {
+NcEnv *nc_env(NcContext *c, NcEnv *parent) {
     NcEnv *e = nc_alloc(c, sizeof *e);
     e->parent = parent;
     return e;

@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Expands tokens until stable.
-char * nc_expand(NcContext *ctx, NcTokens ts, size_t depth) {
+char *nc_expand(NcContext *ctx, NcTokens ts, size_t depth) {
     nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "expansion");
     nc_names(ctx, ts);
     NcCursor c = {ctx, ts, 0};
@@ -53,7 +53,7 @@ char * nc_expand(NcContext *ctx, NcTokens ts, size_t depth) {
 
 // Transpiles source text to C.
 
-char * nc_transpile(NcContext *ctx, const char *input) {
+char *nc_transpile(NcContext *ctx, const char *input) {
     nc_check(ctx, strlen(input), 1);
     if (!strchr(input, '@')) {
         ctx->pass = 1;

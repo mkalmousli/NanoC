@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Runs the whole compile pipeline.
-char * nc_pipeline(NcContext *ctx, const char *input) {
+char *nc_pipeline(NcContext *ctx, const char *input) {
     const char *current = input;
     for (;;) {
         if (ctx->max_passes && ctx->pass >= ctx->max_passes) {

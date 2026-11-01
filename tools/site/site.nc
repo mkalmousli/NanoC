@@ -10,7 +10,7 @@
   write("_site/.nojekyll","")
   exec(["git","checkout-index","-a","--prefix=_site/source/"])
   tracked:=split(exec(["git","ls-files"]),"\n")
-  exts:=[".nc",".c",".h",".cc",".cpp",".md",".json",".html",".css",".js",".svg",".vim",".el",".yaml",".nanorc",".sublime-syntax",".sh"]
+  exts:=[".nc"]
   index:=[]
   for f tracked
     for e exts

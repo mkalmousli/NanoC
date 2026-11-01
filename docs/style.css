@@ -103,7 +103,7 @@ table.cards td:first-child code{color:var(--lime);background:none}
 .ed span{color:var(--mute);font-size:13px}
 .ed code{display:block;margin-top:10px;font-size:12px;color:var(--lime);background:none;padding:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* explorer */
-.explorer{display:grid;grid-template-columns:260px 1fr;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);margin-top:36px;min-height:520px}
+.explorer{display:grid;grid-template-columns:250px 1fr;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel);margin-top:36px;min-height:520px}
 .rail{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
 .rail input{margin:12px;background:#0d0d0b;border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:10px 12px;font:14px var(--sans);outline:none}
 .rail input:focus{border-color:var(--lime)}
@@ -116,7 +116,20 @@ table.cards td:first-child code{color:var(--lime);background:none}
 .viewer{display:flex;flex-direction:column;min-width:0}
 .viewer-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font:13px var(--mono);color:var(--mute)}
 .viewer-head a{color:var(--lime);text-decoration:none;white-space:nowrap}
-.code-view{overflow:auto;flex:1;max-height:520px}
+.code-view{overflow:auto;flex:1;max-height:560px}
+.pair{display:grid;grid-template-columns:1fr 1fr;min-width:0;flex:1}
+.half{display:flex;flex-direction:column;min-width:0}
+.half+.half{border-left:1px solid var(--line)}
+.half-head{display:flex;justify-content:space-between;padding:8px 14px;font:12px var(--mono);color:var(--dim);border-bottom:1px solid var(--line)}
+.half-head b{color:var(--lime);font-weight:600}
+.ratio{color:var(--lime);font:12px var(--mono)}
+details{margin:0}
+summary{cursor:pointer;list-style:none;font:13px var(--mono);color:var(--ink);padding:6px 8px;border-radius:7px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸";display:inline-block;width:1.1em;color:var(--dim)}
+details[open]>summary::before{content:"▾"}
+summary:hover{background:#1d1e18}
+.tree-in{margin-left:10px;padding-left:6px;border-left:1px solid var(--line)}
 .code-view pre{border:0;border-radius:0;min-height:100%;max-height:none}
 .loading,.empty-code{padding:30px;color:var(--mute)}
 /* footer */
@@ -133,6 +146,8 @@ footer .wrap{display:flex;gap:18px;align-items:center;justify-content:space-betw
   .eds{grid-template-columns:1fr 1fr}
   .explorer{grid-template-columns:1fr}
   .rail{border-right:0;border-bottom:1px solid var(--line)}
+  .pair{grid-template-columns:1fr}
+  .half+.half{border-left:0;border-top:1px solid var(--line)}
   .file-list{max-height:200px}
 }
 @media(max-width:700px){
@@ -210,3 +225,9 @@ table.vs tbody tr:last-child>*{border-bottom:0}
 .pane{padding:0;border:0}
 .editor pre,.editor code{background:transparent!important;border:0}
 .editor{margin:0}
+
+/* editor: keep the highlight layer pixel-identical to the textarea so the caret lines up */
+.editor pre,.editor pre code,.editor textarea{font:13.5px/1.6 var(--mono)!important;letter-spacing:0!important;word-spacing:0!important;text-shadow:none!important;tab-size:2!important;white-space:pre!important}
+.editor pre{padding:16px 18px!important;margin:0!important}
+.editor pre code{padding:0!important;display:block}
+.editor textarea{padding:16px 18px!important;caret-color:var(--lime)!important}

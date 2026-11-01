@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Substitutes macro parameters.
-char * nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index) {
+char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index) {
     nc_depth(ctx, depth, 1, "substitution");
     NcCursor c = {ctx, ts, 0};
     NcBuffer out = {0};

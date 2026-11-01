@@ -24,7 +24,7 @@ NcFlow nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth) {
     }
     for (;;) {
         NcCursor condition = {ctx, parts.v[1], 0};
-        if (!nc_end(&condition) && !nc_truth( nc_eval(m, parts.v[1], env, depth + 1, 1))) {
+        if (!nc_end(&condition) && !nc_truth(nc_eval(m, parts.v[1], env, depth + 1, 1))) {
             break;
         }
         nc_depth(ctx, depth, nc_line(c), "compile-time");

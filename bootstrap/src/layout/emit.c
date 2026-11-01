@@ -33,7 +33,7 @@ void nc_marker(NcContext *c, NcBuffer *b, int line) {
 
 // Emits a block of nodes as C.
 
-char * nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
+char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
     nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout");
     if (!nodes.n && tail) {
         nc_fail(c, 1, "value function needs a final expression");
@@ -45,7 +45,7 @@ char * nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
         nc_step(c, node.head.line);
         size_t last = i;
         if (lead(node, "if") && node.children.n) {
-            while (last + 1 < nodes.n && ( lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1],
+            while (last + 1 < nodes.n && (lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1],
                     "else"))) {
                 if (lead(nodes.v[last], "else")) {
                     nc_fail(c, nodes.v[last + 1].head.line, "branch after else");
@@ -67,14 +67,14 @@ char * nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth) {
                 i = last + 1;
                 continue;
             }
-            if (returning && ( lead(node, "let") || lead(node, "var") || lead(node, "intent") || lead(node,
+            if (returning && (lead(node, "let") || lead(node, "var") || lead(node, "intent") || lead(node,
                     "break") || lead(node, "continue"))) {
                 nc_fail(c, node.head.line, "value function needs a final expression");
             }
             nc_marker(c, &out, node.head.line);
             nc_add(c, &out, nc_statement(c, node.head, returning));
         } else {
-            if (returning && ( !lead(node, "if") || !lead(nodes.v[last], "else"))) {
+            if (returning && (!lead(node, "if") || !lead(nodes.v[last], "else"))) {
                 nc_fail(c, node.head.line, "value function needs a final expression or " "exhaustive if/else");
             }
             for (size_t branch = i; branch <= last; ++branch) {

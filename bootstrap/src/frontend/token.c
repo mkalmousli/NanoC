@@ -10,7 +10,7 @@ bool nc_is(NcToken t, const char *s) {
 
 // Copies a token as text.
 
-char * nc_text(NcContext *c, NcToken t) {
+char *nc_text(NcContext *c, NcToken t) {
     return nc_string(c, t.s, t.n);
 }
 
@@ -28,7 +28,7 @@ NcTokens nc_slice(NcTokens ts, size_t a, size_t b) {
 
 // Concatenates token text.
 
-char * nc_join(NcContext *c, NcTokens ts) {
+char *nc_join(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
     for (size_t i = 0; i < ts.n; ++i) {
         nc_addn(c, &b, ts.v[i].s, ts.v[i].n);
@@ -51,7 +51,7 @@ NcTokens nc_significant(NcContext *c, NcTokens ts) {
 
 // Joins tokens as spaced words.
 
-char * nc_words(NcContext *c, NcTokens ts) {
+char *nc_words(NcContext *c, NcTokens ts) {
     NcBuffer b = {0};
     for (size_t i = 0; i < ts.n; ++i) {
         NcToken t = ts.v[i];

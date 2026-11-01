@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Trims whitespace.
-char * nc_trim(NcContext *c, const char *s) {
+char *nc_trim(NcContext *c, const char *s) {
     while (isspace((unsigned char)*s)) {
         ++s;
     }
@@ -31,7 +31,7 @@ bool nc_identifier(const char *s) {
 
 // Quotes text as a C string.
 
-char * nc_quote(NcContext *c, const char *s) {
+char *nc_quote(NcContext *c, const char *s) {
     NcBuffer b = {0};
     nc_add(c, &b, "\"");
     for (; *s; ++s) {
@@ -56,7 +56,7 @@ char * nc_quote(NcContext *c, const char *s) {
 
 // Removes quotes from a literal.
 
-char * nc_unquote(NcContext *c, const char *s, int line) {
+char *nc_unquote(NcContext *c, const char *s, int line) {
     NcBuffer b = {0};
     size_t len = strlen(s);
     for (size_t i = 1; i + 1 < len; ++i) {

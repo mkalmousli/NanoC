@@ -14,7 +14,7 @@ static size_t hash(const char *s) {
 
 // Looks up a key in a map.
 
-void * nc_get(const NcMap *m, const char *key) {
+void *nc_get(const NcMap *m, const char *key) {
     if (!m->cap) {
         return NULL;
     }
@@ -75,7 +75,7 @@ void nc_put(NcContext *c, NcMap *m, const char *key, void *value) {
 
 // Makes an unused name.
 
-char * nc_fresh(NcContext *c, const char *hint) {
+char *nc_fresh(NcContext *c, const char *hint) {
     char *name;
     while (1) {
         name = nc_format(c, "nanoc_%s_%zu", hint, ++c->serial);

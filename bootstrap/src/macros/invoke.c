@@ -23,7 +23,7 @@ static void validate(NcContext *ctx, NcParam p, NcTokens ts) {
 
 // Expands a macro call.
 
-char * nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t depth) {
+char *nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t depth) {
     NcMacro *m = nc_get(&ctx->macros, name);
     if (!m) {
         nc_fail(ctx, nc_line(c), "unknown extension: @%s", name);

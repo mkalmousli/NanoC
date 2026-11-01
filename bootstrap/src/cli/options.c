@@ -27,7 +27,7 @@ NcOptions nc_options(NcContext *c, int argc, char **argv) {
         } else if (!positional && !strcmp(arg, "--check")) {
             o.check = 1;
             c->effects = 0;
-        } else if (!positional && ( !strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives") || !strcmp(arg,
+        } else if (!positional && (!strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives") || !strcmp(arg,
                 "--prototypes"))) {
             if (!strcmp(arg, "--prototypes")) {
                 o.prototypes = 1;
@@ -36,10 +36,10 @@ NcOptions nc_options(NcContext *c, int argc, char **argv) {
             } else {
                 c->effects = 0;
             }
-        } else if (!positional && ( !strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg,
+        } else if (!positional && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg,
                 "--describe"))) {
             o.action = arg;
-        } else if (!positional && ( !strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg,
+        } else if (!positional && (!strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg,
                 "--emit") || !strcmp(arg, "--diagnostics") || !strcmp(arg, "--max-depth") || !strcmp(arg,
                 "--max-steps") || !strcmp(arg, "--max-passes") || !strcmp(arg, "--max-output"))) {
             if (++i == argc) {

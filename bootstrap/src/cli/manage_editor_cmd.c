@@ -66,7 +66,7 @@ static int nc_editor_list(const char *prefix) {
 
 int nc_editor_command(int argc, char **argv, const char *prefix) {
     int first = 0;
-    bool remove = (argc && ( !strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall")));
+    bool remove = (argc && (!strcmp(argv[0], "remove") || !strcmp(argv[0], "uninstall")));
     if (argc && (remove || !strcmp(argv[0], "install"))) {
         first = 1;
     }
@@ -110,7 +110,7 @@ int nc_editor_command(int argc, char **argv, const char *prefix) {
         }
     }
     if (!acted && !remove) {
-        puts( "No supported editors detected. Name one: nanoc " "editor install vim");
+        puts("No supported editors detected. Name one: nanoc " "editor install vim");
     }
     return status;
 }

@@ -55,7 +55,7 @@ void nc_report(FILE *out, NcContext *c, size_t bytes) {
 // Writes one JSON diagnostic.
 
 void nc_diagnostic(FILE *out, NcContext *c) {
-    fputs( "{\"schemaVersion\":1,\"ok\":false,\"diagnostics\":[{" "\"code\":", out);
+    fputs("{\"schemaVersion\":1,\"ok\":false,\"diagnostics\":[{" "\"code\":", out);
     nc_json_string(out, c->code ? c->code : "NC_INPUT");
     fputs(",\"severity\":\"error\",\"file\":", out);
     nc_json_string(out, c->file);

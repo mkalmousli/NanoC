@@ -75,5 +75,6 @@
         nc_indented_nodes(c, header, false), value, 0)
   char *expanded = nc_expand(ctx,
     nc_lex(ctx, body, header.line), depth)
-  nc_format(ctx, "%s %s(%s) {%s}", type, name, params,
+  nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name,
+    params,
     lower_returns(ctx, expanded, header.line))

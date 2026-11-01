@@ -63,7 +63,7 @@ void nc_need(NcCursor *c, const char *s) {
 
 // Consumes an identifier.
 
-char * nc_name(NcCursor *c) {
+char *nc_name(NcCursor *c) {
     NcToken t = nc_take(c);
     if (t.kind != NC_WORD) {
         nc_fail(c->ctx, t.line, "expected identifier");

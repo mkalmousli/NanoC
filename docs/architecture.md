@@ -32,3 +32,9 @@ three generations must match; see [bootstrap card](bootstrap.md).
 - Every `@f` has a one-line `//` doc comment above it.
 - Headers are generated: `include/nanoc/*.nc` (types) plus
   `nanoc --prototypes` per module, via `tools/headers.nc`.
+
+## Emitters
+- `src/emit/pretty.nc`, `braces.nc`, `output.nc`: normal mode. A token pass over generated C: indentation, cuddled `else`, `case` indent, one blank line between top-level definitions, soft wrap at 90 columns. Source spacing is kept.
+- `src/emit/mini.nc`: `--emit mini` strips comments and layout; only directives keep their lines.
+- Pure C with no real `@` use is returned unchanged in normal mode.
+- Reseeding after a formatting change: `NC_RESEED=1 ./builder snapshot` (twice), then `./builder bootstrap`.

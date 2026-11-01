@@ -44,7 +44,7 @@ void nc_printf(NcContext *c, NcBuffer *b, const char *format, ...) {
 
 // Finishes a buffer as a string.
 
-char * nc_string(NcContext *c, const char *s, size_t n) {
+char *nc_string(NcContext *c, const char *s, size_t n) {
     char *p = nc_alloc(c, n + 1);
     if (n) {
         memcpy(p, s, n);
@@ -54,7 +54,7 @@ char * nc_string(NcContext *c, const char *s, size_t n) {
 
 // Formats text into a new string.
 
-char * nc_format(NcContext *c, const char *format, ...) {
+char *nc_format(NcContext *c, const char *format, ...) {
     va_list a, copy;
     va_start(a, format);
     va_copy(copy, a);

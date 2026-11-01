@@ -13,7 +13,7 @@ static bool starts(NcContext *c, NcNode n, const char *word) {
 
 static bool function_node(NcContext *c, NcNode n) {
     NcTokens ts = nc_significant(c, n.head.ts);
-    return ts.n > 1 && ts.v[1].kind == NC_WORD && ( nc_is(ts.v[0], "f") || nc_is(ts.v[0], "fn"));
+    return ts.n > 1 && ts.v[1].kind == NC_WORD && (nc_is(ts.v[0], "f") || nc_is(ts.v[0], "fn"));
 }
 
 // Tells if a line is a value.
@@ -37,21 +37,21 @@ static bool value_line(NcContext *c, NcTokens ts) {
             ++level;
         } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
             --level;
-        } else if (!level && ( nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t,
-                "--") || ( t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0])))) {
+        } else if (!level && (nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t,
+                "--") || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0])))) {
             return 0;
         }
     }
     bool function = (sig.n > 1 && sig.v[1].kind == NC_WORD && (nc_is(sig.v[0], "f") || nc_is(sig.v[0],
             "fn")));
-    return !function && !nc_is(sig.v[0], "return") && !nc_is( sig.v[0], "=>") && !nc_is(sig.v[0],
-            "break") && !nc_is( sig.v[0], "continue") && !nc_is(sig.v[0], "let") && !nc_is(sig.v[0],
+    return !function && !nc_is(sig.v[0], "return") && !nc_is(sig.v[0], "=>") && !nc_is(sig.v[0],
+            "break") && !nc_is(sig.v[0], "continue") && !nc_is(sig.v[0], "let") && !nc_is(sig.v[0],
             "if") && !nc_is(sig.v[0], "for") && !nc_is(sig.v[0], "while");
 }
 
 // Emits nodes as program text.
 
-char * nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
+char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
     nc_depth(ctx, depth, nodes.n ? nodes.v[0].head.line : 1, "program layout");
     NcBuffer out = {0};
     int line = nodes.n ? nodes.v[0].head.line : 1;
@@ -71,7 +71,7 @@ char * nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
         } else {
             bool function = function_node(ctx, n);
             bool loop = (starts(ctx, n, "for") || starts(ctx, n, "while"));
-            bool has_next_branch = (i + 1 < nodes.n && ( starts(ctx, nodes.v[i + 1], "elif") || starts(ctx,
+            bool has_next_branch = (i + 1 < nodes.n && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx,
                     nodes.v[i + 1], "else")));
             bool last = (tail && !loop && (i + 1 == nodes.n || has_next_branch));
             char *header = nc_program_control(ctx, n.head.ts, n.head.line);

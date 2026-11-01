@@ -77,7 +77,7 @@ NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program) {
                 }
             }
         }
-        if ((control || (function && !expression)) && !nc_is(last, ":") && ( block || (!nc_is(last,
+        if ((control || (function && !expression)) && !nc_is(last, ":") && (block || (!nc_is(last,
                 "}") && !nc_is(last, ";")))) {
             NcTokens copy = {0};
             for (size_t j = 0; j < line.ts.n; ++j) {

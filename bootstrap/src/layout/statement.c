@@ -22,7 +22,7 @@ bool nc_is_ret(NcContext *c, NcTokens items) {
 
 // Converts one statement to C.
 
-char * nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
+char *nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
     NcTokens ts = line.ts;
     NcTokens items = nc_significant(c, ts);
     if (!items.n) {
@@ -58,7 +58,7 @@ char * nc_statement(NcContext *c, NcLayoutLine line, bool tail) {
     } else if (items.n > 1 && items.v[0].kind == NC_WORD && (nc_is(items.v[1], ":") || nc_is(items.v[1],
             ","))) {
         for (size_t i = 0; i < items.n; ++i) {
-            if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":")) && ( i + 1 == items.n || !nc_is(items.v[i + 1],
+            if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":")) && (i + 1 == items.n || !nc_is(items.v[i + 1],
                     ":"))) {
                 declaration = 1;
             }

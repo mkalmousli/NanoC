@@ -50,4 +50,5 @@
       body = nc_emit_block(ctx, nodes,
         strcmp(returns, "void") != 0, 0)
     body = nc_expand(ctx, nc_lex(ctx, body, 1), depth)
-  nc_format(ctx, "%s %s(%s) {%s}", returns, id, args, body)
+  nc_format(ctx, "%s%s%s(%s) {%s}", returns, nc_sep(returns),
+    id, args, body)

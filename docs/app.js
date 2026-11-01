@@ -85,48 +85,92 @@ const io = new IntersectionObserver(entries => {
 }, { rootMargin: '-35% 0px -55% 0px' });
 document.querySelectorAll('.lesson').forEach(el => io.observe(el));
 
-// ---- source explorer: index from docs/files.json, contents from raw GitHub ----
+// ---- source explorer: folder tree of .nc files; NanoC beside the C the compiler generates ----
 const list = $('#file-list');
 const search = $('#search');
 const count = $('#file-count');
 let files = [];
 let current = null;
+const openDirs = new Set(['src', 'src/frontend']);
+let worker, seq = 0, killer;
 
-function group(path) {
-  const map = { 'src/': 'COMPILER', 'bootstrap/': 'C BOOTSTRAP', 'examples/': 'EXAMPLES', 'docs/': 'DOCS',
-    'editors/': 'EDITORS', 'tests/': 'TESTS' };
-  for (const k in map) if (path.startsWith(k)) return map[k];
-  return 'PROJECT';
+function spawn() {
+  worker = new Worker('worker.js');
+  worker.onmessage = e => {
+    if (e.data.id !== seq) return;
+    clearTimeout(killer);
+    showC(e.data);
+  };
+}
+
+function buildTree(paths) {
+  const root = { dirs: {}, files: [] };
+  for (const p of paths) {
+    const parts = p.split('/');
+    let node = root;
+    for (const d of parts.slice(0, -1)) node = node.dirs[d] ||= { dirs: {}, files: [] };
+    node.files.push(p);
+  }
+  return root;
+}
+
+function renderNode(node, parent, prefix, force) {
+  for (const d of Object.keys(node.dirs).sort()) {
+    const path = prefix + d;
+    const det = document.createElement('details');
+    det.open = force || openDirs.has(path);
+    det.ontoggle = () => { if (!force) det.open ? openDirs.add(path) : openDirs.delete(path); };
+    const sum = document.createElement('summary');
+    sum.textContent = d;
+    det.append(sum);
+    const inner = document.createElement('div');
+    inner.className = 'tree-in';
+    det.append(inner);
+    renderNode(node.dirs[d], inner, path + '/', force);
+    parent.append(det);
+  }
+  for (const p of node.files.sort()) {
+    const b = document.createElement('button');
+    b.className = 'file-btn' + (p === current ? ' on' : '');
+    b.textContent = p.split('/').pop();
+    b.title = p;
+    b.onclick = () => open(p);
+    parent.append(b);
+  }
 }
 
 function render() {
   list.replaceChildren();
   const q = search.value.toLowerCase();
   const matches = files.filter(p => p.toLowerCase().includes(q));
-  let last = '';
-  for (const path of matches) {
-    const g = group(path);
-    if (g !== last) {
-      const h = document.createElement('div');
-      h.className = 'folder-label';
-      h.textContent = g;
-      list.append(h);
-      last = g;
-    }
-    const b = document.createElement('button');
-    b.className = 'file-btn' + (path === current ? ' on' : '');
-    b.textContent = path;
-    b.onclick = () => open(path);
-    list.append(b);
-  }
-  count.textContent = matches.length + ' files';
+  renderNode(buildTree(matches), list, '', q.length > 0);
+  count.textContent = matches.length + ' NanoC files';
 }
 
-function language(path) {
-  if (path.endsWith('.nc')) return 'nanoc';
-  if (/\.(c|h|cc|cpp)$/.test(path)) return 'c';
-  if (path.endsWith('.sh')) return 'bash';
-  return 'clike';
+const countLines = t => t.split('\n').filter(l => l.trim()).length;
+
+function show(view, text, lang) {
+  const code = document.createElement('code');
+  code.className = 'language-' + lang;
+  code.textContent = text;
+  const pre = document.createElement('pre');
+  pre.append(code);
+  view.replaceChildren(pre);
+  Prism.highlightElement(code);
+}
+
+let ncLines = 0;
+function showC(r) {
+  const view = $('#c-view');
+  if (!r.ok) {
+    view.innerHTML = '<div class="empty-code">No C preview: ' + (r.err ? r.err.split('\n')[0].replace(/[<&]/g, '') : 'this file needs build-time (@bt) host access, which the browser build does not have') + '.</div>';
+    $('#c-stat').textContent = '';
+    return;
+  }
+  show(view, r.out, 'c');
+  const c = countLines(r.out);
+  $('#c-stat').textContent = c + ' lines · ' + Math.round(r.ms < 1 ? 1 : r.ms) + ' ms';
+  $('#ratio').textContent = c && ncLines ? (ncLines <= c ? Math.round((1 - ncLines / c) * 100) + '% fewer lines than C' : 'longer than its C') : '';
 }
 
 async function open(path) {
@@ -134,20 +178,28 @@ async function open(path) {
   render();
   $('#selected-name').textContent = path;
   $('#raw-link').href = REPO + '/blob/main/' + path;
-  const view = $('#code-view');
-  view.innerHTML = '<div class="loading">Loading…</div>';
+  $('#nc-view').innerHTML = '<div class="loading">Loading…</div>';
+  $('#c-view').innerHTML = '<div class="loading">Compiling in your browser…</div>';
+  $('#ratio').textContent = '';
   try {
-    const r = await fetch(RAW + path);
+    let r = await fetch('source/' + path);
+    if (!r.ok) r = await fetch(RAW + path);
     if (!r.ok) throw Error(String(r.status));
-    const code = document.createElement('code');
-    code.className = 'language-' + language(path);
-    code.textContent = await r.text();
-    const pre = document.createElement('pre');
-    pre.append(code);
-    view.replaceChildren(pre);
-    Prism.highlightElement(code);
+    const text = await r.text();
+    if (current !== path) return;
+    ncLines = countLines(text);
+    $('#nc-stat').textContent = ncLines + ' lines';
+    show($('#nc-view'), text, 'nanoc');
+    const id = ++seq;
+    clearTimeout(killer);
+    killer = setTimeout(() => {
+      worker.terminate();
+      spawn();
+      showC({ ok: false, err: 'timed out', out: '', ms: 5000 });
+    }, 5000);
+    worker.postMessage({ id, src: text });
   } catch {
-    view.innerHTML = '<div class="empty-code">Could not load this file. <a href="' + REPO + '">Open the repository ↗</a></div>';
+    $('#nc-view').innerHTML = '<div class="empty-code">Could not load this file. <a href="' + REPO + '">Open the repository ↗</a></div>';
   }
 }
 
@@ -159,11 +211,12 @@ document.addEventListener('keydown', e => {
   }
 });
 
+spawn();
 fetch('files.json').then(r => {
   if (!r.ok) throw Error(String(r.status));
   return r.json();
 }).then(paths => {
-  files = paths;
+  files = paths.filter(p => p.endsWith('.nc'));
   render();
   open(files.includes('src/frontend/expand.nc') ? 'src/frontend/expand.nc' : files[0]);
 }).catch(() => {

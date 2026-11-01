@@ -4,14 +4,14 @@
 #include "nanoc/nanoc.h"
 
 // Separator between a type and a name: none after "*".
-const char * nc_sep(const char *type) {
+const char *nc_sep(const char *type) {
     size_t n = strlen(type);
     return n && type[n - 1] == '*' ? "" : " ";
 }
 
 // Parses a typed declaration.
 
-char * nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
+char *nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
     NcCursor c = {ctx, input, 0};
     NcGroups names = nc_split(ctx, nc_until(&c, ":"), ",");
     nc_need(&c, ":");
@@ -58,7 +58,7 @@ char * nc_typed(NcContext *ctx, NcTokens input, bool initialized) {
 
 // Parses a parameter list.
 
-char * nc_parameters(NcContext *ctx, NcTokens ts) {
+char *nc_parameters(NcContext *ctx, NcTokens ts) {
     if (!*nc_trim(ctx, nc_join(ctx, ts))) {
         return ctx->cpp ? "" : "void";
     }

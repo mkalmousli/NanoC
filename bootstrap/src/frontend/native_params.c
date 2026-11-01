@@ -4,7 +4,7 @@
 #include "nanoc/nanoc.h"
 
 // Reads native parameters.
-char * nc_native_parameters(NcContext *ctx, NcTokens ts) {
+char *nc_native_parameters(NcContext *ctx, NcTokens ts) {
     NcGroups groups = nc_split(ctx, ts, ",");
     if (!groups.n) {
         return ctx->cpp ? "" : "void";
@@ -19,7 +19,7 @@ char * nc_native_parameters(NcContext *ctx, NcTokens ts) {
         if (i) {
             nc_add(ctx, &out, ", ");
         }
-        if (part.n == 1 && ( nc_is(part.v[0], "void") || nc_is(part.v[0], "..."))) {
+        if (part.n == 1 && (nc_is(part.v[0], "void") || nc_is(part.v[0], "..."))) {
             nc_add(ctx, &out, nc_text(ctx, part.v[0]));
             continue;
         }
