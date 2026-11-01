@@ -1,58 +1,18 @@
+/* Bootstrap only: compile the C seed, then let NanoC run the build workflow in src/build.bt.nc. */
 #define _POSIX_C_SOURCE 200809L
-#include "tools/build/build.h"
-#include "tools/build/process.c"
-#include "tools/build/walk.c"
-#include "tools/build/compile.c"
-#include "tools/build/bootstrap.c"
-#include "tools/build/fingerprint.c"
-#include "tools/build/copy.c"
-#include "tools/build/snapshot.c"
-#include "tools/build/install.c"
-#include "tools/build/lines.c"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define SEED "mkdir -p build && { [ -x build/stage0 ] && [ -z \"$(find bootstrap build.c -newer build/stage0)\" ] || " \
+             "$CC -std=c11 -D_POSIX_C_SOURCE=200809L -O2 -Ibootstrap/include $(find bootstrap/src -name '*.c') -o build/stage0; }"
 int main(int argc, char **argv) {
-    bool no_editors = false;
-    BOptions opts = {.cc = getenv("CC") ? getenv("CC") : "cc"};
-    const char *action = "build", *prefix = NULL;
-    char default_prefix[PATH_MAX];
+    char args[4096] = "";
     for (int i = 1; i < argc; ++i) {
-        if (!strcmp(argv[i], "--prefix")) {
-            if (++i == argc) b_die("missing --prefix value");
-            prefix = argv[i];
-        } else if (!strcmp(argv[i], "--sanitize")) opts.sanitize = true;
-        else if (!strcmp(argv[i], "--no-editors")) no_editors = true;
-        else if (!strcmp(argv[i], "build") || !strcmp(argv[i], "test") || !strcmp(argv[i], "bench") ||
-                 !strcmp(argv[i], "clean") || !strcmp(argv[i], "install") || !strcmp(argv[i], "uninstall") ||
-                 !strcmp(argv[i], "bootstrap") || !strcmp(argv[i], "snapshot") || !strcmp(argv[i], "docs")) action = argv[i];
-        else b_die("usage: builder [build|bootstrap|snapshot|docs|test|bench|clean|install|uninstall] [--prefix PATH] [--sanitize] [--no-editors]");
+        if (strlen(args) + strlen(argv[i]) + 2 > sizeof args) return fputs("arguments too long\n", stderr), 1;
+        strcat(strcat(args, argv[i]), "\n");
     }
-    if (!prefix && (!strcmp(action, "install") || !strcmp(action, "uninstall"))) {
-        const char *home = getenv("HOME");
-        if (!home || !*home) b_die("HOME is unset; use --prefix");
-        b_path(default_prefix, home, ".local");
-        prefix = default_prefix;
-    }
-    if (!strcmp(action, "clean")) { b_remove("build"); return 0; }
-    if (!strcmp(action, "uninstall")) { b_uninstall(prefix); return 0; }
-    if (!strcmp(action, "bootstrap") || !strcmp(action, "snapshot")) {
-        if (unlink("build/config") && errno != ENOENT) b_die("cannot invalidate bootstrap cache");
-    }
-    b_compile(opts, false);
-    if (!strcmp(action, "docs")) {
-        char *gen[] = {"build/nanoc", "src/docs.bt.nc", "-o", "build/docs.c", NULL};
-        return b_run(gen);
-    }
-    if (!strcmp(action, "snapshot")) { b_snapshot(); b_line_check(); }
-    else if (!strcmp(action, "install")) b_install(prefix, !no_editors);
-    else if (!strcmp(action, "test") || !strcmp(action, "bench")) {
-        b_line_check();
-        b_compile(opts, true);
-        char asan[PATH_MAX];
-        const char *previous = getenv("ASAN_OPTIONS");
-        if (snprintf(asan, sizeof asan, "%s:detect_leaks=0", previous ? previous : "") >= (int)sizeof asan)
-            b_die("ASAN_OPTIONS is too long");
-        if (setenv("ASAN_OPTIONS", asan, 1)) b_die("cannot configure test sanitizer environment");
-        char *args[] = {"build/tests", !strcmp(action, "bench") ? "--bench" : NULL, NULL};
-        return b_run(args);
-    }
-    return 0;
+    if (!getenv("CC")) setenv("CC", "cc", 1);
+    setenv("NC_ARGS", args, 1);
+    if (system(SEED)) return 1;
+    return system("build/stage0 --max-steps 0 --max-passes 0 src/build.bt.nc -o build/build.c") != 0;
 }
