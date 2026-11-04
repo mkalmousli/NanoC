@@ -37,6 +37,7 @@
   out.v
 // Transpiles source text to C.
 @f nc_transpile(NcContext *ctx, cstr input) char *
+  input = nc_lang_check(ctx, input)
   nc_check(ctx, strlen(input), 1)
   if !strchr(input, '@') then ctx->pass = 1; ctx->source = input; return ctx->mini ? nc_mini(ctx, input) : (char *)input
   char *output = nc_pipeline(ctx, input)

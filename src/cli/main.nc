@@ -22,9 +22,10 @@
     elif !strcmp(o.action, "--describe")
       if !nc_describe(stdout, o.input) then nc_fail(c, 0, "unknown describe topic: %s", o.input)
     else
-      char *generated = nc_transpile(c, nc_read(c, o.input))
-      if o.prototypes then nc_prototypes(c, stdout)
-      elif o.check
+      char *source = nc_read(c, o.input)
+      char *generated = o.migrate ? nc_migrate(c, source) : nc_transpile(c, source)
+      if o.prototypes and not o.migrate then nc_prototypes(c, stdout)
+      elif o.check and not o.migrate
         if o.json then nc_report(stdout, c, strlen(generated))
       elif !strcmp(o.output, "-") then fputs(generated, stdout) else nc_write(c, o.output, generated)
       if not o.json

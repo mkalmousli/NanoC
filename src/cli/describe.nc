@@ -35,6 +35,7 @@
     if !*topic
       jw_ks(&w, "compiler", "nanoc")
       jw_ks(&w, "version", NC_VERSION)
+      jw_ki(&w, "lang", NC_LANG)
       jw_ks(&w, "implementation", "NanoC")
       jw_kr(&w, "targets", "[\"c11\",\"c++17\"]")
       jw_ki(&w, "builtinCount", (long)nc_spec_count)

@@ -29,9 +29,11 @@ NcOptions nc_options(NcContext *c, int argc, char **argv) {
             o.check = 1;
             c->effects = 0;
         } else if (!positional && (!strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives") || !strcmp(arg,
-                "--prototypes"))) {
+                "--prototypes") || !strcmp(arg, "--migrate"))) {
             if (!strcmp(arg, "--prototypes")) {
                 o.prototypes = 1;
+            } else if (!strcmp(arg, "--migrate")) {
+                o.migrate = 1;
             } else if (!strcmp(arg, "--line-directives")) {
                 c->lines = 1;
             } else {

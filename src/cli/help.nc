@@ -9,7 +9,7 @@
     "  --diagnostics json  Machine-readable errors/check reports\n"
     "  --describe [topic]  Small JSON card; topics: syntax, asm, builtins, builtin name\n"
     "  --no-effects        Disable BT host writes/commands (implied by --check)\n"
-    "  --prototypes        Print prototypes of non-static functions\n"
+    "  --prototypes        Print prototypes of non-static functions\n" "  --migrate           Rewrite source to this nanoc's language (@lang N) instead of compiling\n"
     "  --std LEVEL         c89, c99, c11 or c17: restrict generated C features\n"
     "  --emit MODE         normal (readable C, default) or mini (smallest C)\n"
     "  --line-directives   Emit #line markers mapping C back to NanoC lines\n"

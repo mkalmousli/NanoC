@@ -5,7 +5,7 @@ Self-hosted NanoC; C11 bootstrap; portable C11 + libc (Linux, macOS, BSD, Window
 
 | Directory | Owns |
 | --- | --- |
-| include/nanoc | Internal subsystem contracts, written in NanoC (types only; prototypes are generated) |
+| src/types | Internal subsystem contracts (`*.types.nc`), written in NanoC: types only; generated into the `nanoc/*.h` headers with prototypes |
 | bootstrap | Generated frozen C seed, including main and its own headers |
 | src/frontend | Tokens, cursors, declarations, native `@f`, recursive expansion |
 | src/macros | Templates, captures, program macros |
@@ -28,7 +28,7 @@ Tokens are immutable source slices; lookahead copies indices. A context owns tra
 ## Style
 
 - `src/**/*.nc`: 200 lines per file; every file starts with a `//` header; every `@f` has a one-line `//` doc comment.
-- Headers are generated: `include/nanoc/*.nc` (types) plus `nanoc --prototypes` per module, via `src/headers.bt.nc`.
+- Headers are generated: `src/types/*.types.nc` (types) plus `nanoc --prototypes` per module, via `src/headers.bt.nc`.
 - `*.bt.nc` files are build-time programs and are not compiler modules.
 - Docs and editors are generated: `./builder docs`, `src/editors.bt.nc`.
 

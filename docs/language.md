@@ -396,6 +396,18 @@ An indented `@asm` block forwards instructions to the GCC or Clang inline assemb
 
 Full syntax and examples: `nanoc --describe asm` or the [assembly card](https://github.com/mkalmousli/NanoC/blob/main/docs/assembly.md).
 
+## Language versions
+
+Pin a file to a language version with `@lang N` on its first line (after blank lines or `//` comments). A file for a newer language than your nanoc is rejected; one for an older language is rejected with a pointer to `--migrate`. Files without `@lang` are compiled as the current language.
+
+`nanoc --migrate file.nc -o file.nc` rewrites source to the current language and stamps `@lang`. Check which language your compiler speaks with `nanoc --describe` (`lang`). The current language is 1.
+
+```nanoc
+@lang 1
+@f main int
+  0
+```
+
 ## C++17 and C headers
 
 Headers work unchanged. Use `--lang c++` to emit C++17 and get range loops over standard containers. `--emit mini` strips comments and layout for the smallest C.

@@ -143,6 +143,13 @@ lesson bt BUILD TIME | Files and commands with `@bt` | Build time
 lesson asm ASSEMBLY | Inline assembly | Assembly
   p An indented `@asm` block forwards instructions to the GCC or Clang inline assembler, with explicit `out`, `in`, `clobber` and `labels` sections. Assembly is the only place NanoC knows a target; everything else is plain C.
   p Full syntax and examples: `nanoc --describe asm` or the [assembly card](https://github.com/mkalmousli/NanoC/blob/main/docs/assembly.md).
+lesson versions VERSIONS | Language versions | Versions
+  p Pin a file to a language version with `@lang N` on its first line (after blank lines or `//` comments). A file for a newer language than your nanoc is rejected; one for an older language is rejected with a pointer to `--migrate`. Files without `@lang` are compiled as the current language.
+  p `nanoc --migrate file.nc -o file.nc` rewrites source to the current language and stamps `@lang`. Check which language your compiler speaks with `nanoc --describe` (`lang`). The current language is 1.
+  code nanoc
+    @lang 1
+    @f main int
+      0
 lesson interop INTEROP | C++17 and C headers | Interop
   p Headers work unchanged. Use `--lang c++` to emit C++17 and get range loops over standard containers. `--emit mini` strips comments and layout for the smallest C.
   code nanoc

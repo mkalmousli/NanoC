@@ -39,6 +39,7 @@ src/frontend/expand.c
 src/frontend/function.c
 src/frontend/groups.c
 src/frontend/include.c
+src/frontend/lang.c
 src/frontend/lexer.c
 src/frontend/literal.c
 src/frontend/native_function.c

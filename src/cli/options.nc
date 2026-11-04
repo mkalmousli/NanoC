@@ -19,8 +19,9 @@ extern int nc_std;
     elif (!positional
       and (
         !strcmp(arg, "--no-effects") || !strcmp(arg, "--line-directives")
-        || !strcmp(arg, "--prototypes")))
+        || !strcmp(arg, "--prototypes") || !strcmp(arg, "--migrate")))
       if !strcmp(arg, "--prototypes") then o.prototypes = true
+      elif !strcmp(arg, "--migrate") then o.migrate = true
       elif !strcmp(arg, "--line-directives") then c->lines = true else c->effects = false
     elif (!positional
       && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg, "--describe")))

@@ -52,7 +52,7 @@
     if has("--sanitize")
       r="1"
     r
-  f key = ok("echo "+CC+" sanitize="+san()+"; find src include bootstrap build.c -type f | sort | xargs cat | cksum")
+  f key = ok("echo "+CC+" sanitize="+san()+"; find src bootstrap build.c -type f | sort | xargs cat | cksum")
   f compile
     ok("mkdir -p build")
     if read_or("build/config")==key() && exists("build/nanoc")
@@ -66,7 +66,7 @@
       r=read(p)
     r
   f lines
-    bad:=ok("find include src tests examples build.c \\( -name '*.c' -o -name '*.h' -o -name '*.nc' -o -name '*.cpp' -o -name '*.hpp' \\) ! -name '*.*.nc' | xargs wc -l | awk '$1>200 && $2!=\"total\"'")
+    bad:=ok("find src tests examples build.c \\( -name '*.c' -o -name '*.h' -o -name '*.nc' -o -name '*.cpp' -o -name '*.hpp' \\) ! -name '*.*.nc' | xargs wc -l | awk '$1>200 && $2!=\"total\"'")
     if bad!=""
       fail("over 200 physical lines:\n"+bad)
   f test(bench)

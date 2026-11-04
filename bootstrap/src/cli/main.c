@@ -45,10 +45,11 @@ int main(int argc, char **argv) {
                 nc_fail(c, 0, "unknown describe topic: %s", o.input);
             }
         } else {
-            char *generated = nc_transpile(c, nc_read(c, o.input));
-            if (o.prototypes) {
+            char *source = nc_read(c, o.input);
+            char *generated = o.migrate ? nc_migrate(c, source) : nc_transpile(c, source);
+            if (o.prototypes && ! o.migrate) {
                 nc_prototypes(c, stdout);
-            } else if (o.check) {
+            } else if (o.check && ! o.migrate) {
                 if (o.json) {
                     nc_report(stdout, c, strlen(generated));
                 }
