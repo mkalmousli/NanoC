@@ -1,2 +1,5 @@
-@ct { fn square(n) = n*n; let n = square(7); emit(quote {enum {n=$n};}); }
-@fn main():int = n != 49
+@ct
+  f square(n) = n*n
+  n:=square(7)
+  emit(quote(enum { n=$n };))
+f main() -> int = n != 49

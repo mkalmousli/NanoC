@@ -1,41 +1,54 @@
 // User functions in meta code.
+@lang 1
++ "nanoc/nanoc.h"
+
 // Defines a meta function.
-@f nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) void
+f nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) -> void
   NcContext *ctx = m->ctx
   char *name = nc_name(c)
-  if nc_builtin_known(name) || !strcmp(name, "quote") then nc_fail(ctx, nc_line(c), "reserved compile-time function name")
-  if nc_get(&m->functions, name) then nc_fail(ctx, nc_line(c), "duplicate compile-time function: %s", name)
+  if (nc_builtin_known(name) || !strcmp(name, "quote"))
+    nc_fail(ctx, nc_line(c), "reserved compile-time function name")
+  if (nc_get(&m->functions, name))
+    nc_fail(ctx, nc_line(c), "duplicate compile-time function: %s", name)
   NcCtFunction *f = nc_alloc(ctx, sizeof *f)
   f->closure = env
   NcGroups params = {0}
-  if nc_at(c, "(") then params = nc_split(ctx, nc_group(c, "(", ")"), ",")
+  params = nc_split(ctx, nc_group(c, "(", ")"), ",")
   NcMap names = {0}
-  for i:usize in 0..params.n
+  for (size_t i = (0), nanoc_bound_1 = (params.n); i < nanoc_bound_1; ++i)
     NcCursor p = {ctx, params.v[i], 0}
     char *id = nc_name(&p)
-    if !nc_end(&p) or nc_get(&names, id) then nc_fail(ctx, nc_line(&p), "invalid function parameter")
+    if (!nc_end(&p) || nc_get(&names, id))
+      nc_fail(ctx, nc_line(&p), "invalid function parameter")
     nc_put(ctx, &names, id, (void *)1)
     NC_PUSH(ctx, f->params, id)
-  if nc_eat(c, "=") || nc_eat(c, "=>")
+  if (nc_eat(c, "="))
     int line = nc_line(c)
     char *expr = nc_join(ctx, nc_until(c, ";"))
     nc_need(c, ";")
     f->body = nc_lex(ctx, nc_format(ctx, "return %s;", expr), line)
-  else f->body = nc_group(c, "{", "}")
+  else
+    f->body = nc_group(c, "{", "}")
   nc_put(ctx, &m->functions, name, f)
+
 // Calls a meta function.
-@f nc_call(NcMachine *m, cstr name, NcValues args, usize depth, int line) NcValue
+f nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int line) -> NcValue
   NcContext *c = m->ctx
   nc_depth(c, depth, line, "compile-time")
   NcCtFunction *f = nc_get(&m->functions, name)
-  if not f then return nc_builtin(m, name, args, line)
-  if args.n != f->params.n then nc_fail(c, line, "wrong argument count for %s", name)
+  if (! f)
+    return nc_builtin(m, name, args, line)
+  if (args.n != f->params.n)
+    nc_fail(c, line, "wrong argument count for %s", name)
   NcEnv *env = nc_env(c, f->closure)
-  for i:usize in 0..args.n then nc_bind(c, env, f->params.v[i], args.v[i])
-  if c->frame_count == 256 then nc_fail(c, line, "compile-time depth limit exceeded")
+  for (size_t i = (0), nanoc_bound_2 = (args.n); i < nanoc_bound_2; ++i)
+    nc_bind(c, env, f->params.v[i], args.v[i])
+  if (c->frame_count == 256)
+    nc_fail(c, line, "compile-time depth limit exceeded")
   char *frame = nc_format(c, "in compile-time function %s at %s:%d", name, c->file, line)
   c->frames[c->frame_count++] = frame
   NcFlow result = nc_run(m, f->body, env, depth + 1)
   --c->frame_count
-  if result.breaking or result.continuing then nc_fail(c, line, "loop control outside a loop")
-  result.value
+  if (result.breaking || result.continuing)
+    nc_fail(c, line, "loop control outside a loop")
+  return result.value

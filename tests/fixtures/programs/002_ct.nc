@@ -1,11 +1,12 @@
-@ct {
-  let xs = [2,3] + [5];
-  let i = 0;
-  let total = 0;
-  while (i < len(xs)) { total = total + xs[i]; i = i + 1; }
-  if (false && (1/0)) { emit("invalid"); }
-  if (true || unknown()) { emit(quote { enum { total = $total }; }); }
-  let text = "ok";
-  if (text[0] == "o" && !false) { emit("int marker;"); }
-}
-@fn main()->int { return total != 10; }
+@ct
+  xs:=[2,3]+[5]
+  i:=0
+  total:=0
+  while i<len(xs)
+    total+=xs[i]
+    i++
+  if false && (1/0)
+    fail("short circuit")
+  if true || unknown()
+    emit(quote(enum { total=$total };))
+f main() -> int = total != 10

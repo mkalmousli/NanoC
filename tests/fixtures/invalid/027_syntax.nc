@@ -1,1 +1,2 @@
-@fn f(){
+f f() -> int
+  return (1

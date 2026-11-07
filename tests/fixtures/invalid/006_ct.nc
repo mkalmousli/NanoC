@@ -1,1 +1,1 @@
-@ct { fn f(){ return f(); } f(); }
+@ct { f f(){ return f(); } f(); }

@@ -1,7 +1,6 @@
-#include <string.h>
-@ct {
-  let name = fresh("greet");
-  let message = "hello\nworld";
-  emit(quote { @fn $name()->const char* { return $message; } });
-  emit(quote { @fn main()->int { return strcmp($name(), $message); } });
-}
++ <string.h>
+@ct
+  name:=fresh("greet")
+  message:="hello\nworld"
+  emit("f "+str(name)+"() -> const char * = "+str(quote($message))+"\n")
+  emit("f main() -> int = strcmp("+str(name)+"(), "+str(quote($message))+")\n")

@@ -1,23 +1,12 @@
-// Native function parameter lists.
-// Reads native parameters.
-@f nc_native_parameters(NcContext *ctx, NcTokens ts) char *
-  NcGroups groups = nc_split(ctx, ts, ",")
-  if not groups.n then return ctx->cpp ? "" : "void"
-  char *type = nil
-  NcBuffer out = {0}
-  for i:usize in 0..groups.n
-    NcTokens part = nc_significant(ctx, groups.v[i])
-    if not part.n then nc_fail(ctx, 1, "empty function parameter")
-    if i then nc_add(ctx, &out, ", ")
-    if part.n == 1 && (nc_is(part.v[0], "void") || nc_is(part.v[0], "..."))
-      nc_add(ctx, &out, nc_text(ctx, part.v[0]))
-      continue
-    NcToken name = part.v[part.n - 1]
-    if name.kind != NC_WORD then nc_fail(ctx, name.line, "use a typedef or ordinary C for complex parameters")
-    if part.n > 1
-      usize last = groups.v[i].n
-      while last and groups.v[i].v[last - 1].kind == NC_SPACE then --last
-      type = nc_trim(ctx, nc_join(ctx, nc_aliased(ctx, nc_slice(groups.v[i], 0, last - 1))))
-    if !type or !*type then nc_fail(ctx, name.line, "first parameter in a group needs a C type")
-    nc_printf(ctx, &out, "%s%s%.*s", type, nc_sep(type), (int)name.n, name.s)
-  out.v
+// NanoC parameters use name:type, or exact C declarators for C interoperability.
+@lang 1
++ "nanoc/nanoc.h"
+
+// Converts name-first parameters while passing C parameter lists through without semantic analysis.
+f nc_native_parameters(NcContext *ctx, NcTokens ts) -> char *
+  if (!nc_significant(ctx, ts).n)
+    return ctx->cpp ? "" : "void"
+  for (size_t i = 0; i < ts.n; ++i)
+    if (nc_is(ts.v[i], ":") && (!i || !nc_is(ts.v[i - 1], ":")) && (i + 1 == ts.n || !nc_is(ts.v[i + 1], ":")))
+      return nc_parameters(ctx, ts)
+  return nc_join(ctx, ts)

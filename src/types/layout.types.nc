@@ -1,10 +1,24 @@
 // Layout tree types.
-@s NcLayoutLine ts:NcTokens; indent,line:i32; raw:bool
-@s NcLines v:*NcLayoutLine; n,cap:usize
+@lang 1
+s NcLayoutLine
+  ts:NcTokens
+  indent,line:int
+  span:NcSpan
+  raw:bool
+
+s NcLines
+  v:*NcLayoutLine
+  n,cap:size_t
+
 typedef struct NcNode NcNode;
-@s NcNodes v:*NcNode; n,cap:usize
+s NcNodes
+  v:*NcNode
+  n,cap:size_t
+
 struct NcNode { NcLayoutLine head; NcNodes children; };
-@s NcHeader line,indent:i32
+s NcHeader
+  line,indent:int
+
 // State of the pretty C printer.
 typedef struct {
     NcContext *c;

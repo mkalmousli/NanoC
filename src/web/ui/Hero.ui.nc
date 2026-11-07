@@ -17,7 +17,7 @@ section
   div
     Kicker C, with less ceremony
     h1 Write closer<br>to the <em>idea.</em>
-    p A compact, self-hosted language that generates plain C11 or C++17. Indented blocks, macros that run, compile-time and build-time code, inline assembly.
+    p A compact, self-hosted language that generates plain C11 or C++17. Indented blocks, macros that run, compile-time transformations, compact C preprocessing.
       css | font-size:18px;color:var(--mute);margin:24px 0 30px;max-width:520px
     div
       css | display:flex;gap:12px;flex-wrap:wrap
@@ -29,18 +29,18 @@ section
       position:relative
       & pre | font-size:13px
     Code [lang=nanoc]
-      | @f clamp(int x,lo,hi) int
+      | f clamp(int x, int lo, int hi) -&gt; int
       |   if x&lt;lo
-      |     lo
+      |     return lo
       |   elif x&gt;hi
-      |     hi
+      |     return hi
       |   else
-      |     x
-      | @f main int
+      |     return x
+      | f main() -&gt; int
       |   total:=0
-      |   for i 0..10
+      |   for i:=0; i&lt;10; i++
       |     total+=clamp(i,2,7)
-      |   total!=45
+      |   return total!=45
     span [data-stat=badge] fewer characters than C
       css
         position:absolute

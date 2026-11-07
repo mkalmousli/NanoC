@@ -17,10 +17,11 @@ async function copyText(text, btn, label = 'Copy')
   setTimeout(() => (btn.textContent = label), 1400)
 Prism.languages.nanoc = Prism.languages.extend('clike', {})
 Prism.languages.insertBefore('nanoc', 'keyword', {
-  directive: { pattern: /@(f|fn|m|macro|ct|bt|asm)\b/, alias: 'keyword' },
+  directive: { pattern: /@(f|fn|s|u|e|m|macro|ct|c|use|inc)\b/, alias: 'keyword' },
   macro: { pattern: /@[A-Za-z_]\w*/, alias: 'function' },
   capture: { pattern: /\$\$|\$[A-Za-z_]\w*(?::[A-Za-z]+|\.\.\.)?/, alias: 'variable' },
   control: { pattern: /\b(if|elif|else|for|while|break|continue|return|goto)\b/, alias: 'keyword' },
+  compact: { pattern: /^\s*(?:[?:+!^#$=~]|[fsue]\b)/m, alias: 'keyword' },
   inferred: { pattern: /:=/, alias: 'operator' },
   builtin: { pattern: /\b(emit|quote|ident|fresh|rewrite|again|source|eval|assert|fail)\b/, alias: 'function' }
 })

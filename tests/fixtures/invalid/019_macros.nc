@@ -1,1 +1,1 @@
-@macro x($a:tokens){} @x!()
+@m x($a:tokens){} @x()

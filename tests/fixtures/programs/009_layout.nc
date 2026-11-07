@@ -1,4 +1,6 @@
-#include <stdio.h>
-@fn greet() =
++ <stdio.h>
+f greet() -> void
   puts("ok")
-int main(void) { greet(); return 0; }
+f main() -> int
+  greet()
+  return 0

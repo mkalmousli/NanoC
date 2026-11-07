@@ -1,1 +1,1 @@
-@macro x($a:ident){} @x!(1)
+@m x($a:ident){} @x(1)

@@ -1,5 +1,5 @@
-#include <vector>
-@fn count(xs:const std::vector<int>&):int = (int)xs.size()
-@fn main():int =
-  let xs = std::vector<int>{1,2,3}
-  count(xs) != 3
++ <vector>
+f count(const std::vector<int>& xs) -> int = (int)xs.size()
+f main() -> int
+  std::vector<int> xs{1,2,3}
+  return count(xs)!=3

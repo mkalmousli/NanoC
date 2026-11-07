@@ -1,30 +1,33 @@
-// Project prelude: a `.nanoc` file with `use LIST` lines adds those headers to every module below it.
-@use stdio
-// Finds the nearest `.nanoc` file at or above the directory of the source file.
-@f prelude_file(NcContext *ctx, cstr file) char *
+// Optional project header prelude: .nanoc files contain only explicit + header directives.
+@lang 1
++ "nanoc/nanoc.h"
+
+// Finds the nearest .nanoc file above the input translation unit.
+f prelude_file(NcContext *ctx, const char *file) -> static char *
   char *dir = nc_string(ctx, file, strlen(file))
   char *slash = strrchr(dir, '/')
-  while slash
+  while (slash)
     *slash = 0
     char *path = nc_format(ctx, "%s/.nanoc", dir)
-    FILE *f = fopen(path, "rb")
-    if f then fclose(f); return nc_read(ctx, path)
+    FILE *source = fopen(path, "rb")
+    if (source)
+      fclose(source); return nc_read(ctx, path)
     slash = strrchr(dir, '/')
-  nil
-// Returns the include lines the nearest `.nanoc` adds to a module, or an empty string.
-@f nc_prelude(NcContext *ctx) char *
-  cstr base = ctx->file ? strrchr(ctx->file, '/') : nil
-  base = base ? base + 1 : ctx->file
-  if not base or strchr(base, '.') != strrchr(base, '.') then return ""
+  return NULL
+
+// Emits declared headers only; project files never contain commands to execute.
+f nc_prelude(NcContext *ctx) -> char *
   char *text = prelude_file(ctx, ctx->file)
+  if (!text)
+    return ""
+  NcCursor cursor = {ctx, nc_lex(ctx, text, 1), 0}
   NcBuffer out = {0}
-  char *rest = text ? text : ""
-  while *rest
-    char *end = strchr(rest, '\n')
-    usize n = end ? (usize)(end - rest) : strlen(rest)
-    if n > 4 and !strncmp(rest, "use ", 4)
-      NcCursor c = {ctx, nc_lex(ctx, nc_string(ctx, rest + 4, n - 4), 1), 0}
-      nc_add(ctx, &out, nc_include(ctx, &c))
-    rest += n + (end ? 1 : 0)
+  while (!nc_end(&cursor))
+    NcLayoutLine line = nc_logical_line(&cursor)
+    char *directive = nc_pp_simple(ctx, line.ts, line.line)
+    NcTokens significant = nc_significant(ctx, line.ts)
+    if (!directive || !significant.n || !nc_is(significant.v[0], "+"))
+      nc_fail(ctx, line.line, ".nanoc project preludes accept only + header directives")
+    nc_add(ctx, &out, directive)
   nc_add(ctx, &out, "")
-  out.v
+  return out.v

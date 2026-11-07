@@ -1,1 +1,1 @@
-@macro bad(){@unknown!()} @bad!()
+@m bad(){@unknown()} @bad()

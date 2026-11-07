@@ -1,50 +1,63 @@
 // Arena allocation for one compile.
+@lang 1
++ "nanoc/nanoc.h"
+
 struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t align; };
 // Sets up a context.
-@f nc_init(NcContext *c, cstr file) void
+f nc_init(NcContext *c, const char *file) -> void
   memset(c, 0, sizeof *c)
   c->file = file
   c->max_depth = 128
   c->max_steps = 1000000
   c->max_output = 16 * 1024 * 1024
   c->max_passes = 32
-  c->effects = true
+
 // Allocates tracked memory.
-@f nc_alloc(NcContext *c, usize size) void *
-  usize align = _Alignof(max_align_t)
-  if size > SIZE_MAX - align then nc_fail(c, 0, "allocation limit exceeded")
+f nc_alloc(NcContext *c, size_t size) -> void *
+  size_t align = _Alignof(max_align_t)
+  if (size > SIZE_MAX - align)
+    nc_fail(c, 0, "allocation limit exceeded")
   size = (size + align - 1) / align * align
-  if not size then size = align
+  if (! size)
+    size = align
   NcAllocation *p = c->allocations
-  if p and size <= p->capacity - p->used
-    void *data = (u8 *)(p + 1) + p->used
+  if (p && size <= p->capacity - p->used)
+    void *data = (unsigned char *)(p + 1) + p->used
     p->used += size
     return data
-  usize capacity = size > 65536 ? size : 65536
-  if capacity > SIZE_MAX - sizeof *p then nc_fail(c, 0, "allocation limit exceeded")
+  size_t capacity = size > 65536 ? size : 65536
+  if (capacity > SIZE_MAX - sizeof *p)
+    nc_fail(c, 0, "allocation limit exceeded")
   size_t charged = capacity + sizeof *p
   size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128
-  if limit < 1024 * 1024 then limit = 1024 * 1024
-  if charged > limit or c->allocated > limit - charged then nc_fail(c, 0, "allocation limit exceeded")
+  if (limit < 1024 * 1024)
+    limit = 1024 * 1024
+  if (charged > limit || c->allocated > limit - charged)
+    nc_fail(c, 0, "allocation limit exceeded")
   p = calloc(1, charged)
-  if not p then nc_fail(c, 0, "out of memory")
+  if (! p)
+    nc_fail(c, 0, "out of memory")
   p->next = c->allocations
   p->capacity = capacity
   p->used = size
   c->allocations = p
   c->allocated += charged
-  p + 1
+  return p + 1
+
 // Frees all tracked memory.
-@f nc_dispose(NcContext *c) void
-  while c->allocations
+f nc_dispose(NcContext *c) -> void
+  while (c->allocations)
     NcAllocation *p = c->allocations
     c->allocations = p->next
     free(p)
+
 // Grows an array by one.
-@f nc_grow(NcContext *c, const void *old, usize n, usize *cap, usize width) void *
-  usize next = *cap ? *cap * 2 : 8
-  if next < *cap || next > SIZE_MAX / width then nc_fail(c, 0, "allocation limit exceeded")
+f nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) -> void *
+  size_t next = *cap ? *cap * 2 : 8
+  if (next < *cap || next > SIZE_MAX / width)
+    nc_fail(c, 0, "allocation limit exceeded")
   void *p = nc_alloc(c, next * width)
-  if n then memcpy(p, old, n * width)
+  if (n)
+    memcpy(p, old, n * width)
   *cap = next
-  p
+  return p

@@ -1,59 +1,41 @@
-// Control statements: if, for, while.
-// Tells if one parenthesis pair spans all of s.
-@f enclosed(cstr s) static bool
-  if *s != '(' then return false
-  int depth = 0
-  for usize i = 0; s[i]; ++i
-    if s[i] == '"' || s[i] == '\''
-      char quote = s[i++]
-      while s[i] and s[i] != quote then i += s[i] == '\\' && s[i + 1] ? 2 : 1
-      if !s[i] then return false
-    elif s[i] == '('
-      ++depth
-    elif s[i] == ')' && --depth == 0 then return !s[i + 1]
-  false
-// Wraps a condition in parentheses unless already wrapped.
-@f paren(NcContext *ctx, cstr s) static char * = enclosed(s) ? nc_format(ctx, "%s", s) : nc_format(ctx, "(%s)", s)
-// Rewrites a control statement.
-@f nc_control(NcContext *ctx, NcTokens ts, int line) char *
-  char *source = nc_trim(ctx, nc_words(ctx, ts))
-  usize len = strlen(source)
-  if not len then nc_fail(ctx, line, "empty control header")
-  char *header = nc_trim(ctx, nc_string(ctx, source, source[len - 1] == ':' ? len - 1 : len))
-  NcCursor c = {ctx, nc_lex(ctx, header, line), 0}
-  char *name = nc_name(&c)
-  char *rest = nc_trim(ctx, nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n)))
-  if !strcmp(name, "if") || !strcmp(name, "while") || !strcmp(name, "elif")
-    if !*rest then nc_fail(ctx, line, "missing condition")
-    return nc_format(ctx, "%s %s", !strcmp(name, "elif") ? "else if" : name, paren(ctx, rest))
-  if !strcmp(name, "unless") || !strcmp(name, "until")
-    if !*rest then nc_fail(ctx, line, "missing condition")
-    return nc_format(ctx, "%s (!(%s))", name[1] == 'n' && name[2] == 'l' ? "if" : "while", rest)
-  if !strcmp(name, "loop") then return nc_format(ctx, "for (;;)")
-  if !strcmp(name, "else")
-    if nc_eat(&c, "if") then return nc_format(ctx, "else if %s", paren(ctx, nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))))
-    if *rest then nc_fail(ctx, line, "else takes no condition")
+// Fundamental runtime control headers. C expressions are emitted without reinterpretation.
+@lang 1
++ "nanoc/nanoc.h"
+
+extern int nc_std;
+// Emits a runtime control header; its internal colon is added only by the indentation parser.
+f nc_control(NcContext *ctx, NcTokens ts, int line) -> char *
+  size_t end = ts.n
+  while (end && ts.v[end - 1].kind == NC_SPACE)
+    --end
+  if (end && nc_is(ts.v[end - 1], ":"))
+    --end
+  char *header = nc_words(ctx, nc_slice(ts, 0, end))
+  NcCursor cur = {ctx, nc_lex(ctx, header, line), 0}
+  char *name = nc_name(&cur)
+  char *rest = nc_trim(ctx, nc_join(ctx, nc_slice(cur.ts, cur.pos, cur.ts.n)))
+  if (!strcmp(name, "if") || !strcmp(name, "elif") || !strcmp(name, "while"))
+    if (!*rest)
+      nc_fail(ctx, line, "missing condition")
+    return nc_format(ctx, "%s (%s)", !strcmp(name, "elif") ? "else if" : name, rest)
+  if (!strcmp(name, "else"))
+    if (*rest)
+      nc_fail(ctx, line, "else takes no condition; use elif")
     return "else"
-  if !strcmp(name, "for")
-    if nc_at(&c, "(") then return nc_format(ctx, "for %s", rest)
-    for usize i = c.pos; i < c.ts.n; ++i
-      if nc_is(c.ts.v[i], ";") then return nc_format(ctx, "for (%s)", rest)
-    char *id = nc_name(&c), *type = "int"
-    bool typed = nc_eat(&c, ":")
-    if typed then type = nc_alias_name(ctx, nc_name(&c))
-    (void)nc_eat(&c, "in")
-    char *bounds = nc_join(ctx, nc_slice(c.ts, c.pos, c.ts.n))
-    bool range = false
-    for usize i = c.pos; i < c.ts.n; ++i
-      if nc_is(c.ts.v[i], "..") then range = true
-    if ctx->cpp and !range
-      return nc_format(ctx, "for (%s%s %s : %s)", typed ? type : "auto", typed ? "&" : "&&", id,
-        bounds)
-    NcBuffer out = {0}
-    for usize i = 0; bounds[i]; ++i
-      if !strncmp(bounds + i, "..<", 3) then nc_add(ctx, &out, ".."); i += 2
-      else nc_addn(ctx, &out, bounds + i, 1)
-    nc_add(ctx, &out, "")
-    return nc_format(ctx, "@for (%s %s in %s)", type, id, out.v)
-  nc_fail(ctx, line, "unsupported block header: %s", name)
-  nil
+  if (!strcmp(name, "asm"))
+    nc_fail(ctx, line, "NanoC asm was removed; use @c for compiler-specific C")
+  if (strcmp(name, "for"))
+    nc_fail(ctx, line, "unsupported runtime block: %s", name)
+  if (nc_at(&cur, "("))
+    char *inside = nc_join(ctx, nc_group(&cur, "(", ")"))
+    if (!nc_end(&cur))
+      nc_fail(ctx, line, "unexpected tokens after for header")
+    return nc_control(ctx, nc_lex(ctx, nc_format(ctx, "for %s", inside), line), line)
+  NcGroups parts = nc_split(ctx, nc_slice(cur.ts, cur.pos, cur.ts.n), ";")
+  if (parts.n != 3)
+    nc_fail(ctx, line, "for requires init; condition; step")
+  NcLayoutLine init = {.ts = parts.v[0], .line = line}
+  char *first = nc_significant(ctx, init.ts).n ? nc_statement(ctx, init) : ";"
+  if (nc_std == 89)
+    return nc_format(ctx, "{ %s for (; %s; %s)", first, nc_words(ctx, parts.v[1]), nc_words(ctx, parts.v[2]))
+  return nc_format(ctx, "for (%s %s; %s)", first, nc_words(ctx, parts.v[1]), nc_words(ctx, parts.v[2]))

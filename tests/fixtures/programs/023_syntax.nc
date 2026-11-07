@@ -1,7 +1,8 @@
-@fn add(a,b:int)->int { return a+b; }
-@fn main()->int {
-  int (*p)(int,int) = add;
-  @let x:int = p(1,2);
-  @for (int i in 0..2) { @let y:int = i; x += y; }
-  return x != 4;
-}
+f add(int a, int b) -> int = a+b
+f main() -> int
+  int (*p)(int,int)=add
+  x: int = p(1,2)
+  for i:=0; i<2; i++
+    y: int = i
+    x+=y
+  return x!=4

@@ -1,4 +1,10 @@
-// Builtin catalog and metadata.
+// Builtin catalog and metadata. Host commands are linked only into the external tool runner.
+@lang 1
++ "nanoc/nanoc.h"
+
+#ifdef NC_TOOLING
+extern NcValue nc_meta_process(NcMachine *, const char *, NcValues, int);
+#endif
 const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"str", "str(value)", "all", NULL}, {"tokens", "tokens(text)", "all", NULL},
   {"ident", "ident(text)", "all", NULL}, {"fresh", "fresh(hint)", "all", NULL},
@@ -21,29 +27,34 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"assert", "assert(condition[,message])", "all", nc_meta_control},
   {"log", "log(message)", "all", nc_meta_control}, {"read", "read(path)", "all", nc_meta_files},
   {"exists", "exists(path)", "all", nc_meta_files}, {"env", "env(name)", "all", nc_meta_files},
-  {"file", "file()", "all", nc_meta_files}, {"write", "write(path,text)", "bt", nc_meta_files},
-  {"mkdir", "mkdir(path)", "bt", nc_meta_files}, {"remove", "remove(path)", "bt", nc_meta_files},
-  {"run", "run(argv[,cwd]) -> [status,out,err]", "bt", nc_meta_process},
-  {"exec", "exec(argv[,cwd]) -> stdout; fails on nonzero", "bt", nc_meta_process},
-  {"sh", "sh(command) -> [status,out,err]", "bt", nc_meta_process} };
+  {"file", "file()", "all", nc_meta_files},
+#ifdef NC_TOOLING
+  {"write", "write(path,text)", "tool", nc_meta_files},
+  {"mkdir", "mkdir(path)", "tool", nc_meta_files}, {"remove", "remove(path)", "tool", nc_meta_files},
+  {"run", "run(argv[,cwd]) -> [status,out,err]", "tool", nc_meta_process},
+  {"exec", "exec(argv[,cwd]) -> stdout; fails on nonzero", "tool", nc_meta_process},
+  {"sh", "sh(command) -> [status,out,err]", "tool", nc_meta_process},
+#endif
+};
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
-@f nc_builtin_known(cstr name) bool
-  for i:usize in 0..nc_spec_count
-    if !strcmp(name, nc_specs[i].name) then return true
-  false
+f nc_builtin_known(const char *name) -> bool
+  for (size_t i = (0), nanoc_bound_1 = (nc_spec_count); i < nanoc_bound_1; ++i)
+    if (!strcmp(name, nc_specs[i].name))
+      return 1
+  return 0
+
 // Calls a registered builtin.
-@f nc_extra_builtin(NcMachine *m, cstr name, NcValues args, int line) NcValue
-  for i:usize in 0..nc_spec_count
+f nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) -> NcValue
+  for (size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i)
     const NcSpec *s = &nc_specs[i]
-    if !strcmp(name, s->name) and s->function then return s->function(m, name, args, line)
+    if (!strcmp(name, s->name) && s->function)
+      return s->function(m, name, args, line)
   nc_fail(m->ctx, line, "unknown compile-time function: %s", name)
-  (NcValue){0}
+  return (NcValue){0}
+
 // Gets a value as text.
-@f nc_meta_text(NcContext *c, NcValue v, int line) cstr 
-  if v.kind != NC_STRING and v.kind != NC_CODE then nc_fail(c, line, "expected text or tokens")
-  v.text
-// Fails unless host effects are on.
-@f nc_effect(NcMachine *m, int line) void
-  if m->phase != NC_BT then nc_fail(m->ctx, line, "host effects require @bt")
-  if not m->ctx->effects then nc_fail(m->ctx, line, "host effects disabled by --check or --no-effects")
+f nc_meta_text(NcContext *c, NcValue v, int line) -> const char *
+  if (v.kind != NC_STRING && v.kind != NC_CODE)
+    nc_fail(c, line, "expected text or tokens")
+  return v.text

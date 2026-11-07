@@ -1,7 +1,7 @@
-#include <vector>
-@fn main()->int {
-  std::vector<int> values{1,2,3};
-  @let sum:int = 0;
-  @for (int i in 0 .. 3) { sum += values[i]; }
-  return sum != 6;
-}
++ <vector>
+f main() -> int
+  std::vector<int> values{1,2,3}
+  sum:=0
+  for i:=0; i<3; i++
+    sum+=values[i]
+  return sum!=6

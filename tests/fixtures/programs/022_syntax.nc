@@ -1,9 +1,10 @@
-static int calls;
-int lo(void) { return ++calls - 1; }
-int hi(void) { return ++calls + 1; }
-@fn main()->int {
-  @let sum:int = 0;
-  @for (int i in lo() .. hi()) { sum += i; }
-  @for (int j in 3 .. 1) { sum += j; }
-  return calls != 2 || sum != 3;
-}
+@c { static int calls; int lo(void){return ++calls-1;} int hi(void){return ++calls+1;} }
+f main() -> int
+  sum:=0
+  low: int = lo()
+  high: int = hi()
+  for i: int = low; i<high; i++
+    sum+=i
+  for j:=3; j<1; j++
+    sum+=j
+  return calls!=2 || sum!=3

@@ -1,2 +1,3 @@
-#define R
-@fn main()->int { const char *s = R"@ct"; return s[0] != '@'; }
+$ R =
+f main() -> int
+  @c { const char *s = R"@ct"; return s[0]!='@'; }

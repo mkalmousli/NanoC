@@ -1,175 +1,137 @@
-lesson hello START | Hello, NanoC | Hello
-  p Save this as `hello.nc`. `@use stdio` includes the header. Lines starting with `#` pass through unchanged, so plain C headers work too.
+lesson hello START | NanoC v1 | Hello
+  p NanoC is a programmable frontend for C. Runtime constructs become ordinary C with no mandatory runtime, VM, garbage collector or hidden allocation. The C compiler checks C symbols and types. The programmer owns memory, cleanup, undefined behavior and correctness. This is pre-release v1: obsolete syntax has been removed, with no compatibility or migration mode.
   code nanoc c
-    @use stdio
-    @f main int
+    + <stdio.h>
+    f main() -> int
       puts("Hello from NanoC!")
-      0
-  note Build: `nanoc hello.nc -o hello.c && cc hello.c -o hello && ./hello`
-lesson functions FUNCTIONS | Bare return types | Functions
-  p The return type goes after the parameters, with no arrow. Omit it for `void`. Group parameters that share a type with a comma. A one-line body can be an `=` expression.
+      return 0
+  note Run `nanoc emit hello.nc -o hello.c`, then `cc -std=c11 hello.c -o hello && ./hello`. `nanoc run hello.nc` performs both explicit steps without a shell.
+lesson functions FUNCTIONS | Functions and declarations | Functions
+  p `f name(parameters) -> CType` requires parentheses and an explicit C return type, including void. Parameters use `name: CType` or exact C declarators. Each C parameter needs its own type. Returns are explicit: `return expression` or `return`. A one-line expression definition uses `f add(a: int, b: int) -> int = a+b`. A semicolon after the header declares a prototype.
   code nanoc c
-    @f add(int a,b) int = a+b
-    @use stdio
-    @f greet(cstr name)
-      printf("hi %s\n", name)
-    @f main int
-      greet("NanoC")
-      printf("%d\n", add(2,3))
-      0
-  list
-    An indented body returns its final expression. No `return` needed; `ret x` is the short form when you want one.
-    No braces, no semicolons, no parentheses around conditions. Parentheses and brackets keep multiline expressions together.
-lesson values VALUES | Blocks produce values | Values
-  p An `if`/`elif`/`else` that covers every branch returns the value of whichever branch runs.
+    f add(a: int, b: int) -> int
+      return a+b
+    f greet() -> void
+      return
+    f main() -> int
+      n := 2
+      result: int = add(n,3)
+      greet()
+      return result != 5
+  p `:=` infers scalar literals only in C mode. Calls, arithmetic, names and array literals require an explicit type. Use `int nums[] = {1,2,3}` for arrays and exact C declarations for complex declarators. Integer literal inference uses int for the guaranteed signed 16-bit range, long for the guaranteed signed 32-bit range, and long long outside it in C99 onward. Floating literals infer double and C character literals infer int. C++17 additionally permits auto inference. No typeof extension is emitted. No short type aliases are provided; use C types or typedefs from headers.
+lesson controls CONTROL FLOW | Compact declarations and word controls | Controls
   code nanoc c
-    @f sign(int x) int
-      if x<0
-        -1
-      elif x>0
-        1
-      else
-        0
-    @f main int = sign(-9)!=-1
-lesson types SHORT TYPES | Short type names | Types
-  p `i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 byte cstr usize isize` are plain C type words inside NanoC code, so the output builds with any C compiler and needs no extra header (`usize`/`isize` need `stddef.h`). Unmarked C is never rewritten.
-  code nanoc c
-    @f add(i32 a,b) i32 = a+b
-    @f main int
-      u8 x=200
-      cstr s="hi"
-      printf("%s %d\n", s, add(x,2))
-      0
-lesson records RECORDS | One-line structs, enums, unions | Records
-  p `@s` declares a struct, `@u` a union and `@e` an enum, each with its typedef. Fields are `names:type` (`*T` for pointers), inline separated by `;` or as an indented block.
-  code nanoc c
-    @s Point x,y:f64
-    @s Node
-      val:i32
-      next:*Node
-    @e Color red,green=5,blue
-    @f main int
-      Point p={1,2}
-      Node n={3,NULL}
-      Color c=blue
-      p.x+p.y!=3 || n.val!=3 || c!=6
-lesson raw RAW C | Imports and escape hatch | Raw C
-  p `@use a, b` includes several headers at once, `@use "mine"` is a local `mine.h`, and bundles expand to many: `std` (stdio, stdlib, string), `libc`, `posix`, `cxx`. In C++ the standard headers lose their `.h`: `@use vector`. A `.nanoc` file with a `use "nanoc/all"` line makes every module below it include those headers without writing `@use`. An indented `@c` block is copied to the C output untouched, for anything NanoC lacks. `--std c89|c99|c11|c17` restricts the output: `i64` becomes `long` in c89 and `say` of values needs c11.
-  code nanoc c
-    @c
-      static int twice(int x) { return x*2; }
-    @f main int
-      printf("twice %d\n", twice(21))
-      0
-lesson scope SCOPES | Cleanup with a macro | Scopes
-  p There is no built-in `defer`: a macro with a `$body:block` argument wraps an indented body, so cleanup is written once and cannot be forgotten.
-  code nanoc c
-    @use stdio
-    @m traced($name, $body:block)
-      for (int once_ = (puts("enter " $name), 1); once_; once_ = (puts("leave " $name), 0))
-        $body
-    @f main int
-      @traced("work")
-        puts("inside")
-      0
-lesson inline INLINE | One-line blocks | Inline
-  p `if c then stmt` puts a single-statement body on the header line. It works for `if`, `elif`, `while`, `for`, `unless` and `until`, and a bare `else stmt` takes a body too, and `if c then a else b` fits on one line. The output is still ordinary braced C.
-  code nanoc c
-    @f sign(int x) int
-      if x < 0 then ret -1
-      elif x > 0 then ret 1
-      else ret 0
-lesson match MATCH | Switch without the noise | Match
-  p `match x` takes arms of comma-separated values with an indented body, and `else` for the default. No `break`, no fallthrough. It becomes a plain C `switch`.
-  code nanoc c
-    @f size(int x) int
-      r:=0
-      match x
-        1, 2
-          r=10
+    f sum(a: *int, n: int) -> int
+      total := 0
+      for i := 0; i < n; i++
+        if a[i] < 0
+          continue
+        elif a[i] == 0
+          break
         else
-          r=-1
-      r
-    @f main int = size(2)!=10 || size(9)!=-1
-lesson locals LOCALS & LOOPS | Inference and ranges | Locals
-  p `:=` infers the type of a scalar literal. `for i 1..6` counts from 1 up to but not including 6.
+          total += a[i]
+      while total > 10
+        total--
+      return total
+  table Syntax | C translation
+    `f name(args) -> T` | Function definition; empty C parameter lists become void
+    `s Name` / `u Name` / `e Name` | Struct / union / enum with a typedef
+    `name := literal` | Declaration with literal-derived C type
+    `name: CType = expression` | Explicit C declaration
+    `return expression` / `return` | Return a value / void
+    `if condition` / `elif condition` / `else` | if / else if / else
+    `while condition` | while
+    `for init; condition; step` | for
+    `break` / `continue` | break / continue
+    `+ <header.h>` / `+ "local.h"` | C include
+  p Indentation uses spaces. A body must be deeper than its header, siblings align, and dedents must match an enclosing level. Canonical formatting uses two spaces. Missing, empty or inconsistently indented bodies are rejected. Runtime branches match an if at the same indentation. Block colons and inline then spellings are not part of v1. C expressions retain C operator spelling, precedence and evaluation rules: !x, !!x, ~x, a^b, a?b:c and x=y are expressions. Word controls avoid collisions with these operators.
+lesson records RECORDS | Structs, unions and enums | Records
   code nanoc c
-    @f main int
-      total:=0
-      for i 1..6 then total+=i
-      printf("total %d\n", total)
-      0
-  list
-    Spell the type when you need it: `int x=call()`. C++ uses `auto` for `:=`.
-    Typed range: `for i:usize 0..n`. Bounds are evaluated once.
-    Plain C loops still work: `for int i=0;i<n;i++`. `loop` is `for (;;)`, `unless c` is `if !(c)`, `until c` is `while !(c)`.
-    C++ iterates containers: `for value values`.
-    Shortcuts: `nil` is NULL, `and`/`or`/`not` are `&&`/`||`/`!`, `@use stdio, "mine", <sys/x.h>` includes headers (bare names become `<name.h>`).
-lesson macros MACROS | Token templates | Macros
-  p `@m` defines a template. `$x` captures a token. A macro with `=` and no parameters is a named constant.
+    s Point
+      x,y: double
+    u Number
+      i: int
+      d: double
+    e Color red,green=5,blue
+    f main() -> int
+      Point p={1,2}
+      Number n
+      n.i=3
+      return p.x+p.y != n.i || blue != 6
+  p Types are C types, without header parsing. Named type positions also accept prefix pointers, for example `next: *Node`. Complex declarators, arrays, function pointers and attributes use exact C declarations or raw C. Grouped named fields are supported; initialized local declarations require one name to avoid duplicated evaluation.
+lesson preprocessor PREPROCESSOR | C preprocessing | Preprocessor
+  p Preprocessor sigils emit directives for the C preprocessor; NanoC never evaluates their conditions. Indentation closes conditional chains with endif, with no C braces. A lone colon is exclusively a preprocessor else. Runtime else uses the word else.
   code nanoc c
-    @m twice($x)
-      (($x)*2)
-    @m answer = 42
-    @m maxfn($name,$type)
-      @f $name($type a,b) $type = a>b?a:b
-    @maxfn(max_int,int)
-    @f main int
-      printf("%d %d\n", @twice(@answer), max_int(2,3))
-      0
-  note Use `$fresh(tmp)` for generated names that must not collide. `$$` writes a literal `$`.
-  p Captures: `$x` / `$x:tokens`, `$x:ident`, `$x:block`; a last `$xs...` is a list. Templates substitute `$x`, `$($xs),*`, `$fresh(tmp)`. An `=` selects a program: its last expression returns text, tokens, numbers or bools, or it can emit code. A final `$body:block` argument can be an indented body after the call.
-lesson ct COMPILE TIME | Generate code with `@ct` | Compile time
-  p An indented `@ct` block runs during expansion. `emit` writes NanoC back into the source, so you can generate functions in a loop.
+    + <stdio.h>
+    ?+ _WIN32
+      $ PLATFORM = "Windows"
+    :# defined(__linux__)
+      $ PLATFORM = "Linux"
+    :
+      $ PLATFORM = "Other"
+    f main() -> int
+      puts(PLATFORM)
+      return 0
+  table Syntax | C directive
+    `?+ NAME` | ifdef NAME
+    `?- NAME` | ifndef NAME
+    `?# expression` | if expression
+    `:# expression` | elif expression
+    `:` | else in a preprocessor chain
+    Dedent after a chain | endif
+    `$ NAME = replacement` | define NAME replacement
+    `$ NAME(args) = replacement` | Function-like define; keep NAME and ( adjacent
+    `$- NAME` | undef NAME
+    `+ <header.h>` / `+ "local.h"` | include
+    `!! "message"` | error; adjacent exclamation marks and a string literal
+    `$! payload` | pragma payload; support depends on the C compiler
+  p Conditions can nest at file scope or inside functions, mixing with runtime blocks. Declarations may differ between configurations. Directive ordering, # stringification and ## token pasting are retained. Use raw C for multiline replacement lists, unusual include operands or configurations with different brace structure. Test each configuration you ship. NanoC expands macros and CT in every preprocessor branch, even `?# 0`, before the C preprocessor runs. Use C macros for C-configuration-dependent definitions.
+lesson raw RAW C | C interoperability | Raw C
+  p C headers, libraries, functions, pointers, arrays, structs, unions, enums, typedefs, function pointers and platform APIs remain available. Includes do not require NanoC to parse the declarations in a header. Link through the C compiler's normal flags, for example `nanoc build main.nc --cflag -lm`. C++17 remains a secondary output target, with no additional NanoC C++ type subsystem.
+  code nanoc c
+    + <stdlib.h>
+    f main() -> int
+      ptr: void * = malloc(128)
+      if ptr == NULL
+        return 1
+      free(ptr)
+      return 0
+  p `@c` consumes a balanced braced island, an indented island, or a quoted C source string. The payload bypasses NanoC expansion and output reformatting. Indented and quoted islands can represent preprocessing alternatives whose physical braces do not balance; braced islands require balanced delimiters. Assembly inside raw C is the C compiler's responsibility. Dedicated NanoC @asm and @bt produce removal diagnostics. Raw C is not portable merely because NanoC can pass it through.
+  code nanoc c
+    @c {
+      static int apply(int (*fn)(int), int x) { return fn(x); }
+    }
+    f twice(x: int) -> int = x*2
+    f main() -> int
+      int (*fn)(int)=twice
+      return apply(fn,21)!=42
+lesson macros MACROS | NanoC templates | Macros
+  p `@m` transforms NanoC tokens; it is separate from emitted `$` C preprocessor definitions. Captures use `$name`; typed capture kinds include ident, tokens and block. Variadic captures use `...`; repetition uses `$(...)*` and optional separators. `$fresh(name)` creates deterministic unique identifiers. Macro expansion does not promise to evaluate arguments once: that is the macro author's responsibility.
+  code nanoc c
+    @m identity($x)
+      ($x)
+    @m getter($name,$field)
+      f $name(p: *Point) -> int = p->$field
+    s Point
+      x: int
+    @getter(get_x,x)
+    f main() -> int
+      Point p={42}
+      return @identity(get_x(&p))!=42
+  p An executable macro uses `@m name($x) =` followed by an indented compile-time program. Use quote, emit, token inspection and existing transformations for library abstractions. No defer, ownership or container runtime is built in. Escape a literal dollar through `$$` inside a template, so C macro definitions can be generated.
+lesson ct COMPILE TIME | Compile-time generation | Compile time
+  p `@ct` executes a bounded source-transformation program. This phase has dynamic values, list/string operations, source/token operations, functions `f name(args)`, loops, explicit or final-value returns, quote and emit. This dynamic evaluator is not the runtime C grammar. `eval(read(path))` loads a source library explicitly. Read/exists/env are inputs; write/mkdir/remove/run/exec/sh are not compiler builtins. No external process or filesystem mutation is introduced through another compiler directive.
   code nanoc c
     @ct
       f square(n) = n*n
-      for i 1..5
-        emit("@f square_"+str(i)+" int = "+str(square(i))+"\n")
-    @f main int
-      printf("%d\n", square_4())
-      0
-  p Programs use int64, bool, text, tokens and lists. Bind `x:=expr`, assign `x=expr`; controls are indented: `for i range(n)`, `if cond`, `while cond`. Functions are `f name(args) = expr` or an indented final expression. `quote(C tokens)` interpolates `$name`, `ident(text)` builds names, `eval(read(path))` loads a program library.
-  p CT and macros expand recursively. `source()` reads the current snapshot, `rewrite(text)` repeats only on changed text, `again()` forces another pass, `get`/`put` keep state.
-lesson bt BUILD TIME | Files and commands with `@bt` | Build time
-  p `@bt` is the only phase that may write files or run host commands. It runs first and is removed; the code it emits prefixes the input. Use `--check` to validate a file without side effects; it rejects these calls.
-  code nanoc c
-    @bt
-      mkdir("build")
-      write("build/nanoc-generated.h","#define GENERATED 42\n")
-      emit(read("build/nanoc-generated.h"))
-    @f main int = GENERATED!=42
-  p `run(argv[,cwd])` returns `[status,out,err]`; `exec` returns stdout or fails; `sh` runs a shell line. Defaults: 32 passes, 1M steps, 16 MiB input/output, depth 128 (ceiling 512). `--max-passes 0 --max-steps 0` removes the count limits, not the other resource limits.
-lesson asm ASSEMBLY | Inline assembly | Assembly
-  p An indented `@asm` block forwards instructions to the GCC or Clang inline assembler, with explicit `out`, `in`, `clobber` and `labels` sections. Assembly is the only place NanoC knows a target; everything else is plain C.
-  p Full syntax and examples: `nanoc --describe asm` or the [assembly card](https://github.com/mkalmousli/NanoC/blob/main/docs/assembly.md).
-lesson versions VERSIONS | Language versions | Versions
-  p Pin a file to a language version with `@lang N` on its first line (after blank lines or `//` comments). A file for a newer language than your nanoc is rejected; one for an older language is rejected with a pointer to `--migrate`. Files without `@lang` are compiled as the current language.
-  p `nanoc --migrate file.nc -o file.nc` rewrites source to the current language and stamps `@lang`. Check which language your compiler speaks with `nanoc --describe` (`lang`). The current language is 1.
-  code nanoc
-    @lang 1
-    @f main int
-      0
-lesson interop INTEROP | C++17 and C headers | Interop
-  p Headers work unchanged. Use `--lang c++` to emit C++17 and get range loops over standard containers. `--emit mini` strips comments and layout for the smallest C.
-  code nanoc
-    @use vector, iostream
-    @f main int
-      values:=std::vector<int>(3,2)
-      sum:=0
-      for value values
-        sum+=value
-      std::cout<<sum<<'\n'
-      0
-  note Build: `nanoc app.nc --lang c++ -o app.cc && c++ -std=c++17 app.cc -o app`
-lesson cheat REFERENCE | Cheat sheet | Cheat sheet
-  table Syntax | Meaning
-    `@f name(args) T` | Function; bare return type; `= expr` for one line
-    `x:=expr` | Infer a local's type from a scalar literal
-    `for i a..b` | Range loop, exclusive upper bound
-    `if / elif / else` | Branches; as a final expression they return a value
-    `@m name($x) body` | Macro template; `$x` captures, `$fresh(t)`
-    `@ct` | Compile-time program; `emit` writes source
-    `@bt` | Build-time program; files and commands
-    `@asm` | Inline assembly block
-  note CLI: `nanoc f.nc -o f.c` · `--check --diagnostics json` · `--lang c++` · `--describe syntax|builtins|asm`
+      values:=[]
+      for i range(4)
+        values=push(values,str(square(i)))
+      emit("static const int squares[]={"+join(values,",")+"};")
+    f main() -> int = squares[3]!=9
+  p The pipeline expands until stable. rewrite replaces source; again requests another pass. Defaults bound steps, passes, nesting and output. Zero step/pass limits explicitly disable those counters. Host development scripts under *.tool.nc use a separate uninstalled nctool interpreter; the language compiler cannot invoke that runner through a directive.
+lesson output OUTPUT | Emission, tools and portability | Output
+  p `nanoc emit file.nc --to c -o file.c` writes deterministic readable C; --emit mini compacts non-raw C. `--line-directives` emits C #line markers where available. C diagnostics can refer to NanoC source, but this is not a guarantee of debugger compatibility. `--check` validates expansion only; compile and execute tests separately.
+  p `--std c89|c99|c11|c17` selects output restrictions. C89 lowers for initializers into an enclosing scope; inferred long long and unsupported literal forms are rejected. General C source still must obey the selected standard, including mixed-declaration restrictions. Raw C is never silently rewritten to downlevel it. GCC and Clang integration tests cover representative portable programs; universal C implementation support is not claimed.
+  p `expand file.nc --json` exports compiler operation events, parent IDs, pass numbers, source ranges, captures, generated identifiers and CT results. `emit file.nc --map file.map.json` adds actual final C byte ranges. `explain file.nc --line N`, --symbol NAME or --generated-offset BYTE filters records. Source coordinates and offsets count UTF-8 bytes. Synthetic expansion positions refer to generated fragments; follow parent relationships to original source. This is operation provenance, not character-perfect macro reconstruction.
+  p `fmt file.nc`, --write and --check perform lexical canonical indentation without executing CT. `tokens file.nc --json` reports lexical tokens; --encoding requires optional pinned tiktoken tooling and reports actual text token counts. `convert file.c --to nanoc --conservative` produces an opaque raw C island without dependencies. --compact optionally uses Clang ASTs and preserves unsupported or configuration-sensitive constructs as raw C. It does not restore original formatting or recover former macro abstractions.

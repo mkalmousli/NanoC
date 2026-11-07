@@ -1,3 +1,3 @@
-@macro twice($x:tokens) { (($x)+($x)) }
-@macro four($x:tokens) { @twice!(@twice!($x)) }
-@fn main()->int { return @four!(2+1) != 12; }
+@m twice($x:tokens) { (($x)+($x)) }
+@m four($x:tokens) { @twice(@twice($x)) }
+f main() -> int = @four(2+1) != 12

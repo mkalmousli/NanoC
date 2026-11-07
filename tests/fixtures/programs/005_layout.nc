@@ -1,5 +1,5 @@
-@fn add(a,b:int):int = a+b
-@fn main():int =
-  let a = 2
-  b:int = 3
-  add(a,b) != 5
+f add(a: int, b: int) -> int = a+b
+f main() -> int
+  a:=2
+  b: int = 3
+  return add(a,b) != 5

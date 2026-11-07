@@ -1,64 +1,42 @@
-// Statement lines to C.
-// Tells if the statement starts with the ret keyword.
-@f nc_is_ret(NcContext *c, NcTokens items) bool
-  if !nc_is(items.v[0], "ret") then return false
-  if items.n == 1 then return true
-  char *next = nc_text(c, items.v[1])
-  usize n = strlen(next)
-  if next[0] == '=' || next[n - 1] == '=' then return false
-  strcmp(next, ".") && strcmp(next, "->") && strcmp(next, "[") && strcmp(next, "++") && strcmp(next,
-    "--")
-// Converts one statement to C.
-@f nc_statement(NcContext *c, NcLayoutLine line, bool tail) char *
+// NanoC v1 statements preserve C expression tokens and evaluation order.
+@lang 1
++ "nanoc/nanoc.h"
+
+// Lowers a declaration, preprocessing directive, or ordinary C statement.
+f nc_statement(NcContext *c, NcLayoutLine line) -> char *
   NcTokens ts = line.ts
   NcTokens items = nc_significant(c, ts)
-  if not items.n then return ""
-  if nc_is(items.v[items.n - 1], ";")
-    usize last = ts.n
-    while last and ts.v[last - 1].kind == NC_SPACE then --last
+  if (!items.n)
+    return ""
+  if (nc_is(items.v[items.n - 1], ";"))
+    size_t last = ts.n
+    while (last && ts.v[last - 1].kind == NC_SPACE)
+      --last
     ts.n = last - 1
     items = nc_significant(c, ts)
-  if not items.n then return ";"
-  char *first = nc_text(c, items.v[0])
-  if !strcmp(first, "intent")
-    if items.n != 2 || items.v[1].kind != NC_LITERAL || items.v[1].s[0] != '"'
-      nc_fail(c, line.line, "intent requires one string literal")
-    if c->symbols.n then c->symbols.v[c->symbols.n - 1].intent = nc_unquote(c, nc_text(c, items.v[1]), line.line)
-    return ""
-  NcCursor cursor = {c, ts, 0}
-  bool declaration = false
-  if !strcmp(first, "let") || !strcmp(first, "var")
-    (void)nc_take(&cursor)
-    ts = nc_declaration(c, nc_slice(ts, cursor.pos, ts.n), line.line)
-    declaration = true
-  elif (items.n > 1 and items.v[0].kind == NC_WORD
-    && (nc_is(items.v[1], ":") || nc_is(items.v[1], ",")))
-    for i:usize in 0..items.n
-      if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":"))
-        && (i + 1 == items.n || !nc_is(items.v[i + 1], ":")))
-        declaration = true
-  if declaration
-    if tail then nc_fail(c, line.line, "value function needs a final expression")
-    return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, true), line.line)))
-  for i:usize in 0..ts.n
-    if ts.v[i].kind == NC_PUNCT && nc_is(ts.v[i], ":=")
-      if tail then nc_fail(c, line.line, "value function needs a final expression")
-      NcTokens normalized = {0}
-      for j:usize in 0..ts.n
-        NC_PUSH(c, normalized,
-          nc_is(ts.v[j], ":=") ? nc_token("=", ts.v[j].line, NC_PUNCT) : ts.v[j])
-      char *typed = nc_typed(c, nc_declaration(c, normalized, line.line), true)
-      return nc_format(c, "%s;", nc_words(c, nc_lex(c, typed, line.line)))
-  char *code = nc_trim(c, nc_words(c, ts))
-  if nc_is_ret(c, items) then code = nc_trim(c, nc_format(c, "return %s", code + 3)); first = "return"
-  if !strcmp(first, "=>") then return nc_format(c, "return %s;", nc_trim(c, code + 2))
-  if (!strcmp(first, "return") || !strcmp(first, "break") || !strcmp(first, "continue")
-    || !strcmp(first, "goto") || !strcmp(first, "throw"))
-    return nc_format(c, "%s;", code)
-  if items.v[0].kind == NC_DIRECTIVE then return nc_join(c, ts)
-  if tail
-    const char *decls[] = {"int", "char", "void", "float", "double", "struct", "typedef", "static"}
-    for i:usize in 0..8
-      if !strcmp(first, decls[i]) then nc_fail(c, line.line, "value function needs a final expression")
-    return nc_format(c, "return %s;", code)
-  nc_format(c, "%s;", code)
+  if (!items.n)
+    return ";"
+  char *directive = nc_pp_simple(c, ts, line.line)
+  if (directive)
+    return directive
+  if (nc_is(items.v[0], "="))
+    nc_fail(c, line.line, "NanoC v1 returns use 'return expression'")
+  if (items.n == 1 && (nc_is(items.v[0], "!") || nc_is(items.v[0], "^")))
+    nc_fail(c, line.line, "NanoC v1 uses break and continue")
+  if (nc_is(items.v[0], "?"))
+    nc_fail(c, line.line, "NanoC v1 runtime conditions use if")
+  if (items.n > 1 && items.v[0].kind == NC_WORD && nc_is(items.v[1], ":="))
+    NcTokens normalized = {0}
+    for (size_t i = 0; i < ts.n; ++i)
+      NC_PUSH(c, normalized, nc_is(ts.v[i], ":=") ? nc_token("=", ts.v[i].line, NC_PUNCT) : ts.v[i])
+    return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, nc_declaration(c, normalized, line.line), 1), line.line)))
+  if (items.n > 1 && items.v[0].kind == NC_WORD && (nc_is(items.v[1], ":") || nc_is(items.v[1], ",")))
+    bool declaration = 0
+    for (size_t i = 0; i < items.n; ++i)
+      if (nc_is(items.v[i], ":") && (!i || !nc_is(items.v[i - 1], ":")) && (i + 1 == items.n || !nc_is(items.v[i + 1], ":")))
+        declaration = 1
+    if (declaration)
+      return nc_format(c, "%s;", nc_words(c, nc_lex(c, nc_typed(c, ts, 1), line.line)))
+  if (items.v[0].kind == NC_DIRECTIVE)
+    return nc_join(c, ts)
+  return nc_format(c, "%s;", nc_trim(c, nc_words(c, ts)))

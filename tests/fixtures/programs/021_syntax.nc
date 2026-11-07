@@ -1,4 +1,4 @@
-@fn main()->int {
-  @let a,b:const char * = "ok";
-  return a[0] != b[0];
-}
+f main() -> int
+  a: const char * = "ok"
+  b: const char * = a
+  return a[0]!=b[0]

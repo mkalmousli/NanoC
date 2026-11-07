@@ -1,45 +1,72 @@
 // Splits tokens into logical lines.
+@lang 1
++ "nanoc/nanoc.h"
+
 // Reads one logical line.
-@f nc_logical_line(NcCursor *c) NcLayoutLine
-  usize whitespace = c->pos
+f nc_logical_line(NcCursor *c) -> NcLayoutLine
+  size_t whitespace = c->pos
   nc_skip(c)
-  if c->pos == c->ts.n then nc_fail(c->ctx, nc_line(c), "expected a logical line")
+  if (c->pos == c->ts.n)
+    nc_fail(c->ctx, nc_line(c), "expected a logical line")
   NcLayoutLine out = {.indent = c->ts.v[c->pos].column - 1, .line = nc_line(c)}
-  for i:usize in whitespace..c->pos
+  for (size_t i = (whitespace), nanoc_bound_1 = (c->pos); i < nanoc_bound_1; ++i)
     NcToken t = c->ts.v[i]
-    usize tail = t.n
-    while tail && t.s[tail - 1] != '\n' then --tail
-    if memchr(t.s + tail, '\t', t.n - tail) then nc_fail(c->ctx, out.line, "use spaces for indentation")
+    size_t tail = t.n
+    while (tail && t.s[tail - 1] != '\n')
+      --tail
+    if (memchr(t.s + tail, '\t', t.n - tail))
+      nc_fail(c->ctx, out.line, "use spaces for indentation")
+  NcCursor raw = *c
+  if (nc_eat(&raw, "@") && nc_header_eat(&raw, "c", out.line))
+    size_t start = c->pos
+    (void)nc_raw_read(c->ctx, &raw)
+    out.ts = nc_slice(c->ts, start, raw.pos)
+    out.raw = 1
+    out.span = nc_trace_span(out.ts)
+    *c = raw
+    return out
   NcStrings stack = {0}
-  while c->pos < c->ts.n
+  while (c->pos < c->ts.n)
     NcToken t = c->ts.v[c->pos]
-    if !stack.n && t.kind == NC_SPACE && memchr(t.s, '\n', t.n) then break
-    if !stack.n and t.kind == NC_DIRECTIVE
-      if out.ts.n then nc_fail(c->ctx, t.line, "directive must start its own line")
+    if (!stack.n && t.kind == NC_SPACE && memchr(t.s, '\n', t.n))
+      break
+    if (!stack.n && t.kind == NC_DIRECTIVE)
+      if (out.ts.n)
+        nc_fail(c->ctx, t.line, "directive must start its own line")
       NC_PUSH(c->ctx, out.ts, t)
       ++c->pos
       break
     ++c->pos
     NC_PUSH(c->ctx, out.ts, t)
-    if t.kind != NC_PUNCT then continue
+    if (t.kind != NC_PUNCT)
+      continue
     const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL
-    if end then NC_PUSH(c->ctx, stack, (char *)end)
-    elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
-      if !stack.n or !nc_is(t, stack.v[stack.n - 1]) then nc_fail(c->ctx, t.line, "mismatched delimiter")
+    if (end)
+      NC_PUSH(c->ctx, stack, (char *)end)
+    elif (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}"))
+      if (!stack.n || !nc_is(t, stack.v[stack.n - 1]))
+        nc_fail(c->ctx, t.line, "mismatched delimiter")
       --stack.n
-  if stack.n then nc_fail(c->ctx, out.line, "unterminated logical line")
-  out
+  if (stack.n)
+    nc_fail(c->ctx, out.line, "unterminated logical line")
+  out.span = nc_trace_span(out.ts)
+  return out
+
 // Reads an indented body.
-@f nc_body_lines(NcCursor *c, int header_line, int indent) NcLines
+f nc_body_lines(NcCursor *c, int header_line, int indent) -> NcLines
   NcLines out = {0}
-  for ;;
-    usize next = c->pos
-    while next < c->ts.n and c->ts.v[next].kind == NC_SPACE
+  for (;;)
+    size_t next = c->pos
+    while (next < c->ts.n && c->ts.v[next].kind == NC_SPACE)
       ++next
-    if next == c->ts.n then break
+    if (next == c->ts.n)
+      break
     NcToken t = c->ts.v[next]
-    if t.line <= header_line then nc_fail(c->ctx, t.line, "expected an indented function body")
-    if t.column - 1 <= indent then break
+    if (t.line <= header_line)
+      nc_fail(c->ctx, t.line, "expected an indented function body")
+    if (t.column - 1 <= indent)
+      break
     NC_PUSH(c->ctx, out, nc_logical_line(c))
-  if not out.n then nc_fail(c->ctx, header_line, "expected an indented function body")
-  out
+  if (! out.n)
+    nc_fail(c->ctx, header_line, "expected an indented function body")
+  return out

@@ -74,7 +74,7 @@ Page [title="NanoC playground: transpile in your browser" desc="Edit NanoC and w
       function done(r)
         err.hidden = r.ok
         if (!r.ok)
-          err.textContent = r.err || 'This program needs build-time (@bt) host access, which the browser build does not have. Install nanoc to run it.'
+          err.textContent = r.err || 'This source could not be translated. Check the compiler diagnostic.'
           return
         lastC = r.out
         out.textContent = r.out
@@ -114,7 +114,7 @@ Page [title="NanoC playground: transpile in your browser" desc="Edit NanoC and w
       spawn()
       fetch('examples.json').then(r => r.json()).then(all =>
         const tabs = A.tabs
-        all.filter(x => !x.bt).forEach(ex =>
+        all.forEach(ex =>
           const b = document.createElement('button')
           b.type = 'button'
           b.textContent = ex.name.replace(/^examples\//, '').replace(/\.nc$/, '')

@@ -1,5 +1,7 @@
+@lang 1
 // Meta-programming tests, written as cases in src/tests/cases/meta.cases.
-@use "test"
++ "test.h"
+
 @ct
-  eval(read("src/dsl/cases.bt.nc"))
+  eval(read("src/dsl/cases.tool.nc"))
   emit(cases("test_meta", "src/tests/cases/meta.cases"))

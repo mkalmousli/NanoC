@@ -1,1 +1,2 @@
-@fn a(x) {}
+f a(x)
+  return x

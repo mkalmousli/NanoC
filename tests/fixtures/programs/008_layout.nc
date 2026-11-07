@@ -1,10 +1,8 @@
-@fn main():int =
-  // no braces or semicolons
-  let n:int = (
-    2 + 3
+f main() -> int
+  n: int = (
+    2+3
   )
-  if n==5:
-    // value of this branch
-    0
-  else:
-    1
+  if n==5
+    return 0
+  else
+    return 1

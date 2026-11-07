@@ -1,3 +1,5 @@
+@lang 1
++ "nanoc/nanoc.h"
 // printf subset: %% %c %s %d %i %u %x %X %p %zu %zd %ld %lld %llu %lx %jd %.*s %*s
 // with width, '-', '0' and precision for strings and integers.
 #include <stdio.h>
@@ -6,17 +8,19 @@
 #include <stddef.h>
 #include <string.h>
 struct Sink { char *buf; size_t cap, len; FILE *file; char tmp[512]; };
-@f put(struct Sink *s, const char *p, size_t n) static void
-  if s->file
+f put(struct Sink *s, const char *p, size_t n) -> static void
+  if (s->file)
     fwrite(p, 1, n, s->file)
     return
-  for size_t i = 0; i < n; ++i
-    if s->buf && s->len + 1 < s->cap
+  for (size_t i = 0; i < n; ++i)
+    if (s->buf && s->len + 1 < s->cap)
       s->buf[s->len] = p[i]
     ++s->len
-@f pad(struct Sink *s, size_t n, char c) static void
-  for ; n; --n
+
+f pad(struct Sink *s, size_t n, char c) -> static void
+  for (; n; --n)
     put(s, &c, 1)
+
 static void emit_unsigned(struct Sink *s, unsigned long long v, unsigned base, int upper,
   int width, int left, int zero, int prec, int neg) {
   char digits[32]; int n = 0;
@@ -32,110 +36,116 @@ static void emit_unsigned(struct Sink *s, unsigned long long v, unsigned base, i
   }
 struct Sink;
 int nc_vformat(struct Sink *, const char *, va_list);
-@f vfprintf(FILE *f, const char *fmt, va_list ap) int
+f vfprintf(FILE *f, const char *fmt, va_list ap) -> int
   struct Sink s
   memset(&s, 0, sizeof s)
   s.file = f
-  ret nc_vformat(&s, fmt, ap)
-@f vsnprintf(char *buf, size_t cap, const char *fmt, va_list ap) int
+  return  nc_vformat(&s, fmt, ap)
+
+f vsnprintf(char *buf, size_t cap, const char *fmt, va_list ap) -> int
   struct Sink s
   memset(&s, 0, sizeof s)
   s.buf = buf
   s.cap = cap
   nc_vformat(&s, fmt, ap)
-  if cap
+  if (cap)
     buf[s.len < cap ? s.len : cap - 1] = 0
-  ret (int)s.len
-@f snprintf(char *buf, size_t cap, const char *fmt, ...) int
+  return  (int)s.len
+
+f snprintf(char *buf, size_t cap, const char *fmt, ...) -> int
   va_list ap
   va_start(ap, fmt)
   int n = vsnprintf(buf, cap, fmt, ap)
   va_end(ap)
-  ret n
-@f fprintf(FILE *f, const char *fmt, ...) int
+  return  n
+
+f fprintf(FILE *f, const char *fmt, ...) -> int
   va_list ap
   va_start(ap, fmt)
   int n = vfprintf(f, fmt, ap)
   va_end(ap)
-  ret n
-@f printf(const char *fmt, ...) int
+  return  n
+
+f printf(const char *fmt, ...) -> int
   va_list ap
   va_start(ap, fmt)
   int n = vfprintf(stdout, fmt, ap)
   va_end(ap)
-  ret n
-@f nc_vformat(struct Sink *s, const char *fmt, va_list ap) int
-  for const char *p = fmt; *p; ++p
-    if *p != '%'
+  return  n
+
+f nc_vformat(struct Sink *s, const char *fmt, va_list ap) -> int
+  for (const char *p = fmt; *p; ++p)
+    if (*p != '%')
       put(s, p, 1)
       continue
     ++p
     int left = 0, zero = 0, width = 0, prec = -1, lng = 0
-    for ; ; ++p
-      if *p == '-'
+    for (; ; ++p)
+      if (*p == '-')
         left = 1
-      elif *p == '0'
+      elif (*p == '0')
         zero = 1
       else
         break
-    if *p == '*'
+    if (*p == '*')
       width = va_arg(ap, int)
       ++p
     else
-      while *p >= '0' && *p <= '9'
+      while (*p >= '0' && *p <= '9')
         width = width * 10 + (*p++ - '0')
-    if *p == '.'
+    if (*p == '.')
       ++p
       prec = 0
-      if *p == '*'
+      if (*p == '*')
         prec = va_arg(ap, int)
         ++p
       else
-        while *p >= '0' && *p <= '9'
+        while (*p >= '0' && *p <= '9')
           prec = prec * 10 + (*p++ - '0')
     int sz = 0
-    while *p == 'l' || *p == 'z' || *p == 'j' || *p == 'h'
-      if *p == 'z'
+    while (*p == 'l' || *p == 'z' || *p == 'j' || *p == 'h')
+      if (*p == 'z')
         sz = 1
-      elif *p != 'h'
+      elif (*p != 'h')
         lng += 1
       ++p
     char c = *p
-    if c == '%'
+    if (c == '%')
       put(s, "%", 1)
       continue
-    if c == 'c'
+    if (c == 'c')
       char ch = (char)va_arg(ap, int)
       pad(s, !left && width > 1 ? width - 1 : 0, ' ')
       put(s, &ch, 1)
       pad(s, left && width > 1 ? width - 1 : 0, ' ')
       continue
-    if c == 's'
+    if (c == 's')
       const char *v = va_arg(ap, const char *)
-      if !v
+      if (!v)
         v = "(null)"
       size_t n = strlen(v)
-      if prec >= 0 && (size_t)prec < n
+      if (prec >= 0 && (size_t)prec < n)
         n = prec
-      if !left
+      if (!left)
         pad(s, width > (int)n ? width - n : 0, ' ')
       put(s, v, n)
-      if left
+      if (left)
         pad(s, width > (int)n ? width - n : 0, ' ')
       continue
-    if c == 'd' || c == 'i'
+    if (c == 'd' || c == 'i')
       long long v = sz ? (long long)va_arg(ap, size_t) : lng ? va_arg(ap, long long) : (long long)va_arg(ap, int)
       unsigned long long u = v < 0 ? 0ULL - (unsigned long long)v : (unsigned long long)v
       emit_unsigned(s, u, 10, 0, width, left, zero, prec, v < 0)
       continue
-    if c == 'u' || c == 'x' || c == 'X' || c == 'p'
+    if (c == 'u' || c == 'x' || c == 'X' || c == 'p')
       unsigned long long v = sz ? (unsigned long long)va_arg(ap, size_t) : lng ? va_arg(ap, unsigned long long) : (c == 'p' ? (unsigned long long)(uintptr_t)va_arg(ap, void *) : (unsigned long long)va_arg(ap, unsigned int))
       emit_unsigned(s, v, c == 'u' ? 10 : 16, c == 'X', width, left, zero, prec, 0)
       continue
-    if c == 'f' || c == 'g'
+    if (c == 'f' || c == 'g')
       (void)va_arg(ap, double)
       put(s, "?", 1)
       continue
     put(s, "%", 1)
     put(s, &c, 1)
-  ret (int)s->len
+  return  (int)s->len
+

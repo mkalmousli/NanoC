@@ -1,1 +1,3 @@
-@let x:int = ;
+f f() -> int
+  x: int =
+  return 0

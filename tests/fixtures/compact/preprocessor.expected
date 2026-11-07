@@ -1,0 +1,39 @@
+#include <stdio.h>
+#define SQUARE(x) ((x)*(x))
+#define TEXT(x) #x
+#define CAT(a,b) a##b
+#define TEMP 99
+#undef TEMP
+#ifdef FIRST
+#define VALUE 1
+#elif defined(SECOND)
+#define VALUE 2
+#else
+#define VALUE 3
+#endif
+#ifndef EXPECTED
+#define EXPECTED 3
+#endif
+#if 0
+#error "inactive error"
+#endif
+
+int main(void) {
+    if (VALUE == EXPECTED) {
+#if VALUE == 1
+#ifndef UNUSED
+        int item = 1;
+#else
+        int item = 9;
+#endif
+#elif VALUE == 2
+        double item = 2.0;
+#else
+        long item = 3;
+#endif
+        printf("%d %s %d\n", VALUE, TEXT(hello), SQUARE(3));
+        return CAT(it,em) != VALUE;
+    } else {
+        return 1;
+    }
+}

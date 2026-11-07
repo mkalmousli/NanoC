@@ -1,7 +1,10 @@
 #ifndef NC_NANOC_H
 #define NC_NANOC_H
-// Base types and limits.
+// Base types and limits. Host feature macros must precede every libc include.
 
+#ifndef _XOPEN_SOURCE
+#define _XOPEN_SOURCE 700
+#endif
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -18,7 +21,7 @@ typedef struct NcAllocation NcAllocation;
 
 typedef struct NcEntry NcEntry;
 struct NcEntry {
-    const char * key;
+    const char *key;
     void *value;
 };
 
@@ -45,6 +48,7 @@ struct NcStrings {
     (a).v[(a).n++] = (x); \
 } while (0)
 // Host portability: the few OS facilities NanoC uses, spelled for POSIX and for Windows.
+
 #ifdef _WIN32
 #include <direct.h>
 #include <io.h>
@@ -99,7 +103,7 @@ typedef enum {
 
 typedef struct NcToken NcToken;
 struct NcToken {
-    const char * s;
+    const char *s;
     size_t n;
     int line,column;
     NcKind kind;
@@ -123,6 +127,37 @@ struct NcCursor {
     NcTokens ts;
     size_t pos;
 };
+// Compiler-owned expansion records; offsets and columns count UTF-8 bytes, ranges are half-open.
+typedef struct NcSpan NcSpan;
+struct NcSpan {
+    int line,column,end_line,end_column;
+};
+
+typedef struct NcTrace NcTrace;
+struct NcTrace {
+    size_t id,parent,pass;
+    NcSpan source;
+    size_t start,end;
+    const char *rule;
+    const char *name;
+    const char *input;
+    const char *result;
+    NcStrings captures,identifiers;
+    bool synthetic;
+};
+
+typedef struct NcTraces NcTraces;
+struct NcTraces {
+    NcTrace *v;
+    size_t n,cap;
+};
+// CLI process results are separate from compile-time evaluation capabilities.
+typedef struct NcProcess NcProcess;
+struct NcProcess {
+    int status;
+    const char *out;
+    const char *err;
+};
 // The compile context.
 typedef struct NcSymbol NcSymbol;
 struct NcSymbol {
@@ -137,16 +172,26 @@ struct NcSymbols {
 };
 
 struct NcContext {
-    const char *file;
-    bool cpp;
+    const char *file, *executable, *next_error_code;
+    NcToken last_token;
+    NcSpan error_span;
+    bool cpp, tracing;
+    NcTraces traces;
+    size_t trace_parent, trace_virtual;
+    NcStrings trace_sources;
+    int query_line;
+    const char *query_symbol;
+    size_t query_offset;
+    bool query_generated;
     size_t max_depth, max_steps, max_output, steps, serial, allocated;
     size_t max_passes, pass;
-    bool effects, again, lines, mini;
+    bool again, lines, mini;
     const char *source, *next_source;
     NcMap state;
     NcStrings logs;
     NcAllocation *allocations;
-    NcMap names, macros;
+    NcMap names, macros, raw;
+    size_t raw_serial;
     NcSymbols symbols;
     jmp_buf trap;
     char error[16384], detail[2048];
@@ -185,6 +230,7 @@ typedef struct NcLayoutLine NcLayoutLine;
 struct NcLayoutLine {
     NcTokens ts;
     int indent,line;
+    NcSpan span;
     bool raw;
 };
 
@@ -261,7 +307,6 @@ struct NcCtFunction {
 
 typedef enum {
     NC_CT,
-    NC_BT,
     NC_MACRO
 } NcPhase;
 
@@ -307,8 +352,8 @@ extern const size_t nc_spec_count;
 
 typedef struct NcOptions NcOptions;
 struct NcOptions {
-    char *input, *output, *action;
-    bool check,json,prototypes,migrate;
+    char *input, *output, *action, *command, *map;
+    bool check,json,prototypes,trace;
 };
 
 typedef struct NcJson NcJson;
@@ -317,12 +362,104 @@ struct NcJson {
     int depth;
     bool more[32];
 };
-void nc_help(FILE *out);
-void nc_report(FILE *out, NcContext *c, size_t bytes);
-void nc_diagnostic(FILE *out, NcContext *c);
-void nc_prototypes(NcContext *c, FILE *out);
-NcOptions nc_options(NcContext *c, int argc, char **argv);
-bool nc_describe(FILE *out, const char *topic);
+char *nc_read(NcContext *c, const char *path);
+void nc_write(NcContext *c, const char *path, const char *contents);
+void nc_init(NcContext *c, const char *file);
+void *nc_alloc(NcContext *c, size_t size);
+void nc_dispose(NcContext *c);
+void *nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width);
+_Noreturn void nc_fail(NcContext *c, int line, const char *format, ...);
+void nc_step(NcContext *c, int line);
+void nc_check(NcContext *c, size_t bytes, int line);
+void nc_depth(NcContext *c, size_t depth, int line, const char *kind);
+void *nc_get(const NcMap *m, const char *key);
+bool nc_has_token(const NcMap *m, NcToken t);
+void nc_put(NcContext *c, NcMap *m, const char *key, void *value);
+char *nc_fresh(NcContext *c, const char *hint);
+void nc_addn(NcContext *c, NcBuffer *b, const char *s, size_t n);
+void nc_add(NcContext *c, NcBuffer *b, const char *s);
+void nc_printf(NcContext *c, NcBuffer *b, const char *format, ...);
+char *nc_string(NcContext *c, const char *s, size_t n);
+char *nc_format(NcContext *c, const char *format, ...);
+char *nc_trim(NcContext *c, const char *s);
+bool nc_identifier(const char *s);
+char *nc_quote(NcContext *c, const char *s);
+char *nc_unquote(NcContext *c, const char *s, int line);
+NcLayoutLine nc_logical_line(NcCursor *c);
+NcLines nc_body_lines(NcCursor *c, int header_line, int indent);
+NcHeader nc_header(const NcCursor *c);
+bool nc_same_line(const NcCursor *c, int line);
+bool nc_header_at(const NcCursor *c, const char *s, int line);
+bool nc_header_eat(NcCursor *c, const char *s, int line);
+NcTokens nc_line_expression(NcCursor *c);
+NcNodes nc_indented_nodes(NcCursor *c, NcHeader header, bool program);
+NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail);
+NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program);
+char *nc_statement(NcContext *c, NcLayoutLine line);
+void nc_marker(NcContext *c, NcBuffer *out, int line);
+char *nc_emit_block(NcContext *c, NcNodes nodes, size_t depth);
+char *nc_infer(NcContext *c, NcTokens ts, int line);
+NcTokens nc_declaration(NcContext *ctx, NcTokens ts, int line);
+char *nc_program_control(NcContext *ctx, NcTokens ts, int line);
+char *nc_emit_pp(NcContext *c, NcNodes nodes, size_t *at, size_t depth);
+NcTokens nc_program_text(NcContext *ctx, const char *text, int line);
+char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth);
+char *nc_control(NcContext *ctx, NcTokens ts, int line);
+bool nc_meta_line(NcLayoutLine line);
+NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program);
+NcNodes nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth);
+NcValue nc_expression(NcExpr *e, int minimum, bool active);
+NcValue nc_eval(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth, bool active);
+int64_t nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line);
+NcValue nc_builtin_tokens(NcMachine *m, const char *name, NcValue v, int line);
+NcValue nc_builtin_range(NcMachine *m, NcValues args, int line);
+NcEnv *nc_env(NcContext *c, NcEnv *parent);
+void nc_bind(NcContext *c, NcEnv *e, const char *name, NcValue value);
+NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line);
+void nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line);
+char *nc_program(NcContext *ctx, NcTokens ts, NcEnv *env, NcPhase phase, size_t depth);
+NcValue nc_quotation(NcExpr *e, NcTokens ts, bool active);
+NcValue nc_integer(int64_t n);
+NcValue nc_boolean(bool n);
+NcValue nc_value_text(NcValueKind kind, char *s);
+NcValue nc_list(NcValues items);
+bool nc_truth(NcValue v);
+int64_t nc_numeric(NcContext *c, NcValue v, int line);
+char *nc_display(NcContext *c, NcValue v, size_t depth, int line);
+char *nc_value_code(NcContext *c, NcValue v, int line);
+bool nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line);
+NcFlow nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth);
+NcFlow nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *name);
+bool nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken name);
+NcFlow nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth);
+char *nc_compile_time(NcContext *ctx, NcTokens ts, size_t depth);
+void nc_arity(NcContext *c, NcValues args, size_t n, int line);
+NcValue nc_builtin(NcMachine *m, const char *name, NcValues args, int line);
+NcFlow nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth);
+int nc_precedence(NcToken t);
+NcValue nc_binary(NcContext *c, NcToken op, NcValue a, NcValue b, int line);
+NcValue nc_primary(NcExpr *e, bool active);
+void nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env);
+NcValue nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int line);
+char *nc_mini(NcContext *c, const char *text);
+char *nc_style(NcContext *c, const char *text);
+void nc_pp_put(NcPretty *p, const char *s, size_t n);
+void nc_pp_nl(NcPretty *p);
+void nc_pp_end(NcPretty *p);
+void nc_pp_blank(NcPretty *p);
+void nc_pp_directive(NcPretty *p, NcToken t);
+bool nc_emit_raw(NcContext *c, NcBuffer *out, NcToken token);
+char *nc_pretty(NcContext *c, const char *text);
+bool nc_pp_prev_is(NcPretty *p, const char *s);
+bool nc_pp_prev_punct(NcPretty *p, const char *s);
+void nc_pp_open(NcPretty *p, NcToken t);
+void nc_pp_close(NcPretty *p);
+void nc_pp_resolve(NcPretty *p, NcToken t);
+char *nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth);
+void nc_define_macro(NcContext *ctx, NcCursor *c);
+char *nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t depth);
+char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index);
+void nc_block_argument(NcContext *ctx, NcCursor *c, NcMacro *m, NcGroups *args, int line, int indent);
 void jw_start(NcJson *w, FILE *out);
 void jw_text(NcJson *w, const char *s);
 void jw_open(NcJson *w, char open);
@@ -336,154 +473,43 @@ void jw_ks(NcJson *w, const char *k, const char *s);
 void jw_ki(NcJson *w, const char *k, long n);
 void jw_kb(NcJson *w, const char *k, bool b);
 void jw_kr(NcJson *w, const char *k, const char *json);
-NcEnv *nc_env(NcContext *c, NcEnv *parent);
-void nc_bind(NcContext *c, NcEnv *e, const char *name, NcValue value);
-NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line);
-void nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line);
-NcValue nc_integer(int64_t n);
-NcValue nc_boolean(bool n);
-NcValue nc_value_text(NcValueKind kind, char *s);
-NcValue nc_list(NcValues items);
-bool nc_truth(NcValue v);
-int64_t nc_numeric(NcContext *c, NcValue v, int line);
-char *nc_display(NcContext *c, NcValue v, size_t depth, int line);
-char *nc_value_code(NcContext *c, NcValue v, int line);
-bool nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line);
-NcValue nc_builtin_tokens(NcMachine *m, const char *name, NcValue v, int line);
-NcValue nc_builtin_range(NcMachine *m, NcValues args, int line);
-NcValue nc_quotation(NcExpr *e, NcTokens ts, bool active);
-bool nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken name);
-void nc_arity(NcContext *c, NcValues args, size_t n, int line);
-NcValue nc_builtin(NcMachine *m, const char *name, NcValues args, int line);
-char *nc_program(NcContext *ctx, NcTokens ts, NcEnv *env, NcPhase phase, size_t depth);
-int64_t nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line);
-int nc_precedence(NcToken t);
-NcValue nc_binary(NcContext *c, NcToken op, NcValue a, NcValue b, int line);
-NcFlow nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth);
-void nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env);
-NcValue nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int line);
-NcValue nc_expression(NcExpr *e, int minimum, bool active);
-NcValue nc_eval(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth, bool active);
-NcFlow nc_conditional(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth);
-NcFlow nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *name);
-NcValue nc_primary(NcExpr *e, bool active);
-NcFlow nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth);
-char *nc_compile_time(NcContext *ctx, NcTokens ts, size_t depth);
-char *nc_mini(NcContext *c, const char *text);
-char *nc_style(NcContext *c, const char *text);
-char *nc_pretty(NcContext *c, const char *text);
-bool nc_pp_prev_is(NcPretty *p, const char *s);
-bool nc_pp_prev_punct(NcPretty *p, const char *s);
-void nc_pp_open(NcPretty *p, NcToken t);
-void nc_pp_close(NcPretty *p);
-void nc_pp_resolve(NcPretty *p, NcToken t);
-void nc_pp_put(NcPretty *p, const char *s, size_t n);
-void nc_pp_nl(NcPretty *p);
-void nc_pp_end(NcPretty *p);
-void nc_pp_blank(NcPretty *p);
-void nc_pp_directive(NcPretty *p, NcToken t);
-char *nc_build_stage(NcContext *ctx, const char *source);
-NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line);
-NcValue nc_meta_process(NcMachine *m, const char *name, NcValues a, int line);
+void nc_help(FILE *out);
+char *nc_format_source(NcContext *c, const char *input);
+int nc_format_command(NcContext *c, int argc, const char **argv);
+NcOptions nc_options(NcContext *c, int argc, char **argv);
+char *nc_process_stream(NcContext *c, FILE *file);
+NcProcess nc_process(NcContext *c, const char * *argv);
+void nc_prototypes(NcContext *c, FILE *out);
+void nc_report(FILE *out, NcContext *c, size_t bytes);
+void nc_diagnostic(FILE *out, NcContext *c);
+bool nc_describe(FILE *out, const char *topic);
+NcValue nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line);
 char *nc_pipeline(NcContext *ctx, const char *input);
+NcValue nc_meta_strings(NcMachine *m, const char *name, NcValues a, int line);
 bool nc_builtin_known(const char *name);
 NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line);
 const char *nc_meta_text(NcContext *c, NcValue v, int line);
-void nc_effect(NcMachine *m, int line);
-NcValue nc_host_run(NcMachine *m, NcValues a, int line);
-NcValue nc_host_run(NcMachine *m, NcValues a, int line);
-NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line);
-NcValue nc_meta_lists(NcMachine *m, const char *name, NcValues a, int line);
 NcValue nc_meta_control(NcMachine *m, const char *name, NcValues a, int line);
-NcTokens nc_program_text(NcContext *ctx, const char *text, int line);
-bool inline_head(NcToken t);
-size_t inline_first(NcTokens ts);
-int inline_split(NcTokens ts);
-int inline_else(NcTokens ts);
-NcLines nc_split_inline(NcContext *ctx, NcLines input);
-char *nc_program_control(NcContext *ctx, NcTokens ts, int line);
-bool nc_extension_line(NcLayoutLine line);
-bool nc_meta_line(NcLayoutLine line);
-NcLines nc_prepare_lines(NcContext *ctx, NcLines input, bool program);
-bool plain(NcContext *c, const char *body);
-char *nc_match(NcContext *c, NcNode node, size_t depth);
-char *nc_infer(NcContext *c, NcTokens ts, int line);
-NcTokens nc_declaration(NcContext *ctx, NcTokens ts, int line);
-bool nc_is_ret(NcContext *c, NcTokens items);
-char *nc_statement(NcContext *c, NcLayoutLine line, bool tail);
-NcHeader nc_header(const NcCursor *c);
-bool nc_same_line(const NcCursor *c, int line);
-bool nc_header_at(const NcCursor *c, const char *s, int line);
-bool nc_header_eat(NcCursor *c, const char *s, int line);
-NcTokens nc_line_expression(NcCursor *c);
-NcNodes nc_indented_nodes(NcCursor *c, NcHeader header, bool program);
-NcLayoutLine nc_logical_line(NcCursor *c);
-NcLines nc_body_lines(NcCursor *c, int header_line, int indent);
-char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth);
-void nc_marker(NcContext *c, NcBuffer *b, int line);
-char *nc_emit_block(NcContext *c, NcNodes nodes, bool tail, size_t depth);
-NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail);
-NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program);
-NcNodes nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth);
-char *nc_control(NcContext *ctx, NcTokens ts, int line);
-void nc_addn(NcContext *c, NcBuffer *b, const char *s, size_t n);
-void nc_add(NcContext *c, NcBuffer *b, const char *s);
-void nc_printf(NcContext *c, NcBuffer *b, const char *format, ...);
-char *nc_string(NcContext *c, const char *s, size_t n);
-char *nc_format(NcContext *c, const char *format, ...);
-void nc_init(NcContext *c, const char *file);
-void *nc_alloc(NcContext *c, size_t size);
-void nc_dispose(NcContext *c);
-void *nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width);
-char *nc_trim(NcContext *c, const char *s);
-bool nc_identifier(const char *s);
-char *nc_quote(NcContext *c, const char *s);
-char *nc_unquote(NcContext *c, const char *s, int line);
-_Noreturn void nc_fail(NcContext *c, int line, const char *format, ...);
-void nc_step(NcContext *c, int line);
-void nc_check(NcContext *c, size_t bytes, int line);
-void nc_depth(NcContext *c, size_t depth, int line, const char *kind);
-char *nc_read(NcContext *c, const char *path);
-void nc_write(NcContext *c, const char *path, const char *contents);
-void *nc_get(const NcMap *m, const char *key);
-bool nc_has_token(const NcMap *m, NcToken t);
-void nc_put(NcContext *c, NcMap *m, const char *key, void *value);
-char *nc_fresh(NcContext *c, const char *hint);
-char *nc_invoke_macro(NcContext *ctx, NcCursor *c, const char *name, size_t depth);
-char *nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t depth);
-void nc_block_argument(NcContext *ctx, NcCursor *c, NcMacro *m, NcGroups *args, int line, int indent);
-char *nc_substitute(NcContext *ctx, NcTokens ts, NcBindings *b, size_t depth, size_t index);
-void nc_define_macro(NcContext *ctx, NcCursor *c);
+NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line);
+bool nc_bol(NcTokens ts, size_t at);
+bool nc_compact_decl(NcTokens ts, size_t at);
+bool nc_has_syntax(NcContext *c, const char *input);
+bool nc_directive_start(NcTokens ts, size_t at);
 char *nc_lang_check(NcContext *ctx, const char *input);
-char *nc_migrate(NcContext *ctx, const char *input);
-void nc_skip(NcCursor *c);
-bool nc_end(NcCursor *c);
-bool nc_at(NcCursor *c, const char *s);
-int nc_line(const NcCursor *c);
-NcToken nc_take(NcCursor *c);
-bool nc_eat(NcCursor *c, const char *s);
-void nc_need(NcCursor *c, const char *s);
-char *nc_name(NcCursor *c);
-char *prelude_file(NcContext *ctx, const char *file);
-char *nc_prelude(NcContext *ctx);
-char *nc_raw(NcContext *ctx, NcCursor *c);
-char *nc_function(NcContext *ctx, NcCursor *c, size_t depth);
-char *nc_assembly(NcContext *ctx, NcCursor *c);
 char *nc_expand(NcContext *ctx, NcTokens ts, size_t depth);
 char *nc_transpile(NcContext *ctx, const char *input);
-void nc_alias(NcToken *t);
-char *nc_alias_name(NcContext *c, const char *name);
-NcTokens nc_aliased(NcContext *c, NcTokens ts);
-const char *nc_sep(const char *type);
-char *nc_typed(NcContext *ctx, NcTokens input, bool initialized);
-char *nc_parameters(NcContext *ctx, NcTokens ts);
-char *nc_native_parameters(NcContext *ctx, NcTokens ts);
+char *nc_raw_tokens(NcContext *ctx, NcTokens ts, int indent);
+char *nc_raw_read(NcContext *ctx, NcCursor *c);
+char *nc_raw(NcContext *ctx, NcCursor *cursor);
 char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth);
-NcTokens nc_lex(NcContext *c, const char *s, int line);
-bool shadows(NcContext *ctx, const char *bound, const char *id);
-char *nc_shorthand(NcContext *ctx, NcCursor *c, const char *name, size_t depth);
-char *nc_record(NcContext *ctx, NcCursor *c, char kind);
-char *nc_include(NcContext *ctx, NcCursor *c);
+int nc_pp_kind(NcTokens ts);
+char *nc_pp_header(NcContext *c, NcTokens input, int line);
+char *nc_pp_simple(NcContext *c, NcTokens input, int line);
+char *nc_pp_scope(NcContext *c, NcCursor *cur, NcLayoutLine head, size_t depth);
+const char *nc_standard_name(void);
+NcTokens nc_group(NcCursor *c, const char *open, const char *close);
+NcTokens nc_until(NcCursor *c, const char *delimiter);
+NcGroups nc_split(NcContext *ctx, NcTokens ts, const char *delimiter);
 bool nc_is(NcToken t, const char *s);
 char *nc_text(NcContext *c, NcToken t);
 NcToken nc_token(const char *s, int line, NcKind kind);
@@ -492,10 +518,40 @@ char *nc_join(NcContext *c, NcTokens ts);
 NcTokens nc_significant(NcContext *c, NcTokens ts);
 char *nc_words(NcContext *c, NcTokens ts);
 void nc_names(NcContext *c, NcTokens ts);
+char *nc_prelude(NcContext *ctx);
+NcTokens nc_lex(NcContext *c, const char *s, int line);
+char *nc_native_parameters(NcContext *ctx, NcTokens ts);
+const char *nc_sep(const char *type);
+char *nc_typed(NcContext *ctx, NcTokens input, bool initialized);
+char *nc_parameters(NcContext *ctx, NcTokens ts);
+bool nc_runtime_start(NcContext *c, NcTokens ts, size_t at);
+char *nc_runtime_scope(NcContext *c, NcCursor *cur);
+void nc_skip(NcCursor *c);
+bool nc_end(NcCursor *c);
+bool nc_at(NcCursor *c, const char *s);
+int nc_line(const NcCursor *c);
+NcToken nc_take(NcCursor *c);
+bool nc_eat(NcCursor *c, const char *s);
+void nc_need(NcCursor *c, const char *s);
+char *nc_name(NcCursor *c);
+char *nc_record(NcContext *ctx, NcCursor *c, char kind);
 size_t nc_literal_start(const char *s, size_t i, bool cpp);
 size_t nc_literal_end(NcContext *c, const char *s, size_t i, int line);
 size_t nc_line_end(const char *s, size_t start);
-NcTokens nc_group(NcCursor *c, const char *open, const char *close);
-NcTokens nc_until(NcCursor *c, const char *delimiter);
-NcGroups nc_split(NcContext *ctx, NcTokens ts, const char *delimiter);
+NcSpan nc_trace_span(NcTokens tokens);
+void nc_trace_extend(NcContext *c, size_t id, NcSpan span);
+bool nc_trace_matches(NcContext *c, NcTrace *event);
+char *nc_trace_text(NcContext *c, const char *generated);
+void nc_span_json(NcJson *w, NcSpan span);
+void nc_trace_strings(NcJson *w, NcStrings values);
+void nc_trace_json(FILE *out, NcContext *c, const char *generated);
+size_t nc_trace_begin(NcContext *c, NcToken t, const char *rule, const char *name);
+void nc_trace_end_source(NcContext *c, size_t id, NcToken t);
+void nc_trace_mark(NcContext *c, NcBuffer *out, size_t id, bool begin);
+char *nc_trace_wrap(NcContext *c, size_t id, const char *text, size_t parent);
+void nc_trace_value(NcContext *c, const char *name, const char *text);
+bool nc_trace_boundary(NcContext *c, NcBuffer *out, NcToken token);
+bool nc_trace_cursor(NcContext *c, NcToken token);
+size_t nc_trace_line(NcContext *c, NcBuffer *out, NcLayoutLine line);
+void nc_trace_finish(NcContext *c, NcBuffer *out, size_t id, size_t parent);
 #endif

@@ -1,1 +1,1 @@
-@macro x(){} @macro x(){}
+@m x(){} @m x(){}

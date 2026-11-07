@@ -1,0 +1,1065 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261106,
+  "tokenizer": {
+    "package": "tiktoken",
+    "version": "0.8.0",
+    "encodings": [
+      "cl100k_base",
+      "o200k_base"
+    ],
+    "vocabulary_sha256": {
+      "cl100k_base": "0f9f06b1a7ef5888726a5c0c289a96b79ee40c748dc12e610db6a8d10589d244",
+      "o200k_base": "142f409d7ab3807cdf1c59c0f10c81b03bfb690732c1d7120d3e1aeda4920a48"
+    }
+  },
+  "environment": {
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "compiler": "nanoc 0.6.0",
+    "cc": "cc"
+  },
+  "design": "Paired deterministic token counts across tasks; repeated compiler timings. Native grammar variants are NOT all implemented. Compilation columns validate only the reference source, not candidate grammars or agent success.",
+  "missing": [
+    "model agent trials",
+    "human participants",
+    "human comprehension/review/editing measurements",
+    "independent learnability measurements"
+  ],
+  "summaries": {
+    "cl100k_base:sigils": {
+      "mean_difference_vs_sigils_tokens": 0,
+      "paired_task_bootstrap_95_ci": [
+        0,
+        0
+      ],
+      "tasks": 12
+    },
+    "cl100k_base:hybrid": {
+      "mean_difference_vs_sigils_tokens": -0.8333333333333334,
+      "paired_task_bootstrap_95_ci": [
+        -1,
+        -0.5
+      ],
+      "tasks": 12
+    },
+    "cl100k_base:compact_keywords": {
+      "mean_difference_vs_sigils_tokens": -0.8333333333333334,
+      "paired_task_bootstrap_95_ci": [
+        -1,
+        -0.5
+      ],
+      "tasks": 12
+    },
+    "cl100k_base:keywords": {
+      "mean_difference_vs_sigils_tokens": -0.8333333333333334,
+      "paired_task_bootstrap_95_ci": [
+        -1,
+        -0.5
+      ],
+      "tasks": 12
+    },
+    "o200k_base:sigils": {
+      "mean_difference_vs_sigils_tokens": 0,
+      "paired_task_bootstrap_95_ci": [
+        0,
+        0
+      ],
+      "tasks": 12
+    },
+    "o200k_base:hybrid": {
+      "mean_difference_vs_sigils_tokens": -0.8333333333333334,
+      "paired_task_bootstrap_95_ci": [
+        -1,
+        -0.5
+      ],
+      "tasks": 12
+    },
+    "o200k_base:compact_keywords": {
+      "mean_difference_vs_sigils_tokens": -0.8333333333333334,
+      "paired_task_bootstrap_95_ci": [
+        -1,
+        -0.5
+      ],
+      "tasks": 12
+    },
+    "o200k_base:keywords": {
+      "mean_difference_vs_sigils_tokens": -0.8333333333333334,
+      "paired_task_bootstrap_95_ci": [
+        -1,
+        -0.5
+      ],
+      "tasks": 12
+    }
+  },
+  "tasks": [
+    {
+      "task": "examples/loops.nc",
+      "split": "exploratory",
+      "source_sha256": "5909456a3f4c09c1da2a7c7e2ac6593139aa403d2228a92d5a7701a385ad2529",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 177
+          },
+          "o200k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 177
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 176
+          },
+          "o200k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 176
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 176
+          },
+          "o200k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 176
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 176
+          },
+          "o200k_base": {
+            "code_tokens": 113,
+            "code_and_card_tokens": 176
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 103,
+            "code_and_card_tokens": 104
+          },
+          "o200k_base": {
+            "code_tokens": 103,
+            "code_and_card_tokens": 104
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 128,
+        "o200k_base": 128
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "sum 1..10 = 55\ncollatz(27) takes 111 steps\n",
+      "compiler_ms": [
+        55.395128,
+        55.330951,
+        57.976293,
+        55.565254,
+        55.495565,
+        55.390613,
+        48.009434,
+        40.81664,
+        36.340988,
+        34.33028,
+        31.687661,
+        27.899816,
+        27.62595,
+        24.811699,
+        24.559957
+      ]
+    },
+    {
+      "task": "examples/macros.nc",
+      "split": "exploratory",
+      "source_sha256": "dc0d614a1bd1b972def31d4bdb4a73f59dd6de4b7db9327608b7bb17f9386946",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 191,
+            "code_and_card_tokens": 255
+          },
+          "o200k_base": {
+            "code_tokens": 193,
+            "code_and_card_tokens": 257
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 191,
+            "code_and_card_tokens": 254
+          },
+          "o200k_base": {
+            "code_tokens": 193,
+            "code_and_card_tokens": 256
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 191,
+            "code_and_card_tokens": 254
+          },
+          "o200k_base": {
+            "code_tokens": 193,
+            "code_and_card_tokens": 256
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 191,
+            "code_and_card_tokens": 254
+          },
+          "o200k_base": {
+            "code_tokens": 193,
+            "code_and_card_tokens": 256
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 188,
+            "code_and_card_tokens": 189
+          },
+          "o200k_base": {
+            "code_tokens": 190,
+            "code_and_card_tokens": 191
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 200,
+        "o200k_base": 200
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "max 9 clamp 10 0\nw x h = 3 4\n",
+      "compiler_ms": [
+        20.595728,
+        19.994793,
+        19.915248,
+        22.394067,
+        19.121174,
+        18.515469,
+        18.309435,
+        18.469263,
+        17.555725,
+        17.271201,
+        17.179106,
+        17.46383,
+        16.867842,
+        16.627976,
+        16.248596
+      ]
+    },
+    {
+      "task": "research/corpus/allocation.nc",
+      "split": "exploratory",
+      "source_sha256": "4bae13f13d7a473792659b08e51e4443fa603512eea7c09191de82c715c354d8",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 146
+          },
+          "o200k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 146
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 145
+          },
+          "o200k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 145
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 145
+          },
+          "o200k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 145
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 145
+          },
+          "o200k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 145
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 88,
+        "o200k_base": 88
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "",
+      "compiler_ms": [
+        14.513407,
+        14.975756,
+        14.41947,
+        13.776864,
+        13.70429,
+        13.632237,
+        13.890165,
+        14.022757,
+        13.168949,
+        12.798368,
+        12.986356,
+        13.026674,
+        13.104481,
+        13.677443,
+        12.89155
+      ]
+    },
+    {
+      "task": "examples/records.nc",
+      "split": "exploratory",
+      "source_sha256": "c53b1a81e9d4f77511d6333499896f990c2b4a14e18953c87fe8b5dd834672c6",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 166,
+            "code_and_card_tokens": 230
+          },
+          "o200k_base": {
+            "code_tokens": 168,
+            "code_and_card_tokens": 232
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 166,
+            "code_and_card_tokens": 229
+          },
+          "o200k_base": {
+            "code_tokens": 168,
+            "code_and_card_tokens": 231
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 166,
+            "code_and_card_tokens": 229
+          },
+          "o200k_base": {
+            "code_tokens": 168,
+            "code_and_card_tokens": 231
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 166,
+            "code_and_card_tokens": 229
+          },
+          "o200k_base": {
+            "code_tokens": 168,
+            "code_and_card_tokens": 231
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 152,
+            "code_and_card_tokens": 153
+          },
+          "o200k_base": {
+            "code_tokens": 154,
+            "code_and_card_tokens": 155
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 196,
+        "o200k_base": 198
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "shape 0 area 3.14159\nshape 1 area 4\nshape 2 area 3.897\n",
+      "compiler_ms": [
+        12.967576,
+        15.773873,
+        14.262868,
+        12.998242,
+        13.086447,
+        13.239367,
+        12.959724,
+        12.901359,
+        12.30451,
+        12.444134,
+        12.275544,
+        12.162453,
+        12.469815,
+        12.329188,
+        12.061801
+      ]
+    },
+    {
+      "task": "examples/types.nc",
+      "split": "exploratory",
+      "source_sha256": "ec471f63884a0874c34a53204368b38a51bd66307b613635564607b6d4ba86ae",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 195
+          },
+          "o200k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 195
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 194
+          },
+          "o200k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 194
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 194
+          },
+          "o200k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 194
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 194
+          },
+          "o200k_base": {
+            "code_tokens": 131,
+            "code_and_card_tokens": 194
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 125,
+            "code_and_card_tokens": 126
+          },
+          "o200k_base": {
+            "code_tokens": 125,
+            "code_and_card_tokens": 126
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 130,
+        "o200k_base": 131
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "gcd 84 36 = 12\nu8 200 i64 1099511627776\n",
+      "compiler_ms": [
+        11.751076,
+        12.466624,
+        13.40721,
+        14.770685,
+        11.816639,
+        13.876895,
+        11.396815,
+        13.045236,
+        11.494653,
+        11.722605,
+        11.217199,
+        11.480719,
+        11.241267,
+        11.256909,
+        11.441725
+      ]
+    },
+    {
+      "task": "examples/interop.nc",
+      "split": "exploratory",
+      "source_sha256": "24374e229070bbe9b965c5d87e4153624f349f0f547d1ba4f6eba6d6f9f2f61a",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 87,
+            "code_and_card_tokens": 151
+          },
+          "o200k_base": {
+            "code_tokens": 88,
+            "code_and_card_tokens": 152
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 87,
+            "code_and_card_tokens": 150
+          },
+          "o200k_base": {
+            "code_tokens": 88,
+            "code_and_card_tokens": 151
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 87,
+            "code_and_card_tokens": 150
+          },
+          "o200k_base": {
+            "code_tokens": 88,
+            "code_and_card_tokens": 151
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 87,
+            "code_and_card_tokens": 150
+          },
+          "o200k_base": {
+            "code_tokens": 88,
+            "code_and_card_tokens": 151
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 81,
+            "code_and_card_tokens": 82
+          },
+          "o200k_base": {
+            "code_tokens": 82,
+            "code_and_card_tokens": 83
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 85,
+        "o200k_base": 85
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "hypot(3,4) = 5\ncbrt(27) = 3\n",
+      "compiler_ms": [
+        10.196216,
+        10.504091,
+        10.941855,
+        14.37583,
+        11.031079,
+        12.910125,
+        12.89664,
+        10.537982,
+        10.349655,
+        10.321682,
+        10.384443,
+        10.293725,
+        10.269668,
+        11.253402,
+        10.472881
+      ]
+    },
+    {
+      "task": "research/corpus/pointers.nc",
+      "split": "exploratory",
+      "source_sha256": "013393df2e545d7f08784200a3a347cdc58c47a4ccb3097e9eac0d3b64da6d63",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 183
+          },
+          "o200k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 183
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 182
+          },
+          "o200k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 182
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 182
+          },
+          "o200k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 182
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 182
+          },
+          "o200k_base": {
+            "code_tokens": 119,
+            "code_and_card_tokens": 182
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 119,
+        "o200k_base": 119
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "",
+      "compiler_ms": [
+        10.871804,
+        14.307343,
+        12.959314,
+        11.338482,
+        10.823372,
+        11.172837,
+        10.781636,
+        10.796131,
+        14.878531,
+        11.012783,
+        11.364215,
+        11.027153,
+        10.73598,
+        11.884061,
+        10.599793
+      ]
+    },
+    {
+      "task": "examples/hello.nc",
+      "split": "exploratory",
+      "source_sha256": "871caa839d5b33d3c7063c043bdbded1138745b72957f8d137b6ec52e60f5ae3",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 105
+          },
+          "o200k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 105
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 104
+          },
+          "o200k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 104
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 104
+          },
+          "o200k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 104
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 104
+          },
+          "o200k_base": {
+            "code_tokens": 41,
+            "code_and_card_tokens": 104
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 38,
+            "code_and_card_tokens": 39
+          },
+          "o200k_base": {
+            "code_tokens": 38,
+            "code_and_card_tokens": 39
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 41,
+        "o200k_base": 41
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "Hello from NanoC! 42 1.5\n",
+      "compiler_ms": [
+        9.616485,
+        9.807392,
+        9.991345,
+        10.039137,
+        10.020318,
+        9.621005,
+        10.17315,
+        9.911762,
+        9.639329,
+        9.844702,
+        9.934149,
+        9.603005,
+        9.657078,
+        9.71566,
+        9.870818
+      ]
+    },
+    {
+      "task": "examples/compile_time.nc",
+      "split": "exploratory",
+      "source_sha256": "a763ea34b0b9233ad23c3e1dd340f362a419d79644bd4754cb3e196909d546df",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 111,
+            "code_and_card_tokens": 175
+          },
+          "o200k_base": {
+            "code_tokens": 110,
+            "code_and_card_tokens": 174
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 111,
+            "code_and_card_tokens": 174
+          },
+          "o200k_base": {
+            "code_tokens": 110,
+            "code_and_card_tokens": 173
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 111,
+            "code_and_card_tokens": 174
+          },
+          "o200k_base": {
+            "code_tokens": 110,
+            "code_and_card_tokens": 173
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 111,
+            "code_and_card_tokens": 174
+          },
+          "o200k_base": {
+            "code_tokens": 110,
+            "code_and_card_tokens": 173
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 101,
+            "code_and_card_tokens": 102
+          },
+          "o200k_base": {
+            "code_tokens": 101,
+            "code_and_card_tokens": 102
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 100,
+        "o200k_base": 99
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "square 0 = 0\nsquare 1 = 1\nsquare 2 = 4\nsquare 3 = 9\nsquare 4 = 16\nsquare 5 = 25\nsquare 6 = 36\nsquare 7 = 49\n",
+      "compiler_ms": [
+        10.530144,
+        12.564759,
+        14.701203,
+        10.958676,
+        12.48765,
+        10.986488,
+        11.210648,
+        10.932342,
+        11.896212,
+        10.674647,
+        11.119183,
+        10.678495,
+        10.721533,
+        10.611432,
+        10.539794
+      ]
+    },
+    {
+      "task": "examples/compact.nc",
+      "split": "exploratory",
+      "source_sha256": "4fc2a63cd4b38675acb5ac144b4affa273365ba54f3e73f7ba7f8e43aea8845a",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 208,
+            "code_and_card_tokens": 272
+          },
+          "o200k_base": {
+            "code_tokens": 211,
+            "code_and_card_tokens": 275
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 210,
+            "code_and_card_tokens": 273
+          },
+          "o200k_base": {
+            "code_tokens": 213,
+            "code_and_card_tokens": 276
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 210,
+            "code_and_card_tokens": 273
+          },
+          "o200k_base": {
+            "code_tokens": 213,
+            "code_and_card_tokens": 276
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 210,
+            "code_and_card_tokens": 273
+          },
+          "o200k_base": {
+            "code_tokens": 213,
+            "code_and_card_tokens": 276
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 229,
+        "o200k_base": 232
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "",
+      "compiler_ms": [
+        11.205621,
+        12.901802,
+        12.29668,
+        11.481372,
+        11.35441,
+        13.605774,
+        11.365248,
+        11.786054,
+        11.125659,
+        11.333093,
+        11.160285,
+        11.245001,
+        11.340249,
+        11.077057,
+        11.268512
+      ]
+    },
+    {
+      "task": "examples/cleanup.nc",
+      "split": "exploratory",
+      "source_sha256": "e8d57d18623bd28926ee7512c38089f290ef639c0cdfd6027d21f5d4dbc3a871",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 231
+          },
+          "o200k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 231
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 230
+          },
+          "o200k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 230
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 230
+          },
+          "o200k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 230
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 230
+          },
+          "o200k_base": {
+            "code_tokens": 167,
+            "code_and_card_tokens": 230
+          }
+        },
+        "previous_nanoc": {
+          "cl100k_base": {
+            "code_tokens": 161,
+            "code_and_card_tokens": 162
+          },
+          "o200k_base": {
+            "code_tokens": 162,
+            "code_and_card_tokens": 163
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 146,
+        "o200k_base": 146
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "bytes: 0\nmissing: 0\n",
+      "compiler_ms": [
+        10.934885,
+        10.606859,
+        10.458193,
+        11.216329,
+        11.564943,
+        11.216669,
+        13.793415,
+        14.309469,
+        10.857915,
+        10.443281,
+        10.78003,
+        10.552148,
+        10.554517,
+        10.68731,
+        10.475165
+      ]
+    },
+    {
+      "task": "research/corpus/parser.nc",
+      "split": "exploratory",
+      "source_sha256": "a19a38903e470867c0f263370a9dbe96021726284628a1ffd27b2342eb8564aa",
+      "measurements": {
+        "sigils": {
+          "cl100k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 176
+          },
+          "o200k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 176
+          }
+        },
+        "hybrid": {
+          "cl100k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 175
+          },
+          "o200k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 175
+          }
+        },
+        "compact_keywords": {
+          "cl100k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 175
+          },
+          "o200k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 175
+          }
+        },
+        "keywords": {
+          "cl100k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 175
+          },
+          "o200k_base": {
+            "code_tokens": 112,
+            "code_and_card_tokens": 175
+          }
+        }
+      },
+      "agent": null,
+      "human": null,
+      "reference_transpiles": true,
+      "c_tokens": {
+        "cl100k_base": 118,
+        "o200k_base": 118
+      },
+      "reference_compiles": true,
+      "reference_exit_status": 0,
+      "reference_stdout": "",
+      "compiler_ms": [
+        10.216982,
+        10.37842,
+        10.504165,
+        10.237278,
+        10.429619,
+        10.456136,
+        10.270035,
+        10.4977,
+        10.321748,
+        10.671956,
+        12.199492,
+        15.086507,
+        13.034378,
+        12.95572,
+        10.829307
+      ]
+    }
+  ]
+}

@@ -1,2 +1,2 @@
-@fn f():int =
+f f() -> int
 0

@@ -147,7 +147,7 @@ Section [id=source kicker="Read the source" title="The compiler, <em>in NanoC.</
     function showC(r)
       const view = A.cview
       if (!r.ok)
-        view.innerHTML = '<div class="empty-code">No C preview: ' + 'this file needs build-time (@bt) host access, so it has no standalone C' + '.</div>'
+        view.innerHTML = '<div class="empty-code">No C preview: ' + 'this developer script has no standalone C translation' + '.</div>'
         A.cstat.textContent = ''
         return
       show(view, r.out, 'c')

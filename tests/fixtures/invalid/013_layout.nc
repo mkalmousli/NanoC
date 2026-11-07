@@ -1,3 +1,3 @@
-@fn f():int =
-  let x=1
+f f() -> int
+  x:=1
     x

@@ -1,7 +1,11 @@
 // Prints non-static prototypes for --prototypes. Used to
+@lang 1
++ "nanoc/nanoc.h"
+
 // generate headers.
 // Prints non-static prototypes.
-@f nc_prototypes(NcContext *c, FILE *out) void
-  for i:usize in 0..c->symbols.n
+f nc_prototypes(NcContext *c, FILE *out) -> void
+  for (size_t i = (0), nanoc_bound_1 = (c->symbols.n); i < nanoc_bound_1; ++i)
     NcSymbol s = c->symbols.v[i]
-    if strncmp(s.returns, "static", 6) then fprintf(out, "%s%s%s(%s);\n", s.returns, nc_sep(s.returns), s.name, s.params)
+    if (strncmp(s.returns, "static", 6))
+      fprintf(out, "%s%s%s(%s);\n", s.returns, nc_sep(s.returns), s.name, s.params)

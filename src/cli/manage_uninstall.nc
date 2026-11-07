@@ -1,39 +1,53 @@
 // The uninstall command.
-@use "nanoc/manage", stdlib, string
+@lang 1
++ "nanoc/nanoc.h"
+
++ "nanoc/manage.h"
++ <stdlib.h>
++ <string.h>
+
 // Removes empty parent directories.
-@f mg_prune(cstr prefix, cstr path) static void
+f mg_prune(const char *prefix, const char *path) -> static void
   char dir[PATH_MAX]
   snprintf(dir, sizeof dir, "%s", path)
   char stop[PATH_MAX]
   snprintf(stop, sizeof stop, "%s/share/nanoc", prefix)
-  while strlen(dir) > strlen(stop)
+  while (strlen(dir) > strlen(stop))
     char *slash = strrchr(dir, '/')
-    if not slash then return
+    if (! slash)
+      return
     *slash = 0
-    if NC_RMDIR(dir) then return
+    if (NC_RMDIR(dir))
+      return
+
 // Deletes recorded files.
-@f mg_remove_recorded(cstr prefix) static int
+f mg_remove_recorded(const char *prefix) -> static int
   int count = 0
   char list[PATH_MAX]
   snprintf(list, sizeof list, "%s/share/nanoc/install.manifest", prefix)
   FILE *f = fopen(list, "r")
-  if not f then return 0
+  if (! f)
+    return 0
   char line[PATH_MAX]
-  while fgets(line, sizeof line, f)
+  while (fgets(line, sizeof line, f))
     line[strcspn(line, "\n")] = 0
-    if !*line || !strcmp(line, "share/nanoc/install.manifest") then continue
+    if (!*line || !strcmp(line, "share/nanoc/install.manifest"))
+      continue
     char path[PATH_MAX]
     snprintf(path, sizeof path, "%s/%s", prefix, line)
-    if !remove(path) then count += 1
+    if (!remove(path))
+      count += 1
     mg_prune(prefix, path)
   fclose(f)
   remove(list)
-  count
+  return count
+
 // Runs the uninstall command.
-@f nc_uninstall_command(int argc, char **argv, cstr prefix) int
+f nc_uninstall_command(int argc, char **argv, const char *prefix) -> int
   bool yes = argc && !strcmp(argv[0], "--yes")
   printf("Remove NanoC from %s, including editor integrations?\n", prefix)
-  if !yes && !nc_confirm("Continue?") then puts("Cancelled."); return 1
+  if (!yes && !nc_confirm("Continue?"))
+    puts("Cancelled."); return 1
   char *editors[] = {"remove", "--all"}
   nc_editor_command(2, editors, prefix)
   int files = mg_remove_recorded(prefix)
@@ -50,4 +64,4 @@
   snprintf(top, sizeof top, "%s/share", prefix)
   NC_RMDIR(top)
   printf("Removed %d NanoC files. Your source projects were not touched.\n", files)
-  0
+  return 0

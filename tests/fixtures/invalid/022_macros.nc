@@ -1,1 +1,1 @@
-@macro recurse(){@recurse!()} @recurse!()
+@m recurse(){@recurse()} @recurse()

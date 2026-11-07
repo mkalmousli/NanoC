@@ -1,4 +1,5 @@
 // Host portability: the few OS facilities NanoC uses, spelled for POSIX and for Windows.
+@lang 1
 #ifdef _WIN32
 #include <direct.h>
 #include <io.h>

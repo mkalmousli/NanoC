@@ -1,3 +1,3 @@
-@fn f():int =
+f f() -> int
   if 1:
-    2
+    return 2

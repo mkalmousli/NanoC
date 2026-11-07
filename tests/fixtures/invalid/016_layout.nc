@@ -1,3 +1,3 @@
-@fn f():int =
-  let x=unknown()
-  x
+f f() -> int
+  x:=unknown()
+  return x

@@ -1,36 +1,77 @@
 // Program entry: parse options, run the pipeline.
-@use "nanoc/manage"
+@lang 1
++ "nanoc/nanoc.h"
+
++ "nanoc/manage.h"
+
 // Entry point of the nanoc CLI.
-@f main(int argc, char **argv) int
+f main(int argc, char **argv) -> int
   int managed = nc_manage(argc, argv)
-  if managed >= 0 then return managed
+  if (managed >= 0)
+    return managed
   NcContext *c = calloc(1, sizeof *c)
-  if not c then fputs("out of memory\n", stderr); return 1
+  if (! c)
+    fputs("out of memory\n", stderr); return 1
   nc_init(c, "")
-  bool json = false
-  for int i = 1; i + 1 < argc; ++i
-    if !strcmp(argv[i], "--") then break
-    if !strcmp(argv[i], "--diagnostics") && !strcmp(argv[i + 1], "json") then json = true
+  c->executable = argv[0]
+  bool json = 0
+  for (int i = 1; i < argc; ++i)
+    if (!strcmp(argv[i], "--"))
+      break
+    if (!strcmp(argv[i], "--json") || (i + 1 < argc && !strcmp(argv[i], "--diagnostics") && !strcmp(argv[i + 1], "json")))
+      json = 1
   int code = 0
-  if setjmp(c->trap)
-    if json then nc_diagnostic(stderr, c) else fprintf(stderr, "%s\n", c->error)
+  if (setjmp(c->trap))
+    if (json)
+      nc_diagnostic(stderr, c)
+    else
+      fprintf(stderr, "%s\n", c->error)
     code = 1
   else
-    NcOptions o = nc_options(c, argc, argv)
-    if !strcmp(o.action, "--help") then nc_help(stdout)
-    elif !strcmp(o.action, "--version") then puts("nanoc " NC_VERSION)
-    elif !strcmp(o.action, "--describe")
-      if !nc_describe(stdout, o.input) then nc_fail(c, 0, "unknown describe topic: %s", o.input)
+    if (argc > 1 && !strcmp(argv[1], "bench"))
+      code = nc_bench_command(c, argc, (const char **)argv)
+    elif (argc > 1 && !strcmp(argv[1], "doctor"))
+      code = nc_doctor(c, argc, argv)
+    elif (argc > 1 && !strcmp(argv[1], "test"))
+      code = nc_test_command(c, argc, argv)
+    elif (argc > 1 && !strcmp(argv[1], "tokens"))
+      code = nc_tokens_command(c, argc, (const char **)argv)
+    elif (argc > 1 && !strcmp(argv[1], "fmt"))
+      code = nc_format_command(c, argc, (const char **)argv)
+    elif (argc > 1 && !strcmp(argv[1], "convert"))
+      code = nc_convert_command(c, argc, (const char * *)argv)
+    elif (argc > 1 && (!strcmp(argv[1], "build") || !strcmp(argv[1], "run")))
+      code = nc_build_command(c, argc, (const char * *)argv)
     else
-      char *source = nc_read(c, o.input)
-      char *generated = o.migrate ? nc_migrate(c, source) : nc_transpile(c, source)
-      if o.prototypes and not o.migrate then nc_prototypes(c, stdout)
-      elif o.check and not o.migrate
-        if o.json then nc_report(stdout, c, strlen(generated))
-      elif !strcmp(o.output, "-") then fputs(generated, stdout) else nc_write(c, o.output, generated)
-      if not o.json
-        for i:usize in 0..c->logs.n then fprintf(stderr, "%s\n", c->logs.v[i])
-  if ferror(stdout) then code = 1
+      NcOptions o = nc_options(c, argc, argv)
+      if (!strcmp(o.action, "--help"))
+        nc_help(stdout)
+      elif (!strcmp(o.action, "--version"))
+        puts("nanoc " NC_VERSION)
+      elif (!strcmp(o.action, "--describe"))
+        if (!nc_describe(stdout, o.input))
+          nc_fail(c, 0, "unknown describe topic: %s", o.input)
+      else
+        char *source = nc_read(c, o.input)
+        char *generated = nc_transpile(c, source)
+        if (*o.map)
+          nc_write(c, o.map, nc_trace_text(c, generated))
+        if (o.trace)
+          nc_trace_json(stdout, c, generated)
+        elif (o.prototypes)
+          nc_prototypes(c, stdout)
+        elif (o.check)
+          if (o.json)
+            nc_report(stdout, c, strlen(generated))
+        elif (!strcmp(o.output, "-"))
+          fputs(generated, stdout)
+        else
+          nc_write(c, o.output, generated)
+        if (! o.json)
+          for (size_t i = (0), nanoc_bound_1 = (c->logs.n); i < nanoc_bound_1; ++i)
+            fprintf(stderr, "%s\n", c->logs.v[i])
+  if (ferror(stdout))
+    code = 1
   nc_dispose(c)
   free(c)
-  code
+  return code

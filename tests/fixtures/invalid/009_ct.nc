@@ -1,1 +1,1 @@
-@ct { let xs=[]; for i in range(100) { xs=[xs]; } }
+@ct { xs:=[]; for i in range(100) { xs=[xs]; } }

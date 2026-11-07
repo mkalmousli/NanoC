@@ -1,1 +1,1 @@
-@macro x($a:block){} @x!(hi)
+@m x($a:block){} @x(hi)

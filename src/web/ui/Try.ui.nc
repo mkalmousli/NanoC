@@ -18,7 +18,7 @@ Section [id=try kicker="Try it" title="Run the compiler <em>right here.</em>"]
   js
     const PROMPT = 'Project: ' + REPO + ' (README.md and docs/language.md describe the language; ' +
       'the compiler is in src/**/*.nc).\n\n' +
-      'Write a small NanoC program that [goal]. Use @f functions with bare return types and ' +
+      'Write a small NanoC program that [goal]. Use f name(args) -> CType functions, explicit return, C expression operators and ' +
       'indented blocks, no braces or semicolons. Show the file, the nanoc command that emits C, ' +
       'and the cc command that builds it.'
     A.prompt.textContent = PROMPT
