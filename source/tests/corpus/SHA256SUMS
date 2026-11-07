@@ -1,0 +1,5 @@
+91d170a3505dff3d9605e241122ba60d0c4e98b0d0fd6b30ee6a726f70045189  tests/corpus/bsearch.c
+9c641c12fbcc6acd2cc18f6d969d9ccdcf11b27fdfb1f47b8804206bbef05581  tests/corpus/memchr.c
+826b1b5e84d3c0fb68be827c051f6dc0d67da17ee3a444e94be0e5360586916f  tests/corpus/memcmp.c
+cf9359c1bcee96df1f3a7ef0fb969339b7ed87b202d80dc7e7fcd6d1239b7484  tests/corpus/strlen.c
+906d82e1ffe26848e99bcc8b3179812f00a8717c44b409c1fdfd24beae2566ef  tests/corpus/strspn.c

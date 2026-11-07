@@ -1,0 +1,1 @@
+@tt { while (true) {} }

@@ -1,0 +1,88 @@
+suite templates, source libraries, captures, quoting and bounded source transformation
+case token macros
+  nanoc
+    @m twice($x) { (($x)*2) }
+    f add(int a, int b) int
+      < a+b
+    f main()
+      < @twice(add(2,3))!=10
+case executable variadic macros
+  nanoc
+    @m enums($prefix:ident,$items...) =
+      for i range(len(items))
+        n:=ident(str(prefix)+str(i))
+        v:=items[i]
+        emit(quote(enum { $n=$v };))
+    @enums(value,2,3,5)
+    @m id($x) = quote($x)
+    f main()
+      < @id(value2)!=5
+case TT libraries and collections
+  nanoc
+    @tt
+      f square(x) = x*x
+      total:=0
+      for i range(10)
+        if i==1
+          ^
+        if i==5
+          !
+        total+=square(i)
+      assert(total==29)
+      xs:=push(split("a,b,c",","),"d")
+      assert(join(slice(xs,1,3),"-")=="b-c")
+      assert(replace("aaaa","aa","b")=="bb")
+      eval("f triple(x) = x*3")
+      assert(triple(14)==42)
+      emit(quote(enum { total=$total };))
+    f main()
+      < total!=29
+case source rewriting
+  nanoc
+    @m id($x) { $x }
+    @tt
+      key:="PLACE"+"HOLDER"
+      if contains(source(),key)
+        rewrite(replace(source(),key,"41"))
+    f main()
+      < @id(PLACEHOLDER)!=41
+case repeated passes
+  nanoc
+    @tt {n:=get("n",0);put("n",n+1);if(n<2){again();}emit(quote(enum {n=$n};));}
+    f main()
+      < n!=2
+case token aware rename
+  nanoc
+    @tt {rewrite(rename(source(),"old","renamed"));}
+    int old=42;
+    const char *message="old";
+    // old stays in comments
+    f main()
+      < renamed!=42 || message[0]!='o'
+case local translate time generation
+  nanoc
+    f main()
+      @tt
+        f square(x) = x*x
+        n:=square(7)
+        emit(quote(int n=$n;))
+      @m finish($x)
+        < $x
+      @finish(n!=49)
+reject pass limit
+  nanoc
+    @tt {again();}
+reject loop control
+  nanoc
+    @tt {!;}
+reject slice bounds
+  nanoc
+    @tt {slice("x",-1);}
+reject must not be empty
+  nanoc
+    @tt {replace("x","","y");}
+case translate-time host command
+  nanoc
+    @tt {assert(run(["true"])[0]==0);}
+    f main
+      0

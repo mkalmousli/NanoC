@@ -1,0 +1,65 @@
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the compiler
+        run: cc -std=c11 -O2 build.c -o builder && ./builder build
+      - name: Check the compiler builds for Windows
+        run: sudo apt-get install -y -qq gcc-mingw-w64-x86-64 && x86_64-w64-mingw32-gcc -std=c11 -Wall -Ibuild/include $(find build/stage1/src -name '*.c') -o build/nanoc.exe
+      - name: Install the WebAssembly linker
+        run: sudo apt-get install -y -qq lld
+      - name: Assemble the site
+        run: build/nctool src/site/site.tool.nc
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  branch:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the compiler
+        run: cc -std=c11 -O2 build.c -o builder && ./builder build
+      - name: Install the WebAssembly linker
+        run: sudo apt-get install -y -qq lld
+      - name: Assemble the site
+        run: build/nctool src/site/site.tool.nc
+      - name: Publish as a single commit on gh-pages
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          cd _site
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy site from ${SHA:0:7}"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" HEAD:gh-pages

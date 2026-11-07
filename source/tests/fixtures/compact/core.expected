@@ -1,0 +1,44 @@
+#include <stdio.h>
+
+typedef struct Pair Pair;
+struct Pair {
+    int left,right;
+};
+
+void noop(void) {
+    return;
+}
+
+int sum(int *a, int n) {
+    int total = 0;
+    for (int i = 0; i < n; i++) {
+        if (a[i] < 0) {
+            continue;
+        } else if (a[i] == 0) {
+            break;
+        } else {
+            total += a[i];
+        }
+    }
+    while (total > 7) {
+        total--;
+    }
+    return total;
+}
+
+int main(void) {
+    int values[] = {1,2,-3,4,0,5};
+    int result = sum(values, 6);
+    Pair p = {3,4};
+    noop();
+    if (result == p.left + p.right) {
+        if (!0 && (3 ^ 1) == 2 && ~0 == -1) {
+            puts("ok");
+        } else {
+            return 1;
+        }
+    } else {
+        return 2;
+    }
+    return 0;
+}

@@ -1,0 +1,57 @@
+// Native lexer inspection and explicitly optional, version-pinned model-token counting.
+@lang 1
++ "nanoc/nanoc.h"
++ "nanoc/manage.h"
+// Lists lexer tokens with byte-oriented source ranges, or calls the optional tokenizer tool.
+f nc_tokens_command(NcContext *c, int argc, const char **argv) int
+  const char *input = NULL, *encoding = NULL
+  bool ids = false
+  for int i = 2; i < argc; ++i
+    if !strcmp(argv[i], "--encoding")
+      if ++i == argc
+        nc_fail(c, 0, "missing tokenizer encoding")
+      encoding = argv[i]
+    elif !strcmp(argv[i], "--ids")
+      ids = true
+    elif !strcmp(argv[i], "--json")
+      (void)0
+    elif !input
+      input = argv[i]
+    else
+      nc_fail(c, 0, "unexpected token argument: %s", argv[i])
+  if !input
+    nc_fail(c, 0, "tokens requires an input file")
+  c->file = input
+  if encoding
+    const char *args[] = {nc_python(), nc_optional_tool(c, "nanoc_tokens.py"), input, "--encoding", encoding, ids ? "--ids" : "--capabilities", NULL}
+    if !ids
+      args[5] = NULL
+    NcProcess result = nc_process(c, args)
+    fputs(result.out, stdout)
+    fputs(result.err, stderr)
+    < result.status
+  char *source = nc_read(c, input)
+  NcTokens ts = nc_lex(c, source, 1)
+  NcJson w
+  jw_start(&w, stdout)
+  jw_open(&w, '{')
+  jw_ki(&w, "schemaVersion", 1)
+  jw_ks(&w, "kind", "lexer-tokens")
+  jw_ks(&w, "offsetUnit", "utf8-byte")
+  jw_ki(&w, "count", (long)ts.n)
+  jw_key(&w, "tokens")
+  jw_open(&w, '[')
+  for size_t i = 0; i < ts.n; ++i
+    NcToken t = ts.v[i]
+    jw_open(&w, '{')
+    jw_ki(&w, "kind", t.kind)
+    jw_ki(&w, "start", (long)(t.s - source))
+    jw_ki(&w, "end", (long)(t.s - source + t.n))
+    jw_key(&w, "source")
+    nc_span_json(&w, nc_trace_span((NcTokens){&t,1,1}))
+    jw_ks(&w, "text", nc_text(c, t))
+    jw_close(&w, '}')
+  jw_close(&w, ']')
+  jw_close(&w, '}')
+  fputc('\n', stdout)
+  < 0

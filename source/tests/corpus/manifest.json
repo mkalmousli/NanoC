@@ -1,0 +1,36 @@
+{
+  "project": "musl",
+  "version": "1.2.5",
+  "files": [
+    {
+      "name": "bsearch.c",
+      "source": "https://raw.githubusercontent.com/ifduyue/musl/v1.2.5/src/stdlib/bsearch.c",
+      "sha1": "8A53A323A7378843C95A8477FFEC7992D89E5584",
+      "sha256": "91d170a3505dff3d9605e241122ba60d0c4e98b0d0fd6b30ee6a726f70045189"
+    },
+    {
+      "name": "memchr.c",
+      "source": "https://raw.githubusercontent.com/ifduyue/musl/v1.2.5/src/string/memchr.c",
+      "sha1": "3EA26F1E2C774D7595A7308243DE6F461BF71B4F",
+      "sha256": "9c641c12fbcc6acd2cc18f6d969d9ccdcf11b27fdfb1f47b8804206bbef05581"
+    },
+    {
+      "name": "memcmp.c",
+      "source": "https://raw.githubusercontent.com/ifduyue/musl/v1.2.5/src/string/memcmp.c",
+      "sha1": "0D374E9E20CC0AB1786BDA72CF0160230326A5D9",
+      "sha256": "826b1b5e84d3c0fb68be827c051f6dc0d67da17ee3a444e94be0e5360586916f"
+    },
+    {
+      "name": "strlen.c",
+      "source": "https://raw.githubusercontent.com/ifduyue/musl/v1.2.5/src/string/strlen.c",
+      "sha1": "AF40DCB5FADD6B889574457EF15A1BA661F4DA3C",
+      "sha256": "cf9359c1bcee96df1f3a7ef0fb969339b7ed87b202d80dc7e7fcd6d1239b7484"
+    },
+    {
+      "name": "strspn.c",
+      "source": "https://raw.githubusercontent.com/ifduyue/musl/v1.2.5/src/string/strspn.c",
+      "sha1": "E4EF9DA1A793F1D0EA1000BCBFB964280BE6CC6D",
+      "sha256": "906d82e1ffe26848e99bcc8b3179812f00a8717c44b409c1fdfd24beae2566ef"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+// Optional project header prelude: .nanoc files contain only explicit + header directives.
+@lang 1
++ "nanoc/nanoc.h"
+
+// Finds the nearest .nanoc file above the input translation unit.
+f prelude_file(NcContext *ctx, const char *file) static char *
+  char *dir = nc_string(ctx, file, strlen(file))
+  char *slash = strrchr(dir, '/')
+  while slash
+    *slash = 0
+    char *path = nc_format(ctx, "%s/.nanoc", dir)
+    FILE *source = fopen(path, "rb")
+    if source
+      fclose(source)
+      < nc_read(ctx, path)
+    slash = strrchr(dir, '/')
+  < NULL
+
+// Emits declared headers only; project files never contain commands to execute.
+f nc_prelude(NcContext *ctx) char *
+  char *text = prelude_file(ctx, ctx->file)
+  if !text
+    < ""
+  NcCursor cursor = {ctx, nc_lex(ctx, text, 1), 0}
+  NcBuffer out = {0}
+  while !nc_end(&cursor)
+    NcLayoutLine line = nc_logical_line(&cursor)
+    char *directive = nc_pp_simple(ctx, line.ts, line.line)
+    NcTokens significant = nc_significant(ctx, line.ts)
+    if !directive || !significant.n || !nc_is(significant.v[0], "+")
+      nc_fail(ctx, line.line, ".nanoc project preludes accept only + header directives")
+    nc_add(ctx, &out, directive)
+  nc_add(ctx, &out, "")
+  < out.v

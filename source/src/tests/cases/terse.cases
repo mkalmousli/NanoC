@@ -1,0 +1,52 @@
+suite final v1 compact declarations, C operators and word controls
+case explicit functions and parameters
+  nanoc
+    f set(int *p) static void
+      *p=42
+    f add(a: int, b: int) int
+      < a+b
+    f main()
+      n:=0
+      for ;;
+        set(&n)
+        !
+      < add(n,1)!=43
+case nested conditions
+  nanoc
+    f sign(n: int) int
+      if n>0
+        < 1
+      elif n<0
+        < -1
+      else
+        < 0
+    f main()
+      < sign(-3)!=-1 || sign(0)!=0 || sign(5)!=1
+case pointers, records, unions and enums
+  nanoc
+    s Pair
+      a,b: int
+    u Number
+      n: int
+      x: double
+    e Tag
+      FIRST, SECOND
+    f main()
+      Pair p={1,2}
+      Number n={3}
+      ptr: Pair * = &p
+      < ptr->a+ptr->b!=n.n || SECOND!=1
+reject omit ->
+  nanoc
+    f missing -> int
+      < 0
+reject omit ':'
+  nanoc
+    f main()
+      if 1:
+        < 0
+reject for requires
+  nanoc
+    f main()
+      for i 0..3
+        < i

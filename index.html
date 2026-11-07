@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NanoC: less syntax, full control</title>
+<meta name="description" content="NanoC is a compact, self-hosted language that generates plain C11 or C++17. Compact syntax, examples, and installation.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+<script class="c0" src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js" defer></script>
+<script src="index.js" defer></script>
+</head>
+<body class="c1">
+<header class="c2">
+<div class="c3">
+<a class="c4" href="index.html">
+<img src="logo.svg" width="26" height="26" alt="">
+NanoC
+</a>
+<nav class="c5">
+<a href="play.html"><b style="color:var(--lime)">Playground</b></a>
+<a href="compare.html">Compare</a>
+<a href="index.html#guide">Guide</a>
+<a href="index.html#install">Install</a>
+</nav>
+<a class="c6" href="https://github.com/mkalmousli/NanoC">GitHub ↗</a>
+</div>
+</header>
+<main>
+<section class="c7">
+<div>
+<p class="c8">NanoC · language version 1</p>
+<h1>Compact syntax.<br>Plain <em>C output.</em></h1>
+<p class="c9">A compact, self-hosted language that generates plain C11 or C++17. Indented blocks, macros that run, translate-time transformations, compact C preprocessing.</p>
+<div class="c10">
+<a class="c11" data-a="$as" href="play.html">Try it in your browser</a>
+<a class="c12" data-a="$as" href="#guide">Start the guide</a>
+</div>
+</div>
+<div class="c13">
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">f clamp(int x,lo,hi) int
+  if x&lt;lo
+    lo
+  elif x&gt;hi
+    hi
+  else
+    x
+f main
+  total:=0
+  for i:=0; i&lt;10; i++
+    total+=clamp(i,2,7)
+  total!=45</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</section>
+<section class="c16" id="guide">
+<p class="c8">Language guide</p>
+<h2>Learn it in <em>ten minutes.</em></h2>
+<p class="c17">Every example compiles and runs with the current compiler, and the C beside it is what that compiler produces right now. Unmarked C stays valid, so you can adopt NanoC one function at a time.</p>
+<div class="c18">
+<nav class="c19" data-j="2" aria-label="Guide sections">
+<a href="#hello">
+<span>01</span>
+Hello
+</a>
+<a href="#functions">
+<span>02</span>
+Functions
+</a>
+<a href="#controls">
+<span>03</span>
+Controls
+</a>
+<a href="#records">
+<span>04</span>
+Records
+</a>
+<a href="#preprocessor">
+<span>05</span>
+Preprocessor
+</a>
+<a href="#raw">
+<span>06</span>
+Raw C
+</a>
+<a href="#macros">
+<span>07</span>
+Macros
+</a>
+<a href="#tt">
+<span>08</span>
+Translate time
+</a>
+<a href="#output">
+<span>09</span>
+Output
+</a>
+</nav>
+<div>
+<article class="c20" id="hello">
+<div class="c21">01 · START</div>
+<h3>NanoC v1</h3>
+<p>
+NanoC is a programmable frontend for C. Runtime constructs become ordinary C with no mandatory runtime, VM, garbage collector or hidden allocation. The C compiler checks C symbols and types. The programmer owns memory, cleanup, undefined behavior and correctness. This is pre-release v1: obsolete syntax has been removed, with no compatibility or migration mode.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">+stdio
+f main
+  puts("Hello from NanoC!")
+  0</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(void) {
+    puts("Hello from NanoC!");
+    return 0;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p class="c23">
+Run <code>nanoc emit hello.nc -o hello.c</code>, then <code>cc -std=c11 hello.c -o hello &amp;&amp; ./hello</code>. <code>nanoc run hello.nc</code> performs both explicit steps without a shell.
+</p>
+</article>
+<article class="c20" id="functions">
+<div class="c21">02 · FUNCTIONS</div>
+<h3>Functions and declarations</h3>
+<p>
+Zero-argument functions can omit parentheses: <code>f get int</code>. With parameters, write <code>f clamp(int x,lo,hi) int</code> or name-first parameters such as <code>x,y:int</code>. Bare parameter names inherit the preceding C parameter type. The optional return type follows the name or parameter list directly: void by default, int for main. The final value expression in a non-void function returns automatically, including final if/elif/else branches. Use <code>&lt; value</code> for an early return and <code>&lt;</code> for a void return. End an expression with a semicolon to make it a statement instead. Declarations, assignments, loops and directives do not become implicit results. A semicolon after a function header declares a prototype.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">f add(a: int, b: int) int
+  &lt; a+b
+f greet()
+  &lt;
+f main()
+  n := 2
+  result: int = add(n,3)
+  greet()
+  &lt; result != 5</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">int add(int a, int b) {
+    return a+b;
+}
+
+void greet(void) {
+    return;
+}
+
+int main(void) {
+    int n = 2;
+    int result = add(n,3);
+    greet();
+    return result != 5;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p>
+<code>:=</code> infers scalar literals only in C mode. Calls, arithmetic, names and array literals require an explicit type. Use <code>int nums[] = {1,2,3}</code> for arrays and exact C declarations for complex declarators. Integer literal inference uses int for the guaranteed signed 16-bit range, long for the guaranteed signed 32-bit range, and long long outside it in C99 onward. Floating literals infer double and C character literals infer int. C++17 additionally permits auto inference. No typeof extension is emitted. No short type aliases are provided; use C types or typedefs from headers.
+</p>
+</article>
+<article class="c20" id="controls">
+<div class="c21">03 · CONTROL</div>
+<h3>Compact declarations and word controls</h3>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">f sum(a: *int, n: int) int
+  total := 0
+  for i := 0; i &lt; n; i++
+    if a[i] &lt; 0
+      ^
+    elif a[i] == 0
+      !
+    else
+      total += a[i]
+  while total &gt; 10
+    total--
+  &lt; total</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">int sum(int *a, int n) {
+    int total = 0;
+    for (int i = 0; i &lt; n; i++) {
+        if (a[i] &lt; 0) {
+            continue;
+        } else if (a[i] == 0) {
+            break;
+        } else {
+            total += a[i];
+        }
+    }
+    while (total &gt; 10) {
+        total--;
+    }
+    return total;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<div class="c24">
+<table class="c25">
+<thead>
+<tr>
+<th>Syntax</th>
+<th>C translation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>f name T</code> / <code>f name(args) T</code></td>
+<td>Function with optional return type</td>
+</tr>
+<tr>
+<td><code>int x,y,z</code></td>
+<td>Shared C parameter type</td>
+</tr>
+<tr>
+<td>final value expression</td>
+<td>Implicit return in non-void functions</td>
+</tr>
+<tr>
+<td><code>s Name</code> / <code>u Name</code> / <code>e Name</code></td>
+<td>Struct / union / enum with a typedef</td>
+</tr>
+<tr>
+<td><code>name := literal</code></td>
+<td>Declaration with literal-derived C type</td>
+</tr>
+<tr>
+<td><code>name: CType = expression</code></td>
+<td>Explicit C declaration</td>
+</tr>
+<tr>
+<td><code>&lt; expression</code> / <code>&lt;</code></td>
+<td>Early value return / void return</td>
+</tr>
+<tr>
+<td><code>if condition</code> / <code>elif condition</code> / <code>else</code></td>
+<td>if / else if / else</td>
+</tr>
+<tr>
+<td><code>while condition</code></td>
+<td>while</td>
+</tr>
+<tr>
+<td><code>for init; condition; step</code></td>
+<td>for</td>
+</tr>
+<tr>
+<td><code>!</code> / <code>^</code></td>
+<td>break / continue</td>
+</tr>
+<tr>
+<td><code>+stdio,stdlib</code> / <code>+&lt;header.h&gt;,"local.h"</code></td>
+<td>Multiple C includes; bare names add .h</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>
+Indentation uses spaces. A body must be deeper than its header, siblings align, and dedents must match an enclosing level. Canonical formatting uses two spaces. Missing, empty or inconsistently indented bodies are rejected. Runtime branches match an if at the same indentation. Block colons and inline then spellings are not part of v1. C expressions retain C operator spelling, precedence and evaluation rules: !x, !!x, ~x, a^b, a?b:c and x=y are expressions. Only a standalone <code>!</code> or <code>^</code> is a loop-control statement; <code>!x</code> and <code>a^b</code> remain C expressions. Outer parentheses around control headers are rejected.
+</p>
+</article>
+<article class="c20" id="records">
+<div class="c21">04 · RECORDS</div>
+<h3>Structs, unions and enums</h3>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">s Point
+  x,y: double
+u Number
+  i: int
+  d: double
+e Color red,green=5,blue
+f main()
+  Point p={1,2}
+  Number n
+  n.i=3
+  &lt; p.x+p.y != n.i || blue != 6</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">typedef struct Point Point;
+struct Point {
+    double x,y;
+};
+
+typedef union Number Number;
+union Number {
+    int i;
+    double d;
+};
+
+typedef enum {
+    red,
+    green=5,
+    blue
+} Color;
+
+int main(void) {
+    Point p={1,2};
+    Number n;
+    n.i=3;
+    return p.x+p.y != n.i || blue != 6;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p>
+Types are C types, without header parsing. Named type positions also accept prefix pointers, for example <code>next: *Node</code>. Complex declarators, arrays, function pointers and attributes use exact C declarations or raw C. Grouped named fields are supported; initialized local declarations require one name to avoid duplicated evaluation.
+</p>
+</article>
+<article class="c20" id="preprocessor">
+<div class="c21">05 · PREPROCESSOR</div>
+<h3>C preprocessing</h3>
+<p>
+Preprocessor sigils emit directives for the C preprocessor; NanoC never evaluates their conditions. Indentation closes conditional chains with endif, with no C braces. A lone colon is exclusively a preprocessor else. Runtime else uses the word else.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">+ &lt;stdio.h&gt;
+?+ _WIN32
+  $ PLATFORM = "Windows"
+:# defined(__linux__)
+  $ PLATFORM = "Linux"
+:
+  $ PLATFORM = "Other"
+f main()
+  puts(PLATFORM)
+  &lt; 0</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#ifdef _WIN32
+#define PLATFORM "Windows"
+#elif defined(__linux__)
+#define PLATFORM "Linux"
+#else
+#define PLATFORM "Other"
+#endif
+
+int main(void) {
+    puts(PLATFORM);
+    return 0;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<div class="c24">
+<table class="c25">
+<thead>
+<tr>
+<th>Syntax</th>
+<th>C directive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>?+ NAME</code></td>
+<td>ifdef NAME</td>
+</tr>
+<tr>
+<td><code>?- NAME</code></td>
+<td>ifndef NAME</td>
+</tr>
+<tr>
+<td><code>?# expression</code></td>
+<td>if expression</td>
+</tr>
+<tr>
+<td><code>:# expression</code></td>
+<td>elif expression</td>
+</tr>
+<tr>
+<td><code>:</code></td>
+<td>else in a preprocessor chain</td>
+</tr>
+<tr>
+<td>Dedent after a chain</td>
+<td>endif</td>
+</tr>
+<tr>
+<td><code>$ NAME = replacement</code></td>
+<td>define NAME replacement</td>
+</tr>
+<tr>
+<td><code>$ NAME(args) = replacement</code></td>
+<td>Function-like define; keep NAME and ( adjacent</td>
+</tr>
+<tr>
+<td><code>$- NAME</code></td>
+<td>undef NAME</td>
+</tr>
+<tr>
+<td><code>+ &lt;header.h&gt;</code> / <code>+ "local.h"</code></td>
+<td>include</td>
+</tr>
+<tr>
+<td><code>!! "message"</code></td>
+<td>error; adjacent exclamation marks and a string literal</td>
+</tr>
+<tr>
+<td><code>$! payload</code></td>
+<td>pragma payload; support depends on the C compiler</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>
+Conditions can nest at file scope or inside functions, mixing with runtime blocks. Declarations may differ between configurations. Directive ordering, # stringification and ## token pasting are retained. Use raw C for multiline replacement lists, unusual include operands or configurations with different brace structure. Test each configuration you ship. NanoC expands macros and TT in every preprocessor branch, even <code>?# 0</code>, before the C preprocessor runs. Use C macros for C-configuration-dependent definitions.
+</p>
+</article>
+<article class="c20" id="raw">
+<div class="c21">06 · RAW</div>
+<h3>C interoperability</h3>
+<p>
+C headers, libraries, functions, pointers, arrays, structs, unions, enums, typedefs, function pointers and platform APIs remain available. Includes do not require NanoC to parse the declarations in a header. Link through the C compiler's normal flags, for example <code>nanoc build main.nc --cflag -lm</code>. C++17 remains a secondary output target, with no additional NanoC C++ type subsystem.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">+ &lt;stdlib.h&gt;
+f main()
+  ptr: void * = malloc(128)
+  if ptr == NULL
+    &lt; 1
+  free(ptr)
+  &lt; 0</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+
+int main(void) {
+    void *ptr = malloc(128);
+    if (ptr == NULL) {
+        return 1;
+    }
+    free(ptr);
+    return 0;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p>
+<code>@c</code> consumes a balanced braced island, an indented island, or a quoted C source string. The payload bypasses NanoC expansion and output reformatting. Indented and quoted islands can represent preprocessing alternatives whose physical braces do not balance; braced islands require balanced delimiters. Assembly inside raw C is the C compiler's responsibility. Dedicated NanoC @asm and @bt produce removal diagnostics. Raw C is not portable merely because NanoC can pass it through.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">@c {
+  static int apply(int (*fn)(int), int x) { return fn(x); }
+}
+f twice(x: int) int
+  &lt; x*2
+f main()
+  int (*fn)(int)=twice
+  &lt; apply(fn,21)!=42</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">
+  static int apply(int (*fn)(int), int x) { return fn(x); }
+
+int twice(int x) {
+    return x*2;
+}
+
+int main(void) {
+    int (*fn)(int)=twice;
+    return apply(fn,21)!=42;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+</article>
+<article class="c20" id="macros">
+<div class="c21">07 · MACROS</div>
+<h3>NanoC templates</h3>
+<p>
+<code>@m</code> transforms NanoC tokens; it is separate from emitted <code>$</code> C preprocessor definitions. Captures use <code>$name</code>; typed capture kinds include ident, tokens and block. Variadic captures use <code>...</code>; repetition uses <code>$(...)*</code> and optional separators. <code>$fresh(name)</code> creates deterministic unique identifiers. Macro expansion does not promise to evaluate arguments once: that is the macro author's responsibility.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">@m identity($x)
+  ($x)
+@m getter($name,$field)
+  f $name(p: *Point) int
+    &lt; p-&gt;$field
+s Point
+  x: int
+@getter(get_x,x)
+f main()
+  Point p={42}
+  &lt; @identity(get_x(&amp;p))!=42</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">typedef struct Point Point;
+struct Point {
+    int x;
+};
+
+int get_x(Point *p) {
+    return p-&gt;x;
+}
+
+int main(void) {
+    Point p={42};
+    return (get_x(&amp;p)) !=42;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p>
+An executable macro uses <code>@m name($x) =</code> followed by an indented translate-time program. Use quote, emit, token inspection and existing transformations for library abstractions. No defer, ownership or container runtime is built in. Escape a literal dollar through <code>$$</code> inside a template, so C macro definitions can be generated.
+</p>
+</article>
+<article class="c20" id="tt">
+<div class="c21">08 · TRANSLATE</div>
+<h3>Translate-time generation</h3>
+<p>
+<code>@tt</code> runs translate-time programs before C is emitted. Use dynamic values, functions, lists, strings, quote and emit, or transform source with rewrite and again. Native TT can read and write files, create directories, remove files, and execute host programs: <code>run(argv[,cwd])</code> returns [status,stdout,stderr], <code>exec(argv[,cwd])</code> returns stdout or fails, and <code>sh(command)</code> runs a shell. <code>eval(read(path))</code> loads a TT library. The browser supports pure transformations and context information; host commands and filesystem operations require the native compiler.
+</p>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">@tt
+  f square(n) = n*n
+  values:=[]
+  for i range(4)
+    values=push(values,str(square(i)))
+  emit("static const int squares[]={"+join(values,",")+"};")
+f main()
+  &lt; squares[3]!=9</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">static const int squares[]={0,1,4,9};
+
+int main(void) {
+    return squares[3]!=9;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p>
+The pipeline expands until stable. rewrite replaces source; again requests another cycle. Defaults bound steps, cycles, nesting and output. <code>--max-steps 0 --max-passes 0</code> disables count limits. Native TT executes with the compiler process permissions. <code>--check</code> evaluates pure TT and rejects host writes or commands, including calls reached through eval or macros.
+</p>
+<div class="c24">
+<table class="c25">
+<thead>
+<tr>
+<th>TT function</th>
+<th>Information</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cycle()</code></td>
+<td>Current one-based expansion cycle</td>
+</tr>
+<tr>
+<td><code>line()</code></td>
+<td>Source line of the TT call</td>
+</tr>
+<tr>
+<td><code>file()</code></td>
+<td>Input file spelling</td>
+</tr>
+<tr>
+<td><code>path()</code></td>
+<td>Resolved input path when available</td>
+</tr>
+<tr>
+<td><code>name()</code></td>
+<td>Enclosing runtime function name, or empty at file scope</td>
+</tr>
+<tr>
+<td><code>target()</code></td>
+<td>Selected C standard or c++17</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="c22">
+<div>
+<b>NanoC</b>
+<div class="c14" data-j="0">
+<pre><code class="language-nanoc">f answer int
+  @tt
+    assert(name()=="answer")
+    assert(cycle()&gt;=1)
+    log(file()+":"+str(line()))
+  42
+f main
+  answer()!=42</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<b>Generated C</b>
+<div class="c14" data-j="0">
+<pre><code class="language-c">int answer(void) {
+    return 42;
+}
+
+int main(void) {
+    return answer()!=42;
+}</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+</article>
+<article class="c20" id="output">
+<div class="c21">09 · OUTPUT</div>
+<h3>Emission, tools and portability</h3>
+<p>
+<code>nanoc emit file.nc --to c -o file.c</code> writes deterministic readable C; --emit mini compacts non-raw C. <code>--line-directives</code> emits C #line markers where available. C diagnostics can refer to NanoC source, but this is not a guarantee of debugger compatibility. <code>--check</code> validates expansion only; compile and execute tests separately.
+</p>
+<p>
+<code>--std c89|c99|c11|c17</code> selects output restrictions. C89 lowers for initializers into an enclosing scope; inferred long long and unsupported literal forms are rejected. General C source still must obey the selected standard, including mixed-declaration restrictions. Raw C is never silently rewritten to downlevel it. GCC and Clang integration tests cover representative portable programs; universal C implementation support is not claimed.
+</p>
+<p>
+<code>expand file.nc --json</code> exports compiler operation events, parent IDs, pass numbers, source ranges, captures, generated identifiers and TT results. <code>emit file.nc --map file.map.json</code> adds actual final C byte ranges. <code>explain file.nc --line N</code>, --symbol NAME or --generated-offset BYTE filters records. Source coordinates and offsets count UTF-8 bytes. Synthetic expansion positions refer to generated fragments; follow parent relationships to original source. This is operation provenance, not character-perfect macro reconstruction.
+</p>
+<p>
+<code>fmt file.nc</code>, --write and --check perform lexical canonical indentation without executing TT. <code>tokens file.nc --json</code> reports lexical tokens; --encoding requires optional pinned tiktoken tooling and reports actual text token counts. <code>convert file.c --to nanoc --conservative</code> produces an opaque raw C island without dependencies. --compact optionally uses Clang ASTs and preserves unsupported or configuration-sensitive constructs as raw C. It does not restore original formatting or recover former macro abstractions.
+</p>
+</article>
+</div>
+</div>
+</section>
+<section class="c16" id="install">
+<p class="c8">Install in one line</p>
+<h2>Works on any <em>anything.</em></h2>
+<div class="c26">
+<div>
+<h4>Install</h4>
+<div class="c14" data-j="0">
+<pre><code class="language-bash">git clone --depth 1 https://github.com/mkalmousli/NanoC &amp;&amp; cd NanoC &amp;&amp; cc -std=c11 -O2 build.c -o builder &amp;&amp; ./builder install</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+<div>
+<h4>Update</h4>
+<div class="c14" data-j="0">
+<pre><code class="language-bash">nanoc update</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+<p class="c27">Fetches the latest source, rebuilds and reinstalls.</p>
+</div>
+<div>
+<h4>Uninstall</h4>
+<div class="c14" data-j="0">
+<pre><code class="language-bash">nanoc uninstall</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+<p class="c27">Asks first. <code>nanoc uninstall --yes</code> skips the prompt.</p>
+</div>
+<div>
+<h4>Editors</h4>
+<div class="c14" data-j="0">
+<pre><code class="language-bash">nanoc editor list
+nanoc editor install vim</code></pre>
+<button class="c15" data-j="1" type="button">Copy</button>
+</div>
+</div>
+</div>
+<p class="c27">Needs git and a C11 compiler (<code>cc</code>, <code>gcc</code> or <code>clang</code>). Installs to <code>~/.local</code> by default; <code>--prefix DIR</code> changes it, <code>--no-editors</code> skips editor setup. Installs only the files it creates.</p>
+</section>
+</main>
+<footer class="c28">
+<div class="c29">
+<a class="c4" href="index.html">
+<img src="logo.svg" width="22" height="22" alt="">
+NanoC
+</a>
+<span>Compact source. Ordinary C. Free and open source. This page was assembled by NanoC (2026-11-07).</span>
+<a href="https://github.com/mkalmousli/NanoC">github.com/mkalmousli/NanoC</a>
+</div></footer></body></html>

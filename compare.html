@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NanoC vs C: side by side</title>
+<meta name="description" content="The same program in NanoC and the C the compiler generates from it, with line and byte counts.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="compare.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+<script class="c0" src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-clike.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-c.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js" defer></script>
+<script src="compare.js" defer></script>
+</head>
+<body class="c1">
+<header class="c2">
+<div class="c3">
+<a class="c4" href="index.html">
+<img src="logo.svg" width="26" height="26" alt="">
+NanoC
+</a>
+<nav class="c5">
+<a href="play.html"><b style="color:var(--lime)">Playground</b></a>
+<a href="compare.html">Compare</a>
+<a href="index.html#guide">Guide</a>
+<a href="index.html#install">Install</a>
+</nav>
+<a class="c6" href="https://github.com/mkalmousli/NanoC">GitHub ↗</a>
+</div>
+</header>
+<main class="c7" data-j="0">
+<p class="c8">Compare</p>
+<h1>Same program, two languages</h1>
+<p>Each example is compiled by the real NanoC compiler on every site build. Left is the NanoC you write; right is the C it generates. Nothing here is hand-edited.</p>
+<div class="c9">
+<div data-a="tabs" role="tablist"></div>
+<div data-a="stats"></div>
+</div>
+<div class="c10">
+<section class="c11">
+<header>
+<span>NanoC <small>(what you write)</small></span>
+<span>
+<button class="c12" data-a="copyNc" type="button">Copy</button>
+</span>
+</header>
+<pre class="c13"><code class="language-nanoc" data-a="ncCode"></code></pre>
+</section>
+<section class="c11">
+<header>
+<span>C <small>(what cc builds)</small></span>
+<span>
+<button class="c12" data-a="copyC" type="button">Copy</button>
+</span>
+</header>
+<pre class="c13"><code class="language-c" data-a="cCode"></code></pre>
+</section>
+</div>
+<p class="c14"><a href="play.html">Edit any of these live in the playground →</a> Or build one yourself: <code>nanoc examples/hello.nc -o out.c &amp;&amp; cc out.c -o hello</code></p>
+<p class="c15" data-a="error" hidden></p>
+</main>
+<footer class="c16">
+<div class="c17">
+<a class="c4" href="index.html">
+<img src="logo.svg" width="22" height="22" alt="">
+NanoC
+</a>
+<span>Compact source. Ordinary C. Free and open source. This page was assembled by NanoC (2026-11-07).</span>
+<a href="https://github.com/mkalmousli/NanoC">github.com/mkalmousli/NanoC</a>
+</div></footer></body></html>
