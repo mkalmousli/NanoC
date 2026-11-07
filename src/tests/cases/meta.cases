@@ -2,8 +2,10 @@ suite templates, source libraries, captures, quoting and bounded source transfor
 case token macros
   nanoc
     @m twice($x) { (($x)*2) }
-    f add(int a, int b) -> int = a+b
-    f main() -> int = @twice(add(2,3))!=10
+    f add(int a, int b) int
+      < a+b
+    f main()
+      < @twice(add(2,3))!=10
 case executable variadic macros
   nanoc
     @m enums($prefix:ident,$items...) =
@@ -13,7 +15,8 @@ case executable variadic macros
         emit(quote(enum { $n=$v };))
     @enums(value,2,3,5)
     @m id($x) = quote($x)
-    f main() -> int = @id(value2)!=5
+    f main()
+      < @id(value2)!=5
 case CT libraries and collections
   nanoc
     @ct
@@ -21,9 +24,9 @@ case CT libraries and collections
       total:=0
       for i range(10)
         if i==1
-          continue
+          ^
         if i==5
-          break
+          !
         total+=square(i)
       assert(total==29)
       xs:=push(split("a,b,c",","),"d")
@@ -32,7 +35,8 @@ case CT libraries and collections
       eval("f triple(x) = x*3")
       assert(triple(14)==42)
       emit(quote(enum { total=$total };))
-    f main() -> int = total!=29
+    f main()
+      < total!=29
 case source rewriting
   nanoc
     @m id($x) { $x }
@@ -40,32 +44,37 @@ case source rewriting
       key:="PLACE"+"HOLDER"
       if contains(source(),key)
         rewrite(replace(source(),key,"41"))
-    f main() -> int = @id(PLACEHOLDER)!=41
+    f main()
+      < @id(PLACEHOLDER)!=41
 case repeated passes
   nanoc
     @ct {n:=get("n",0);put("n",n+1);if(n<2){again();}emit(quote(enum {n=$n};));}
-    f main() -> int = n!=2
+    f main()
+      < n!=2
 case token aware rename
   nanoc
     @ct {rewrite(rename(source(),"old","renamed"));}
-    int old=42; const char *message="old"; // old stays in comments
-    f main() -> int = renamed!=42 || message[0]!='o'
+    int old=42;
+    const char *message="old";
+    // old stays in comments
+    f main()
+      < renamed!=42 || message[0]!='o'
 case local compile time generation
   nanoc
-    f main() -> int
+    f main()
       @ct
         f square(x) = x*x
         n:=square(7)
         emit(quote(int n=$n;))
       @m finish($x)
-        return $x
+        < $x
       @finish(n!=49)
 reject pass limit
   nanoc
     @ct {again();}
 reject loop control
   nanoc
-    @ct {break;}
+    @ct {!;}
 reject slice bounds
   nanoc
     @ct {slice("x",-1);}

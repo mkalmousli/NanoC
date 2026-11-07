@@ -5,7 +5,7 @@
 
 + <errno.h>
 // Prints a process result with stable stage and status fields.
-f nc_process_json(FILE *out, const char *stage, NcProcess process) -> void
+f nc_process_json(FILE *out, const char *stage, NcProcess process)
   NcJson w
   jw_start(&w, out)
   jw_open(&w, '{')
@@ -19,91 +19,91 @@ f nc_process_json(FILE *out, const char *stage, NcProcess process) -> void
   fputc('\n', out)
 
 // Locates optional tools without executing project-provided configuration.
-f nc_optional_tool(NcContext *c, const char *name) -> char *
+f nc_optional_tool(NcContext *c, const char *name) char *
   const char *tool_root = getenv("NANOC_TOOLS")
   struct stat st
   if tool_root
     char *path = nc_format(c, "%s/%s", tool_root, name)
     if !stat(path, &st)
-      return path
+      < path
   else
     char prefix[PATH_MAX]
     if c->executable && nc_prefix(c->executable, prefix)
       char *installed = nc_format(c, "%s/share/nanoc/tools/%s", prefix, name)
       if !stat(installed, &st)
-        return installed
+        < installed
       char *development = nc_format(c, "%s/tools/%s", prefix, name)
       if !stat(development, &st)
-        return development
+        < development
   c->next_error_code = "NC_CAPABILITY"
   nc_fail(c, 0, "optional tool unavailable: %s; install it or set NANOC_TOOLS", name)
-  return NULL
+  < NULL
 
 // Chooses only an explicit interpreter or the platform's standard Python executable.
-f nc_python(void) -> const char *
+f nc_python(void) const char *
   const char *configured = getenv("NANOC_PYTHON")
   if configured && *configured
-    return configured
+    < configured
   #ifdef _WIN32
-  return "python"
+  < "python"
   #else
-  return "python3"
+  < "python3"
   #endif
 
 // Runs conservative conversion entirely in the compiler; compact conversion invokes optional Clang tooling.
-f nc_convert_command(NcContext *c, int argc, const char * *argv) -> int
+f nc_convert_command(NcContext *c, int argc, const char * *argv) int
   const char * input = NULL
   const char * output = "-"
   bool compact = 0
   NcStrings extra = {0}
-  for (int i = 2; i < argc; ++i)
-    if (!strcmp(argv[i], "--compact"))
+  for int i = 2; i < argc; ++i
+    if !strcmp(argv[i], "--compact")
       compact = 1
-    elif (!strcmp(argv[i], "--conservative"))
+    elif !strcmp(argv[i], "--conservative")
       compact = 0
-    elif (!strcmp(argv[i], "--to"))
-      if (++i == argc || strcmp(argv[i], "nanoc"))
+    elif !strcmp(argv[i], "--to")
+      if ++i == argc || strcmp(argv[i], "nanoc")
         nc_fail(c, 0, "convert --to requires nanoc")
-    elif (!strcmp(argv[i], "-o"))
-      if (++i == argc)
+    elif !strcmp(argv[i], "-o")
+      if ++i == argc
         nc_fail(c, 0, "missing output path")
       output = argv[i]
-    elif (!strcmp(argv[i], "--"))
-      while (++i < argc)
+    elif !strcmp(argv[i], "--")
+      while ++i < argc
         NC_PUSH(c, extra, (char *)argv[i])
-    elif (!input)
+    elif !input
       input = argv[i]
     else
       nc_fail(c, 0, "unexpected conversion argument: %s", argv[i])
-  if (!input)
+  if !input
     nc_fail(c, 0, "convert requires a C input file")
   c->file = input
   char *text
-  if (compact)
+  if compact
     NcStrings args = {0}
     NC_PUSH(c, args, (char *)nc_python())
     NC_PUSH(c, args, nc_optional_tool(c, "nanoc_convert.py"))
     NC_PUSH(c, args, (char *)input)
     NC_PUSH(c, args, "--compact")
-    for (size_t i = 0; i < extra.n; ++i)
+    for size_t i = 0; i < extra.n; ++i
       NC_PUSH(c, args, extra.v[i])
     NC_PUSH(c, args, NULL)
     NcProcess result = nc_process(c, (const char * *)args.v)
-    if (*result.err)
+    if *result.err
       fputs(result.err, stderr)
-    if (result.status)
-      return result.status
+    if result.status
+      < result.status
     text = (char *)result.out
   else
     text = nc_format(c, "@c %s\n", nc_quote(c, nc_read(c, input)))
-  if (!strcmp(output, "-"))
+  if !strcmp(output, "-")
     fputs(text, stdout)
   else
     nc_write(c, output, text)
-  return 0
+  < 0
 
 // Invokes optional reproducible wall-time measurements with the exact current compiler executable.
-f nc_bench_command(NcContext *c,int argc,const char **argv) -> int
+f nc_bench_command(NcContext *c,int argc,const char **argv) int
   if argc<3
     nc_fail(c,0,"bench requires an input file")
   NcStrings args={0}
@@ -117,4 +117,4 @@ f nc_bench_command(NcContext *c,int argc,const char **argv) -> int
   NcProcess result=nc_process(c,(const char **)args.v)
   fputs(result.out,stdout)
   fputs(result.err,stderr)
-  return result.status
+  < result.status

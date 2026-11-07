@@ -13,7 +13,7 @@ try:
     import tiktoken
     version=importlib.metadata.version('tiktoken')
     if version!='0.8.0':
-        raise RuntimeError('tiktoken==0.8.0 is required; install research/requirements.lock')
+        raise RuntimeError('tiktoken==0.8.0 is required; install tiktoken==0.8.0')
     result={'schemaVersion':1,'ok':True,'tokenizer':'tiktoken','version':version,'encoding':a.encoding,'scope':'file text; excludes chat protocol and hidden prompts'}
     if not a.capabilities:
         if not a.input:raise RuntimeError('a UTF-8 input file is required')

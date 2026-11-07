@@ -6,9 +6,9 @@
 // Rest of the current line as tokens, up to a newline.
 static NcTokens rest_of_line(NcCursor *c) {
     NcTokens ts = {0};
-    while ((c->pos < c->ts.n)) {
+    while (c->pos < c->ts.n) {
         NcToken t = c->ts.v[c->pos];
-        if ((t.kind == NC_SPACE && memchr(t.s, '\n', t.n))) {
+        if (t.kind == NC_SPACE && memchr(t.s, '\n', t.n)) {
             break;
         }
         NC_PUSH(c->ctx, ts, t);
@@ -21,15 +21,15 @@ static NcTokens rest_of_line(NcCursor *c) {
 static char *field_text(NcContext *ctx, NcTokens ts) {
     NcGroups parts = nc_split(ctx, ts, ":");
     char *text = nc_trim(ctx, nc_join(ctx, ts));
-    if ((parts.n != 2)) {
+    if (parts.n != 2) {
         return *text ? nc_format(ctx, "%s;", nc_trim(ctx, nc_join(ctx, ts))) : "";
     }
     char *type = nc_trim(ctx, nc_join(ctx, parts.v[1])), *stars = nc_format(ctx, "");
-    while ((*type == '*')) {
+    while (*type == '*') {
         stars = nc_format(ctx, "%s*", stars);
         ++type;
     }
-    if ((*stars || strchr(type, '*'))) {
+    if (*stars || strchr(type, '*')) {
         return nc_format(ctx, "%s;", nc_typed(ctx, ts, 1));
     }
     NcGroups names = nc_split(ctx, parts.v[0], ",");
@@ -45,7 +45,7 @@ static char *field_text(NcContext *ctx, NcTokens ts) {
 // Field declarations of an @s/@u record, from the header line or its indented body.
 static char *record_fields(NcContext *ctx, NcCursor *c, NcHeader h, NcTokens head) {
     NcBuffer out = {0};
-    if ((head.n)) {
+    if (head.n) {
         NcGroups fs = nc_split(ctx, head, ";");
         for (size_t i = (0), nanoc_bound_2 = (fs.n); i < nanoc_bound_2; ++i) {
             nc_add(ctx, &out, field_text(ctx, fs.v[i]));
@@ -63,14 +63,14 @@ static char *record_fields(NcContext *ctx, NcCursor *c, NcHeader h, NcTokens hea
 char *nc_record(NcContext *ctx, NcCursor *c, char kind) {
     NcHeader h = nc_header(c);
     char *name = nc_name(c);
-    if ((ctx->tracing && ctx->trace_parent)) {
+    if (ctx->tracing && ctx->trace_parent) {
         ctx->traces.v[ctx->trace_parent - 1].name = name;
         ctx->traces.v[ctx->trace_parent - 1].rule = kind == 's' ? "struct" : kind == 'u' ? "union" : "enum";
     }
     NcTokens head = rest_of_line(c);
-    if ((kind == 'e')) {
+    if (kind == 'e') {
         NcBuffer items = {0};
-        if ((head.n)) {
+        if (head.n) {
             nc_add(ctx, &items, nc_join(ctx, head));
         } else {
             NcLines lines = nc_body_lines(c, h.line, h.indent);

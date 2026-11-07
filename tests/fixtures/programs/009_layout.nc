@@ -1,6 +1,6 @@
 + <stdio.h>
-f greet() -> void
+f greet()
   puts("ok")
-f main() -> int
+f main()
   greet()
-  return 0
+  < 0

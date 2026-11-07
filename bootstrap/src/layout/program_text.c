@@ -6,7 +6,7 @@
 // Lexes program text to tokens.
 NcTokens nc_program_text(NcContext *ctx, const char *text, int line) {
     NcCursor c = {ctx, nc_lex(ctx, text, line), 0};
-    if ((nc_end(&c))) {
+    if (nc_end(&c)) {
         return (NcTokens){0};
     }
     c.pos = 0;

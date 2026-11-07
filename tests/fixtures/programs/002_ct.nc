@@ -9,4 +9,5 @@
     fail("short circuit")
   if true || unknown()
     emit(quote(enum { total=$total };))
-f main() -> int = total != 10
+f main()
+  < total != 10

@@ -15,6 +15,8 @@ maxChars:=1
 for f ex
   src:=read(f)
   r:=run([compiler,f,"-o","build/site-ex.c"])
+  if r[0]!=0
+    fail("Example failed: "+f+"\n"+r[2])
   if r[0]==0
     out:=read("build/site-ex.c")
     nj:=replace(replace(replace(replace(src,"\\","\\\\"),"\"","\\\""),"\t","\\t"),"\n","\\n")

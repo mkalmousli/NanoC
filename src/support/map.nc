@@ -3,63 +3,63 @@
 + "nanoc/nanoc.h"
 
 // Hashes a string (FNV-1a).
-f hash(const char *s) -> static size_t
+f hash(const char *s) static size_t
   size_t h = 2166136261u
-  for (; *s; ++s)
+  for ; *s; ++s
     h = (h ^ (unsigned char)*s) * 16777619u
-  return h
+  < h
 
 // Looks up a key in a map.
-f nc_get(const NcMap *m, const char *key) -> void *
-  if (! m->cap)
-    return NULL
+f nc_get(const NcMap *m, const char *key) void *
+  if ! m->cap
+    < NULL
   size_t i = hash(key) & (m->cap - 1)
-  while (m->v[i].key)
-    if (!strcmp(key, m->v[i].key))
-      return m->v[i].value
+  while m->v[i].key
+    if !strcmp(key, m->v[i].key)
+      < m->v[i].value
     i = (i + 1) & (m->cap - 1)
-  return NULL
+  < NULL
 
 // Tells if the map has the token.
-f nc_has_token(const NcMap *m, NcToken t) -> bool
-  if (! m->cap)
-    return 0
+f nc_has_token(const NcMap *m, NcToken t) bool
+  if ! m->cap
+    < 0
   size_t h = 2166136261u
-  for (size_t i = (0), nanoc_bound_1 = (t.n); i < nanoc_bound_1; ++i)
+  for size_t i = (0), nanoc_bound_1 = (t.n); i < nanoc_bound_1; ++i
     h = (h ^ (unsigned char)t.s[i]) * 16777619u
   size_t slot = h & (m->cap - 1)
-  while (m->v[slot].key)
+  while m->v[slot].key
     const char * key = m->v[slot].key
-    if (strlen(key) == t.n && !memcmp(key, t.s, t.n))
-      return 1
+    if strlen(key) == t.n && !memcmp(key, t.s, t.n)
+      < 1
     slot = (slot + 1) & (m->cap - 1)
-  return 0
+  < 0
 
 // Stores a key in a map.
-f nc_put(NcContext *c, NcMap *m, const char *key, void *value) -> void
-  if (!m->cap || m->n >= m->cap / 2)
+f nc_put(NcContext *c, NcMap *m, const char *key, void *value)
+  if !m->cap || m->n >= m->cap / 2
     NcMap old = *m
     m->cap = old.cap ? old.cap * 2 : 16
     m->v = nc_alloc(c, m->cap * sizeof *m->v)
     m->n = 0
-    for (size_t i = (0), nanoc_bound_2 = (old.cap); i < nanoc_bound_2; ++i)
-      if (old.v[i].key)
+    for size_t i = (0), nanoc_bound_2 = (old.cap); i < nanoc_bound_2; ++i
+      if old.v[i].key
         nc_put(c, m, old.v[i].key, old.v[i].value)
   size_t i = hash(key) & (m->cap - 1)
-  while (m->v[i].key && strcmp(m->v[i].key, key))
+  while m->v[i].key && strcmp(m->v[i].key, key)
     i = (i + 1) & (m->cap - 1)
-  if (!m->v[i].key)
+  if !m->v[i].key
     ++m->n
   m->v[i] = (NcEntry){key, value}
 
 // Makes an unused name.
-f nc_fresh(NcContext *c, const char *hint) -> char *
+f nc_fresh(NcContext *c, const char *hint) char *
   char *name
-  while (1)
+  while 1
     name = nc_format(c, "nanoc_%s_%zu", hint, ++c->serial)
-    if (!(nc_get(&c->names, name)))
-      break
+    if !(nc_get(&c->names, name))
+      !
   nc_put(c, &c->names, name, (void *)1)
-  if (c->tracing && c->trace_parent)
+  if c->tracing && c->trace_parent
     NC_PUSH(c, c->traces.v[c->trace_parent - 1].identifiers, name)
-  return name
+  < name

@@ -3,37 +3,37 @@
 + <time.h>
 + <errno.h>
 
-f seconds(struct timespec start) -> static double
+f seconds(struct timespec start) static double
   struct timespec end
   CHECK(clock_gettime(CLOCK_MONOTONIC, &end) == 0)
-  return  (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_nsec - start.tv_nsec) / 1e9
+  <  (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_nsec - start.tv_nsec) / 1e9
 
-f translation_size(const char *source, const char *file) -> static size_t
+f translation_size(const char *source, const char *file) static size_t
   NcContext *c = calloc(1, sizeof *c)
   CHECK(c != NULL)
   nc_init(c, file)
-  if (setjmp(c->trap))
+  if setjmp(c->trap)
     fprintf(stderr, "%s\n", c->error)
     exit(1)
   size_t size = strlen(nc_transpile(c, source))
   nc_dispose(c)
   free(c)
-  return  size
+  <  size
 
-f test_benchmark(void) -> void
+f test_benchmark(void)
   CHECK(mkdir("build/bench-data", 0755) == 0 || errno == EEXIST)
   NcBuffer results = {0}
-  const char *cases[] = {"plain", "expression", "indentation", "macros", "raw"}
+  const char *cases[] = {"plain", "functions", "controls", "macros", "raw"}
   const char *header = "case,input bytes,output bytes,warm MiB/s,process ms,process peak RSS KiB\n"
   fputs(header, stdout)
   nc_add(test_state.mem, &results, header)
-  for (size_t k = 0; k < 5; ++k)
+  for size_t k = 0; k < 5; ++k
     NcBuffer source = {0}
-    if (k == 3)
+    if k == 3
       nc_add(test_state.mem, &source, "@m twice($x:tokens){(($x)+($x))}\n")
-    for (int i = 0; i < 10000; ++i)
-      const char *formats[] = {"int h%d(int x){return x+%d;}\n", "f h%d(x:int) -> int = x+%d\n",
-              "f h%d(x:int) -> int\n  return x+%d\n", "int h%d(int x){return @twice(x+%d);}\n",
+    for int i = 0; i < 10000; ++i
+      const char *formats[] = {"int h%d(int x){return x+%d;}\n", "f h%d(x:int) int\n  < x+%d\n",
+              "f h%d(x:int) int\n  if x>=0\n    < x+%d\n  < x\n", "int h%d(int x){return @twice(x+%d);}\n",
               "@c { int h%d(int x) { return x+%d; } }\n"}
       nc_printf(test_state.mem, &source, formats[k], i, i)
     size_t size = 0
@@ -42,7 +42,7 @@ f test_benchmark(void) -> void
     (void)translation_size(source.v, input)
     struct timespec start
     CHECK(clock_gettime(CLOCK_MONOTONIC, &start) == 0)
-    for (int round = 0; round < 5; ++round)
+    for int round = 0; round < 5; ++round
       size = translation_size(source.v, input)
     double warm = seconds(start)
     test_write(input, source.v)
@@ -60,7 +60,7 @@ f test_benchmark(void) -> void
   struct timespec start
   CHECK(clock_gettime(CLOCK_MONOTONIC, &start) == 0)
   const char *version[] = {"build/nanoc", "--version", NULL}
-  for (int i = 0; i < 20; ++i)
+  for int i = 0; i < 20; ++i
     (void)test_command(version)
   printf("Average startup (20 launches): %.2f ms\n", seconds(start) * 1000 / 20)
   test_write("build/bench-data/results.csv", results.v)

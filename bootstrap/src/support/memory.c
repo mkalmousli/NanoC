@@ -21,33 +21,33 @@ void nc_init(NcContext *c, const char *file) {
 // Allocates tracked memory.
 void *nc_alloc(NcContext *c, size_t size) {
     size_t align = _Alignof(max_align_t);
-    if ((size > SIZE_MAX - align)) {
+    if (size > SIZE_MAX - align) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     size = (size + align - 1) / align * align;
-    if ((! size)) {
+    if (! size) {
         size = align;
     }
     NcAllocation *p = c->allocations;
-    if ((p && size <= p->capacity - p->used)) {
+    if (p && size <= p->capacity - p->used) {
         void *data = (unsigned char *)(p + 1) + p->used;
         p->used += size;
         return data;
     }
     size_t capacity = size > 65536 ? size : 65536;
-    if ((capacity > SIZE_MAX - sizeof *p)) {
+    if (capacity > SIZE_MAX - sizeof *p) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     size_t charged = capacity + sizeof *p;
     size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128;
-    if ((limit < 1024 * 1024)) {
+    if (limit < 1024 * 1024) {
         limit = 1024 * 1024;
     }
-    if ((charged > limit || c->allocated > limit - charged)) {
+    if (charged > limit || c->allocated > limit - charged) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     p = calloc(1, charged);
-    if ((! p)) {
+    if (! p) {
         nc_fail(c, 0, "out of memory");
     }
     p->next = c->allocations;
@@ -60,7 +60,7 @@ void *nc_alloc(NcContext *c, size_t size) {
 
 // Frees all tracked memory.
 void nc_dispose(NcContext *c) {
-    while ((c->allocations)) {
+    while (c->allocations) {
         NcAllocation *p = c->allocations;
         c->allocations = p->next;
         free(p);
@@ -70,11 +70,11 @@ void nc_dispose(NcContext *c) {
 // Grows an array by one.
 void *nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) {
     size_t next = *cap ? *cap * 2 : 8;
-    if ((next < *cap || next > SIZE_MAX / width)) {
+    if (next < *cap || next > SIZE_MAX / width) {
         nc_fail(c, 0, "allocation limit exceeded");
     }
     void *p = nc_alloc(c, next * width);
-    if ((n)) {
+    if (n) {
         memcpy(p, old, n * width);
     }
     *cap = next;

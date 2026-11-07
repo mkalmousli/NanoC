@@ -3,7 +3,7 @@
 + "nanoc/nanoc.h"
 
 // Writes a source range.
-f nc_span_json(NcJson *w, NcSpan span) -> void
+f nc_span_json(NcJson *w, NcSpan span)
   jw_open(w, '{')
   jw_ki(w, "line", span.line)
   jw_ki(w, "column", span.column)
@@ -12,14 +12,14 @@ f nc_span_json(NcJson *w, NcSpan span) -> void
   jw_close(w, '}')
 
 // Writes an ordered list of text values.
-f nc_trace_strings(NcJson *w, NcStrings values) -> void
+f nc_trace_strings(NcJson *w, NcStrings values)
   jw_open(w, '[')
-  for (size_t i = 0; i < values.n; ++i)
+  for size_t i = 0; i < values.n; ++i
     jw_str(w, values.v[i])
   jw_close(w, ']')
 
 // Exports operations, source ancestry, passes, captures, and exact final output offsets.
-f nc_trace_json(FILE *out, NcContext *c, const char *generated) -> void
+f nc_trace_json(FILE *out, NcContext *c, const char *generated)
   NcJson w
   jw_start(&w, out)
   jw_open(&w, '{')
@@ -31,10 +31,10 @@ f nc_trace_json(FILE *out, NcContext *c, const char *generated) -> void
   nc_trace_strings(&w, c->trace_sources)
   jw_key(&w, "events")
   jw_open(&w, '[')
-  for (size_t i = 0; i < c->traces.n; ++i)
+  for size_t i = 0; i < c->traces.n; ++i
     NcTrace *e = &c->traces.v[i]
-    if (!nc_trace_matches(c, e))
-      continue
+    if !nc_trace_matches(c, e)
+      ^
     jw_open(&w, '{')
     jw_ki(&w, "id", (long)e->id)
     jw_ki(&w, "parent", (long)e->parent)
@@ -45,7 +45,7 @@ f nc_trace_json(FILE *out, NcContext *c, const char *generated) -> void
     jw_key(&w, "source")
     nc_span_json(&w, e->source)
     jw_key(&w, "generated")
-    if (e->start == SIZE_MAX || e->end == SIZE_MAX)
+    if e->start == SIZE_MAX || e->end == SIZE_MAX
       jw_raw(&w, "null")
     else
       jw_open(&w, '{')

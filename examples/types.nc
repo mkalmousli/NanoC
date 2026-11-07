@@ -1,11 +1,12 @@
 + <stdio.h>
-s Pair a,b:int32_t
-f gcd(a: u32, b: u32) -> u32
-  return b ? gcd(b, a % b) : a
-f main() -> int
++ <stdint.h>
++ <inttypes.h>
+s Pair a,b:int
+f gcd(a: unsigned int, b: unsigned int) unsigned int
+  < b ? gcd(b, a % b) : a
+f main()
   p:Pair = {84, 36}
-  small:u8 = 200
-  big:i64 = 1L << 40
+  small:uint8_t = 200
+  big:int64_t = INT64_C(1) << 40
   printf("gcd %d %d = %u\n", p.a, p.b, gcd(p.a, p.b))
-  printf("u8 %u i64 %ld\n", small, (long)big)
-  return 0
+  printf("u8 %u i64 %" PRId64 "\n", (unsigned int)small, big)

@@ -3,7 +3,7 @@
 + "nanoc/nanoc.h"
 
 // Prints the usage text.
-f nc_help(FILE *out) -> void
+f nc_help(FILE *out)
   fputs(
           "NanoC " NC_VERSION " - compact C and C++ transpiler\n" "Usage: nanoc [options] input.nc\n"
           "  emit/check/expand/explain/inspect FILE [--json]\n"

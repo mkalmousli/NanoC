@@ -2,9 +2,9 @@
 @lang 1
 + "studio.h"
 // Refreshes line offsets only after edits, so rendering work depends on visible lines.
-f st_cache(StFile *f) -> void
+f st_cache(StFile *f)
   if f->text && f->cached_revision==f->buffer.revision
-    return
+    <
   free(f->text)
   f->text=st_text(&f->buffer)
   size_t count=1
@@ -24,7 +24,7 @@ f st_cache(StFile *f) -> void
   f->lines[f->line_n]=strlen(f->text)
   f->cached_revision=f->buffer.revision
 // Returns the line containing a byte offset through binary search.
-f st_line(StFile *f,size_t at) -> size_t
+f st_line(StFile *f,size_t at) size_t
   size_t lo=0,hi=f->line_n
   while lo+1<hi
     size_t mid=(lo+hi)/2
@@ -32,16 +32,16 @@ f st_line(StFile *f,size_t at) -> size_t
       lo=mid
     else
       hi=mid
-  return lo
+  < lo
 // Opens an existing text file or an empty untitled buffer, retaining unsaved tabs.
-f st_open(StApp *a,const char *path) -> void
+f st_open(StApp *a,const char *path)
   for int i=0; i<a->count; ++i
     if !strcmp(a->files[i].path,path)
       a->active=i
-      return
+      <
   if a->count==32
     a->message="Tab limit reached (32)"
-    return
+    <
   char *text=FileExists(path) ? LoadFileText(path) : NULL
   StFile *f=&a->files[a->count]
   memset(f,0,sizeof *f)
@@ -54,7 +54,7 @@ f st_open(StApp *a,const char *path) -> void
   a->active=a->count++
   a->focus=0
 // Saves only on an explicit user action, preserving the buffer when saving fails.
-f st_save(StApp *a) -> void
+f st_save(StApp *a)
   StFile *f=&a->files[a->active]
   st_cache(f)
   if SaveFileText(f->path,f->text)
@@ -64,7 +64,7 @@ f st_save(StApp *a) -> void
   else
     a->message="Save failed; buffer retained"
 // Opens a project directory for the explorer without loading project commands.
-f st_project(StApp *a,const char *root) -> void
+f st_project(StApp *a,const char *root)
   char *copy=st_copy(root,strlen(root))
   if a->explorer.paths
     UnloadDirectoryFiles(a->explorer)
@@ -72,12 +72,12 @@ f st_project(StApp *a,const char *root) -> void
   a->root=copy
   a->explorer=LoadDirectoryFilesEx(a->root,NULL,false)
 // Persists paths and appearance; text is always saved separately and explicitly.
-f st_session(StApp *a,bool restore) -> void
+f st_session(StApp *a,bool restore)
   const char *path=".nanoc-studio.session"
   if restore
     char *text=LoadFileText(path)
     if !text
-      return
+      <
     char *p=strchr(text,'\n')
     if p
       a->dark=text[0]!='0'
@@ -85,7 +85,7 @@ f st_session(StApp *a,bool restore) -> void
       for char *line=p+1; *line;
         char *end=strchr(line,'\n')
         if !end
-          break
+          !
         *end=0
         if FileExists(line)
           st_open(a,line)
@@ -103,7 +103,7 @@ f st_session(StApp *a,bool restore) -> void
     nc_dispose(c)
     free(c)
 // Frees all project, compiler and editor resources.
-f st_dispose(StApp *a) -> void
+f st_dispose(StApp *a)
   for int i=0; i<a->count; ++i
     StFile *f=&a->files[i]
     st_free_buffer(&f->buffer)
@@ -118,7 +118,7 @@ f st_dispose(StApp *a) -> void
   if a->explorer.paths
     UnloadDirectoryFiles(a->explorer)
   free(a->root)
-  free(a->benchmark)
+  free(a->reference)
   free(a->build_result)
   free(a->previous)
   free(a->prompt_value)

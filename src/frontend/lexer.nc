@@ -3,66 +3,71 @@
 + "nanoc/nanoc.h"
 
 // Splits text into tokens.
-f nc_lex(NcContext *c, const char *s, int line) -> NcTokens
+f nc_lex(NcContext *c, const char *s, int line) NcTokens
   NcTokens out = {0}
   size_t i = 0
   int column = 1
   bool bol = 1
-  while (s[i])
+  while s[i]
     size_t start = i
     NcToken t = {s + i, 0, line, column, NC_PUNCT}
     unsigned char ch = (unsigned char)s[i]
-    if (isspace(ch))
+    if isspace(ch)
       t.kind = NC_SPACE
-      while (s[i] && isspace((unsigned char)s[i]))
+      while s[i] && isspace((unsigned char)s[i])
         ++i
-    elif (!strncmp(s + i, "//", 2))
+    elif !strncmp(s + i, "//", 2)
       t.kind = NC_SPACE
       i = nc_line_end(s, i)
-    elif (!strncmp(s + i, "/*", 2))
+    elif !strncmp(s + i, "/*", 2)
       t.kind = NC_SPACE
       const char *end = strstr(s + i + 2, "*/")
-      if (! end)
+      if ! end
         nc_fail(c, line, "unterminated comment")
       i = (size_t)(end - s) + 2
-    elif (ch == '#' && bol)
-      t.kind = NC_DIRECTIVE; i = nc_line_end(s, i)
-    elif (nc_literal_start(s, i, c->cpp))
-      t.kind = NC_LITERAL; i = nc_literal_end(c, s, i, line)
-    elif (isalpha(ch) || ch == '_' || ch >= 128)
+    elif ch == '#' && bol
+      t.kind = NC_DIRECTIVE
+      i = nc_line_end(s, i)
+    elif nc_literal_start(s, i, c->cpp)
+      t.kind = NC_LITERAL
+      i = nc_literal_end(c, s, i, line)
+    elif isalpha(ch) || ch == '_' || ch >= 128
       t.kind = NC_WORD
-      while (1)
+      while 1
         ++i
-        if (!(isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128))
-          break
-    elif (isdigit(ch) || (ch == '.' && isdigit((unsigned char)s[i + 1])))
+        if !(isalnum((unsigned char)s[i]) || s[i] == '_' || (unsigned char)s[i] >= 128)
+          !
+    elif isdigit(ch) || (ch == '.' && isdigit((unsigned char)s[i + 1]))
       t.kind = NC_NUMBER
       ++i
-      while (s[i])
-        if (isalnum((unsigned char)s[i]) || s[i] == '_' || (s[i] == '.' && strncmp(s + i, "..", 2)))
+      while s[i]
+        if isalnum((unsigned char)s[i]) || s[i] == '_' || (s[i] == '.' && strncmp(s + i, "..", 2))
           ++i
-        elif ((s[i] == '+' || s[i] == '-') && strchr("eEpP", s[i - 1]))
+        elif (s[i] == '+' || s[i] == '-') && strchr("eEpP", s[i - 1])
           ++i
         else
-          break
+          !
     else
       const char *ops[] = {"%:%:", ">>=", "<<=", "...", "..", "->", "==", "!=", "<=", ">=", "&&", "||", ":=", "++",
                           "--", "+=", "-=", "*=", "/=", "%=", "<<", ">>", "&=", "|=", "^=", "##", "<:", ":>", "<%", "%>", "%:"}
       ++i
-      for (size_t n = 0; n < sizeof ops / sizeof *ops; ++n)
-        if (!strncmp(s + start, ops[n], strlen(ops[n])))
-          i = start + strlen(ops[n]); break
+      for size_t n = 0; n < sizeof ops / sizeof *ops; ++n
+        if !strncmp(s + start, ops[n], strlen(ops[n]))
+          i = start + strlen(ops[n])
+          !
     t.n = i - start
     bool newline = 0
-    for (size_t n = (start), nanoc_bound_1 = (i); n < nanoc_bound_1; ++n)
-      if (s[n] == '\n')
-        ++line; column = 1; newline = 1
+    for size_t n = (start), nanoc_bound_1 = (i); n < nanoc_bound_1; ++n
+      if s[n] == '\n'
+        ++line
+        column = 1
+        newline = 1
       else
         ++column
-    if (t.kind == NC_SPACE)
-      if (newline)
+    if t.kind == NC_SPACE
+      if newline
         bol = 1
     else
       bol = t.kind == NC_DIRECTIVE && s[i - 1] == '\n'
     NC_PUSH(c, out, t)
-  return out
+  < out

@@ -2,7 +2,7 @@
 @lang 1
 + "studio.h"
 // Invokes only explicit editor actions; keyboard shortcuts mirror toolbar labels.
-f st_shortcuts(StApp *a) -> void
+f st_shortcuts(StApp *a)
   bool ctrl=IsKeyDown(KEY_LEFT_CONTROL)||IsKeyDown(KEY_RIGHT_CONTROL)||IsKeyDown(KEY_LEFT_SUPER)
   bool shift=IsKeyDown(KEY_LEFT_SHIFT)||IsKeyDown(KEY_RIGHT_SHIFT)
   if IsKeyPressed(KEY_F5)
@@ -41,20 +41,20 @@ f st_shortcuts(StApp *a) -> void
     if shift && IsKeyPressed(KEY_F)
       st_format(a)
 // Draws a clickable toolbar action using the common font.
-f st_button(StApp *a,const char *label,float *x,float y) -> bool
+f st_button(StApp *a,const char *label,float *x,float y) bool
   float width=MeasureTextEx(a->font,label,a->font_size,0).x+20
   Rectangle box={*x,y,width,a->font_size+12}
   bool hover=CheckCollisionPointRec(GetMousePosition(),box)
   DrawRectangleRec(box,hover ? (Color){58,72,87,255} : (Color){36,43,53,255})
   st_label(a,label,*x+10,y+5,RAYWHITE)
   *x+=width+5
-  return hover && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+  < hover && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
 // Displays captures, evaluated results, generated identifiers and the parent expansion chain.
-f st_inspector(StApp *a,Rectangle area) -> void
+f st_inspector(StApp *a,Rectangle area)
   DrawRectangleRec(area,(Color){25,31,39,255})
   if a->mode==2 || a->mode==3
     st_report_pane(a,area)
-    return
+    <
   float y=area.y+6
   BeginScissorMode((int)area.x,(int)area.y,(int)area.width,(int)area.height)
   if a->compiler && a->selected_event
@@ -74,7 +74,7 @@ f st_inspector(StApp *a,Rectangle area) -> void
     st_label(a,"Click a source line or C line to inspect the expansion chain. Ctrl+E exports review artifacts.",area.x+10,y,GRAY)
   EndScissorMode()
 // Draws file tabs, retaining unsaved text and making dirty state visible.
-f st_tabs(StApp *a,float left,float y) -> void
+f st_tabs(StApp *a,float left,float y)
   float x=left
   for int i=0; i<a->count && x<(float)GetScreenWidth()-80; ++i
     StFile *f=&a->files[i]
@@ -87,7 +87,7 @@ f st_tabs(StApp *a,float left,float y) -> void
       a->active=i
       a->selected_event=0
 // Draws a scrollable project tree; clicking a file opens a new tab.
-f st_explorer(StApp *a,Rectangle area) -> void
+f st_explorer(StApp *a,Rectangle area)
   static int scroll=0
   if CheckCollisionPointRec(GetMousePosition(),area)
     scroll-=(int)(GetMouseWheelMove()*3)
@@ -110,7 +110,7 @@ f st_explorer(StApp *a,Rectangle area) -> void
     if CheckCollisionPointRec(GetMousePosition(),row) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
       if DirectoryExists(a->explorer.paths[i])
         st_project(a,a->explorer.paths[i])
-        break
+        !
       else
         st_open(a,a->explorer.paths[i])
     st_label(a,name,area.x+10,y,GRAY)

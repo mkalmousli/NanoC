@@ -23,4 +23,8 @@ int fflush(FILE *);
 int remove(const char *);
 int rename(const char *, const char *);
 int ferror(FILE *);
+FILE *tmpfile(void);
+long ftell(FILE *);
+void rewind(FILE *);
+int sscanf(const char *, const char *, ...);
 #endif

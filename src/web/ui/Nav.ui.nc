@@ -28,8 +28,6 @@ header
           display:none
       a [href=play.html] <b style="color:var(--lime)">Playground</b>
       a [href=compare.html] Compare
-      a [href=index.html#stats] Stats
-      a [href=index.html#vs] Vs. others
       a [href=index.html#guide] Guide
       a [href=index.html#install] Install
     a [href=https://github.com/mkalmousli/NanoC] GitHub ↗

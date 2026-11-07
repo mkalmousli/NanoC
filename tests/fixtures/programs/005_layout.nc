@@ -1,5 +1,6 @@
-f add(a: int, b: int) -> int = a+b
-f main() -> int
+f add(a: int, b: int) int
+  < a+b
+f main()
   a:=2
   b: int = 3
-  return add(a,b) != 5
+  < add(a,b) != 5

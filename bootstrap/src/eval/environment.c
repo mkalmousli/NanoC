@@ -21,7 +21,7 @@ void nc_bind(NcContext *c, NcEnv *e, const char *name, NcValue value) {
 NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) {
     for (; e; e = e->parent) {
         NcValue *p = nc_get(&e->values, name);
-        if ((p)) {
+        if (p) {
             return *p;
         }
     }
@@ -33,7 +33,7 @@ NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) {
 void nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line) {
     for (; e; e = e->parent) {
         NcValue *p = nc_get(&e->values, name);
-        if ((p)) {
+        if (p) {
             *p = value;
             return;
         }

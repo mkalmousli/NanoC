@@ -3,52 +3,52 @@
 + "nanoc/nanoc.h"
 
 // Takes a bracketed group.
-f nc_group(NcCursor *c, const char *open, const char *close) -> NcTokens
+f nc_group(NcCursor *c, const char *open, const char *close) NcTokens
   nc_need(c, open)
   size_t start = c->pos
   NcStrings stack = {0}
   NC_PUSH(c->ctx, stack, (char *)close)
-  while (c->pos < c->ts.n)
+  while c->pos < c->ts.n
     NcToken t = c->ts.v[c->pos++]
-    if (t.kind != NC_PUNCT)
-      continue
+    if t.kind != NC_PUNCT
+      ^
     const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL
-    if (end)
+    if end
       NC_PUSH(c->ctx, stack, (char *)end)
-    elif (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}"))
-      if (!nc_is(t, stack.v[stack.n - 1]))
+    elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
+      if !nc_is(t, stack.v[stack.n - 1])
         nc_fail(c->ctx, t.line, "mismatched delimiter")
-      if (!--stack.n)
-        return nc_slice(c->ts, start, c->pos - 1)
+      if !--stack.n
+        < nc_slice(c->ts, start, c->pos - 1)
   nc_fail(c->ctx, nc_line(c), "unterminated '%s'", open)
-  return (NcTokens){0}
+  < (NcTokens){0}
 
 // Takes tokens until a delimiter.
-f nc_until(NcCursor *c, const char *delimiter) -> NcTokens
+f nc_until(NcCursor *c, const char *delimiter) NcTokens
   NcTokens out = {0}
-  while (!nc_end(c) && !nc_at(c, delimiter))
+  while !nc_end(c) && !nc_at(c, delimiter)
     NcToken t = nc_take(c)
     NC_PUSH(c->ctx, out, t)
-    if (t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")))
+    if t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))
       --c->pos
       const char * open = nc_text(c->ctx, t)
       const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}"
       NcTokens body = nc_group(c, open, close)
-      for (size_t i = (0), nanoc_bound_1 = (body.n); i < nanoc_bound_1; ++i)
+      for size_t i = (0), nanoc_bound_1 = (body.n); i < nanoc_bound_1; ++i
         NC_PUSH(c->ctx, out, body.v[i])
       NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT))
-    if (c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE)
+    if c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE
       NC_PUSH(c->ctx, out, c->ts.v[c->pos++])
-  return out
+  < out
 
 // Splits tokens at a delimiter.
-f nc_split(NcContext *ctx, NcTokens ts, const char *delimiter) -> NcGroups
+f nc_split(NcContext *ctx, NcTokens ts, const char *delimiter) NcGroups
   NcCursor c = {ctx, ts, 0}
   NcGroups out = {0}
-  while (!nc_end(&c))
+  while !nc_end(&c)
     NC_PUSH(ctx, out, nc_until(&c, delimiter))
-    if (!nc_eat(&c, delimiter))
-      break
-    if (nc_end(&c))
+    if !nc_eat(&c, delimiter)
+      !
+    if nc_end(&c)
       NC_PUSH(ctx, out, ((NcTokens){0}))
-  return out
+  < out

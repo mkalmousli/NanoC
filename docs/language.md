@@ -7,9 +7,8 @@ NanoC is a programmable frontend for C. Runtime constructs become ordinary C wit
 
 ```nanoc
 + <stdio.h>
-f main() -> int
+f main()
   puts("Hello from NanoC!")
-  return 0
 ```
 
 ```c
@@ -17,7 +16,6 @@ f main() -> int
 
 int main(void) {
     puts("Hello from NanoC!");
-    return 0;
 }
 ```
 
@@ -25,18 +23,18 @@ int main(void) {
 
 ## Functions and declarations
 
-`f name(parameters) -> CType` requires parentheses and an explicit C return type, including void. Parameters use `name: CType` or exact C declarators. Each C parameter needs its own type. Returns are explicit: `return expression` or `return`. A one-line expression definition uses `f add(a: int, b: int) -> int = a+b`. A semicolon after the header declares a prototype.
+`f name(parameters) CType` uses parentheses around parameters. The return type follows `)` directly and is optional: functions default to void, while `main` defaults to int. An explicit `void` or `int` is also supported. No arrow is used. `main` may omit a final result; falling through returns zero in C99 and later or C++17. Parameters use `name: CType` or exact C declarators. Each C parameter needs its own type. Returns are explicit: `< expression` or `<`. A semicolon after the header declares a prototype.
 
 ```nanoc
-f add(a: int, b: int) -> int
-  return a+b
-f greet() -> void
-  return
-f main() -> int
+f add(a: int, b: int) int
+  < a+b
+f greet()
+  <
+f main()
   n := 2
   result: int = add(n,3)
   greet()
-  return result != 5
+  < result != 5
 ```
 
 ```c
@@ -61,24 +59,24 @@ int main(void) {
 ## Compact declarations and word controls
 
 ```nanoc
-f sum(a: *int, n: int) -> int
+f sum(a: *int, n: int) int
   total := 0
   for i := 0; i < n; i++
     if a[i] < 0
-      continue
+      ^
     elif a[i] == 0
-      break
+      !
     else
       total += a[i]
   while total > 10
     total--
-  return total
+  < total
 ```
 
 ```c
 int sum(int *a, int n) {
     int total = 0;
-    for (int i = 0;i < n;i++) {
+    for (int i = 0; i < n; i++) {
         if (a[i] < 0) {
             continue;
         } else if (a[i] == 0) {
@@ -96,18 +94,18 @@ int sum(int *a, int n) {
 
 | Syntax | C translation |
 | --- | --- |
-| `f name(args) -> T` | Function definition; empty C parameter lists become void |
+| `f name(args) T` | Function definition; empty C parameter lists become void |
 | `s Name` / `u Name` / `e Name` | Struct / union / enum with a typedef |
 | `name := literal` | Declaration with literal-derived C type |
 | `name: CType = expression` | Explicit C declaration |
-| `return expression` / `return` | Return a value / void |
+| `< expression` / `<` | Return a value / void |
 | `if condition` / `elif condition` / `else` | if / else if / else |
 | `while condition` | while |
 | `for init; condition; step` | for |
-| `break` / `continue` | break / continue |
+| `!` / `^` | break / continue |
 | `+ <header.h>` / `+ "local.h"` | C include |
 
-Indentation uses spaces. A body must be deeper than its header, siblings align, and dedents must match an enclosing level. Canonical formatting uses two spaces. Missing, empty or inconsistently indented bodies are rejected. Runtime branches match an if at the same indentation. Block colons and inline then spellings are not part of v1. C expressions retain C operator spelling, precedence and evaluation rules: !x, !!x, ~x, a^b, a?b:c and x=y are expressions. Word controls avoid collisions with these operators.
+Indentation uses spaces. A body must be deeper than its header, siblings align, and dedents must match an enclosing level. Canonical formatting uses two spaces. Missing, empty or inconsistently indented bodies are rejected. Runtime branches match an if at the same indentation. Block colons and inline then spellings are not part of v1. C expressions retain C operator spelling, precedence and evaluation rules: !x, !!x, ~x, a^b, a?b:c and x=y are expressions. Only a standalone `!` or `^` is a loop-control statement; `!x` and `a^b` remain C expressions. Outer parentheses around control headers are rejected.
 
 ## Structs, unions and enums
 
@@ -118,11 +116,11 @@ u Number
   i: int
   d: double
 e Color red,green=5,blue
-f main() -> int
+f main()
   Point p={1,2}
   Number n
   n.i=3
-  return p.x+p.y != n.i || blue != 6
+  < p.x+p.y != n.i || blue != 6
 ```
 
 ```c
@@ -165,9 +163,9 @@ Preprocessor sigils emit directives for the C preprocessor; NanoC never evaluate
   $ PLATFORM = "Linux"
 :
   $ PLATFORM = "Other"
-f main() -> int
+f main()
   puts(PLATFORM)
-  return 0
+  < 0
 ```
 
 ```c
@@ -209,12 +207,12 @@ C headers, libraries, functions, pointers, arrays, structs, unions, enums, typed
 
 ```nanoc
 + <stdlib.h>
-f main() -> int
+f main()
   ptr: void * = malloc(128)
   if ptr == NULL
-    return 1
+    < 1
   free(ptr)
-  return 0
+  < 0
 ```
 
 ```c
@@ -236,10 +234,11 @@ int main(void) {
 @c {
   static int apply(int (*fn)(int), int x) { return fn(x); }
 }
-f twice(x: int) -> int = x*2
-f main() -> int
+f twice(x: int) int
+  < x*2
+f main()
   int (*fn)(int)=twice
-  return apply(fn,21)!=42
+  < apply(fn,21)!=42
 ```
 
 ```c
@@ -264,13 +263,14 @@ int main(void) {
 @m identity($x)
   ($x)
 @m getter($name,$field)
-  f $name(p: *Point) -> int = p->$field
+  f $name(p: *Point) int
+    < p->$field
 s Point
   x: int
 @getter(get_x,x)
-f main() -> int
+f main()
   Point p={42}
-  return @identity(get_x(&p))!=42
+  < @identity(get_x(&p))!=42
 ```
 
 ```c
@@ -293,7 +293,7 @@ An executable macro uses `@m name($x) =` followed by an indented compile-time pr
 
 ## Compile-time generation
 
-`@ct` executes a bounded source-transformation program. This phase has dynamic values, list/string operations, source/token operations, functions `f name(args)`, loops, explicit or final-value returns, quote and emit. This dynamic evaluator is not the runtime C grammar. `eval(read(path))` loads a source library explicitly. Read/exists/env are inputs; write/mkdir/remove/run/exec/sh are not compiler builtins. No external process or filesystem mutation is introduced through another compiler directive.
+`@ct` executes a bounded source-transformation program. This phase has dynamic values, list/string operations, source/token operations, functions `f name(args)`, loops, sigil or final-value returns, quote and emit. This dynamic evaluator is not the runtime C grammar. `eval(read(path))` loads a source library explicitly. Read/exists/env are inputs; write/mkdir/remove/run/exec/sh are not compiler builtins. No external process or filesystem mutation is introduced through another compiler directive.
 
 ```nanoc
 @ct
@@ -302,7 +302,8 @@ An executable macro uses `@m name($x) =` followed by an indented compile-time pr
   for i range(4)
     values=push(values,str(square(i)))
   emit("static const int squares[]={"+join(values,",")+"};")
-f main() -> int = squares[3]!=9
+f main()
+  < squares[3]!=9
 ```
 
 ```c

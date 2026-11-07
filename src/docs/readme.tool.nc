@@ -24,7 +24,7 @@ page("README.md",[
   "Installs only the files it created; it refuses to overwrite unrelated files.",
   h(2,"The language"),
   code("c",split(read("examples/hello.nc"),"\n")),
-  ul([b("Layout:")+" indentation defines blocks; `f name(args) -> T`; explicit `return`; `if/elif/else`, `while` and `for` controls.",
+  ul([b("Layout:")+" indentation defines blocks; `f name(args)` with an optional result type (void by default, int for main); explicit `<` returns; `if/elif/else`, `while` and `for` controls.",
     b("Macros:")+" `@m` token templates with `$` captures, repetition and `$fresh(name)`.",
     b("Compile time:")+" `@ct` programs generate code during expansion (`emit`, `quote`, loops).",
     b("Interop:")+" C headers and C++17 APIs work unchanged (`--lang c++`).",

@@ -3,57 +3,57 @@
 + "nanoc/nanoc.h"
 
 // Tells if a token has the text.
-f nc_is(NcToken t, const char *s) -> bool
-  return t.n == strlen(s) && !memcmp(t.s, s, t.n)
+f nc_is(NcToken t, const char *s) bool
+  < t.n == strlen(s) && !memcmp(t.s, s, t.n)
 
 // Copies a token as text.
-f nc_text(NcContext *c, NcToken t) -> char *
-  return nc_string(c, t.s, t.n)
+f nc_text(NcContext *c, NcToken t) char *
+  < nc_string(c, t.s, t.n)
 
 // Makes a token.
-f nc_token(const char *s, int line, NcKind kind) -> NcToken
-  return (NcToken){s, strlen(s), line, 1, kind}
+f nc_token(const char *s, int line, NcKind kind) NcToken
+  < (NcToken){s, strlen(s), line, 1, kind}
 
 // Takes a sub-range of tokens.
-f nc_slice(NcTokens ts, size_t a, size_t b) -> NcTokens
-  return (NcTokens){ts.v ? ts.v + a : NULL, b - a, b - a}
+f nc_slice(NcTokens ts, size_t a, size_t b) NcTokens
+  < (NcTokens){ts.v ? ts.v + a : NULL, b - a, b - a}
 
 // Concatenates token text.
-f nc_join(NcContext *c, NcTokens ts) -> char *
+f nc_join(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for (size_t i = (0), nanoc_bound_1 = (ts.n); i < nanoc_bound_1; ++i)
+  for size_t i = (0), nanoc_bound_1 = (ts.n); i < nanoc_bound_1; ++i
     nc_addn(c, &b, ts.v[i].s, ts.v[i].n)
   nc_add(c, &b, "")
-  return b.v
+  < b.v
 
 // Drops whitespace tokens.
-f nc_significant(NcContext *c, NcTokens ts) -> NcTokens
+f nc_significant(NcContext *c, NcTokens ts) NcTokens
   NcTokens out = {0}
-  for (size_t i = (0), nanoc_bound_2 = (ts.n); i < nanoc_bound_2; ++i)
-    if (ts.v[i].kind != NC_SPACE)
+  for size_t i = (0), nanoc_bound_2 = (ts.n); i < nanoc_bound_2; ++i
+    if ts.v[i].kind != NC_SPACE
       NC_PUSH(c, out, ts.v[i])
-  return out
+  < out
 
 // Joins tokens as spaced words.
-f nc_words(NcContext *c, NcTokens ts) -> char *
+f nc_words(NcContext *c, NcTokens ts) char *
   NcBuffer b = {0}
-  for (size_t i = (0), nanoc_bound_3 = (ts.n); i < nanoc_bound_3; ++i)
+  for size_t i = (0), nanoc_bound_3 = (ts.n); i < nanoc_bound_3; ++i
     NcToken t = ts.v[i]
     const char * s = NULL
-    if (t.kind == NC_WORD)
-      if (nc_is(t, "true"))
+    if t.kind == NC_WORD
+      if nc_is(t, "true")
         s = "1"
-      elif (nc_is(t, "false"))
+      elif nc_is(t, "false")
         s = "0"
-    if (s)
+    if s
       nc_add(c, &b, s)
     else
       nc_addn(c, &b, t.s, t.n)
   nc_add(c, &b, "")
-  return b.v
+  < b.v
 
 // Records identifier tokens.
-f nc_names(NcContext *c, NcTokens ts) -> void
-  for (size_t i = (0), nanoc_bound_4 = (ts.n); i < nanoc_bound_4; ++i)
-    if (ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i]))
+f nc_names(NcContext *c, NcTokens ts)
+  for size_t i = (0), nanoc_bound_4 = (ts.n); i < nanoc_bound_4; ++i
+    if ts.v[i].kind == NC_WORD && !nc_has_token(&c->names, ts.v[i])
       nc_put(c, &c->names, nc_text(c, ts.v[i]), (void *)1)

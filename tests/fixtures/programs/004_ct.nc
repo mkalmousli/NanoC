@@ -2,4 +2,5 @@
   f square(n) = n*n
   n:=square(7)
   emit(quote(enum { n=$n };))
-f main() -> int = n != 49
+f main()
+  < n != 49

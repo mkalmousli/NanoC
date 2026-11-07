@@ -1,81 +1,74 @@
 // Emits meta programs as text.
 @lang 1
 + "nanoc/nanoc.h"
-
 // Tells if the node starts with word.
-f starts(NcContext *c, NcNode n, const char *word) -> static bool
+f starts(NcContext *c, NcNode n, const char *word) static bool
   NcTokens ts = nc_significant(c, n.head.ts)
-  return ts.n && nc_is(ts.v[0], word)
-
+  < ts.n && nc_is(ts.v[0], word)
 // Tells if the node is a function.
-f function_node(NcContext *c, NcNode n) -> static bool
+f function_node(NcContext *c, NcNode n) static bool
   NcTokens ts = nc_significant(c, n.head.ts)
-  return ts.n > 1 && ts.v[1].kind == NC_WORD && nc_is(ts.v[0], "f")
-
+  < ts.n > 1 && ts.v[1].kind == NC_WORD && nc_is(ts.v[0], "f")
 // Tells if a line is a value.
-f value_line(NcContext *c, NcTokens ts) -> static bool
+f value_line(NcContext *c, NcTokens ts) static bool
   NcTokens sig = nc_significant(c, ts)
-  if (! sig.n)
-    return 0
+  if ! sig.n
+    < 0
   const char *statements[] = {"emit", "log", "assert", "write", "mkdir", "remove", "again",
           "rewrite", "put"}
-  for (size_t i = 0; i < sizeof statements / sizeof *statements; ++i)
-    if (nc_is(sig.v[0], statements[i]))
-      return 0
+  for size_t i = 0; i < sizeof statements / sizeof *statements; ++i
+    if nc_is(sig.v[0], statements[i])
+      < 0
   int level = 0
-  for (size_t i = (0), nanoc_bound_1 = (sig.n); i < nanoc_bound_1; ++i)
+  for size_t i = (0), nanoc_bound_1 = (sig.n); i < nanoc_bound_1; ++i
     NcToken t = sig.v[i]
-    if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))
+    if nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")
       ++level
-    elif (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}"))
+    elif nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")
       --level
-    elif (!level
-                  && (
-                    nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t, "--")
-                    || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0]))))
-      return 0
-  bool function = (sig.n > 1 && sig.v[1].kind == NC_WORD
-          && nc_is(sig.v[0], "f"))
-  return !function && !nc_is(sig.v[0], "return") && !nc_is(sig.v[0],
+    elif !level && (
+                    nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t, "--") || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0])))
+      < 0
+  bool function = (sig.n > 1 && sig.v[1].kind == NC_WORD && nc_is(sig.v[0], "f"))
+  < !function && !nc_is(sig.v[0], "<") && !nc_is(sig.v[0], "!") && !nc_is(sig.v[0], "^") && !nc_is(sig.v[0], "return") && !nc_is(sig.v[0],
           "break") && !nc_is(sig.v[0], "continue") && !nc_is(sig.v[0],
           "if") && !nc_is(sig.v[0], "for") && !nc_is(sig.v[0], "while")
-
 // Emits nodes as program text.
-f nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) -> char *
+f nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) char *
   nc_depth(ctx, depth, nodes.n ? nodes.v[0].head.line : 1, "program layout")
   NcBuffer out = {0}
   int line = nodes.n ? nodes.v[0].head.line : 1
-  for (size_t i = (0), nanoc_bound_2 = (nodes.n); i < nanoc_bound_2; ++i)
+  for size_t i = (0), nanoc_bound_2 = (nodes.n); i < nanoc_bound_2; ++i
     NcNode n = nodes.v[i]
-    while (line < n.head.line)
-      nc_add(ctx, &out, "\n"); ++line
+    while line < n.head.line
+      nc_add(ctx, &out, "\n")
+      ++line
     size_t start = out.n
-    if (! n.children.n)
+    if ! n.children.n
       NcTokens ts = n.head.ts
       char *text = nc_trim(ctx, nc_join(ctx, ts))
       bool function = function_node(ctx, n)
       bool returning = tail && i + 1 == nodes.n && value_line(ctx, ts)
-      nc_printf(ctx, &out, "%s%s%s\n", returning ? "return " : "", text,
+      nc_printf(ctx, &out, "%s%s%s\n", returning ? "< " : "", text,
                           *text && text[strlen(text) - 1] == '}' && function ? "" : ";")
     else
       bool function = function_node(ctx, n)
       bool loop = starts(ctx, n, "for") || starts(ctx, n, "while")
-      bool has_next_branch = (i + 1 < nodes.n
-                          && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx, nodes.v[i + 1], "else")))
+      bool has_next_branch = (i + 1 < nodes.n && (starts(ctx, nodes.v[i + 1], "elif") || starts(ctx, nodes.v[i + 1], "else")))
       bool last = tail && !loop && (i + 1 == nodes.n || has_next_branch)
       char *header = nc_program_control(ctx, n.head.ts, n.head.line)
       nc_printf(ctx, &out, "%s {\n", header)
-      for (int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad)
+      for int pad = n.head.line + 1; pad < n.children.v[0].head.line; ++pad
         nc_add(ctx, &out, "\n")
       char *body = nc_emit_program(ctx, n.children, function || last, depth + 1)
       size_t size = strlen(body)
-      if (size && body[size - 1] == '\n')
+      if size && body[size - 1] == '\n'
         --size
       nc_addn(ctx, &out, body, size)
       nc_add(ctx, &out, "}\n")
-    for (size_t j = (start), nanoc_bound_3 = (out.n); j < nanoc_bound_3; ++j)
-      if (out.v[j] == '\n')
+    for size_t j = (start), nanoc_bound_3 = (out.n); j < nanoc_bound_3; ++j
+      if out.v[j] == '\n'
         ++line
     nc_check(ctx, out.n, n.head.line)
   nc_add(ctx, &out, "")
-  return out.v
+  < out.v

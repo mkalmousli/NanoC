@@ -7,22 +7,22 @@
 NcLayoutLine nc_logical_line(NcCursor *c) {
     size_t whitespace = c->pos;
     nc_skip(c);
-    if ((c->pos == c->ts.n)) {
+    if (c->pos == c->ts.n) {
         nc_fail(c->ctx, nc_line(c), "expected a logical line");
     }
     NcLayoutLine out = {.indent = c->ts.v[c->pos].column - 1, .line = nc_line(c)};
     for (size_t i = (whitespace), nanoc_bound_1 = (c->pos); i < nanoc_bound_1; ++i) {
         NcToken t = c->ts.v[i];
         size_t tail = t.n;
-        while ((tail && t.s[tail - 1] != '\n')) {
+        while (tail && t.s[tail - 1] != '\n') {
             --tail;
         }
-        if ((memchr(t.s + tail, '\t', t.n - tail))) {
+        if (memchr(t.s + tail, '\t', t.n - tail)) {
             nc_fail(c->ctx, out.line, "use spaces for indentation");
         }
     }
     NcCursor raw = *c;
-    if ((nc_eat(&raw, "@") && nc_header_eat(&raw, "c", out.line))) {
+    if (nc_eat(&raw, "@") && nc_header_eat(&raw, "c", out.line)) {
         size_t start = c->pos;
         (void)nc_raw_read(c->ctx, &raw);
         out.ts = nc_slice(c->ts, start, raw.pos);
@@ -32,13 +32,13 @@ NcLayoutLine nc_logical_line(NcCursor *c) {
         return out;
     }
     NcStrings stack = {0};
-    while ((c->pos < c->ts.n)) {
+    while (c->pos < c->ts.n) {
         NcToken t = c->ts.v[c->pos];
-        if ((!stack.n && t.kind == NC_SPACE && memchr(t.s, '\n', t.n))) {
+        if (!stack.n && t.kind == NC_SPACE && memchr(t.s, '\n', t.n)) {
             break;
         }
-        if ((!stack.n && t.kind == NC_DIRECTIVE)) {
-            if ((out.ts.n)) {
+        if (!stack.n && t.kind == NC_DIRECTIVE) {
+            if (out.ts.n) {
                 nc_fail(c->ctx, t.line, "directive must start its own line");
             }
             NC_PUSH(c->ctx, out.ts, t);
@@ -47,20 +47,20 @@ NcLayoutLine nc_logical_line(NcCursor *c) {
         }
         ++c->pos;
         NC_PUSH(c->ctx, out.ts, t);
-        if ((t.kind != NC_PUNCT)) {
+        if (t.kind != NC_PUNCT) {
             continue;
         }
         const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL;
-        if ((end)) {
+        if (end) {
             NC_PUSH(c->ctx, stack, (char *)end);
-        } else if ((nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}"))) {
-            if ((!stack.n || !nc_is(t, stack.v[stack.n - 1]))) {
+        } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
+            if (!stack.n || !nc_is(t, stack.v[stack.n - 1])) {
                 nc_fail(c->ctx, t.line, "mismatched delimiter");
             }
             --stack.n;
         }
     }
-    if ((stack.n)) {
+    if (stack.n) {
         nc_fail(c->ctx, out.line, "unterminated logical line");
     }
     out.span = nc_trace_span(out.ts);
@@ -72,22 +72,22 @@ NcLines nc_body_lines(NcCursor *c, int header_line, int indent) {
     NcLines out = {0};
     for (;;) {
         size_t next = c->pos;
-        while ((next < c->ts.n && c->ts.v[next].kind == NC_SPACE)) {
+        while (next < c->ts.n && c->ts.v[next].kind == NC_SPACE) {
             ++next;
         }
-        if ((next == c->ts.n)) {
+        if (next == c->ts.n) {
             break;
         }
         NcToken t = c->ts.v[next];
-        if ((t.line <= header_line)) {
+        if (t.line <= header_line) {
             nc_fail(c->ctx, t.line, "expected an indented function body");
         }
-        if ((t.column - 1 <= indent)) {
+        if (t.column - 1 <= indent) {
             break;
         }
         NC_PUSH(c->ctx, out, nc_logical_line(c));
     }
-    if ((! out.n)) {
+    if (! out.n) {
         nc_fail(c->ctx, header_line, "expected an indented function body");
     }
     return out;

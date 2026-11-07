@@ -13,9 +13,9 @@ Preprocessor sigils emit directives for the C preprocessor; NanoC never evaluate
   $ PLATFORM = "Linux"
 :
   $ PLATFORM = "Other"
-f main() -> int
+f main()
   puts(PLATFORM)
-  return 0
+  < 0
 ```
 
 ```c

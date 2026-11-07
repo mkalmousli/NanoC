@@ -1,2 +1,2 @@
-f a(x)
-  return x
+f a(x: int) -> int
+  < x

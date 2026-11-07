@@ -7,8 +7,9 @@ for i range(1,len(names))
   chips=push(chips,"<code>"+nm+"</code>")
 write("build/blocks/builtins.html",join(chips,""))
 write("build/blocks/builtins-count.html",str(len(chips)))
-wasm:="none"
 lk:=sh("command -v wasm-ld || ls /usr/lib/llvm-*/bin/wasm-ld | tail -1")
+if lk[0]!=0
+  fail("WebAssembly linker required: install wasm-ld before building the playground")
 if lk[0]==0
   ld:=replace(lk[1],"\n","")
   objs:=[]
@@ -41,11 +42,15 @@ if lk[0]==0
                   ok=false
                   log(r[2])
                 objs=push(objs,o)
+  if !ok
+    fail("WebAssembly compilation failed; see compiler diagnostics above")
   if ok
     link:=[ld,"--no-entry","--export=nc_web_transpile","--export=nc_web_output","--export=nc_web_output_len","--export=nc_web_error","--export=malloc","-z","stack-size=8388608","--initial-memory=67108864","-o","_site/nanoc.wasm"]
     for o objs
       link=push(link,o)
     r:=run(link)
-    log("wasm link: "+str(r[0])+" "+r[2])
+    if r[0]!=0
+      fail("WebAssembly link failed: "+r[2])
+    log("Built browser compiler")
 sz:=replace(exec(["sh","-c","echo $(( $(stat -c %s _site/nanoc.wasm 2>/dev/null || echo 0) / 1024 ))"]),"\n","")
 write("build/blocks/wasm-size.html",sz+" KB")

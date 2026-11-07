@@ -10,7 +10,7 @@ char *nc_macro_program(NcContext *ctx, NcMacro *macro, NcBindings *b, size_t dep
         NcParam p = macro->params.v[i];
         NcGroups *values = nc_get(&b->values, p.name);
         NcValue value;
-        if ((p.variadic)) {
+        if (p.variadic) {
             NcValues items = {0};
             for (size_t j = (0), nanoc_bound_2 = (values->n); j < nanoc_bound_2; ++j) {
                 NC_PUSH(ctx, items, nc_value_text(NC_CODE, nc_join(ctx, values->v[j])));

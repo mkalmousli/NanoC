@@ -1,12 +1,12 @@
-// Review output uses actual previous/current compiler snapshots and actual result JSON.
+// Review output uses actual previous/current compiler snapshots and the language reference.
 @lang 1
 + "studio.h"
-// Draws a scrollable multiline result artifact; missing observations remain explicitly missing.
-f st_report_pane(StApp *a,Rectangle area) -> void
+// Draws a scrollable multiline build output or the compact language reference.
+f st_report_pane(StApp *a,Rectangle area)
   static int scroll=0
-  const char *text=a->mode==2 ? a->benchmark : a->build_result
+  const char *text=a->mode==2 ? a->reference : a->build_result
   if !text
-    return
+    <
   if CheckCollisionPointRec(GetMousePosition(),area)
     scroll-=(int)(GetMouseWheelMove()*3)
   if scroll<0
@@ -26,10 +26,10 @@ f st_report_pane(StApp *a,Rectangle area) -> void
     p=*end ? end+1 : end
   EndScissorMode()
 // Draws the previous C snapshot, paired with the current C pane in side-by-side review mode.
-f st_previous_pane(StApp *a,Rectangle area) -> void
+f st_previous_pane(StApp *a,Rectangle area)
   if !a->previous
     st_label(a,"Expand twice to compare generated C snapshots",area.x+10,area.y+10,GRAY)
-    return
+    <
   const char *p=a->previous
   int line=0
   float y=area.y+5,height=a->font_size+5
@@ -46,9 +46,9 @@ f st_previous_pane(StApp *a,Rectangle area) -> void
     ++line
   EndScissorMode()
 // Reports changed same-numbered lines; this is a positional review aid, not a minimal diff algorithm.
-f st_line_changed(StApp *a,const char *text,size_t start,size_t end,size_t line) -> bool
+f st_line_changed(StApp *a,const char *text,size_t start,size_t end,size_t line) bool
   if !a->previous
-    return false
+    < false
   const char *p=a->previous
   for size_t i=0; i<line && *p; ++i
     const char *next=strchr(p,'\n')
@@ -56,4 +56,4 @@ f st_line_changed(StApp *a,const char *text,size_t start,size_t end,size_t line)
   const char *finish=strchr(p,'\n')
   if !finish
     finish=p+strlen(p)
-  return (size_t)(finish-p)!=end-start || strncmp(text+start,p,end-start)!=0
+  < (size_t)(finish-p)!=end-start || strncmp(text+start,p,end-start)!=0

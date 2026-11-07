@@ -8,20 +8,20 @@
 // Creates the parent directories.
 static void directories(NcContext *c, const char *path, int line) {
     char *copy = nc_string(c, path, strlen(path));
-    if ((!*copy)) {
+    if (!*copy) {
         nc_fail(c, line, "empty directory path");
     }
     for (char *p = copy + 1;; ++p) {
-        if ((*p && *p != '/')) {
+        if (*p && *p != '/') {
             continue;
         }
         char last = *p;
         *p = 0;
-        if ((NC_MKDIR(copy) && errno != EEXIST)) {
+        if (NC_MKDIR(copy) && errno != EEXIST) {
             nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno));
         }
         *p = last;
-        if ((! last)) {
+        if (! last) {
             break;
         }
     }
@@ -32,28 +32,28 @@ static void directories(NcContext *c, const char *path, int line) {
 // Runs file builtins.
 NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) {
     NcContext *c = m->ctx;
-    if ((!strcmp(name, "file"))) {
+    if (!strcmp(name, "file")) {
         nc_arity(c, a, 0, line);
         return nc_value_text(NC_STRING, (char *)c->file);
     }
     nc_arity(c, a, !strcmp(name, "write") ? 2 : 1, line);
     const char * path = nc_meta_text(c, a.v[0], line);
-    if ((!strcmp(name, "read"))) {
+    if (!strcmp(name, "read")) {
         return nc_value_text(NC_STRING, nc_read(c, path));
     }
-    if ((!strcmp(name, "exists"))) {
+    if (!strcmp(name, "exists")) {
         struct stat st;
         return nc_boolean(stat(path, &st) == 0);
     }
-    if ((!strcmp(name, "env"))) {
+    if (!strcmp(name, "env")) {
         return nc_value_text(NC_STRING, getenv(path) ? getenv(path) : "");
     }
 #ifdef NC_TOOLING
-    if ((!strcmp(name, "write"))) {
+    if (!strcmp(name, "write")) {
         nc_write(c, path, nc_meta_text(c, a.v[1], line));
-    } else if ((!strcmp(name, "mkdir"))) {
+    } else if (!strcmp(name, "mkdir")) {
         directories(c, path, line);
-    } else if ((!strcmp(name, "remove") && remove(path) && errno != ENOENT)) {
+    } else if (!strcmp(name, "remove") && remove(path) && errno != ENOENT) {
         nc_fail(c, line, "cannot remove %s: %s", path, strerror(errno));
     }
 #else

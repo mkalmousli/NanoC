@@ -1,12 +1,12 @@
 @lang 1
 + "test.h"
 
-f test_preservation(void) -> void
+f test_preservation(void)
   const char *sources[] = {"", "int main(void){return 0;}\n", "int fn, let, macro;\n",
       "// @fn ignored\nconst char *s=\"@let x:int;\";\n", "/* @ct { bad } */\nchar c='@';\n",
       "#define F(x) @x \\\n@another\nint x;\n", "// comment \\\n@still_comment\nint x;\n",
       "const char*s = u8\"@fn\";\n", "#define TEXT \"@fn\" \\\n \"@ct\"\n"}
-  for (size_t i = 0; i < sizeof sources / sizeof *sources; ++i)
+  for size_t i = 0; i < sizeof sources / sizeof *sources; ++i
     CHECK(!strcmp(test_translate(sources[i], 0), sources[i]))
   const char *raw = "auto s = u8R\"tag(@ct { \\\" })tag\";\n"
   CHECK(!strcmp(test_translate(raw, 1), raw))

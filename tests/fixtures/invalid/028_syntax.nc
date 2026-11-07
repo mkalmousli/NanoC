@@ -1,3 +1,3 @@
-f f() -> int
+f f() int
   for i 0..2
-    return i
+    < i

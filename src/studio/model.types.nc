@@ -30,7 +30,7 @@ s StApp
   font: Font
   font_size,split: float
   compiler: *NcContext
-  generated,previous,benchmark,build_result: char *
+  generated,previous,reference,build_result: char *
   c_scroll,selected_c_line: int
   explorer: FilePathList
   dark,show_explorer,show_trace: bool

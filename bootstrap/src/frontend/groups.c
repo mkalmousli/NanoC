@@ -9,19 +9,19 @@ NcTokens nc_group(NcCursor *c, const char *open, const char *close) {
     size_t start = c->pos;
     NcStrings stack = {0};
     NC_PUSH(c->ctx, stack, (char *)close);
-    while ((c->pos < c->ts.n)) {
+    while (c->pos < c->ts.n) {
         NcToken t = c->ts.v[c->pos++];
-        if ((t.kind != NC_PUNCT)) {
+        if (t.kind != NC_PUNCT) {
             continue;
         }
         const char *end = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : nc_is(t, "{") ? "}" : NULL;
-        if ((end)) {
+        if (end) {
             NC_PUSH(c->ctx, stack, (char *)end);
-        } else if ((nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}"))) {
-            if ((!nc_is(t, stack.v[stack.n - 1]))) {
+        } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
+            if (!nc_is(t, stack.v[stack.n - 1])) {
                 nc_fail(c->ctx, t.line, "mismatched delimiter");
             }
-            if ((!--stack.n)) {
+            if (!--stack.n) {
                 return nc_slice(c->ts, start, c->pos - 1);
             }
         }
@@ -33,10 +33,10 @@ NcTokens nc_group(NcCursor *c, const char *open, const char *close) {
 // Takes tokens until a delimiter.
 NcTokens nc_until(NcCursor *c, const char *delimiter) {
     NcTokens out = {0};
-    while ((!nc_end(c) && !nc_at(c, delimiter))) {
+    while (!nc_end(c) && !nc_at(c, delimiter)) {
         NcToken t = nc_take(c);
         NC_PUSH(c->ctx, out, t);
-        if ((t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")))) {
+        if (t.kind == NC_PUNCT && (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))) {
             --c->pos;
             const char * open = nc_text(c->ctx, t);
             const char *close = nc_is(t, "(") ? ")" : nc_is(t, "[") ? "]" : "}";
@@ -46,7 +46,7 @@ NcTokens nc_until(NcCursor *c, const char *delimiter) {
             }
             NC_PUSH(c->ctx, out, nc_token(close, t.line, NC_PUNCT));
         }
-        if ((c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE)) {
+        if (c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE) {
             NC_PUSH(c->ctx, out, c->ts.v[c->pos++]);
         }
     }
@@ -57,12 +57,12 @@ NcTokens nc_until(NcCursor *c, const char *delimiter) {
 NcGroups nc_split(NcContext *ctx, NcTokens ts, const char *delimiter) {
     NcCursor c = {ctx, ts, 0};
     NcGroups out = {0};
-    while ((!nc_end(&c))) {
+    while (!nc_end(&c)) {
         NC_PUSH(ctx, out, nc_until(&c, delimiter));
-        if ((!nc_eat(&c, delimiter))) {
+        if (!nc_eat(&c, delimiter)) {
             break;
         }
-        if ((nc_end(&c))) {
+        if (nc_end(&c)) {
             NC_PUSH(ctx, out, ((NcTokens){0}));
         }
     }

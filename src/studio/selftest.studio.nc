@@ -2,7 +2,7 @@
 @lang 1
 + "studio.h"
 // Checks gap-buffer edits against an independent contiguous reference and checks history.
-f st_self_test() -> int
+f st_self_test() int
   StBuffer b={0}
   st_init_buffer(&b,"hello")
   char reference[8192]="hello"
@@ -21,7 +21,7 @@ f st_self_test() -> int
     if strcmp(reference,actual)
       free(actual)
       st_free_buffer(&b)
-      return 1
+      < 1
     free(actual)
     st_history(&b,false)
     st_history(&b,true)
@@ -29,7 +29,7 @@ f st_self_test() -> int
     if strcmp(reference,actual)
       free(actual)
       st_free_buffer(&b)
-      return 2
+      < 2
     free(actual)
   while b.undo_at
     st_history(&b,false)
@@ -50,4 +50,4 @@ f st_self_test() -> int
   free(large)
   st_free_buffer(&b)
   puts(okay ? "Studio: 2000 randomized edits, undo/redo, UTF-8 and 4 MiB buffer passed" : "Studio model tests failed")
-  return okay ? 0 : 3
+  < okay ? 0 : 3

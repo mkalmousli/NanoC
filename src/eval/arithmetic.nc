@@ -3,31 +3,31 @@
 + "nanoc/nanoc.h"
 
 // Applies an operator, checking overflow.
-f nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line) -> int64_t
+f nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line) int64_t
   bool overflow = 0
-  if (!strcmp(op, "+"))
+  if !strcmp(op, "+")
     overflow = (y > 0 && x > INT64_MAX - y) || (y < 0 && x < INT64_MIN - y)
-    if (! overflow)
-      return x + y
-  elif (!strcmp(op, "-"))
+    if ! overflow
+      < x + y
+  elif !strcmp(op, "-")
     overflow = (y < 0 && x > INT64_MAX + y) || (y > 0 && x < INT64_MIN + y)
-    if (! overflow)
-      return x - y
-  elif (!strcmp(op, "*"))
-    if (x > 0)
+    if ! overflow
+      < x - y
+  elif !strcmp(op, "*")
+    if x > 0
       overflow = y > 0 ? x > INT64_MAX / y : y < INT64_MIN / x
-    elif (x < 0)
+    elif x < 0
       overflow = y > 0 ? x < INT64_MIN / y : y < 0 && x < INT64_MAX / y
-    if (! overflow)
-      return x * y
-  elif (!strcmp(op, "/") || !strcmp(op, "%"))
-    if (! y)
+    if ! overflow
+      < x * y
+  elif !strcmp(op, "/") || !strcmp(op, "%")
+    if ! y
       nc_fail(c, line, "division by zero")
-    if (x == INT64_MIN && y == -1)
+    if x == INT64_MIN && y == -1
       overflow = 1
     else
-      return *op == '/' ? x / y : x % y
-  if (overflow)
+      < *op == '/' ? x / y : x % y
+  if overflow
     nc_fail(c, line, "compile-time integer overflow")
   nc_fail(c, line, "unknown operator: %s", op)
-  return (int64_t){0}
+  < (int64_t){0}

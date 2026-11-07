@@ -37,7 +37,7 @@ void nc_trace_json(FILE *out, NcContext *c, const char *generated) {
     jw_open(&w, '[');
     for (size_t i = 0; i < c->traces.n; ++i) {
         NcTrace *e = &c->traces.v[i];
-        if ((!nc_trace_matches(c, e))) {
+        if (!nc_trace_matches(c, e)) {
             continue;
         }
         jw_open(&w, '{');
@@ -50,7 +50,7 @@ void nc_trace_json(FILE *out, NcContext *c, const char *generated) {
         jw_key(&w, "source");
         nc_span_json(&w, e->source);
         jw_key(&w, "generated");
-        if ((e->start == SIZE_MAX || e->end == SIZE_MAX)) {
+        if (e->start == SIZE_MAX || e->end == SIZE_MAX) {
             jw_raw(&w, "null");
         } else {
             jw_open(&w, '{');

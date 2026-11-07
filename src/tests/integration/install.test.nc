@@ -1,7 +1,7 @@
 @lang 1
 + "test.h"
 
-f test_install(void) -> void
+f test_install(void)
   char *prefix = test_path("prefix with spaces")
   bool sanitized = strstr(test_read("build/config"), "sanitize=1") != NULL
   const char *install[] = {"./builder", "install", "--prefix", prefix, sanitized ? "--sanitize" : NULL, NULL}

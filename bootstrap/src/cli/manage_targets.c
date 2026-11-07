@@ -9,7 +9,7 @@
 // Finds the user home directory.
 bool mg_home(char *out) {
     const char *home = getenv(NC_HOME_VAR);
-    if ((!home || !*home)) {
+    if (!home || !*home) {
         return 0;
     }
     snprintf(out, PATH_MAX, "%s", home);
@@ -19,12 +19,12 @@ bool mg_home(char *out) {
 // Finds the user config directory.
 bool mg_config(char *out) {
     const char *xdg = getenv("XDG_CONFIG_HOME");
-    if ((xdg && *xdg)) {
+    if (xdg && *xdg) {
         snprintf(out, PATH_MAX, "%s", xdg);
         return 1;
     }
     char home[PATH_MAX];
-    if ((!mg_home(home))) {
+    if (!mg_home(home)) {
         return 0;
     }
     snprintf(out, PATH_MAX, NC_CONFIG_DIR, home);
@@ -34,7 +34,7 @@ bool mg_config(char *out) {
 // Finds the Sublime packages dir.
 bool mg_sublime_dir(char *out) {
     char home[PATH_MAX];
-    if ((!mg_home(home))) {
+    if (!mg_home(home)) {
         return 0;
     }
     snprintf(out, PATH_MAX, NC_SUBLIME_DIR, home);
@@ -68,12 +68,12 @@ void mg_vscode(NcTarget *t, int *n, const char *home) {
     for (int i = (0), nanoc_bound_1 = (3); i < nanoc_bound_1; ++i) {
         char base[PATH_MAX];
         snprintf(base, sizeof base, "%s/%s", home, bases[i]);
-        if ((nc_exists(base))) {
+        if (nc_exists(base)) {
             mg_vscode_at(t, n, base);
             found += 1;
         }
     }
-    if ((! found)) {
+    if (! found) {
         char base[PATH_MAX];
         snprintf(base, sizeof base, "%s/.vscode", home);
         mg_vscode_at(t, n, base);

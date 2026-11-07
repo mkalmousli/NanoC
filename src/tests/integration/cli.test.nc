@@ -1,7 +1,7 @@
 @lang 1
 + "test.h"
 
-f test_cli(void) -> void
+f test_cli(void)
   const char *help[] = {"build/nanoc", "--help", NULL}
   (void)test_command(help)
   const char *version[] = {"build/nanoc", "--version", NULL}
@@ -9,7 +9,7 @@ f test_cli(void) -> void
   const char *bad[][6] = {{"build/nanoc", NULL}, {"build/nanoc", "--lang", "rust", "x.nc", NULL},
       {"build/nanoc", "--max-steps", "-1", "x.nc", NULL}, {"build/nanoc", "-o", NULL},
       {"build/nanoc", "--bad", NULL}}
-  for (size_t i = 0; i < 5; ++i)
+  for size_t i = 0; i < 5; ++i
     CHECK(test_run(bad[i]).status != 0)
   char *input = test_path("input $ space.nc"), *output = test_path("output space.c")
   test_write(input, "int x;\n")

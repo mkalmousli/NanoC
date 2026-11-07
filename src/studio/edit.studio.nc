@@ -2,21 +2,21 @@
 @lang 1
 + "studio.h"
 // Replaces the active selection or inserts text at the cursor.
-f st_insert(StFile *f,const char *text,size_t n) -> void
+f st_insert(StFile *f,const char *text,size_t n)
   size_t lo=f->buffer.cursor<f->buffer.anchor ? f->buffer.cursor : f->buffer.anchor
   size_t hi=f->buffer.cursor>f->buffer.anchor ? f->buffer.cursor : f->buffer.anchor
   st_edit(&f->buffer,lo,hi-lo,text,n)
 // Opens an in-window text prompt; no shell or project command is evaluated.
-f st_prompt(StApp *a,int kind,const char *initial) -> void
+f st_prompt(StApp *a,int kind,const char *initial)
   free(a->prompt_value)
   a->prompt_value=st_copy(initial,strlen(initial))
   a->prompt=kind
 // Searches forward from the current selection and wraps to the beginning.
-f st_find(StApp *a) -> void
+f st_find(StApp *a)
   StFile *f=&a->files[a->active]
   st_cache(f)
   if !a->search || !*a->search
-    return
+    <
   const char *p=strstr(f->text+f->buffer.cursor,a->search)
   if !p
     p=strstr(f->text,a->search)
@@ -27,7 +27,7 @@ f st_find(StApp *a) -> void
   else
     a->message="Search text not found"
 // Accepts file, search, replacement or save-as input.
-f st_accept(StApp *a) -> void
+f st_accept(StApp *a)
   StFile *f=&a->files[a->active]
   if a->prompt==1
     st_open(a,a->prompt_value)
@@ -44,7 +44,7 @@ f st_accept(StApp *a) -> void
     st_save(a)
   a->prompt=0
 // Handles prompt entry separately from source editing.
-f st_prompt_keys(StApp *a) -> void
+f st_prompt_keys(StApp *a)
   int code=GetCharPressed()
   while code
     int bytes=0
@@ -61,25 +61,25 @@ f st_prompt_keys(StApp *a) -> void
   if IsKeyPressed(KEY_ESCAPE)
     a->prompt=0
 // Completes the current identifier against earlier identifiers in the file.
-f st_complete(StApp *a) -> void
+f st_complete(StApp *a)
   StFile *f=&a->files[a->active]
   st_cache(f)
   size_t end=f->buffer.cursor,start=end
   while start && (isalnum((unsigned char)f->text[start-1]) || f->text[start-1]=='_')
     --start
   if start==end
-    return
+    <
   for size_t i=0; i<start; ++i
     if i && (isalnum((unsigned char)f->text[i-1]) || f->text[i-1]=='_')
-      continue
+      ^
     size_t n=0
     while isalnum((unsigned char)f->text[i+n]) || f->text[i+n]=='_'
       ++n
     if n>end-start && !strncmp(f->text+i,f->text+start,end-start)
       st_edit(&f->buffer,start,end-start,f->text+i,n)
-      return
+      <
 // Handles navigation, selections, clipboard, auto-indentation and history.
-f st_edit_keys(StApp *a) -> void
+f st_edit_keys(StApp *a)
   StFile *f=&a->files[a->active]
   st_cache(f)
   StBuffer *b=&f->buffer
@@ -112,7 +112,7 @@ f st_edit_keys(StApp *a) -> void
         f->scroll=(int)st_line(f,match)
     if IsKeyPressed(KEY_SPACE)
       st_complete(a)
-    return
+    <
   size_t old=b->cursor,line=st_line(f,b->cursor),column=b->cursor-f->lines[line]
   if IsKeyPressedRepeat(KEY_LEFT)||IsKeyPressed(KEY_LEFT)
     b->cursor=st_prev(f->text,b->cursor)

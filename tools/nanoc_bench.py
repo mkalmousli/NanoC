@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Repeated CLI timing of the actual compiler; no synthetic agent/human outcomes."""
+"""Repeated CLI timing of the compiler."""
 import argparse, json, platform, statistics, subprocess, time
 from pathlib import Path
 p=argparse.ArgumentParser()

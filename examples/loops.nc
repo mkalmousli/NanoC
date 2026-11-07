@@ -1,5 +1,5 @@
 + <stdio.h>
-f main() -> int
+f main()
   total:=0
   for i := 1; i < 11; i++
     total += i
@@ -10,4 +10,4 @@ f main() -> int
     n = n % 2 ? 3 * n + 1 : n / 2
     ++steps
   printf("collatz(27) takes %d steps\n", steps)
-  return 0
+  < 0

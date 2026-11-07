@@ -3,7 +3,7 @@
 + "nanoc/nanoc.h"
 + "nanoc/manage.h"
 // Reports actual compiler availability and optional dependency boundaries.
-f nc_doctor(NcContext *c,int argc,char **argv) -> int
+f nc_doctor(NcContext *c,int argc,char **argv) int
   const char *compiler=getenv("CC")
   if !compiler || !*compiler
     compiler="cc"
@@ -28,9 +28,9 @@ f nc_doctor(NcContext *c,int argc,char **argv) -> int
   jw_ks(&w,"validation","expansion check does not validate C semantics")
   jw_close(&w,'}')
   fputc('\n',stdout)
-  return result.status ? 1 : 0
+  < result.status ? 1 : 0
 // Runs explicit test translation units independently and emits a deterministic JSON summary.
-f nc_test_command(NcContext *c,int argc,char **argv) -> int
+f nc_test_command(NcContext *c,int argc,char **argv) int
   NcStrings files={0}
   for int i=2; i<argc; ++i
     if strcmp(argv[i],"--json")
@@ -59,4 +59,4 @@ f nc_test_command(NcContext *c,int argc,char **argv) -> int
   jw_ki(&w,"failed",(long)failed)
   jw_close(&w,'}')
   fputc('\n',stdout)
-  return failed ? 1 : 0
+  < failed ? 1 : 0

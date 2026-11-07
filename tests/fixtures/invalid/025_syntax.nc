@@ -1,3 +1,3 @@
-f f() -> int
+f f() int
   x: int =
-  return 0
+  < 0

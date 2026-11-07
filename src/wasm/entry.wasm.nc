@@ -7,15 +7,18 @@
 static NcContext *last;
 static char *last_out;
 static size_t last_len;
-f nc_host_write(int fd, const char *s, size_t n) -> void
+// Implements nc_host_write for the freestanding browser compiler.
+f nc_host_write(int fd, const char *s, size_t n)
   (void)fd
   (void)s
   (void)n
 
-f nc_host_trap(void) -> void
+// Implements nc_host_trap for the freestanding browser compiler.
+f nc_host_trap(void)
   __builtin_trap()
 
-f nc_web_transpile(const char *src, size_t len) -> int
+// Implements nc_web_transpile for the freestanding browser compiler.
+f nc_web_transpile(const char *src, size_t len) int
   NcContext *c = calloc(1, sizeof *c)
   nc_init(c, "playground.nc")
   last = c
@@ -24,14 +27,17 @@ f nc_web_transpile(const char *src, size_t len) -> int
   copy[len] = 0
   last_out = nc_transpile(c, copy)
   last_len = strlen(last_out)
-  return  0
+  <  0
 
-f nc_web_output(void) -> const char *
-  return  last_out
+// Implements nc_web_output for the freestanding browser compiler.
+f nc_web_output(void) const char *
+  <  last_out
 
-f nc_web_output_len(void) -> size_t
-  return  last_len
+// Implements nc_web_output_len for the freestanding browser compiler.
+f nc_web_output_len(void) size_t
+  <  last_len
 
-f nc_web_error(void) -> const char *
-  return  last ? last->error : ""
+// Implements nc_web_error for the freestanding browser compiler.
+f nc_web_error(void) const char *
+  <  last ? last->error : ""
 

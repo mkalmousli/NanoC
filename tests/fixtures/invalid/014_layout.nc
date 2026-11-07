@@ -1,3 +1,3 @@
-f f() -> int
+f f() int
   if 1:
-    return 2
+    < 2

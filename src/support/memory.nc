@@ -4,7 +4,7 @@
 
 struct NcAllocation {NcAllocation *next; size_t used, capacity; max_align_t align; };
 // Sets up a context.
-f nc_init(NcContext *c, const char *file) -> void
+f nc_init(NcContext *c, const char *file)
   memset(c, 0, sizeof *c)
   c->file = file
   c->max_depth = 128
@@ -13,51 +13,51 @@ f nc_init(NcContext *c, const char *file) -> void
   c->max_passes = 32
 
 // Allocates tracked memory.
-f nc_alloc(NcContext *c, size_t size) -> void *
+f nc_alloc(NcContext *c, size_t size) void *
   size_t align = _Alignof(max_align_t)
-  if (size > SIZE_MAX - align)
+  if size > SIZE_MAX - align
     nc_fail(c, 0, "allocation limit exceeded")
   size = (size + align - 1) / align * align
-  if (! size)
+  if ! size
     size = align
   NcAllocation *p = c->allocations
-  if (p && size <= p->capacity - p->used)
+  if p && size <= p->capacity - p->used
     void *data = (unsigned char *)(p + 1) + p->used
     p->used += size
-    return data
+    < data
   size_t capacity = size > 65536 ? size : 65536
-  if (capacity > SIZE_MAX - sizeof *p)
+  if capacity > SIZE_MAX - sizeof *p
     nc_fail(c, 0, "allocation limit exceeded")
   size_t charged = capacity + sizeof *p
   size_t limit = c->max_output > SIZE_MAX / 128 ? SIZE_MAX : c->max_output * 128
-  if (limit < 1024 * 1024)
+  if limit < 1024 * 1024
     limit = 1024 * 1024
-  if (charged > limit || c->allocated > limit - charged)
+  if charged > limit || c->allocated > limit - charged
     nc_fail(c, 0, "allocation limit exceeded")
   p = calloc(1, charged)
-  if (! p)
+  if ! p
     nc_fail(c, 0, "out of memory")
   p->next = c->allocations
   p->capacity = capacity
   p->used = size
   c->allocations = p
   c->allocated += charged
-  return p + 1
+  < p + 1
 
 // Frees all tracked memory.
-f nc_dispose(NcContext *c) -> void
-  while (c->allocations)
+f nc_dispose(NcContext *c)
+  while c->allocations
     NcAllocation *p = c->allocations
     c->allocations = p->next
     free(p)
 
 // Grows an array by one.
-f nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) -> void *
+f nc_grow(NcContext *c, const void *old, size_t n, size_t *cap, size_t width) void *
   size_t next = *cap ? *cap * 2 : 8
-  if (next < *cap || next > SIZE_MAX / width)
+  if next < *cap || next > SIZE_MAX / width
     nc_fail(c, 0, "allocation limit exceeded")
   void *p = nc_alloc(c, next * width)
-  if (n)
+  if n
     memcpy(p, old, n * width)
   *cap = next
-  return p
+  < p

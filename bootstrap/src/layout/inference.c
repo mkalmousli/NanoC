@@ -11,39 +11,39 @@ extern int nc_std;
 char *nc_infer(NcContext *c, NcTokens ts, int line) {
     NcTokens items = nc_significant(c, ts);
     size_t i = items.n > 1 && (nc_is(items.v[0], "+") || nc_is(items.v[0], "-")) ? 1 : 0;
-    if ((items.n == i + 1)) {
+    if (items.n == i + 1) {
         NcToken t = items.v[i];
-        if ((t.kind == NC_LITERAL && t.n && t.s[0] == '"')) {
+        if (t.kind == NC_LITERAL && t.n && t.s[0] == '"') {
             return "const char *";
         }
-        if ((t.kind == NC_LITERAL && t.n && t.s[0] == '\'')) {
+        if (t.kind == NC_LITERAL && t.n && t.s[0] == '\'') {
             return c->cpp ? "auto" : "int";
         }
-        if ((nc_is(t, "true") || nc_is(t, "false"))) {
+        if (nc_is(t, "true") || nc_is(t, "false")) {
             return c->cpp ? "bool" : nc_std == 89 ? "int" : "_Bool";
         }
-        if ((t.kind == NC_NUMBER)) {
+        if (t.kind == NC_NUMBER) {
             char *s = nc_text(c, t), *end;
             char *signed_text = i ? nc_format(c, "%.*s%s", (int)items.v[0].n, items.v[0].s,
                     s) : s;
             errno = 0;
             long long n = strtoll(signed_text, &end, 10);
-            if ((!errno && !*end && n >= -32767 && n <= 32767)) {
+            if (!errno && !*end && n >= -32767 && n <= 32767) {
                 return "int";
             }
-            if ((!errno && !*end && n >= -2147483647LL && n <= 2147483647LL)) {
+            if (!errno && !*end && n >= -2147483647LL && n <= 2147483647LL) {
                 return "long";
             }
-            if ((strpbrk(s, ".eE"))) {
+            if (strpbrk(s, ".eE")) {
                 errno = 0;
                 (void)strtod(s, &end);
-                if ((!*end)) {
+                if (!*end) {
                     return "double";
                 }
             }
         }
     }
-    if ((c->cpp)) {
+    if (c->cpp) {
         return "auto";
     }
     nc_fail(c, line, "type needed: use 'name:CType = expression' for nonliteral initializers");
@@ -58,7 +58,7 @@ NcTokens nc_declaration(NcContext *ctx, NcTokens ts, int line) {
     NcTokens init = nc_slice(ts, c.pos, ts.n);
     bool colon = 0;
     for (size_t i = (0), nanoc_bound_1 = (names.n); i < nanoc_bound_1; ++i) {
-        if ((nc_is(names.v[i], ":"))) {
+        if (nc_is(names.v[i], ":")) {
             colon = 1;
         }
     }

@@ -4,4 +4,5 @@
     n:=$value
     emit(quote(enum { $$id=$$n };))
 @constant(answer,6*7)
-f main() -> int = answer!=42
+f main()
+  < answer!=42

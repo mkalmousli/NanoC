@@ -6,44 +6,45 @@
 
 #ifdef NC_TOOLING
 // Creates the parent directories.
-f directories(NcContext *c, const char *path, int line) -> static void
+f directories(NcContext *c, const char *path, int line) static void
   char *copy = nc_string(c, path, strlen(path))
-  if (!*copy)
+  if !*copy
     nc_fail(c, line, "empty directory path")
-  for (char *p = copy + 1; ; ++p)
-    if (*p && *p != '/')
-      continue
+  for char *p = copy + 1; ; ++p
+    if *p && *p != '/'
+      ^
     char last = *p
     *p = 0
-    if (NC_MKDIR(copy) && errno != EEXIST)
+    if NC_MKDIR(copy) && errno != EEXIST
       nc_fail(c, line, "cannot create directory %s: %s", copy, strerror(errno))
     *p = last
-    if (! last)
-      break
+    if ! last
+      !
 
 #endif
 // Runs file builtins.
-f nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) -> NcValue
+f nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
-  if (!strcmp(name, "file"))
-    nc_arity(c, a, 0, line); return nc_value_text(NC_STRING, (char *)c->file)
+  if !strcmp(name, "file")
+    nc_arity(c, a, 0, line)
+    < nc_value_text(NC_STRING, (char *)c->file)
   nc_arity(c, a, !strcmp(name, "write") ? 2 : 1, line)
   const char * path = nc_meta_text(c, a.v[0], line)
-  if (!strcmp(name, "read"))
-    return nc_value_text(NC_STRING, nc_read(c, path))
-  if (!strcmp(name, "exists"))
+  if !strcmp(name, "read")
+    < nc_value_text(NC_STRING, nc_read(c, path))
+  if !strcmp(name, "exists")
     struct stat st
-    return nc_boolean(stat(path, &st) == 0)
-  if (!strcmp(name, "env"))
-    return nc_value_text(NC_STRING, getenv(path) ? getenv(path) : "")
+    < nc_boolean(stat(path, &st) == 0)
+  if !strcmp(name, "env")
+    < nc_value_text(NC_STRING, getenv(path) ? getenv(path) : "")
   #ifdef NC_TOOLING
-  if (!strcmp(name, "write"))
+  if !strcmp(name, "write")
     nc_write(c, path, nc_meta_text(c, a.v[1], line))
-  elif (!strcmp(name, "mkdir"))
+  elif !strcmp(name, "mkdir")
     directories(c, path, line)
-  elif (!strcmp(name, "remove") && remove(path) && errno != ENOENT)
+  elif !strcmp(name, "remove") && remove(path) && errno != ENOENT
     nc_fail(c, line, "cannot remove %s: %s", path, strerror(errno))
   #else
   nc_fail(c, line, "unknown compile-time file function: %s", name)
   #endif
-  return nc_integer(0)
+  < nc_integer(0)

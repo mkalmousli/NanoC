@@ -6,7 +6,7 @@
 // Computes a half-open source span from original lexer coordinates.
 NcSpan nc_trace_span(NcTokens tokens) {
     NcSpan span = {0};
-    if ((!tokens.n)) {
+    if (!tokens.n) {
         return span;
     }
     NcToken first = tokens.v[0], last = tokens.v[tokens.n - 1];
@@ -15,7 +15,7 @@ NcSpan nc_trace_span(NcTokens tokens) {
     span.end_line = last.line;
     span.end_column = last.column;
     for (size_t i = 0; i < last.n; ++i) {
-        if ((last.s[i] == '\n')) {
+        if (last.s[i] == '\n') {
             ++span.end_line;
             span.end_column = 1;
         } else {
@@ -27,7 +27,7 @@ NcSpan nc_trace_span(NcTokens tokens) {
 
 // Extends a structured operation through the last child or branch.
 void nc_trace_extend(NcContext *c, size_t id, NcSpan span) {
-    if ((!id || !span.line)) {
+    if (!id || !span.line) {
         return;
     }
     NcSpan *target = &c->traces.v[id - 1].source;
@@ -37,21 +37,21 @@ void nc_trace_extend(NcContext *c, size_t id, NcSpan span) {
 
 // Filters a map by original source, declared symbol, or generated C offset.
 bool nc_trace_matches(NcContext *c, NcTrace *event) {
-    if ((c->query_line && (event->synthetic || c->query_line < event->source.line || c->query_line > event->source.end_line))) {
+    if (c->query_line && (event->synthetic || c->query_line < event->source.line || c->query_line > event->source.end_line)) {
         return 0;
     }
-    if ((c->query_symbol && *c->query_symbol && strcmp(c->query_symbol, event->name ? event->name : ""))) {
+    if (c->query_symbol && *c->query_symbol && strcmp(c->query_symbol, event->name ? event->name : "")) {
         bool found = 0;
         for (size_t i = 0; i < event->identifiers.n; ++i) {
-            if ((!strcmp(c->query_symbol, event->identifiers.v[i]))) {
+            if (!strcmp(c->query_symbol, event->identifiers.v[i])) {
                 found = 1;
             }
         }
-        if ((!found)) {
+        if (!found) {
             return 0;
         }
     }
-    if ((c->query_generated && (event->start == SIZE_MAX || c->query_offset < event->start || c->query_offset >= event->end))) {
+    if (c->query_generated && (event->start == SIZE_MAX || c->query_offset < event->start || c->query_offset >= event->end)) {
         return 0;
     }
     return 1;
@@ -60,12 +60,12 @@ bool nc_trace_matches(NcContext *c, NcTrace *event) {
 // Serializes a map through a standard C temporary stream before an atomic file write.
 char *nc_trace_text(NcContext *c, const char *generated) {
     FILE *file = tmpfile();
-    if ((!file)) {
+    if (!file) {
         nc_fail(c, 0, "cannot create map stream");
     }
     nc_trace_json(file, c, generated);
     long size = ftell(file);
-    if ((size < 0 || (uintmax_t)size > c->max_output)) {
+    if (size < 0 || (uintmax_t)size > c->max_output) {
         fclose(file);
         nc_fail(c, 0, "map output limit exceeded");
     }
@@ -73,7 +73,7 @@ char *nc_trace_text(NcContext *c, const char *generated) {
     char *text = nc_alloc(c, (size_t)size + 1);
     bool ok = fread(text, 1, (size_t)size, file) == (size_t)size;
     fclose(file);
-    if ((!ok)) {
+    if (!ok) {
         nc_fail(c, 0, "cannot read map stream");
     }
     return text;

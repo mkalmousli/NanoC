@@ -1,5 +1,5 @@
 // Assemble the GitHub Pages site in _site/: docs, a copy of the tracked sources
-// (the explorer reads them), a file index and NanoC-vs-C compiler stats.
+// and a file index for the source browser.
 // From the repository root, after `cc -std=c11 build.c -o builder && ./builder build`:
 //   build/nctool src/site/site.tool.nc
 // It then runs examples.nc, wasm.nc and pages.nc (same folder) to finish the job.
@@ -25,54 +25,6 @@ for f tracked
           index=push(index,"\""+f+"\"")
 write("_site/files.json","["+join(index,",")+"]\n")
 log("files: "+str(len(index)))
-compiler:="build/nanoc"
-today:=slice(exec(["date","-u","+%F"]),0,10)
-areas:=[]
-ncFiles:=[]
-for f tracked
-  if len(f)>7
-    if slice(f,0,4)=="src/"
-      if slice(f,len(f)-3,len(f))==".nc"
-        ncFiles=push(ncFiles,f)
-tn:=0
-tb:=0
-tc:=0
-tcb:=0
-for f ncFiles
-  if len(split(f,"."))==2
-    src:=read(f)
-    out:=""
-    if len(split(f,"."))==2
-      exec([compiler,f,"-o","build/site-stat.c"])
-      out=read("build/site-stat.c")
-      exec(["sh","-c","mkdir -p \"$(dirname \"$1\")\"","sh","_site/c/"+f])
-      write("_site/c/"+f,out)
-    nl:=0
-    for l split(src,"\n")
-      if len(l)>0
-        nl+=1
-    cl:=0
-    for l split(out,"\n")
-      if len(l)>0
-        cl+=1
-    rest:=slice(f,4,len(f))
-    area:="tools"
-    if contains(rest,"/")
-      area=slice(rest,0,find(rest,"/"))
-    if !contains(join(areas,","),area)
-      areas=push(areas,area)
-    put("files:"+area,get("files:"+area,0)+1)
-    put("nc:"+area,get("nc:"+area,0)+len(src))
-    put("c:"+area,get("c:"+area,0)+len(out))
-    tn+=nl
-    tb+=len(src)
-    tc+=cl
-    tcb+=len(out)
-rows:=[]
-for a areas
-  rows=push(rows,"{\"name\":\""+a+"\",\"files\":"+str(get("files:"+a,0))+",\"nc\":"+str(get("nc:"+a,0))+",\"c\":"+str(get("c:"+a,0))+"}")
-write("_site/stats.json","{\"generated\":\""+today+"\",\"files\":"+str(len(ncFiles))+",\"nc\":{\"lines\":"+str(tn)+",\"bytes\":"+str(tb)+"},\"c\":{\"lines\":"+str(tc)+",\"bytes\":"+str(tcb)+"},\"areas\":["+join(rows,",")+"]}\n")
-log("stats: "+str(tb)+" nanoc chars, "+str(tcb)+" c chars")
 exec(["mkdir","-p","build/blocks"])
 exec(["build/nctool","src/docs.tool.nc"])
 for step ["examples","wasm","pages"]

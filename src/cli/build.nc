@@ -5,7 +5,7 @@
 + <errno.h>
 extern int nc_std;
 // Emits one input using an independent context and propagates its precise NanoC diagnostics.
-f build_unit(NcContext *c,const char *input,const char *file,bool lines) -> void
+f build_unit(NcContext *c,const char *input,const char *file,bool lines)
   NcContext *unit=calloc(1,sizeof *unit)
   if !unit
     nc_fail(c,0,"cannot allocate compilation context")
@@ -23,7 +23,7 @@ f build_unit(NcContext *c,const char *input,const char *file,bool lines) -> void
   nc_dispose(unit)
   free(unit)
 // Builds C and NanoC translation units with caller-selected linking flags, then optionally executes.
-f nc_build_command(NcContext *c,int argc,const char **argv) -> int
+f nc_build_command(NcContext *c,int argc,const char **argv) int
   const char *output="build/program", *compiler=getenv("CC"), *standard="c11"
   bool run=!strcmp(argv[1],"run"),json=false,lines=true,emit_only=false
   NcStrings flags={0},arguments={0},inputs={0},sources={0}
@@ -84,7 +84,7 @@ f nc_build_command(NcContext *c,int argc,const char **argv) -> int
       nc_trace_strings(&w,sources)
       jw_close(&w,'}')
       fputc('\n',stdout)
-    return 0
+    < 0
   NcStrings args={0}
   NC_PUSH(c,args,(char *)compiler)
   NC_PUSH(c,args,nc_format(c,"-std=%s",standard))
@@ -112,4 +112,4 @@ f nc_build_command(NcContext *c,int argc,const char **argv) -> int
   else
     fputs(result.out,stdout)
     fputs(result.err,stderr)
-  return result.status
+  < result.status

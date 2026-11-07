@@ -3,9 +3,9 @@
 + "test.h"
 
 // Verifies real C compiler diagnostics follow #line back to a compact source line.
-f test_compact_cli(void) -> void
+f test_compact_cli(void)
   char *input = test_path("compact-map.nc"), *output = test_path("compact-map.c")
-  test_write(input, "f main() -> int\n  x := 1\n\n  return missing + x\n")
+  test_write(input, "f main()\n  x := 1\n\n  < missing + x\n")
   const char *emit[] = {"build/nanoc", input, "-o", output, "--line-directives", NULL}
   (void)test_command(emit)
   CHECK(strstr(test_read(output), nc_format(test_state.mem, "#line 4 %s", nc_quote(test_state.mem, input))))

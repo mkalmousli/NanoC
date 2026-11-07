@@ -2,51 +2,51 @@
 + "test.h"
 
 TestState test_state;
-f test_check(bool ok, const char *expression, const char *file, int line) -> void
+f test_check(bool ok, const char *expression, const char *file, int line)
   ++test_state.assertions
-  if (!ok)
+  if !ok
     fprintf(stderr, "%s:%d: FAIL: %s\n", file, line, expression)
     exit(1)
 
-f test_path(const char *name) -> char *
-  return  nc_format(test_state.mem, "%s/%s", test_state.dir, name)
+f test_path(const char *name) char *
+  <  nc_format(test_state.mem, "%s/%s", test_state.dir, name)
 
-f test_read(const char *path) -> char *
-  return  nc_read(test_state.mem, path)
+f test_read(const char *path) char *
+  <  nc_read(test_state.mem, path)
 
-f test_write(const char *path, const char *s) -> void
+f test_write(const char *path, const char *s)
   nc_write(test_state.mem, path, s)
 
-f test_exists(const char *path) -> bool
+f test_exists(const char *path) bool
   struct stat st
-  return  lstat(path, &st) == 0
+  <  lstat(path, &st) == 0
 
-f test_translate(const char *source, bool cpp) -> char *
+f test_translate(const char *source, bool cpp) char *
   NcContext *c = calloc(1, sizeof *c)
   CHECK(c != NULL)
   nc_init(c, "test.nc")
   c->cpp = cpp
-  if (setjmp(c->trap))
+  if setjmp(c->trap)
     fprintf(stderr, "%s\nSource:\n%s\n", c->error, source)
     CHECK(0)
   char *generated = nc_transpile(c, source)
   char *out = nc_string(test_state.mem, generated, strlen(generated))
   nc_dispose(c)
   free(c)
-  return  out
+  <  out
 
-f test_reject(const char *source, const char *fragment, size_t depth, size_t steps, size_t output) -> void
+f test_reject(const char *source, const char *fragment, size_t depth, size_t steps, size_t output)
   NcContext *c = calloc(1, sizeof *c)
   CHECK(c != NULL)
   nc_init(c, "test.nc")
-  if (depth)
+  if depth
     c->max_depth = depth
-  if (steps)
+  if steps
     c->max_steps = steps
-  if (output)
+  if output
     c->max_output = output
-  if (setjmp(c->trap))
-    if (!strstr(c->error, fragment))
+  if setjmp(c->trap)
+    if !strstr(c->error, fragment)
       fprintf(stderr, "expected '%s', got:\n%s\n", fragment, c->error)
     CHECK(strstr(c->error, fragment) != NULL)
   else

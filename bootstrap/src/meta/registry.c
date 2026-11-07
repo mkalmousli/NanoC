@@ -27,16 +27,16 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL}, {"str", "
         "all", nc_meta_files}, {"file", "file()", "all", nc_meta_files},
 #ifdef NC_TOOLING
         {"write", "write(path,text)", "tool", nc_meta_files}, {"mkdir", "mkdir(path)", "tool",
-        nc_meta_files}, {"remove", "remove(path)", "tool", nc_meta_files}, {"run", "run(argv[,cwd]) -> [status,out,err]",
-        "tool", nc_meta_process}, {"exec", "exec(argv[,cwd]) -> stdout; fails on nonzero", "tool",
-        nc_meta_process}, {"sh", "sh(command) -> [status,out,err]", "tool", nc_meta_process},
+        nc_meta_files}, {"remove", "remove(path)", "tool", nc_meta_files}, {"run", "run(argv[,cwd]) [status,out,err]",
+        "tool", nc_meta_process}, {"exec", "exec(argv[,cwd]) stdout; fails on nonzero", "tool",
+        nc_meta_process}, {"sh", "sh(command) [status,out,err]", "tool", nc_meta_process},
 #endif
         };
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
 bool nc_builtin_known(const char *name) {
     for (size_t i = (0), nanoc_bound_1 = (nc_spec_count); i < nanoc_bound_1; ++i) {
-        if ((!strcmp(name, nc_specs[i].name))) {
+        if (!strcmp(name, nc_specs[i].name)) {
             return 1;
         }
     }
@@ -47,7 +47,7 @@ bool nc_builtin_known(const char *name) {
 NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) {
     for (size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i) {
         const NcSpec *s = &nc_specs[i];
-        if ((!strcmp(name, s->name) && s->function)) {
+        if (!strcmp(name, s->name) && s->function) {
             return s->function(m, name, args, line);
         }
     }
@@ -57,7 +57,7 @@ NcValue nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line
 
 // Gets a value as text.
 const char *nc_meta_text(NcContext *c, NcValue v, int line) {
-    if ((v.kind != NC_STRING && v.kind != NC_CODE)) {
+    if (v.kind != NC_STRING && v.kind != NC_CODE) {
         nc_fail(c, line, "expected text or tokens");
     }
     return v.text;

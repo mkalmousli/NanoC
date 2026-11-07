@@ -5,7 +5,7 @@
 
 // Skips whitespace tokens.
 void nc_skip(NcCursor *c) {
-    while ((c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE)) {
+    while (c->pos < c->ts.n && c->ts.v[c->pos].kind == NC_SPACE) {
         ++c->pos;
     }
 }
@@ -24,7 +24,7 @@ bool nc_at(NcCursor *c, const char *s) {
 
 // Gets the current source line.
 int nc_line(const NcCursor *c) {
-    if ((c->pos < c->ts.n)) {
+    if (c->pos < c->ts.n) {
         return c->ts.v[c->pos].line;
     }
     return c->ts.n ? c->ts.v[c->ts.n - 1].line : 1;
@@ -32,7 +32,7 @@ int nc_line(const NcCursor *c) {
 
 // Takes the next token.
 NcToken nc_take(NcCursor *c) {
-    if ((nc_end(c))) {
+    if (nc_end(c)) {
         nc_fail(c->ctx, nc_line(c), "unexpected end of input");
     }
     NcToken token = c->ts.v[c->pos++];
@@ -42,7 +42,7 @@ NcToken nc_take(NcCursor *c) {
 
 // Consumes a token if it matches.
 bool nc_eat(NcCursor *c, const char *s) {
-    if ((!nc_at(c, s))) {
+    if (!nc_at(c, s)) {
         return 0;
     }
     ++c->pos;
@@ -52,7 +52,7 @@ bool nc_eat(NcCursor *c, const char *s) {
 // Consumes a token or fails.
 void nc_need(NcCursor *c, const char *s) {
     NcToken t = nc_take(c);
-    if ((!nc_is(t, s))) {
+    if (!nc_is(t, s)) {
         nc_fail(c->ctx, t.line, "expected '%s', got '%.*s'", s, (int)t.n, t.s);
     }
 }
@@ -60,7 +60,7 @@ void nc_need(NcCursor *c, const char *s) {
 // Consumes an identifier.
 char *nc_name(NcCursor *c) {
     NcToken t = nc_take(c);
-    if ((t.kind != NC_WORD)) {
+    if (t.kind != NC_WORD) {
         nc_fail(c->ctx, t.line, "expected identifier");
     }
     return nc_text(c->ctx, t);

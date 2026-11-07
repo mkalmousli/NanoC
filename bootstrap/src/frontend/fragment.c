@@ -5,17 +5,32 @@
 
 // Recognizes a control header with an indented body, leaving already-generated C tokens alone.
 bool nc_runtime_start(NcContext *c, NcTokens ts, size_t at) {
-    if ((!nc_bol(ts, at) || ts.v[at].kind != NC_WORD)) {
+    if (!nc_bol(ts, at)) {
         return 0;
     }
     NcToken token = ts.v[at];
-    if ((!nc_is(token, "if") && !nc_is(token, "elif") && !nc_is(token, "else") && !nc_is(token,
-            "while") && !nc_is(token, "for"))) {
+    if (nc_is(token, "<")) {
+        return 1;
+    }
+    if (nc_is(token, "!") || nc_is(token, "^")) {
+        size_t next = at + 1;
+        while (next < ts.n && ts.v[next].kind == NC_SPACE && ts.v[next].line == token.line && !memchr(ts.v[next].s,
+                '\n', ts.v[next].n)) {
+            ++next;
+        }
+        return next == ts.n || ts.v[next].line > token.line || (ts.v[next].kind == NC_SPACE && memchr(ts.v[next].s,
+                '\n', ts.v[next].n)) || nc_is(ts.v[next], ";");
+    }
+    if (token.kind != NC_WORD) {
+        return 0;
+    }
+    if (!nc_is(token, "if") && !nc_is(token, "elif") && !nc_is(token, "else") && !nc_is(token,
+            "while") && !nc_is(token, "for")) {
         return 0;
     }
     NcCursor peek = {c, ts, at};
     NcLayoutLine line = nc_logical_line(&peek);
-    if ((nc_end(&peek))) {
+    if (nc_end(&peek)) {
         return 0;
     }
     return peek.ts.v[peek.pos].column - 1 > line.indent;
@@ -25,6 +40,10 @@ bool nc_runtime_start(NcContext *c, NcTokens ts, size_t at) {
 char *nc_runtime_scope(NcContext *c, NcCursor *cur) {
     NcLines lines = {0};
     NcLayoutLine head = nc_logical_line(cur);
+    NcTokens sig = nc_significant(c, head.ts);
+    if (sig.n && (nc_is(sig.v[0], "<") || nc_is(sig.v[0], "!") || nc_is(sig.v[0], "^"))) {
+        return nc_statement(c, head);
+    }
     int indent = head.indent;
     bool conditional = nc_is(nc_significant(c, head.ts).v[0], "if");
     for (;;) {
@@ -33,17 +52,17 @@ char *nc_runtime_scope(NcContext *c, NcCursor *cur) {
         for (size_t i = 0; i < body.n; ++i) {
             NC_PUSH(c, lines, body.v[i]);
         }
-        if ((!conditional)) {
+        if (!conditional) {
             break;
         }
         NcCursor peek = *cur;
-        if ((nc_end(&peek))) {
+        if (nc_end(&peek)) {
             break;
         }
         NcLayoutLine next = nc_logical_line(&peek);
         NcTokens sig = nc_significant(c, next.ts);
-        if ((!sig.n || next.indent != indent || (!nc_is(sig.v[0], "elif") && !nc_is(sig.v[0],
-                "else")))) {
+        if (!sig.n || next.indent != indent || (!nc_is(sig.v[0], "elif") && !nc_is(sig.v[0],
+                "else"))) {
             break;
         }
         *cur = peek;
@@ -52,7 +71,7 @@ char *nc_runtime_scope(NcContext *c, NcCursor *cur) {
     lines = nc_prepare_lines(c, lines, 0);
     size_t at = 0;
     NcNodes nodes = nc_tree(c, lines, &at, indent, 0);
-    if ((at != lines.n)) {
+    if (at != lines.n) {
         nc_fail(c, lines.v[at].line, "inconsistent indentation");
     }
     return nc_emit_block(c, nodes, 0);

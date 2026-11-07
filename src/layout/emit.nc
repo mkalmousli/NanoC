@@ -3,66 +3,67 @@
 + "nanoc/nanoc.h"
 
 // Tests the first significant word of a layout node.
-f lead(NcNode node, const char *word) -> static bool
-  for (size_t i = 0; i < node.head.ts.n; ++i)
-    if (node.head.ts.v[i].kind != NC_SPACE)
-      return nc_is(node.head.ts.v[i], word)
-  return 0
+f lead(NcNode node, const char *word) static bool
+  for size_t i = 0; i < node.head.ts.n; ++i
+    if node.head.ts.v[i].kind != NC_SPACE
+      < nc_is(node.head.ts.v[i], word)
+  < 0
 
 // Starts a C line with an optional source marker.
-f nc_marker(NcContext *c, NcBuffer *out, int line) -> void
-  if (c->lines)
+f nc_marker(NcContext *c, NcBuffer *out, int line)
+  if c->lines
     nc_printf(c, out, "\n#line %d %s\n", line, nc_quote(c, c->file))
   else
     nc_add(c, out, "\n")
 
 // Emits parsed statements and conditional chains with compiler-owned provenance boundaries.
-f nc_emit_block(NcContext *c, NcNodes nodes, size_t depth) -> char *
+f nc_emit_block(NcContext *c, NcNodes nodes, size_t depth) char *
   nc_depth(c, depth, nodes.n ? nodes.v[0].head.line : 1, "layout")
   NcBuffer out = {0}
   size_t i = 0
-  while (i < nodes.n)
+  while i < nodes.n
     NcNode node = nodes.v[i]
     nc_step(c, node.head.line)
     size_t parent = c->trace_parent
     size_t event = nc_trace_line(c, &out, node.head)
     int pp = nc_pp_kind(nc_significant(c, node.head.ts))
-    if (pp >= 1 && pp <= 3)
+    if pp >= 1 && pp <= 3
       nc_add(c, &out, nc_emit_pp(c, nodes, &i, depth))
       nc_trace_extend(c, event, nodes.v[i - 1].head.span)
       nc_trace_finish(c, &out, event, parent)
-      continue
-    if (pp == 4 || pp == 5)
+      ^
+    if pp == 4 || pp == 5
       nc_fail(c, node.head.line, "preprocessor elif without matching condition")
     size_t last = i
-    if (lead(node, "if") && node.children.n)
-      while (last + 1 < nodes.n && (lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1], "else")))
-        if (lead(nodes.v[last], "else"))
+    if lead(node, "if") && node.children.n
+      while last + 1 < nodes.n && (lead(nodes.v[last + 1], "elif") || lead(nodes.v[last + 1], "else"))
+        if lead(nodes.v[last], "else")
           nc_fail(c, nodes.v[last + 1].head.line, "branch after else")
         ++last
-    elif (lead(node, "elif") || lead(node, "else"))
+    elif lead(node, "elif") || lead(node, "else")
       nc_fail(c, node.head.line, "branch without matching if")
     nc_trace_extend(c, event, nodes.v[last].head.span)
-    if (!node.children.n)
+    if !node.children.n
       nc_marker(c, &out, node.head.line)
-      if (node.head.raw || nc_meta_line(node.head))
-        nc_add(c, &out, nc_join(c, node.head.ts)); nc_add(c, &out, "\n")
+      if node.head.raw || nc_meta_line(node.head)
+        nc_add(c, &out, nc_join(c, node.head.ts))
+        nc_add(c, &out, "\n")
       else
         nc_add(c, &out, nc_statement(c, node.head))
     else
-      for (size_t branch = i; branch <= last; ++branch)
+      for size_t branch = i; branch <= last; ++branch
         NcNode child = nodes.v[branch]
-        if (!child.children.n)
+        if !child.children.n
           nc_fail(c, child.head.line, "branch needs an indented body")
         nc_marker(c, &out, child.head.line)
         char *control = nc_control(c, child.head.ts, child.head.line)
         nc_printf(c, &out, "%s {", control)
         nc_add(c, &out, nc_emit_block(c, child.children, depth + 1))
         nc_add(c, &out, "}\n")
-        if (*control == '{')
+        if *control == '{'
           nc_add(c, &out, "}\n")
     nc_trace_finish(c, &out, event, parent)
     nc_check(c, out.n, node.head.line)
     i = last + 1
   nc_add(c, &out, "")
-  return out.v
+  < out.v

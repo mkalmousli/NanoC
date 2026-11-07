@@ -4,15 +4,15 @@
 
 extern int nc_std;
 // Writes the compiler logs as an array under "logs".
-f logs(NcJson *w, NcContext *c) -> static void
+f logs(NcJson *w, NcContext *c) static void
   jw_key(w, "logs")
   jw_open(w, '[')
-  for (size_t i = (0), nanoc_bound_1 = (c->logs.n); i < nanoc_bound_1; ++i)
+  for size_t i = (0), nanoc_bound_1 = (c->logs.n); i < nanoc_bound_1; ++i
     jw_str(w, c->logs.v[i])
   jw_close(w, ']')
 
 // Prints a diagnostic report.
-f nc_report(FILE *out, NcContext *c, size_t bytes) -> void
+f nc_report(FILE *out, NcContext *c, size_t bytes)
   NcJson w
   jw_start(&w, out)
   jw_open(&w, '{')
@@ -24,7 +24,7 @@ f nc_report(FILE *out, NcContext *c, size_t bytes) -> void
   jw_ki(&w, "generatedBytes", (long)bytes)
   jw_key(&w, "symbols")
   jw_open(&w, '[')
-  for (size_t i = (0), nanoc_bound_2 = (c->symbols.n); i < nanoc_bound_2; ++i)
+  for size_t i = (0), nanoc_bound_2 = (c->symbols.n); i < nanoc_bound_2; ++i
     NcSymbol s = c->symbols.v[i]
     jw_open(&w, '{')
     jw_ks(&w, "name", s.name)
@@ -41,7 +41,7 @@ f nc_report(FILE *out, NcContext *c, size_t bytes) -> void
   fputc('\n', out)
 
 // Writes one JSON diagnostic.
-f nc_diagnostic(FILE *out, NcContext *c) -> void
+f nc_diagnostic(FILE *out, NcContext *c)
   NcJson w
   jw_start(&w, out)
   jw_open(&w, '{')
@@ -61,7 +61,7 @@ f nc_diagnostic(FILE *out, NcContext *c) -> void
   jw_ks(&w, "message", c->detail)
   jw_key(&w, "trace")
   jw_open(&w, '[')
-  for (size_t i = c->frame_count; i; --i)
+  for size_t i = c->frame_count; i; --i
     jw_str(&w, c->frames[i - 1])
   jw_close(&w, ']')
   jw_close(&w, '}')

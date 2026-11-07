@@ -67,35 +67,35 @@ int nc_convert_command(NcContext *c, int argc, const char * *argv) {
     bool compact = 0;
     NcStrings extra = {0};
     for (int i = 2; i < argc; ++i) {
-        if ((!strcmp(argv[i], "--compact"))) {
+        if (!strcmp(argv[i], "--compact")) {
             compact = 1;
-        } else if ((!strcmp(argv[i], "--conservative"))) {
+        } else if (!strcmp(argv[i], "--conservative")) {
             compact = 0;
-        } else if ((!strcmp(argv[i], "--to"))) {
-            if ((++i == argc || strcmp(argv[i], "nanoc"))) {
+        } else if (!strcmp(argv[i], "--to")) {
+            if (++i == argc || strcmp(argv[i], "nanoc")) {
                 nc_fail(c, 0, "convert --to requires nanoc");
             }
-        } else if ((!strcmp(argv[i], "-o"))) {
-            if ((++i == argc)) {
+        } else if (!strcmp(argv[i], "-o")) {
+            if (++i == argc) {
                 nc_fail(c, 0, "missing output path");
             }
             output = argv[i];
-        } else if ((!strcmp(argv[i], "--"))) {
-            while ((++i < argc)) {
+        } else if (!strcmp(argv[i], "--")) {
+            while (++i < argc) {
                 NC_PUSH(c, extra, (char *)argv[i]);
             }
-        } else if ((!input)) {
+        } else if (!input) {
             input = argv[i];
         } else {
             nc_fail(c, 0, "unexpected conversion argument: %s", argv[i]);
         }
     }
-    if ((!input)) {
+    if (!input) {
         nc_fail(c, 0, "convert requires a C input file");
     }
     c->file = input;
     char *text;
-    if ((compact)) {
+    if (compact) {
         NcStrings args = {0};
         NC_PUSH(c, args, (char *)nc_python());
         NC_PUSH(c, args, nc_optional_tool(c, "nanoc_convert.py"));
@@ -106,17 +106,17 @@ int nc_convert_command(NcContext *c, int argc, const char * *argv) {
         }
         NC_PUSH(c, args, NULL);
         NcProcess result = nc_process(c, (const char * *)args.v);
-        if ((*result.err)) {
+        if (*result.err) {
             fputs(result.err, stderr);
         }
-        if ((result.status)) {
+        if (result.status) {
             return result.status;
         }
         text = (char *)result.out;
     } else {
         text = nc_format(c, "@c %s\n", nc_quote(c, nc_read(c, input)));
     }
-    if ((!strcmp(output, "-"))) {
+    if (!strcmp(output, "-")) {
         fputs(text, stdout);
     } else {
         nc_write(c, output, text);

@@ -6,34 +6,34 @@
 // Rewrites a program control header.
 char *nc_program_control(NcContext *ctx, NcTokens ts, int line) {
     NcTokens sig = nc_significant(ctx, ts);
-    if ((sig.n && nc_is(sig.v[sig.n - 1], ":"))) {
+    if (sig.n && nc_is(sig.v[sig.n - 1], ":")) {
         --sig.n;
     }
     NcCursor c = {ctx, sig, 0};
     char *name = nc_name(&c);
-    if ((!strcmp(name, "else"))) {
-        if ((nc_end(&c))) {
+    if (!strcmp(name, "else")) {
+        if (nc_end(&c)) {
             return "else";
         }
         nc_need(&c, "if");
         return nc_format(ctx, "else if (%s)", nc_join(ctx, nc_slice(sig, c.pos, sig.n)));
     }
-    if ((!strcmp(name, "if") || !strcmp(name, "while") || !strcmp(name, "elif"))) {
+    if (!strcmp(name, "if") || !strcmp(name, "while") || !strcmp(name, "elif")) {
         return nc_format(ctx, "%s (%s)", !strcmp(name, "elif") ? "else if" : name, nc_join(ctx,
                 nc_slice(sig, c.pos, sig.n)));
     }
-    if ((!strcmp(name, "f"))) {
+    if (!strcmp(name, "f")) {
         char *id = nc_name(&c);
-        if ((!nc_at(&c, "("))) {
+        if (!nc_at(&c, "(")) {
             nc_fail(ctx, line, "CT functions require parentheses");
         }
         return nc_format(ctx, "f %s%s", id, nc_join(ctx, nc_slice(sig, c.pos, sig.n)));
     }
-    if ((nc_at(&c, "("))) {
+    if (nc_at(&c, "(")) {
         return nc_format(ctx, "for %s", nc_join(ctx, nc_slice(sig, c.pos, sig.n)));
     }
     for (size_t i = c.pos; i < sig.n; ++i) {
-        if ((nc_is(sig.v[i], ";"))) {
+        if (nc_is(sig.v[i], ";")) {
             return nc_format(ctx, "for (%s)", nc_join(ctx, nc_slice(sig, c.pos, sig.n)));
         }
     }
@@ -42,12 +42,12 @@ char *nc_program_control(NcContext *ctx, NcTokens ts, int line) {
     NcTokens rest = nc_slice(sig, c.pos, sig.n);
     NcCursor range = {ctx, rest, 0};
     NcTokens low = nc_until(&range, "..");
-    if ((nc_eat(&range, ".."))) {
+    if (nc_eat(&range, "..")) {
         (void)nc_eat(&range, "<");
         return nc_format(ctx, "for %s in range(%s,%s)", id, nc_join(ctx, low), nc_join(ctx,
                 nc_slice(rest, range.pos, rest.n)));
     }
-    if ((! rest.n)) {
+    if (! rest.n) {
         nc_fail(ctx, line, "for needs a range or list");
     }
     return nc_format(ctx, "for %s in %s", id, nc_join(ctx, rest));

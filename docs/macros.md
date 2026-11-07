@@ -9,13 +9,14 @@
 @m identity($x)
   ($x)
 @m getter($name,$field)
-  f $name(p: *Point) -> int = p->$field
+  f $name(p: *Point) int
+    < p->$field
 s Point
   x: int
 @getter(get_x,x)
-f main() -> int
+f main()
   Point p={42}
-  return @identity(get_x(&p))!=42
+  < @identity(get_x(&p))!=42
 ```
 
 ```c
@@ -38,7 +39,7 @@ An executable macro uses `@m name($x) =` followed by an indented compile-time pr
 
 ## Compile-time generation
 
-`@ct` executes a bounded source-transformation program. This phase has dynamic values, list/string operations, source/token operations, functions `f name(args)`, loops, explicit or final-value returns, quote and emit. This dynamic evaluator is not the runtime C grammar. `eval(read(path))` loads a source library explicitly. Read/exists/env are inputs; write/mkdir/remove/run/exec/sh are not compiler builtins. No external process or filesystem mutation is introduced through another compiler directive.
+`@ct` executes a bounded source-transformation program. This phase has dynamic values, list/string operations, source/token operations, functions `f name(args)`, loops, sigil or final-value returns, quote and emit. This dynamic evaluator is not the runtime C grammar. `eval(read(path))` loads a source library explicitly. Read/exists/env are inputs; write/mkdir/remove/run/exec/sh are not compiler builtins. No external process or filesystem mutation is introduced through another compiler directive.
 
 ```nanoc
 @ct
@@ -47,7 +48,8 @@ An executable macro uses `@m name($x) =` followed by an indented compile-time pr
   for i range(4)
     values=push(values,str(square(i)))
   emit("static const int squares[]={"+join(values,",")+"};")
-f main() -> int = squares[3]!=9
+f main()
+  < squares[3]!=9
 ```
 
 ```c

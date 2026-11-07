@@ -12,7 +12,7 @@ void jw_start(NcJson *w, FILE *out) {
 
 // Writes the comma owed before the next value, if any.
 static void jw_sep(NcJson *w) {
-    if ((w->more[w->depth])) {
+    if (w->more[w->depth]) {
         fputc(',', w->out);
     }
     w->more[w->depth] = 1;
@@ -23,10 +23,10 @@ void jw_text(NcJson *w, const char *s) {
     fputc('"', w->out);
     for (; *s; ++s) {
         unsigned char ch = (unsigned char)*s;
-        if ((ch == '"' || ch == '\\')) {
+        if (ch == '"' || ch == '\\') {
             fputc('\\', w->out);
             fputc(ch, w->out);
-        } else if ((ch < 32)) {
+        } else if (ch < 32) {
             fprintf(w->out, "\\u%04x", ch);
         } else {
             fputc(ch, w->out);

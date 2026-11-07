@@ -2,14 +2,14 @@
 @lang 1
 + "nanoc/nanoc.h"
 // Writes canonical indentation while retaining raw-island contents and literal token bytes.
-f format_indent(NcContext *c, NcBuffer *out, size_t width) -> static void
+f format_indent(NcContext *c, NcBuffer *out, size_t width) static void
   while out->n && (out->v[out->n - 1] == ' ' || out->v[out->n - 1] == '\t')
     --out->n
     out->v[out->n] = 0
   for size_t i = 0; i < width; ++i
     nc_add(c, out, " ")
 // Formats spacing outside literals and C islands, with two spaces per indentation level.
-f nc_format_source(NcContext *c, const char *input) -> char *
+f nc_format_source(NcContext *c, const char *input) char *
   NcTokens tokens = nc_lex(c, input, 1)
   NcBuffer out = {0}
   size_t levels[513] = {0}
@@ -28,7 +28,7 @@ f nc_format_source(NcContext *c, const char *input) -> char *
           space = false
         elif !bol
           space = true
-      continue
+      ^
     if bol
       size_t indent = (size_t)(token.column - 1)
       size_t desired = depth * 2
@@ -66,7 +66,7 @@ f nc_format_source(NcContext *c, const char *input) -> char *
         bol = n && text[n - 1] == '\n'
         newlines = bol ? 1 : 0
         i = raw.pos - 1
-        continue
+        ^
     nc_addn(c, &out, token.s, token.n)
     bol = token.n && token.s[token.n - 1] == '\n'
     newlines = bol ? 1 : 0
@@ -87,9 +87,9 @@ f nc_format_source(NcContext *c, const char *input) -> char *
     nc_add(c, &out, "\n")
   else
     nc_add(c, &out, "")
-  return out.v
+  < out.v
 // Implements read-only formatting, in-place formatting, and CI idempotence checking.
-f nc_format_command(NcContext *c, int argc, const char **argv) -> int
+f nc_format_command(NcContext *c, int argc, const char **argv) int
   const char *input = NULL
   bool write = false, check = false, json = false
   for int i = 2; i < argc; ++i
@@ -122,4 +122,4 @@ f nc_format_command(NcContext *c, int argc, const char **argv) -> int
     fputc('\n', stdout)
   elif !write && !check
     fputs(formatted, stdout)
-  return check && changed ? 1 : 0
+  < check && changed ? 1 : 0

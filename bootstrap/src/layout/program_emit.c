@@ -18,32 +18,32 @@ static bool function_node(NcContext *c, NcNode n) {
 // Tells if a line is a value.
 static bool value_line(NcContext *c, NcTokens ts) {
     NcTokens sig = nc_significant(c, ts);
-    if ((! sig.n)) {
+    if (! sig.n) {
         return 0;
     }
     const char *statements[] = {"emit", "log", "assert", "write", "mkdir", "remove", "again",
             "rewrite", "put"};
     for (size_t i = 0; i < sizeof statements / sizeof *statements; ++i) {
-        if ((nc_is(sig.v[0], statements[i]))) {
+        if (nc_is(sig.v[0], statements[i])) {
             return 0;
         }
     }
     int level = 0;
     for (size_t i = (0), nanoc_bound_1 = (sig.n); i < nanoc_bound_1; ++i) {
         NcToken t = sig.v[i];
-        if ((nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{"))) {
+        if (nc_is(t, "(") || nc_is(t, "[") || nc_is(t, "{")) {
             ++level;
-        } else if ((nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}"))) {
+        } else if (nc_is(t, ")") || nc_is(t, "]") || nc_is(t, "}")) {
             --level;
-        } else if ((!level && (nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t,
-                "--") || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0]))))) {
+        } else if (!level && (nc_is(t, ":=") || nc_is(t, "=") || nc_is(t, "++") || nc_is(t,
+                "--") || (t.n == 2 && t.s[1] == '=' && strchr("+-*/%", t.s[0])))) {
             return 0;
         }
     }
     bool function = (sig.n > 1 && sig.v[1].kind == NC_WORD && nc_is(sig.v[0], "f"));
-    return !function && !nc_is(sig.v[0], "return") && !nc_is(sig.v[0], "break") && !nc_is(sig.v[0],
-            "continue") && !nc_is(sig.v[0], "if") && !nc_is(sig.v[0], "for") && !nc_is(sig.v[0],
-            "while");
+    return !function && !nc_is(sig.v[0], "<") && !nc_is(sig.v[0], "!") && !nc_is(sig.v[0], "^") && !nc_is(sig.v[0],
+            "return") && !nc_is(sig.v[0], "break") && !nc_is(sig.v[0], "continue") && !nc_is(sig.v[0],
+            "if") && !nc_is(sig.v[0], "for") && !nc_is(sig.v[0], "while");
 }
 
 // Emits nodes as program text.
@@ -53,17 +53,17 @@ char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
     int line = nodes.n ? nodes.v[0].head.line : 1;
     for (size_t i = (0), nanoc_bound_2 = (nodes.n); i < nanoc_bound_2; ++i) {
         NcNode n = nodes.v[i];
-        while ((line < n.head.line)) {
+        while (line < n.head.line) {
             nc_add(ctx, &out, "\n");
             ++line;
         }
         size_t start = out.n;
-        if ((! n.children.n)) {
+        if (! n.children.n) {
             NcTokens ts = n.head.ts;
             char *text = nc_trim(ctx, nc_join(ctx, ts));
             bool function = function_node(ctx, n);
             bool returning = tail && i + 1 == nodes.n && value_line(ctx, ts);
-            nc_printf(ctx, &out, "%s%s%s\n", returning ? "return " : "", text, *text && text[strlen(text) - 1] == '}' && function ? "" : ";");
+            nc_printf(ctx, &out, "%s%s%s\n", returning ? "< " : "", text, *text && text[strlen(text) - 1] == '}' && function ? "" : ";");
         } else {
             bool function = function_node(ctx, n);
             bool loop = starts(ctx, n, "for") || starts(ctx, n, "while");
@@ -77,14 +77,14 @@ char *nc_emit_program(NcContext *ctx, NcNodes nodes, bool tail, size_t depth) {
             }
             char *body = nc_emit_program(ctx, n.children, function || last, depth + 1);
             size_t size = strlen(body);
-            if ((size && body[size - 1] == '\n')) {
+            if (size && body[size - 1] == '\n') {
                 --size;
             }
             nc_addn(ctx, &out, body, size);
             nc_add(ctx, &out, "}\n");
         }
         for (size_t j = (start), nanoc_bound_3 = (out.n); j < nanoc_bound_3; ++j) {
-            if ((out.v[j] == '\n')) {
+            if (out.v[j] == '\n') {
                 ++line;
             }
         }

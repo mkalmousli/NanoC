@@ -7,16 +7,16 @@
 void nc_define_macro(NcContext *ctx, NcCursor *c) {
     NcHeader header = nc_header(c);
     char *name = nc_name(c);
-    if ((!strcmp(name, "m") || !strcmp(name, "ct") || !strcmp(name, "c") || !strcmp(name, "bt") || !strcmp(name,
-            "asm"))) {
+    if (!strcmp(name, "m") || !strcmp(name, "ct") || !strcmp(name, "c") || !strcmp(name, "bt") || !strcmp(name,
+            "asm")) {
         nc_fail(ctx, nc_line(c), "reserved transformation name");
     }
-    if ((nc_get(&ctx->macros, name))) {
+    if (nc_get(&ctx->macros, name)) {
         nc_fail(ctx, nc_line(c), "duplicate macro: %s", name);
     }
     NcMacro *m = nc_alloc(ctx, sizeof *m);
     NcGroups args = {0};
-    if ((nc_header_at(c, "(", header.line))) {
+    if (nc_header_at(c, "(", header.line)) {
         args = nc_split(ctx, nc_group(c, "(", ")"), ",");
     }
     NcMap names = {0};
@@ -26,15 +26,15 @@ void nc_define_macro(NcContext *ctx, NcCursor *c) {
         NcParam p = {.name = nc_name(&a)};
         p.kind = nc_eat(&a, ":") ? nc_name(&a) : "tokens";
         p.variadic = nc_eat(&a, "...");
-        if ((!nc_end(&a) || (strcmp(p.kind, "tokens") && strcmp(p.kind, "ident") && strcmp(p.kind,
-                "block")))) {
+        if (!nc_end(&a) || (strcmp(p.kind, "tokens") && strcmp(p.kind, "ident") && strcmp(p.kind,
+                "block"))) {
             nc_fail(ctx, nc_line(&a), "expected ident, tokens, or block parameter");
         }
-        if ((nc_get(&names, p.name) || !strcmp(p.name, "fresh"))) {
+        if (nc_get(&names, p.name) || !strcmp(p.name, "fresh")) {
             nc_fail(ctx, nc_line(&a), "duplicate or reserved parameter");
         }
         nc_put(ctx, &names, p.name, (void *)1);
-        if ((m->params.n && m->params.v[m->params.n - 1].variadic)) {
+        if (m->params.n && m->params.v[m->params.n - 1].variadic) {
             nc_fail(ctx, nc_line(&a), "variadic parameter must be last");
         }
         NC_PUSH(ctx, m->params, p);

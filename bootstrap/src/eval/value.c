@@ -23,7 +23,7 @@ NcValue nc_value_text(NcValueKind kind, char *s) {
 NcValue nc_list(NcValues items) {
     NcValue v = {.kind = NC_LIST, .items = items.v, .count = items.n, .height = 1};
     for (size_t i = (0), nanoc_bound_1 = (items.n); i < nanoc_bound_1; ++i) {
-        if ((items.v[i].height + 1 > v.height)) {
+        if (items.v[i].height + 1 > v.height) {
             v.height = items.v[i].height + 1;
         }
     }
@@ -32,10 +32,10 @@ NcValue nc_list(NcValues items) {
 
 // Gets the truth of a value.
 bool nc_truth(NcValue v) {
-    if ((v.kind == NC_LIST)) {
+    if (v.kind == NC_LIST) {
         return v.count != 0;
     }
-    if ((v.kind == NC_STRING || v.kind == NC_CODE)) {
+    if (v.kind == NC_STRING || v.kind == NC_CODE) {
         return *v.text != 0;
     }
     return v.n != 0;
@@ -43,7 +43,7 @@ bool nc_truth(NcValue v) {
 
 // Gets a value as an integer.
 int64_t nc_numeric(NcContext *c, NcValue v, int line) {
-    if ((v.kind != NC_INT && v.kind != NC_BOOL)) {
+    if (v.kind != NC_INT && v.kind != NC_BOOL) {
         nc_fail(c, line, "expected an integer");
     }
     return v.n;
@@ -52,19 +52,19 @@ int64_t nc_numeric(NcContext *c, NcValue v, int line) {
 // Renders a value as text.
 char *nc_display(NcContext *c, NcValue v, size_t depth, int line) {
     nc_depth(c, depth, line, "value");
-    if ((v.kind == NC_INT)) {
+    if (v.kind == NC_INT) {
         return nc_format(c, "%" PRId64, v.n);
     }
-    if ((v.kind == NC_BOOL)) {
+    if (v.kind == NC_BOOL) {
         return v.n ? "true" : "false";
     }
-    if ((v.kind == NC_STRING || v.kind == NC_CODE)) {
+    if (v.kind == NC_STRING || v.kind == NC_CODE) {
         return v.text;
     }
     NcBuffer b = {0};
     nc_add(c, &b, "[");
     for (size_t i = (0), nanoc_bound_2 = (v.count); i < nanoc_bound_2; ++i) {
-        if ((i)) {
+        if (i) {
             nc_add(c, &b, ", ");
         }
         nc_add(c, &b, nc_display(c, v.items[i], depth + 1, line));
@@ -76,13 +76,13 @@ char *nc_display(NcContext *c, NcValue v, size_t depth, int line) {
 
 // Renders a value as source code.
 char *nc_value_code(NcContext *c, NcValue v, int line) {
-    if ((v.kind == NC_LIST)) {
+    if (v.kind == NC_LIST) {
         nc_fail(c, line, "lists require explicit repetition before emission");
     }
-    if ((v.kind == NC_STRING)) {
+    if (v.kind == NC_STRING) {
         return nc_quote(c, v.text);
     }
-    if ((v.kind == NC_BOOL)) {
+    if (v.kind == NC_BOOL) {
         return v.n ? "1" : "0";
     }
     return nc_display(c, v, 0, line);
@@ -91,20 +91,20 @@ char *nc_value_code(NcContext *c, NcValue v, int line) {
 // Compares two values.
 bool nc_equal(NcContext *c, NcValue a, NcValue b, size_t depth, int line) {
     nc_depth(c, depth, line, "value");
-    if ((a.kind != b.kind)) {
+    if (a.kind != b.kind) {
         return 0;
     }
-    if ((a.kind == NC_INT || a.kind == NC_BOOL)) {
+    if (a.kind == NC_INT || a.kind == NC_BOOL) {
         return a.n == b.n;
     }
-    if ((a.kind == NC_STRING || a.kind == NC_CODE)) {
+    if (a.kind == NC_STRING || a.kind == NC_CODE) {
         return !strcmp(a.text, b.text);
     }
-    if ((a.count != b.count)) {
+    if (a.count != b.count) {
         return 0;
     }
     for (size_t i = (0), nanoc_bound_3 = (a.count); i < nanoc_bound_3; ++i) {
-        if ((!nc_equal(c, a.items[i], b.items[i], depth + 1, line))) {
+        if (!nc_equal(c, a.items[i], b.items[i], depth + 1, line)) {
             return 0;
         }
     }

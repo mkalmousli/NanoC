@@ -3,26 +3,26 @@
 + "nanoc/nanoc.h"
 
 // Builds the tree from lines.
-f nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth) -> NcNodes
+f nc_tree(NcContext *c, NcLines lines, size_t *i, int indent, size_t depth) NcNodes
   nc_depth(c, depth, lines.v[*i].line, "layout")
   NcNodes out = {0}
-  while (*i < lines.n && lines.v[*i].indent >= indent)
+  while *i < lines.n && lines.v[*i].indent >= indent
     NcLayoutLine line = lines.v[*i]
-    if (line.indent != indent)
+    if line.indent != indent
       nc_fail(c, line.line, "inconsistent indentation")
     nc_step(c, line.line)
     NcNode node = {.head = line}
     ++*i
     char *s = nc_trim(c, nc_join(c, line.ts))
-    if (!line.raw && line.ts.v[0].kind != NC_DIRECTIVE && *s && s[strlen(s) - 1] == ':')
-      if (*i == lines.n || lines.v[*i].indent <= indent)
+    if !line.raw && line.ts.v[0].kind != NC_DIRECTIVE && *s && s[strlen(s) - 1] == ':'
+      if *i == lines.n || lines.v[*i].indent <= indent
         nc_fail(c, line.line, "expected an indented block")
       node.children = nc_tree(c, lines, i, lines.v[*i].indent, depth + 1)
-    elif (*i < lines.n && lines.v[*i].indent > indent)
+    elif *i < lines.n && lines.v[*i].indent > indent
       nc_fail(c, lines.v[*i].line, "unexpected indentation after a statement")
-    if (node.children.n)
+    if node.children.n
       NcSpan end = node.children.v[node.children.n - 1].head.span
       node.head.span.end_line = end.end_line
       node.head.span.end_column = end.end_column
     NC_PUSH(c, out, node)
-  return out
+  < out

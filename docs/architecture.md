@@ -13,7 +13,7 @@ Self-hosted NanoC; C11 bootstrap; portable C11 + libc (Linux, macOS, BSD, Window
 | src/meta | Builtin registry, source passes, text/list edits, read-only inputs |
 | src/support | Aligned arenas, maps, buffers, diagnostics, atomic files |
 | src/cli | Options, compact catalogs, JSON/text reporting |
-| src/layout | Indented runtime/meta bodies, word controls, explicit returns |
+| src/layout | Indented runtime/meta bodies, word controls, sigil returns |
 | src/emit | Pretty and mini C emitters |
 | src/dsl | Shared generator DSLs (JSON, Markdown, files) for explicit developer scripts |
 | src/dsl/ui.tool.nc, src/web/ui, src/web/pages | Website widgets: one tree per widget with element-level `css`, `js` and `on` blocks; classes and script ids are generated, `[as=name]` reaches an element as `A.name` |

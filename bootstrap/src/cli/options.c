@@ -12,7 +12,7 @@ static size_t positive(NcContext *c, const char *s) {
     char *end;
     errno = 0;
     unsigned long long n = strtoull(s, &end, 10);
-    if ((!*s || *s == '-' || *end || errno || !n || n > SIZE_MAX)) {
+    if (!*s || *s == '-' || *end || errno || !n || n > SIZE_MAX) {
         nc_fail(c, 0, "expected a positive integer: %s", s);
     }
     return (size_t)n;
@@ -24,100 +24,100 @@ NcOptions nc_options(NcContext *c, int argc, char **argv) {
     bool positional = 0;
     for (int i = (1), nanoc_bound_1 = (argc); i < nanoc_bound_1; ++i) {
         char *arg = argv[i];
-        if ((i == 1 && (!strcmp(arg, "emit") || !strcmp(arg, "check") || !strcmp(arg, "expand") || !strcmp(arg,
-                "explain") || !strcmp(arg, "inspect") || !strcmp(arg, "describe")))) {
+        if (i == 1 && (!strcmp(arg, "emit") || !strcmp(arg, "check") || !strcmp(arg, "expand") || !strcmp(arg,
+                "explain") || !strcmp(arg, "inspect") || !strcmp(arg, "describe"))) {
             o.command = arg;
-            if ((!strcmp(arg, "check") || !strcmp(arg, "inspect"))) {
+            if (!strcmp(arg, "check") || !strcmp(arg, "inspect")) {
                 o.check = 1;
-            } else if ((!strcmp(arg, "expand") || !strcmp(arg, "explain"))) {
+            } else if (!strcmp(arg, "expand") || !strcmp(arg, "explain")) {
                 o.trace = 1;
                 c->tracing = 1;
-            } else if ((!strcmp(arg, "describe"))) {
+            } else if (!strcmp(arg, "describe")) {
                 o.action = "--describe";
             }
-        } else if ((!positional && !strcmp(arg, "--json"))) {
+        } else if (!positional && !strcmp(arg, "--json")) {
             o.json = 1;
-        } else if ((!positional && !strcmp(arg, "--trace-json"))) {
+        } else if (!positional && !strcmp(arg, "--trace-json")) {
             o.trace = 1;
             c->tracing = 1;
-        } else if ((!positional && !strcmp(arg, "--"))) {
+        } else if (!positional && !strcmp(arg, "--")) {
             positional = 1;
-        } else if ((!positional && !strcmp(arg, "--check"))) {
+        } else if (!positional && !strcmp(arg, "--check")) {
             o.check = 1;
-        } else if ((!positional && (!strcmp(arg, "--line-directives") || !strcmp(arg, "--prototypes")))) {
-            if ((!strcmp(arg, "--prototypes"))) {
+        } else if (!positional && (!strcmp(arg, "--line-directives") || !strcmp(arg, "--prototypes"))) {
+            if (!strcmp(arg, "--prototypes")) {
                 o.prototypes = 1;
             } else {
                 c->lines = 1;
             }
-        } else if ((!positional && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg,
-                "--describe")))) {
+        } else if (!positional && (!strcmp(arg, "--help") || !strcmp(arg, "--version") || !strcmp(arg,
+                "--describe"))) {
             o.action = arg;
-        } else if ((!positional && (!strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg,
+        } else if (!positional && (!strcmp(arg, "-o") || !strcmp(arg, "--lang") || !strcmp(arg,
                 "--emit") || !strcmp(arg, "--diagnostics") || !strcmp(arg, "--std") || !strcmp(arg,
                 "--max-depth") || !strcmp(arg, "--max-steps") || !strcmp(arg, "--max-passes") || !strcmp(arg,
                 "--max-output") || !strcmp(arg, "--map") || !strcmp(arg, "--to") || !strcmp(arg,
-                "--line") || !strcmp(arg, "--symbol") || !strcmp(arg, "--generated-offset")))) {
-            if ((++i == argc)) {
+                "--line") || !strcmp(arg, "--symbol") || !strcmp(arg, "--generated-offset"))) {
+            if (++i == argc) {
                 nc_fail(c, 0, "missing value for %s", arg);
             }
             char *value = argv[i];
-            if ((!strcmp(arg, "-o"))) {
+            if (!strcmp(arg, "-o")) {
                 o.output = value;
-            } else if ((!strcmp(arg, "--map"))) {
+            } else if (!strcmp(arg, "--map")) {
                 o.map = value;
                 c->tracing = 1;
-            } else if ((!strcmp(arg, "--to"))) {
-                if ((strcmp(value, "c"))) {
+            } else if (!strcmp(arg, "--to")) {
+                if (strcmp(value, "c")) {
                     nc_fail(c, 0, "emit --to requires c");
                 }
-            } else if ((!strcmp(arg, "--line"))) {
+            } else if (!strcmp(arg, "--line")) {
                 c->query_line = (int)positive(c, value);
-            } else if ((!strcmp(arg, "--symbol"))) {
+            } else if (!strcmp(arg, "--symbol")) {
                 c->query_symbol = value;
-            } else if ((!strcmp(arg, "--generated-offset"))) {
+            } else if (!strcmp(arg, "--generated-offset")) {
                 c->query_generated = 1;
                 c->query_offset = !strcmp(value, "0") ? 0 : positive(c, value);
-            } else if ((!strcmp(arg, "--emit"))) {
-                if ((strcmp(value, "normal") && strcmp(value, "mini"))) {
+            } else if (!strcmp(arg, "--emit")) {
+                if (strcmp(value, "normal") && strcmp(value, "mini")) {
                     nc_fail(c, 0, "--emit requires normal or mini");
                 }
                 c->mini = !strcmp(value, "mini");
-            } else if ((!strcmp(arg, "--std"))) {
+            } else if (!strcmp(arg, "--std")) {
                 nc_std = !strcmp(value, "c89") ? 89 : !strcmp(value, "c99") ? 99 : !strcmp(value,
                         "c11") ? 11 : !strcmp(value, "c17") ? 17 : 0;
-                if ((! nc_std)) {
+                if (! nc_std) {
                     nc_fail(c, 0, "--std requires c89, c99, c11 or c17");
                 }
-            } else if ((!strcmp(arg, "--lang"))) {
-                if ((strcmp(value, "c") && strcmp(value, "c++"))) {
+            } else if (!strcmp(arg, "--lang")) {
+                if (strcmp(value, "c") && strcmp(value, "c++")) {
                     nc_fail(c, 0, "--lang requires c or c++");
                 }
                 c->cpp = !strcmp(value, "c++");
-            } else if ((!strcmp(arg, "--diagnostics"))) {
-                if ((strcmp(value, "json"))) {
+            } else if (!strcmp(arg, "--diagnostics")) {
+                if (strcmp(value, "json")) {
                     nc_fail(c, 0, "--diagnostics requires json");
                 }
                 o.json = 1;
-            } else if ((!strcmp(arg, "--max-depth"))) {
+            } else if (!strcmp(arg, "--max-depth")) {
                 c->max_depth = positive(c, value);
-            } else if ((!strcmp(arg, "--max-steps"))) {
+            } else if (!strcmp(arg, "--max-steps")) {
                 c->max_steps = !strcmp(value, "0") ? 0 : positive(c, value);
-            } else if ((!strcmp(arg, "--max-passes"))) {
+            } else if (!strcmp(arg, "--max-passes")) {
                 c->max_passes = !strcmp(value, "0") ? 0 : positive(c, value);
             } else {
                 c->max_output = positive(c, value);
             }
-        } else if ((!positional && *arg == '-')) {
+        } else if (!positional && *arg == '-') {
             nc_fail(c, 0, "unknown option: %s", arg);
-        } else if ((*o.input)) {
+        } else if (*o.input) {
             nc_fail(c, 0, "expected one input file");
         } else {
             o.input = arg;
             c->file = arg;
         }
     }
-    if ((!*o.action && !*o.input)) {
+    if (!*o.action && !*o.input) {
         nc_fail(c, 0, "missing input file; use --help");
     }
     return o;

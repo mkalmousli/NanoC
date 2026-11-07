@@ -7,47 +7,47 @@ s NcLang
   version:int
 
 // Finds a leading "@lang N" line after blank lines and // comments; version 0 means none.
-f find(NcContext *ctx, const char *s) -> static NcLang
+f find(NcContext *ctx, const char *s) static NcLang
   NcLang r = {0}
   size_t i = 0
-  while (s[i])
-    if (isspace((unsigned char)s[i]))
+  while s[i]
+    if isspace((unsigned char)s[i])
       i++
-    elif (s[i] == '/' && s[i + 1] == '/')
-      while (s[i] && s[i] != '\n')
+    elif s[i] == '/' && s[i + 1] == '/'
+      while s[i] && s[i] != '\n'
         i++
     else
-      break
-  if (strncmp(s + i, "@lang", 5) || (s[i + 5] != ' ' && s[i + 5] != '\t'))
-    return r
+      !
+  if strncmp(s + i, "@lang", 5) || (s[i + 5] != ' ' && s[i + 5] != '\t')
+    < r
   size_t j = i + 5
-  while (s[j] == ' ' || s[j] == '\t')
+  while s[j] == ' ' || s[j] == '\t'
     j++
-  if (! isdigit((unsigned char)s[j]))
+  if ! isdigit((unsigned char)s[j])
     nc_fail(ctx, 0, "@lang needs a positive integer version")
   long n = 0
-  while (isdigit((unsigned char)s[j]))
+  while isdigit((unsigned char)s[j])
     n = n * 10 + (s[j++] - '0')
-    if (n > 1000000)
+    if n > 1000000
       nc_fail(ctx, 0, "@lang version is too large")
-  while (s[j] == ' ' || s[j] == '\t')
+  while s[j] == ' ' || s[j] == '\t'
     j++
-  if (s[j] && s[j] != '\n' && s[j] != '\r' && !(s[j] == '/' && s[j + 1] == '/'))
+  if s[j] && s[j] != '\n' && s[j] != '\r' && !(s[j] == '/' && s[j + 1] == '/')
     nc_fail(ctx, 0, "@lang takes only a version number")
-  if (! n)
+  if ! n
     nc_fail(ctx, 0, "@lang needs a positive integer version")
   r.start = i
   r.end = j
   r.version = (int)n
-  return r
+  < r
 
 // Rejects source written for a newer language and blanks the declaration (line numbers stay).
-f nc_lang_check(NcContext *ctx, const char *input) -> char *
+f nc_lang_check(NcContext *ctx, const char *input) char *
   NcLang l = find(ctx, input)
-  if (! l.version)
-    return (char *)input
-  if (l.version > NC_LANG)
+  if ! l.version
+    < (char *)input
+  if l.version > NC_LANG
     nc_fail(ctx, 0, "source needs language %d but this nanoc speaks %d; update nanoc", l.version, NC_LANG)
-  if (l.version < NC_LANG)
+  if l.version < NC_LANG
     nc_fail(ctx, 0, "source is language %d; this compiler requires NanoC v%d", l.version, NC_LANG)
-  return nc_format(ctx, "%.*s%s", (int)l.start, input, input + l.end)
+  < nc_format(ctx, "%.*s%s", (int)l.start, input, input + l.end)

@@ -7,12 +7,12 @@ C headers, libraries, functions, pointers, arrays, structs, unions, enums, typed
 
 ```nanoc
 + <stdlib.h>
-f main() -> int
+f main()
   ptr: void * = malloc(128)
   if ptr == NULL
-    return 1
+    < 1
   free(ptr)
-  return 0
+  < 0
 ```
 
 ```c
@@ -34,10 +34,11 @@ int main(void) {
 @c {
   static int apply(int (*fn)(int), int x) { return fn(x); }
 }
-f twice(x: int) -> int = x*2
-f main() -> int
+f twice(x: int) int
+  < x*2
+f main()
   int (*fn)(int)=twice
-  return apply(fn,21)!=42
+  < apply(fn,21)!=42
 ```
 
 ```c

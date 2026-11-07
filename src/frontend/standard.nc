@@ -4,11 +4,11 @@
 
 int nc_std;
 // Returns the selected ISO C language level for structured CLI metadata.
-f nc_standard_name(void) -> const char *
-  if (nc_std == 89)
-    return "c89"
-  if (nc_std == 99)
-    return "c99"
-  if (nc_std == 17)
-    return "c17"
-  return "c11"
+f nc_standard_name(void) const char *
+  if nc_std == 89
+    < "c89"
+  if nc_std == 99
+    < "c99"
+  if nc_std == 17
+    < "c17"
+  < "c11"

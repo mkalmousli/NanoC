@@ -3,7 +3,7 @@
 + "nanoc/nanoc.h"
 + "nanoc/manage.h"
 // Lists lexer tokens with byte-oriented source ranges, or calls the optional tokenizer tool.
-f nc_tokens_command(NcContext *c, int argc, const char **argv) -> int
+f nc_tokens_command(NcContext *c, int argc, const char **argv) int
   const char *input = NULL, *encoding = NULL
   bool ids = false
   for int i = 2; i < argc; ++i
@@ -29,7 +29,7 @@ f nc_tokens_command(NcContext *c, int argc, const char **argv) -> int
     NcProcess result = nc_process(c, args)
     fputs(result.out, stdout)
     fputs(result.err, stderr)
-    return result.status
+    < result.status
   char *source = nc_read(c, input)
   NcTokens ts = nc_lex(c, source, 1)
   NcJson w
@@ -54,4 +54,4 @@ f nc_tokens_command(NcContext *c, int argc, const char **argv) -> int
   jw_close(&w, ']')
   jw_close(&w, '}')
   fputc('\n', stdout)
-  return 0
+  < 0

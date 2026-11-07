@@ -1,3 +1,3 @@
-f f() -> int
+f f() int
   x:=unknown()
-  return x
+  < x

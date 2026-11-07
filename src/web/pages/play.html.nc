@@ -1,5 +1,5 @@
 Page [title="NanoC playground: transpile in your browser" desc="Edit NanoC and watch the real compiler, running as WebAssembly, produce C as you type."]
-  Demo [eyebrow=Playground title="The real compiler, <em>in your tab</em>" text="This is not a mock-up: the NanoC compiler is compiled to WebAssembly ($wasmsize) and runs here, offline, as you type. Pick an example or write your own; the C appears on the right."]
+  Demo [eyebrow=Playground title="NanoC <em>playground</em>" text="The compiler runs in your browser as WebAssembly ($wasmsize). Edit an example to see the generated C."]
     ExTabs
     div
       css

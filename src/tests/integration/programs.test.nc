@@ -1,10 +1,10 @@
 @lang 1
 + "test.h"
 
-f test_programs(void) -> void
+f test_programs(void)
   char *manifest = test_read("tests/fixtures/programs.tsv")
   char *save
-  for (char *row = strtok_r(manifest, "\n", &save); row; row = strtok_r(NULL, "\n", &save))
+  for char *row = strtok_r(manifest, "\n", &save); row; row = strtok_r(NULL, "\n", &save)
     char *tab = strchr(row, '\t')
     CHECK(tab != NULL)
     *tab++ = 0
@@ -13,10 +13,10 @@ f test_programs(void) -> void
     test_program(test_read(row), test_read(expected), !strcmp(tab, "c++"))
   puts("[OK] migrated C/C++ runtime fixtures (GCC and Clang)")
 
-f test_invalid(void) -> void
+f test_invalid(void)
   char *manifest = test_read("tests/fixtures/invalid.tsv")
   char *save
-  for (char *row = strtok_r(manifest, "\n", &save); row; row = strtok_r(NULL, "\n", &save))
+  for char *row = strtok_r(manifest, "\n", &save); row; row = strtok_r(NULL, "\n", &save)
     char *tab = strchr(row, '\t')
     CHECK(tab != NULL)
     *tab++ = 0

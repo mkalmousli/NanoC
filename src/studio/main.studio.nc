@@ -2,9 +2,9 @@
 @lang 1
 + "studio.h"
 // Runs a resizable editor with synchronized compiler output and persistent sessions.
-f main(int argc,char **argv) -> int
+f main(int argc,char **argv)
   if argc>1 && !strcmp(argv[1],"--self-test")
-    return st_self_test()
+    < st_self_test()
   bool smoke=argc>1 && !strcmp(argv[1],"--smoke")
   SetConfigFlags(FLAG_WINDOW_RESIZABLE|FLAG_WINDOW_HIGHDPI)
   InitWindow(1440,900,"NanoC Studio — v1")
@@ -74,7 +74,7 @@ f main(int argc,char **argv) -> int
     if st_button(&app,"C -> NanoC",&x,6)
       st_convert(&app)
     if st_button(&app,"Results",&x,6)
-      st_dashboard(&app)
+      st_reference(&app)
     float top=app.font_size*2+34,left=220
     st_tabs(&app,left,app.font_size+23)
     float width=(float)GetScreenWidth()-left,height=(float)GetScreenHeight()-top-185
@@ -99,11 +99,11 @@ f main(int argc,char **argv) -> int
     EndDrawing()
     if smoke && ++frames==4
       TakeScreenshot("build/studio-smoke.png")
-      break
+      !
   if !smoke
     st_session(&app,false)
   if app.font.texture.id!=GetFontDefault().texture.id
     UnloadFont(app.font)
   st_dispose(&app)
   CloseWindow()
-  return 0
+  < 0

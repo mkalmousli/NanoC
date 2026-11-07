@@ -1,5 +1,5 @@
 + <vector>
-f main() -> int
+f main()
   @c {
     std::vector<int> xs{1,2,3};
     auto f=[](int n) { return n*2; };

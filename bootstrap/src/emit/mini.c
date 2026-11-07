@@ -11,10 +11,10 @@ static bool wordy(char ch) {
 // Tells if two adjacent characters must stay apart.
 static bool apart(char a, char b) {
     const char *glue = "+-&|<>=*/!%^:.";
-    if ((wordy(a) && wordy(b))) {
+    if (wordy(a) && wordy(b)) {
         return 1;
     }
-    if ((a && b && strchr(glue, a) && strchr(glue, b))) {
+    if (a && b && strchr(glue, a) && strchr(glue, b)) {
         return 1;
     }
     return (a == '"' || a == '\'') && wordy(b);
@@ -26,33 +26,33 @@ char *nc_mini(NcContext *c, const char *text) {
     NcBuffer out = {0};
     for (size_t i = (0), nanoc_bound_1 = (ts.n); i < nanoc_bound_1; ++i) {
         NcToken t = ts.v[i];
-        if ((nc_trace_boundary(c, &out, t))) {
+        if (nc_trace_boundary(c, &out, t)) {
             continue;
         }
-        if ((nc_emit_raw(c, &out, t))) {
+        if (nc_emit_raw(c, &out, t)) {
             continue;
         }
-        if ((t.kind == NC_SPACE)) {
+        if (t.kind == NC_SPACE) {
             continue;
         }
         size_t n = t.n;
-        if ((t.kind == NC_DIRECTIVE)) {
-            while ((n && isspace((unsigned char)t.s[n - 1]))) {
+        if (t.kind == NC_DIRECTIVE) {
+            while (n && isspace((unsigned char)t.s[n - 1])) {
                 --n;
             }
-            if ((out.n && out.v[out.n - 1] != '\n')) {
+            if (out.n && out.v[out.n - 1] != '\n') {
                 nc_add(c, &out, "\n");
             }
             nc_addn(c, &out, t.s, n);
             nc_add(c, &out, "\n");
             continue;
         }
-        if ((out.n && apart(out.v[out.n - 1], t.s[0]))) {
+        if (out.n && apart(out.v[out.n - 1], t.s[0])) {
             nc_add(c, &out, " ");
         }
         nc_addn(c, &out, t.s, n);
     }
-    if ((out.n && out.v[out.n - 1] != '\n')) {
+    if (out.n && out.v[out.n - 1] != '\n') {
         nc_add(c, &out, "\n");
     }
     nc_add(c, &out, "");
@@ -61,7 +61,7 @@ char *nc_mini(NcContext *c, const char *text) {
 
 // Applies the selected emit style to generated C.
 char *nc_style(NcContext *c, const char *text) {
-    if ((c->mini)) {
+    if (c->mini) {
         return nc_mini(c, text);
     }
     return nc_pretty(c, text);

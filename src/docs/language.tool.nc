@@ -8,7 +8,7 @@ f guide_section(id)
       start=i
     elif start>=0 && starts(ls[i],"lesson ")
       end=i
-      break
+      !
   assert(start>=0,"unknown guide section: "+id)
   put("doc:n",0)
   join(render_doc(slice(ls,start,end),false),"\n\n")

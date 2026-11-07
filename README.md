@@ -29,13 +29,12 @@ Installs only the files it created; it refuses to overwrite unrelated files.
 
 ```c
 + <stdio.h>
-f main() -> int
+f main()
   printf("Hello from NanoC! %d %g\n", 6 * 7, 1.5)
-  return 0
 
 ```
 
-- **Layout:** indentation defines blocks; `f name(args) -> T`; explicit `return`; `if/elif/else`, `while` and `for` controls.
+- **Layout:** indentation defines blocks; `f name(args)` with an optional result type (void by default, int for main); explicit `<` returns; `if/elif/else`, `while` and `for` controls.
 - **Macros:** `@m` token templates with `$` captures, repetition and `$fresh(name)`.
 - **Compile time:** `@ct` programs generate code during expansion (`emit`, `quote`, loops).
 - **Interop:** C headers and C++17 APIs work unchanged (`--lang c++`).

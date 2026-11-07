@@ -12,13 +12,13 @@ static void mg_prune(const char *prefix, const char *path) {
     snprintf(dir, sizeof dir, "%s", path);
     char stop[PATH_MAX];
     snprintf(stop, sizeof stop, "%s/share/nanoc", prefix);
-    while ((strlen(dir) > strlen(stop))) {
+    while (strlen(dir) > strlen(stop)) {
         char *slash = strrchr(dir, '/');
-        if ((! slash)) {
+        if (! slash) {
             return;
         }
         *slash = 0;
-        if ((NC_RMDIR(dir))) {
+        if (NC_RMDIR(dir)) {
             return;
         }
     }
@@ -30,18 +30,18 @@ static int mg_remove_recorded(const char *prefix) {
     char list[PATH_MAX];
     snprintf(list, sizeof list, "%s/share/nanoc/install.manifest", prefix);
     FILE *f = fopen(list, "r");
-    if ((! f)) {
+    if (! f) {
         return 0;
     }
     char line[PATH_MAX];
-    while ((fgets(line, sizeof line, f))) {
+    while (fgets(line, sizeof line, f)) {
         line[strcspn(line, "\n")] = 0;
-        if ((!*line || !strcmp(line, "share/nanoc/install.manifest"))) {
+        if (!*line || !strcmp(line, "share/nanoc/install.manifest")) {
             continue;
         }
         char path[PATH_MAX];
         snprintf(path, sizeof path, "%s/%s", prefix, line);
-        if ((!remove(path))) {
+        if (!remove(path)) {
             count += 1;
         }
         mg_prune(prefix, path);
@@ -55,7 +55,7 @@ static int mg_remove_recorded(const char *prefix) {
 int nc_uninstall_command(int argc, char **argv, const char *prefix) {
     bool yes = argc && !strcmp(argv[0], "--yes");
     printf("Remove NanoC from %s, including editor integrations?\n", prefix);
-    if ((!yes && !nc_confirm("Continue?"))) {
+    if (!yes && !nc_confirm("Continue?")) {
         puts("Cancelled.");
         return 1;
     }

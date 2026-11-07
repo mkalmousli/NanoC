@@ -3,31 +3,32 @@
 + "nanoc/nanoc.h"
 
 // Finds the nearest .nanoc file above the input translation unit.
-f prelude_file(NcContext *ctx, const char *file) -> static char *
+f prelude_file(NcContext *ctx, const char *file) static char *
   char *dir = nc_string(ctx, file, strlen(file))
   char *slash = strrchr(dir, '/')
-  while (slash)
+  while slash
     *slash = 0
     char *path = nc_format(ctx, "%s/.nanoc", dir)
     FILE *source = fopen(path, "rb")
-    if (source)
-      fclose(source); return nc_read(ctx, path)
+    if source
+      fclose(source)
+      < nc_read(ctx, path)
     slash = strrchr(dir, '/')
-  return NULL
+  < NULL
 
 // Emits declared headers only; project files never contain commands to execute.
-f nc_prelude(NcContext *ctx) -> char *
+f nc_prelude(NcContext *ctx) char *
   char *text = prelude_file(ctx, ctx->file)
-  if (!text)
-    return ""
+  if !text
+    < ""
   NcCursor cursor = {ctx, nc_lex(ctx, text, 1), 0}
   NcBuffer out = {0}
-  while (!nc_end(&cursor))
+  while !nc_end(&cursor)
     NcLayoutLine line = nc_logical_line(&cursor)
     char *directive = nc_pp_simple(ctx, line.ts, line.line)
     NcTokens significant = nc_significant(ctx, line.ts)
-    if (!directive || !significant.n || !nc_is(significant.v[0], "+"))
+    if !directive || !significant.n || !nc_is(significant.v[0], "+")
       nc_fail(ctx, line.line, ".nanoc project preludes accept only + header directives")
     nc_add(ctx, &out, directive)
   nc_add(ctx, &out, "")
-  return out.v
+  < out.v

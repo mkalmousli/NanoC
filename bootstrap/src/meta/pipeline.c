@@ -7,10 +7,10 @@
 char *nc_pipeline(NcContext *ctx, const char *input) {
     const char * current = input;
     for (;;) {
-        if ((ctx->max_passes && ctx->pass >= ctx->max_passes)) {
+        if (ctx->max_passes && ctx->pass >= ctx->max_passes) {
             nc_fail(ctx, 1, "pass limit exceeded");
         }
-        if ((ctx->pass == SIZE_MAX)) {
+        if (ctx->pass == SIZE_MAX) {
             nc_fail(ctx, 1, "pass counter limit exceeded");
         }
         ++ctx->pass;
@@ -20,11 +20,11 @@ char *nc_pipeline(NcContext *ctx, const char *input) {
         ctx->symbols = (NcSymbols){0};
         const char * prepared = current;
         ctx->source = prepared;
-        if ((ctx->tracing)) {
+        if (ctx->tracing) {
             NC_PUSH(ctx, ctx->trace_sources, (char *)prepared);
         }
         char *output = nc_expand(ctx, nc_lex(ctx, prepared, 1), 0);
-        if ((!ctx->again && !ctx->next_source)) {
+        if (!ctx->again && !ctx->next_source) {
             return output;
         }
         current = ctx->next_source ? ctx->next_source : prepared;

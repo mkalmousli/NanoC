@@ -31,30 +31,30 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
 #ifdef NC_TOOLING
   {"write", "write(path,text)", "tool", nc_meta_files},
   {"mkdir", "mkdir(path)", "tool", nc_meta_files}, {"remove", "remove(path)", "tool", nc_meta_files},
-  {"run", "run(argv[,cwd]) -> [status,out,err]", "tool", nc_meta_process},
-  {"exec", "exec(argv[,cwd]) -> stdout; fails on nonzero", "tool", nc_meta_process},
-  {"sh", "sh(command) -> [status,out,err]", "tool", nc_meta_process},
+  {"run", "run(argv[,cwd]) [status,out,err]", "tool", nc_meta_process},
+  {"exec", "exec(argv[,cwd]) stdout; fails on nonzero", "tool", nc_meta_process},
+  {"sh", "sh(command) [status,out,err]", "tool", nc_meta_process},
 #endif
 };
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
-f nc_builtin_known(const char *name) -> bool
-  for (size_t i = (0), nanoc_bound_1 = (nc_spec_count); i < nanoc_bound_1; ++i)
-    if (!strcmp(name, nc_specs[i].name))
-      return 1
-  return 0
+f nc_builtin_known(const char *name) bool
+  for size_t i = (0), nanoc_bound_1 = (nc_spec_count); i < nanoc_bound_1; ++i
+    if !strcmp(name, nc_specs[i].name)
+      < 1
+  < 0
 
 // Calls a registered builtin.
-f nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) -> NcValue
-  for (size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i)
+f nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) NcValue
+  for size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i
     const NcSpec *s = &nc_specs[i]
-    if (!strcmp(name, s->name) && s->function)
-      return s->function(m, name, args, line)
+    if !strcmp(name, s->name) && s->function
+      < s->function(m, name, args, line)
   nc_fail(m->ctx, line, "unknown compile-time function: %s", name)
-  return (NcValue){0}
+  < (NcValue){0}
 
 // Gets a value as text.
-f nc_meta_text(NcContext *c, NcValue v, int line) -> const char *
-  if (v.kind != NC_STRING && v.kind != NC_CODE)
+f nc_meta_text(NcContext *c, NcValue v, int line) const char *
+  if v.kind != NC_STRING && v.kind != NC_CODE
     nc_fail(c, line, "expected text or tokens")
-  return v.text
+  < v.text

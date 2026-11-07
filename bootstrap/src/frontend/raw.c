@@ -9,17 +9,17 @@ char *nc_raw_tokens(NcContext *ctx, NcTokens ts, int indent) {
     int remaining = 0;
     for (size_t i = (0), nanoc_bound_1 = (ts.n); i < nanoc_bound_1; ++i) {
         NcToken t = ts.v[i];
-        if ((t.kind != NC_SPACE || t.s[0] == '/')) {
+        if (t.kind != NC_SPACE || t.s[0] == '/') {
             nc_addn(ctx, &out, t.s, t.n);
             remaining = t.n && t.s[t.n - 1] == '\n' ? indent : 0;
             continue;
         }
         for (size_t j = (0), nanoc_bound_2 = (t.n); j < nanoc_bound_2; ++j) {
             char ch = t.s[j];
-            if ((ch == '\n')) {
+            if (ch == '\n') {
                 nc_addn(ctx, &out, &ch, 1);
                 remaining = indent;
-            } else if ((remaining && (ch == ' ' || ch == '\t'))) {
+            } else if (remaining && (ch == ' ' || ch == '\t')) {
                 --remaining;
             } else {
                 nc_addn(ctx, &out, &ch, 1);
@@ -35,23 +35,23 @@ char *nc_raw_tokens(NcContext *ctx, NcTokens ts, int indent) {
 char *nc_raw_read(NcContext *ctx, NcCursor *c) {
     NcHeader h = nc_header(c);
     NcCursor literal = *c;
-    if ((!nc_end(&literal) && literal.ts.v[literal.pos].kind == NC_LITERAL && literal.ts.v[literal.pos].s[0] == '"')) {
+    if (!nc_end(&literal) && literal.ts.v[literal.pos].kind == NC_LITERAL && literal.ts.v[literal.pos].s[0] == '"') {
         NcToken text = nc_take(&literal);
         *c = literal;
         return nc_unquote(ctx, nc_text(ctx, text), text.line);
     }
-    if ((nc_at(c, "{"))) {
+    if (nc_at(c, "{")) {
         return nc_join(ctx, nc_group(c, "{", "}"));
     }
     nc_skip(c);
     size_t start = c->pos;
-    if ((start == c->ts.n || c->ts.v[start].line <= h.line || c->ts.v[start].column - 1 <= h.indent)) {
+    if (start == c->ts.n || c->ts.v[start].line <= h.line || c->ts.v[start].column - 1 <= h.indent) {
         nc_fail(ctx, h.line, "expected an indented raw C body");
     }
     int indent = c->ts.v[start].column - 1;
-    while ((c->pos < c->ts.n)) {
+    while (c->pos < c->ts.n) {
         NcToken t = c->ts.v[c->pos];
-        if ((t.kind != NC_SPACE && t.column - 1 <= h.indent)) {
+        if (t.kind != NC_SPACE && t.column - 1 <= h.indent) {
             break;
         }
         ++c->pos;
@@ -63,9 +63,9 @@ char *nc_raw_read(NcContext *ctx, NcCursor *c) {
 char *nc_raw(NcContext *ctx, NcCursor *cursor) {
     char *text = nc_raw_read(ctx, cursor);
     char *key;
-    while ((1)) {
+    while (1) {
         key = nc_format(ctx, "__nanoc_raw_slot_%zu", ++ctx->raw_serial);
-        if ((!nc_get(&ctx->names, key))) {
+        if (!nc_get(&ctx->names, key)) {
             break;
         }
     }

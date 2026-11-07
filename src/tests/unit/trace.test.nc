@@ -2,8 +2,8 @@
 @lang 1
 + "test.h"
 // Verifies mapping ranges, parent chains, captures, unique identifiers and tracing transparency.
-f test_trace() -> void
-  const char *source = "@m fresh_value($x) { ($x+$fresh(v)) }\n@ct {emit(\"int seed=1;\");}\nf main() -> int\n  n:=1\n  return n\n"
+f test_trace()
+  const char *source = "@m fresh_value($x) { ($x+$fresh(v)) }\n@ct {emit(\"int seed=1;\");}\nf main() int\n  n:=1\n  < n\n"
   NcContext *c = calloc(1, sizeof *c)
   CHECK(c != NULL)
   nc_init(c, "trace.nc")
@@ -38,12 +38,12 @@ f test_trace() -> void
   free(c)
   puts("[OK] direct compiler provenance, generated ranges and reverse lookup")
 // Checks that canonical formatting is idempotent and leaves raw C source bytes intact.
-f test_formatter() -> void
+f test_formatter()
   NcContext *c = test_state.mem
-  const char *source = "f main() -> int\n    x := 1\n    if x\n        return 0\n    return 1\n"
+  const char *source = "f main()\n    x := 1\n    if x\n        < 0\n    < 1\n"
   char *formatted = nc_format_source(c, source)
   CHECK(!strcmp(formatted, nc_format_source(c, formatted)))
-  CHECK(strstr(formatted, "\n  x := 1\n  if x\n    return 0\n"))
+  CHECK(strstr(formatted, "\n  x := 1\n  if x\n    < 0\n"))
   CHECK(!strcmp(test_translate(source, false), test_translate(formatted, false)))
   const char *island = "@c {\n#define SPLICE a\\\nb\nint value;\n}\n"
   CHECK(!strcmp(nc_format_source(c, island), island))

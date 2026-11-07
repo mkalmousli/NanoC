@@ -6,14 +6,14 @@
 // Reads a @ct body.
 NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) {
     size_t next = c->pos;
-    while ((next < c->ts.n && c->ts.v[next].kind == NC_SPACE)) {
+    while (next < c->ts.n && c->ts.v[next].kind == NC_SPACE) {
         ++next;
     }
-    if ((next < c->ts.n && nc_is(c->ts.v[next], "{"))) {
+    if (next < c->ts.n && nc_is(c->ts.v[next], "{")) {
         return nc_group(c, "{", "}");
     }
     (void)nc_header_eat(c, ":", header.line);
-    if ((! program)) {
+    if (! program) {
         size_t start = c->pos;
         (void)nc_body_lines(c, header.line, header.indent);
         return nc_slice(c->ts, start, c->pos);
@@ -26,9 +26,9 @@ NcTokens nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) {
 NcTokens nc_macro_body(NcCursor *c, NcHeader header, bool *program) {
     header.line = c->pos ? c->ts.v[c->pos - 1].line : header.line;
     *program = nc_header_eat(c, "=", header.line);
-    if ((*program && !nc_header_at(c, "{", header.line) && nc_same_line(c, header.line))) {
+    if (*program && !nc_header_at(c, "{", header.line) && nc_same_line(c, header.line)) {
         NcTokens expr = nc_line_expression(c);
-        return nc_lex(c->ctx, nc_format(c->ctx, "return %s;", nc_join(c->ctx, expr)), header.line);
+        return nc_lex(c->ctx, nc_format(c->ctx, "< %s;", nc_join(c->ctx, expr)), header.line);
     }
     return nc_meta_body(c, header, *program, 1);
 }

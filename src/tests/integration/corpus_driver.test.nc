@@ -10,36 +10,36 @@ size_t nc_strspn(const char *, const char *);
 void *nc_bsearch(const void *, const void *, size_t, size_t,
 int (*)(const void *, const void *));
 static uint32_t seed = 0x31415926u;
-f next(void) -> static unsigned
+f next(void) static unsigned
   seed ^= seed << 13
   seed ^= seed >> 17
   seed ^= seed << 5
-  return  seed
+  <  seed
 
-f sign(int n) -> static int
-  return  (n > 0) - (n < 0)
+f sign(int n) static int
+  <  (n > 0) - (n < 0)
 
-f compare(const void *a, const void *b) -> static int
+f compare(const void *a, const void *b) static int
   int x = *(const int *)a, y = *(const int *)b
-  return  (x > y) - (x < y)
+  <  (x > y) - (x < y)
 
-f main(void) -> int
+f main(void)
   char a[512], b[512], accept[64]
   char empty[64] = {0}
   int sorted[128], duplicates[128]
-  for (int i = 0; i < 128; ++i)
+  for int i = 0; i < 128; ++i
     sorted[i] = i * 2
     duplicates[i] = (i / 2) * 2
-  for (int trial = 0; trial < 20000; ++trial)
+  for int trial = 0; trial < 20000; ++trial
     size_t n = next() % 200, offset = next() % 16
-    for (size_t i = 0; i < sizeof a; ++i)
+    for size_t i = 0; i < sizeof a; ++i
       a[i] = (char)(1 + next() % 255)
       b[i] = (char)(1 + next() % 255)
     a[n + offset] = 0
     b[n + offset] = 0
-    if (trial % 3 == 0)
+    if trial % 3 == 0
       memcpy(b, a, sizeof a)
-    for (size_t i = 0; i < sizeof accept - 1; ++i)
+    for size_t i = 0; i < sizeof accept - 1; ++i
       accept[i] = (char)(1 + next() % 255)
     accept[trial % sizeof accept] = 0
     accept[sizeof accept - 1] = 0
@@ -54,12 +54,12 @@ f main(void) -> int
     int *actual = nc_bsearch(&key, base, count, sizeof(int), compare)
     int *expected = bsearch(&key, base, count, sizeof(int), compare)
     assert((actual != NULL) == (expected != NULL))
-    if (actual)
+    if actual
       assert(*actual == key)
   assert(nc_memcmp("", "", 0) == 0)
   assert(nc_memchr("", 0, 0) == NULL)
   assert(nc_strlen(empty) == 0)
   assert(nc_strspn("abc", "") == 0)
   assert(nc_bsearch(sorted, sorted, 0, sizeof(int), compare) == NULL)
-  return  0
+  <  0
 

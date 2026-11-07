@@ -8,4 +8,5 @@
     name:=ident("value"+str(i))
     value:=factorial(i)
     emit(quote(enum { $name=$value };))
-f main() -> int = value1 != 1 || value4 != 24
+f main()
+  < value1 != 1 || value4 != 24

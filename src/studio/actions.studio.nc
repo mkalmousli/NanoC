@@ -2,11 +2,11 @@
 @lang 1
 + "studio.h"
 // Compiles the saved active file through the CLI; captures real compiler output for review.
-f st_build(StApp *a,bool run) -> void
+f st_build(StApp *a,bool run)
   st_save(a)
   StFile *f=&a->files[a->active]
   if strcmp(f->text,f->saved)
-    return
+    <
   NcContext *c=calloc(1,sizeof *c)
   if !c
     exit(1)
@@ -26,7 +26,7 @@ f st_build(StApp *a,bool run) -> void
   nc_dispose(c)
   free(c)
 // Converts the selected C buffer conservatively into a separate unsaved NanoC tab.
-f st_convert(StApp *a) -> void
+f st_convert(StApp *a)
   StFile *f=&a->files[a->active]
   st_cache(f)
   NcContext *c=calloc(1,sizeof *c)
@@ -41,14 +41,14 @@ f st_convert(StApp *a) -> void
   free(c)
   if !source
     a->message="Conversion failed; C buffer retained"
-    return
+    <
   st_open(a,"converted.nc")
   StFile *target=&a->files[a->active]
   st_edit(&target->buffer,0,st_size(&target->buffer),source,strlen(source))
   free(source)
   st_expand(a)
 // Navigates exact identifier matches in open tabs, with function-definition lookup on F12.
-f st_navigate(StApp *a,bool definition) -> void
+f st_navigate(StApp *a,bool definition)
   StFile *f=&a->files[a->active]
   st_cache(f)
   size_t at=f->buffer.cursor,start=at,end=at
@@ -57,7 +57,7 @@ f st_navigate(StApp *a,bool definition) -> void
   while isalnum((unsigned char)f->text[end]) || f->text[end]=='_'
     ++end
   if start==end
-    return
+    <
   char *name=st_copy(f->text+start,end-start)
   for int file=0; file<a->count; ++file
     StFile *target=&a->files[file]
@@ -81,27 +81,22 @@ f st_navigate(StApp *a,bool definition) -> void
         target->scroll=(int)line
         free(name)
         a->message=definition ? "Function definition in open tabs" : "Next lexical reference in open tabs"
-        return
+        <
       ++p
   free(name)
   a->message="No matching definition/reference in open tabs"
-// Loads real benchmark JSON without inventing missing observations.
-f st_dashboard(StApp *a) -> void
-  const char *path=getenv("NANOC_STUDIO_RESULTS")
-  if !path
-    path="research/results/final-v1.json"
-  char *text=LoadFileText(path)
-  free(a->benchmark)
-  a->benchmark=text ? st_copy(text,strlen(text)) : st_copy("No benchmark data collected at the configured path.",51)
-  if text
-    UnloadFileText(text)
+// Shows the compact language card in the studio reference panel.
+f st_reference(StApp *a)
+  const char *text="f main()\n  < 0\n\nf log(message: const char*)\n  puts(message)\n\nf twice(x: int) int\n  < x*2\n\nif condition\n  action()\n\n< value: return; !: break; ^: continue"
+  free(a->reference)
+  a->reference=st_copy(text,strlen(text))
   a->mode=2
-  a->message="Actual benchmark artifact. Agent/human outcomes are uncollected unless supplied by real trials."
+  a->message="NanoC v1 compact syntax reference"
 // Matches parentheses, brackets or braces while skipping lexer-recognized comments and strings.
-f st_bracket(StFile *f) -> size_t
+f st_bracket(StFile *f) size_t
   NcContext *c=calloc(1,sizeof *c)
   if !c
-    return SIZE_MAX
+    < SIZE_MAX
   nc_init(c,f->path)
   size_t found=SIZE_MAX
   if !setjmp(c->trap)
@@ -110,22 +105,22 @@ f st_bracket(StFile *f) -> size_t
     for size_t i=0; i<ts.n; ++i
       NcToken t=ts.v[i]
       if t.kind!=NC_PUNCT || t.n!=1 || (size_t)(t.s-f->text)!=at
-        continue
+        ^
       const char *opens="([{",*closes=")]}",*pos=strchr(opens,*t.s)
       if !pos
-        break
+        !
       char close=closes[pos-opens]
       size_t depth=1
       for size_t j=i+1; j<ts.n; ++j
         NcToken next=ts.v[j]
         if next.kind!=NC_PUNCT || next.n!=1
-          continue
+          ^
         if *next.s==*t.s
           ++depth
         elif *next.s==close && --depth==0
           found=(size_t)(next.s-f->text)
-          break
-      break
+          !
+      !
   nc_dispose(c)
   free(c)
-  return found
+  < found

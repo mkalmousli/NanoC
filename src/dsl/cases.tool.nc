@@ -74,4 +74,4 @@ f cases(fn, path)
       pr=push(pr,slice(l,4,len(l)))
   if kind!=""
     body+=one(kind,name,nc,pr,cpp,lim)
-  "f "+fn+"() -> void\n"+body+"  puts("+cq("[OK] "+title)+")\n"
+  "f "+fn+"()\n"+body+"  puts("+cq("[OK] "+title)+")\n"

@@ -1,2 +1,2 @@
-f f() -> int
-	return 0
+f f() int
+	< 0

@@ -5,7 +5,7 @@ dirs:=[["src/types","Internal subsystem contracts (`*.types.nc`), written in Nan
   ["src/eval","Values, scopes, checked arithmetic, expressions, executable programs"],
   ["src/meta","Builtin registry, source passes, text/list edits, read-only inputs"],
   ["src/support","Aligned arenas, maps, buffers, diagnostics, atomic files"],["src/cli","Options, compact catalogs, JSON/text reporting"],
-  ["src/layout","Indented runtime/meta bodies, word controls, explicit returns"],["src/emit","Pretty and mini C emitters"],
+  ["src/layout","Indented runtime/meta bodies, word controls, sigil returns"],["src/emit","Pretty and mini C emitters"],
   ["src/dsl","Shared generator DSLs (JSON, Markdown, files) for explicit developer scripts"],
   ["src/dsl/ui.tool.nc, src/web/ui, src/web/pages","Website widgets: one tree per widget with element-level `css`, `js` and `on` blocks; classes and script ids are generated, `[as=name]` reaches an element as `A.name`"],
   ["src/content/*.doc.nc","Prose, tables and runnable examples written once; rendered to `docs/*.md` and the website, with C produced by the live compiler"],
@@ -37,4 +37,4 @@ page("docs/bootstrap.md",[h(1,"Bootstrap card"),
   code("sh",["./builder snapshot    # verify, then regenerate the committed C seed + frozen headers","./builder bootstrap   # prove the regenerated seed builds the same compiler"]),
   "Seed C is generated and frozen; do not maintain a second implementation. Compiler modules under src stay at most "+LIMIT+" physical lines."])
 page("docs/benchmarks.md",[h(1,"Measurement"),
-  "`./builder bench` retains CSV and 10,000-function corpora in `build/bench-data`. Cases: plain C, expression functions, indented functions, raw C and macros. Reports five warm in-process rounds, CLI elapsed time, peak RSS (GNU time), 20-launch startup. Plain C is passthrough, not parsing. C compilation is excluded. Report CPU, OS, compiler and flags when comparing; synthetic results are not universal speed claims."])
+  "`./builder bench` retains CSV and 10,000-function corpora in `build/bench-data`. Cases: plain C, functions, control flow, raw C and macros. Reports five warm in-process rounds, CLI elapsed time, peak RSS (GNU time), 20-launch startup. Plain C is passthrough, not parsing. C compilation is excluded. Report CPU, OS, compiler and flags when comparing; synthetic results are not universal speed claims."])

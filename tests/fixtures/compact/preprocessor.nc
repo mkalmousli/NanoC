@@ -14,7 +14,7 @@ $- TEMP
   $ EXPECTED = 3
 ?# 0
   !! "inactive error"
-f main() -> int
+f main()
   if VALUE == EXPECTED
     ?# VALUE == 1
       ?- UNUSED
@@ -26,6 +26,6 @@ f main() -> int
     :
       long item = 3
     printf("%d %s %d\n", VALUE, TEXT(hello), SQUARE(3))
-    return CAT(it,em) != VALUE
+    < CAT(it,em) != VALUE
   else
-    return 1
+    < 1

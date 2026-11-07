@@ -5,19 +5,19 @@
 
 // Takes an indented block argument.
 void nc_block_argument(NcContext *ctx, NcCursor *c, NcMacro *m, NcGroups *args, int line, int indent) {
-    if ((!m->params.n || args->n + 1 != m->params.n)) {
+    if (!m->params.n || args->n + 1 != m->params.n) {
         return;
     }
     NcParam last = m->params.v[m->params.n - 1];
-    if ((last.variadic || strcmp(last.kind, "block"))) {
+    if (last.variadic || strcmp(last.kind, "block")) {
         return;
     }
     NcHeader header = {line, indent};
     size_t next = c->pos;
-    while ((next < c->ts.n && c->ts.v[next].kind == NC_SPACE)) {
+    while (next < c->ts.n && c->ts.v[next].kind == NC_SPACE) {
         ++next;
     }
-    if ((next == c->ts.n || c->ts.v[next].line <= line || c->ts.v[next].column - 1 <= header.indent)) {
+    if (next == c->ts.n || c->ts.v[next].line <= line || c->ts.v[next].column - 1 <= header.indent) {
         return;
     }
     NcNodes nodes = nc_indented_nodes(c, header, 0);

@@ -5,12 +5,12 @@
 // The static cards are written once, with the JSON DSL, and baked in as C strings at compile time.
 @ct
   eval(read("src/dsl/gen.tool.nc"))
-  syntax:=o(["version",r("1"),"function","f add(int a, int b) -> int\n  return a+b","parameters","name: CType or exact C declarators","declarations","n := 0; name: CType = expression; C declarations","runtime","if/elif/else; while; for init; condition; step; return; break; continue","preprocessor","+ include; $ define; $- undef; ?+ ifdef; ?- ifndef; ?# if; :# elif; : else; !! error; $! pragma; dedent endif","macro","@m twice($x)\n  (($x)*2)","program","@ct\n  n:=42\n  emit(quote(int answer=$n;))","rawC","@c indented-body, balanced {tokens}, or quoted C source","layout","spaces; indented blocks; no then or block-colon spellings","emit","emit file.nc --to c --map file.map.json","trace","expand file.nc --json; explain file.nc --line N|--symbol NAME|--generated-offset BYTE"])
+  syntax:=o(["version",r("1"),"function","f add(int a, int b) int\n  < a+b","returns","optional CType after ); void by default, int for main; no arrow","parameters","name: CType or exact C declarators","declarations","n := 0; name: CType = expression; C declarations","runtime","if/elif/else; while; for init; condition; step; < value; ! break; ^ continue","preprocessor","+ include; $ define; $- undef; ?+ ifdef; ?- ifndef; ?# if; :# elif; : else; !! error; $! pragma; dedent endif","macro","@m twice($x)\n  (($x)*2)","program","@ct\n  n:=42\n  emit(quote(int answer=$n;))","rawC","@c indented-body, balanced {tokens}, or quoted C source","layout","spaces; indented blocks; no then or block-colon spellings","emit","emit file.nc --to c --map file.map.json","trace","expand file.nc --json; explain file.nc --line N|--symbol NAME|--generated-offset BYTE"])
   limits:=o(["passes",r("32"),"steps",r("1000000"),"zeroMeansUnlimited",a(["passes","steps"]),"depth",r("128"),"depthCap",r("512"),"bytes",r("16777216")])
   emit("static const char SYNTAX[] = "+q(json(syntax))+";\n")
   emit("static const char LIMITS[] = "+q(json(limits))+";\n")
 // Writes one builtin.
-f spec(NcJson *w, const NcSpec *s) -> static void
+f spec(NcJson *w, const NcSpec *s) static void
   jw_open(w, '{')
   jw_ks(w, "name", s->name)
   jw_ks(w, "call", s->signature)
@@ -18,24 +18,26 @@ f spec(NcJson *w, const NcSpec *s) -> static void
   jw_close(w, '}')
 
 // Prints a topic or builtin card.
-f nc_describe(FILE *out, const char *topic) -> bool
+f nc_describe(FILE *out, const char *topic) bool
   NcJson w
   jw_start(&w, out)
-  if (*topic && strcmp(topic, "syntax") && strcmp(topic, "builtins"))
-    for (size_t i = (0), nanoc_bound_1 = (nc_spec_count); i < nanoc_bound_1; ++i)
-      if (!strcmp(topic, nc_specs[i].name))
-        spec(&w, &nc_specs[i]); fputc('\n', out); return 1
-    return 0
+  if *topic && strcmp(topic, "syntax") && strcmp(topic, "builtins")
+    for size_t i = (0), nanoc_bound_1 = (nc_spec_count); i < nanoc_bound_1; ++i
+      if !strcmp(topic, nc_specs[i].name)
+        spec(&w, &nc_specs[i])
+        fputc('\n', out)
+        < 1
+    < 0
   jw_open(&w, '{')
   jw_ki(&w, "schemaVersion", 1)
-  if (!strcmp(topic, "builtins"))
+  if !strcmp(topic, "builtins")
     jw_key(&w, "builtins")
     jw_open(&w, '[')
-    for (size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i)
+    for size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i
       spec(&w, &nc_specs[i])
     jw_close(&w, ']')
   else
-    if (!*topic)
+    if !*topic
       jw_ks(&w, "compiler", "nanoc")
       jw_ks(&w, "version", NC_VERSION)
       jw_ki(&w, "lang", NC_LANG)
@@ -49,4 +51,4 @@ f nc_describe(FILE *out, const char *topic) -> bool
     jw_kr(&w, "limits", LIMITS)
   jw_close(&w, '}')
   fputc('\n', out)
-  return 1
+  < 1

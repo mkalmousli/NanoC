@@ -2,25 +2,25 @@
 @lang 1
 + "studio.h"
 // Draws UTF-8 text using the configured font and device-scaled raylib coordinates.
-f st_label(StApp *a,const char *text,float x,float y,Color color) -> void
+f st_label(StApp *a,const char *text,float x,float y,Color color)
   DrawTextEx(a->font,text,(Vector2){x,y},a->font_size,0,color)
 // Chooses colors without changing or interpreting C expressions.
-f st_color(const char *s,size_t n,bool comment,bool string) -> Color
+f st_color(const char *s,size_t n,bool comment,bool string) Color
   if comment
-    return (Color){120,143,118,255}
+    < (Color){120,143,118,255}
   if string
-    return (Color){222,192,128,255}
+    < (Color){222,192,128,255}
   if n && isdigit((unsigned char)*s)
-    return (Color){190,162,225,255}
+    < (Color){190,162,225,255}
   const char *words[]={"f","s","u","e","if","elif","else","while","for","return","break","continue","int","char","void","const","struct","typedef",NULL}
   for int i=0; words[i]; ++i
     if strlen(words[i])==n && !strncmp(s,words[i],n)
-      return (Color){120,190,224,255}
+      < (Color){120,190,224,255}
   if *s=='@' || *s=='$'
-    return (Color){221,153,179,255}
-  return (Color){218,222,226,255}
+    < (Color){221,153,179,255}
+  < (Color){218,222,226,255}
 // Draws one line, highlighting selected byte intervals and keeping UTF-8 codepoints intact.
-f st_code_line(StApp *a,const char *text,size_t n,float x,float y,size_t base,size_t lo,size_t hi,bool highlight) -> void
+f st_code_line(StApp *a,const char *text,size_t n,float x,float y,size_t base,size_t lo,size_t hi,bool highlight)
   bool comment=false,string=false
   char quote=0
   size_t i=0
@@ -58,7 +58,7 @@ f st_code_line(StApp *a,const char *text,size_t n,float x,float y,size_t base,si
       string=false
     i=end
 // Renders and operates the original source pane using the cached line index.
-f st_source_pane(StApp *a,Rectangle pane) -> void
+f st_source_pane(StApp *a,Rectangle pane)
   StFile *f=&a->files[a->active]
   st_cache(f)
   float height=a->font_size+5,cell=MeasureTextEx(a->font,"M",a->font_size,0).x
@@ -107,16 +107,16 @@ f st_source_pane(StApp *a,Rectangle pane) -> void
         while f->text[offset+child]==' '
           ++child
         if f->text[offset+child]!='\n' && child<=indent
-          break
+          !
         ++next
     line=next
     y+=height
   EndScissorMode()
 // Renders generated C and lets a click reverse-select its provenance operation.
-f st_c_pane(StApp *a,Rectangle pane) -> void
+f st_c_pane(StApp *a,Rectangle pane)
   if !a->generated
     st_label(a,"Ctrl+Enter: expand current NanoC buffer",pane.x+12,pane.y+12,GRAY)
-    return
+    <
   const char *text=a->generated
   size_t start=0,line=0
   float height=a->font_size+5,y=pane.y+5

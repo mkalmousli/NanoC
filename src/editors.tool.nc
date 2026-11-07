@@ -3,10 +3,10 @@
 // Run: build/nctool src/editors.tool.nc
 eval(read("src/dsl/gen.tool.nc"))
 DIR:="m|ct|c"
-CTL:="if|elif|else|for|while|break|continue|return|goto"
+CTL:="if|elif|else|for|while|goto"
 BLT:="emit|quote|ident|fresh|rewrite|again|source|eval|assert|fail|inc"
 TYP:="void|bool|char|short|int|long|float|double|signed|unsigned|auto|const|volatile|static|struct|union|enum|typedef|size_t"
-table:=["sig~^\\s*(f|s|u|e)\\b|^\\s*([?:+!^#$=]|[\\x7e])~Conditional~magenta~keyword.control~statement~font-lock-keyword-face",
+table:=["sig~^\\s*(f|s|u|e)\\b|^\\s*([?:+!^#$=<]|[\\x7e])~Conditional~magenta~keyword.control~statement~font-lock-keyword-face",
   "dir~@(DIR)\\b~PreProc~brightmagenta~keyword.control.directive~preproc~font-lock-keyword-face",
   "mac~@[A-Za-z_]\\w*~Function~brightcyan~entity.name.function.macro~special~font-lock-function-name-face",
   "cap~\\$\\$|\\$[A-Za-z_]\\w*(:[A-Za-z_]+|\\.\\.\\.)?~Special~brightyellow~variable.parameter~special~font-lock-variable-name-face",
@@ -59,7 +59,7 @@ out(V+"language-configuration.json",json(o(["comments",o(["lineComment","//","bl
   "brackets",a([a(["(",")"]),a(["[","]"]),a(["{","}"])]),
   "indentationRules",o(["increaseIndentPattern","^\\s*(@"+replace(DIR,"|","|@")+"|"+CTL+")\\b.*$"])])))
 snips:=[]
-for s ["f~f ${1:name}(${2:args}) -> ${3:int}~  return ${0:0}","m~@m ${1:name}($${2:x})~  ${0:body}","ct~@ct~  ${0:emit(quote())}","main~f main() -> int~  return ${0:0}"]
+for s ["f~f ${1:name}(${2:args}) ${3:int}~  < ${0:0}","m~@m ${1:name}($${2:x})~  ${0:body}","ct~@ct~  ${0:emit(quote())}","main~f main()~  < ${0:0}"]
   p:=split(s,"~")
   pre:=p[0]
   if p[0]=="m" || p[0]=="ct"

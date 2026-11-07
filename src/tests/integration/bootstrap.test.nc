@@ -2,23 +2,23 @@
 + "test.h"
 + <dirent.h>
 
-f modules(const char *root) -> static size_t
+f modules(const char *root) static size_t
   DIR *dir = opendir(root)
   CHECK(dir != NULL)
   struct dirent *entry
   size_t count = 0
-  while ((entry = readdir(dir)) != NULL)
-    if (entry->d_name[0] == '.' || !strcmp(entry->d_name, "assets") || !strcmp(entry->d_name, "cases"))
-      continue
+  while (entry = readdir(dir)) != NULL
+    if entry->d_name[0] == '.' || !strcmp(entry->d_name, "assets") || !strcmp(entry->d_name, "cases")
+      ^
     char *path = nc_format(test_state.mem, "%s/%s", root, entry->d_name)
     struct stat st
     CHECK(lstat(path, &st) == 0)
-    if (S_ISDIR(st.st_mode))
+    if S_ISDIR(st.st_mode)
       count += modules(path)
-      continue
+      ^
     size_t len = strlen(path)
-    if (strchr(entry->d_name, '.') != strrchr(entry->d_name, '.'))
-      continue
+    if strchr(entry->d_name, '.') != strrchr(entry->d_name, '.')
+      ^
     CHECK(!strstr(entry->d_name, ".c"))
     CHECK(len > 3 && !strcmp(path + len - 3, ".nc"))
     CHECK(strstr(test_read(path), "\nf ") != NULL)
@@ -29,9 +29,9 @@ f modules(const char *root) -> static size_t
     CHECK(!strcmp(first, second) && !strcmp(second, third))
     ++count
   closedir(dir)
-  return  count
+  <  count
 
-f test_bootstrap(void) -> void
+f test_bootstrap(void)
   CHECK(modules("src") > 0)
   const char *self[] = {"build/nanoc", "src/frontend/expand.nc", "-o", test_path("self.c"), NULL}
   (void)test_command(self)
