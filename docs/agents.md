@@ -13,9 +13,9 @@ cc -std=c11 -Wall -Wextra -Werror -pedantic-errors unit.c -o unit
 ```
 
 - Checks validate expansion, not C/C++ types/linking/runtime. Then compile and test.
-- `--check` never writes generated code. The compiler has no CT filesystem-write or command execution capabilities.
+- `--check` never writes generated code. Native @tt supports host operations; --check rejects their execution.
 - Success check JSON: schemaVersion, ok, file, validation, language, generatedBytes, symbols, passes, logs, diagnostics.
 - Errors: one JSON object on stderr, nonzero exit. Diagnostics contain code, file, line, message, trace. Codes: NC_SYNTAX, NC_LIMIT, NC_INPUT. Schema v1 is additive.
 - Use `f add(a: int, b: int) int` with an indented `< a+b`.
-- CT/macros generate/edit code; host tasks belong in external build tools. `rewrite` converges on unchanged text; `again` forces a pass; `--max-passes 0 --max-steps 0` removes count limits.
+- TT/macros generate/edit code; native TT also supports run/exec/sh and filesystem writes. `rewrite` converges on unchanged text; `again` forces a pass; `--max-passes 0 --max-steps 0` removes count limits.
 - Use @c for complex declarations and compiler-specific extensions; NanoC asm and @bt are removed.

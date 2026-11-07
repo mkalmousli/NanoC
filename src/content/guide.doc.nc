@@ -1,12 +1,13 @@
 lesson hello START | NanoC v1 | Hello
   p NanoC is a programmable frontend for C. Runtime constructs become ordinary C with no mandatory runtime, VM, garbage collector or hidden allocation. The C compiler checks C symbols and types. The programmer owns memory, cleanup, undefined behavior and correctness. This is pre-release v1: obsolete syntax has been removed, with no compatibility or migration mode.
   code nanoc c
-    + <stdio.h>
-    f main()
+    +stdio
+    f main
       puts("Hello from NanoC!")
+      0
   note Run `nanoc emit hello.nc -o hello.c`, then `cc -std=c11 hello.c -o hello && ./hello`. `nanoc run hello.nc` performs both explicit steps without a shell.
 lesson functions FUNCTIONS | Functions and declarations | Functions
-  p `f name(parameters) CType` uses parentheses around parameters. The return type follows `)` directly and is optional: functions default to void, while `main` defaults to int. An explicit `void` or `int` is also supported. No arrow is used. `main` may omit a final result; falling through returns zero in C99 and later or C++17. Parameters use `name: CType` or exact C declarators. Each C parameter needs its own type. Returns are explicit: `< expression` or `<`. A semicolon after the header declares a prototype.
+  p Zero-argument functions can omit parentheses: `f get int`. With parameters, write `f clamp(int x,lo,hi) int` or name-first parameters such as `x,y:int`. Bare parameter names inherit the preceding C parameter type. The optional return type follows the name or parameter list directly: void by default, int for main. The final value expression in a non-void function returns automatically, including final if/elif/else branches. Use `< value` for an early return and `<` for a void return. End an expression with a semicolon to make it a statement instead. Declarations, assignments, loops and directives do not become implicit results. A semicolon after a function header declares a prototype.
   code nanoc c
     f add(a: int, b: int) int
       < a+b
@@ -33,16 +34,18 @@ lesson controls CONTROL FLOW | Compact declarations and word controls | Controls
         total--
       < total
   table Syntax | C translation
-    `f name(args) T` | Function definition; empty C parameter lists become void
+    `f name T` / `f name(args) T` | Function with optional return type
+    `int x,y,z` | Shared C parameter type
+    final value expression | Implicit return in non-void functions
     `s Name` / `u Name` / `e Name` | Struct / union / enum with a typedef
     `name := literal` | Declaration with literal-derived C type
     `name: CType = expression` | Explicit C declaration
-    `< expression` / `<` | Return a value / void
+    `< expression` / `<` | Early value return / void return
     `if condition` / `elif condition` / `else` | if / else if / else
     `while condition` | while
     `for init; condition; step` | for
     `!` / `^` | break / continue
-    `+ <header.h>` / `+ "local.h"` | C include
+    `+stdio,stdlib` / `+<header.h>,"local.h"` | Multiple C includes; bare names add .h
   p Indentation uses spaces. A body must be deeper than its header, siblings align, and dedents must match an enclosing level. Canonical formatting uses two spaces. Missing, empty or inconsistently indented bodies are rejected. Runtime branches match an if at the same indentation. Block colons and inline then spellings are not part of v1. C expressions retain C operator spelling, precedence and evaluation rules: !x, !!x, ~x, a^b, a?b:c and x=y are expressions. Only a standalone `!` or `^` is a loop-control statement; `!x` and `a^b` remain C expressions. Outer parentheses around control headers are rejected.
 lesson records RECORDS | Structs, unions and enums | Records
   code nanoc c
@@ -84,7 +87,7 @@ lesson preprocessor PREPROCESSOR | C preprocessing | Preprocessor
     `+ <header.h>` / `+ "local.h"` | include
     `!! "message"` | error; adjacent exclamation marks and a string literal
     `$! payload` | pragma payload; support depends on the C compiler
-  p Conditions can nest at file scope or inside functions, mixing with runtime blocks. Declarations may differ between configurations. Directive ordering, # stringification and ## token pasting are retained. Use raw C for multiline replacement lists, unusual include operands or configurations with different brace structure. Test each configuration you ship. NanoC expands macros and CT in every preprocessor branch, even `?# 0`, before the C preprocessor runs. Use C macros for C-configuration-dependent definitions.
+  p Conditions can nest at file scope or inside functions, mixing with runtime blocks. Declarations may differ between configurations. Directive ordering, # stringification and ## token pasting are retained. Use raw C for multiline replacement lists, unusual include operands or configurations with different brace structure. Test each configuration you ship. NanoC expands macros and TT in every preprocessor branch, even `?# 0`, before the C preprocessor runs. Use C macros for C-configuration-dependent definitions.
 lesson raw RAW C | C interoperability | Raw C
   p C headers, libraries, functions, pointers, arrays, structs, unions, enums, typedefs, function pointers and platform APIs remain available. Includes do not require NanoC to parse the declarations in a header. Link through the C compiler's normal flags, for example `nanoc build main.nc --cflag -lm`. C++17 remains a secondary output target, with no additional NanoC C++ type subsystem.
   code nanoc c
@@ -119,11 +122,11 @@ lesson macros MACROS | NanoC templates | Macros
     f main()
       Point p={42}
       < @identity(get_x(&p))!=42
-  p An executable macro uses `@m name($x) =` followed by an indented compile-time program. Use quote, emit, token inspection and existing transformations for library abstractions. No defer, ownership or container runtime is built in. Escape a literal dollar through `$$` inside a template, so C macro definitions can be generated.
-lesson ct COMPILE TIME | Compile-time generation | Compile time
-  p `@ct` executes a bounded source-transformation program. This phase has dynamic values, list/string operations, source/token operations, functions `f name(args)`, loops, sigil or final-value returns, quote and emit. This dynamic evaluator is not the runtime C grammar. `eval(read(path))` loads a source library explicitly. Read/exists/env are inputs; write/mkdir/remove/run/exec/sh are not compiler builtins. No external process or filesystem mutation is introduced through another compiler directive.
+  p An executable macro uses `@m name($x) =` followed by an indented translate-time program. Use quote, emit, token inspection and existing transformations for library abstractions. No defer, ownership or container runtime is built in. Escape a literal dollar through `$$` inside a template, so C macro definitions can be generated.
+lesson tt TRANSLATE TIME | Translate-time generation | Translate time
+  p `@tt` runs translate-time programs before C is emitted. Use dynamic values, functions, lists, strings, quote and emit, or transform source with rewrite and again. Native TT can read and write files, create directories, remove files, and execute host programs: `run(argv[,cwd])` returns [status,stdout,stderr], `exec(argv[,cwd])` returns stdout or fails, and `sh(command)` runs a shell. `eval(read(path))` loads a TT library. The browser supports pure transformations and context information; host commands and filesystem operations require the native compiler.
   code nanoc c
-    @ct
+    @tt
       f square(n) = n*n
       values:=[]
       for i range(4)
@@ -131,9 +134,25 @@ lesson ct COMPILE TIME | Compile-time generation | Compile time
       emit("static const int squares[]={"+join(values,",")+"};")
     f main()
       < squares[3]!=9
-  p The pipeline expands until stable. rewrite replaces source; again requests another pass. Defaults bound steps, passes, nesting and output. Zero step/pass limits explicitly disable those counters. Host development scripts under *.tool.nc use a separate uninstalled nctool interpreter; the language compiler cannot invoke that runner through a directive.
+  p The pipeline expands until stable. rewrite replaces source; again requests another cycle. Defaults bound steps, cycles, nesting and output. `--max-steps 0 --max-passes 0` disables count limits. Native TT executes with the compiler process permissions. `--check` evaluates pure TT and rejects host writes or commands, including calls reached through eval or macros.
+  table TT function | Information
+    `cycle()` | Current one-based expansion cycle
+    `line()` | Source line of the TT call
+    `file()` | Input file spelling
+    `path()` | Resolved input path when available
+    `name()` | Enclosing runtime function name, or empty at file scope
+    `target()` | Selected C standard or c++17
+  code nanoc c
+    f answer int
+      @tt
+        assert(name()=="answer")
+        assert(cycle()>=1)
+        log(file()+":"+str(line()))
+      42
+    f main
+      answer()!=42
 lesson output OUTPUT | Emission, tools and portability | Output
   p `nanoc emit file.nc --to c -o file.c` writes deterministic readable C; --emit mini compacts non-raw C. `--line-directives` emits C #line markers where available. C diagnostics can refer to NanoC source, but this is not a guarantee of debugger compatibility. `--check` validates expansion only; compile and execute tests separately.
   p `--std c89|c99|c11|c17` selects output restrictions. C89 lowers for initializers into an enclosing scope; inferred long long and unsupported literal forms are rejected. General C source still must obey the selected standard, including mixed-declaration restrictions. Raw C is never silently rewritten to downlevel it. GCC and Clang integration tests cover representative portable programs; universal C implementation support is not claimed.
-  p `expand file.nc --json` exports compiler operation events, parent IDs, pass numbers, source ranges, captures, generated identifiers and CT results. `emit file.nc --map file.map.json` adds actual final C byte ranges. `explain file.nc --line N`, --symbol NAME or --generated-offset BYTE filters records. Source coordinates and offsets count UTF-8 bytes. Synthetic expansion positions refer to generated fragments; follow parent relationships to original source. This is operation provenance, not character-perfect macro reconstruction.
-  p `fmt file.nc`, --write and --check perform lexical canonical indentation without executing CT. `tokens file.nc --json` reports lexical tokens; --encoding requires optional pinned tiktoken tooling and reports actual text token counts. `convert file.c --to nanoc --conservative` produces an opaque raw C island without dependencies. --compact optionally uses Clang ASTs and preserves unsupported or configuration-sensitive constructs as raw C. It does not restore original formatting or recover former macro abstractions.
+  p `expand file.nc --json` exports compiler operation events, parent IDs, pass numbers, source ranges, captures, generated identifiers and TT results. `emit file.nc --map file.map.json` adds actual final C byte ranges. `explain file.nc --line N`, --symbol NAME or --generated-offset BYTE filters records. Source coordinates and offsets count UTF-8 bytes. Synthetic expansion positions refer to generated fragments; follow parent relationships to original source. This is operation provenance, not character-perfect macro reconstruction.
+  p `fmt file.nc`, --write and --check perform lexical canonical indentation without executing TT. `tokens file.nc --json` reports lexical tokens; --encoding requires optional pinned tiktoken tooling and reports actual text token counts. `convert file.c --to nanoc --conservative` produces an opaque raw C island without dependencies. --compact optionally uses Clang ASTs and preserves unsupported or configuration-sensitive constructs as raw C. It does not restore original formatting or recover former macro abstractions.

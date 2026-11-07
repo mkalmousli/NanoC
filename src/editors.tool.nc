@@ -2,7 +2,7 @@
 // Row: class ~ regex ~ vim group ~ nano color ~ textmate scope ~ micro group ~ emacs face
 // Run: build/nctool src/editors.tool.nc
 eval(read("src/dsl/gen.tool.nc"))
-DIR:="m|ct|c"
+DIR:="m|tt|c"
 CTL:="if|elif|else|for|while|goto"
 BLT:="emit|quote|ident|fresh|rewrite|again|source|eval|assert|fail|inc"
 TYP:="void|bool|char|short|int|long|float|double|signed|unsigned|auto|const|volatile|static|struct|union|enum|typedef|size_t"
@@ -59,10 +59,10 @@ out(V+"language-configuration.json",json(o(["comments",o(["lineComment","//","bl
   "brackets",a([a(["(",")"]),a(["[","]"]),a(["{","}"])]),
   "indentationRules",o(["increaseIndentPattern","^\\s*(@"+replace(DIR,"|","|@")+"|"+CTL+")\\b.*$"])])))
 snips:=[]
-for s ["f~f ${1:name}(${2:args}) ${3:int}~  < ${0:0}","m~@m ${1:name}($${2:x})~  ${0:body}","ct~@ct~  ${0:emit(quote())}","main~f main()~  < ${0:0}"]
+for s ["f~f ${1:name}(${2:args}) ${3:int}~  ${0:0}","m~@m ${1:name}($${2:x})~  ${0:body}","tt~@tt~  ${0:emit(quote())}","main~f main~  ${0:0}"]
   p:=split(s,"~")
   pre:=p[0]
-  if p[0]=="m" || p[0]=="ct"
+  if p[0]=="m" || p[0]=="tt"
     pre="@"+pre
   if p[0]=="main"
     pre="main"

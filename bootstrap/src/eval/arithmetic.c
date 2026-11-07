@@ -36,7 +36,7 @@ int64_t nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int li
         }
     }
     if (overflow) {
-        nc_fail(c, line, "compile-time integer overflow");
+        nc_fail(c, line, "translate-time integer overflow");
     }
     nc_fail(c, line, "unknown operator: %s", op);
     return (int64_t){0};

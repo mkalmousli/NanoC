@@ -3,7 +3,7 @@
 + "test.h"
 // Verifies mapping ranges, parent chains, captures, unique identifiers and tracing transparency.
 f test_trace()
-  const char *source = "@m fresh_value($x) { ($x+$fresh(v)) }\n@ct {emit(\"int seed=1;\");}\nf main() int\n  n:=1\n  < n\n"
+  const char *source = "@m fresh_value($x) { ($x+$fresh(v)) }\n@tt {emit(\"int seed=1;\");}\nf main() int\n  n:=1\n  < n\n"
   NcContext *c = calloc(1, sizeof *c)
   CHECK(c != NULL)
   nc_init(c, "trace.nc")
@@ -15,7 +15,7 @@ f test_trace()
   CHECK(!strcmp(out, test_translate(source, false)))
   CHECK(c->traces.n >= 5)
   CHECK(!strstr(out, "nc-trace"))
-  bool statement = false, compile_time = false
+  bool statement = false, translate_time = false
   for size_t i=0; i<c->traces.n; ++i
     NcTrace *e = &c->traces.v[i]
     CHECK(e->id == i+1 && e->parent < e->id)
@@ -29,10 +29,10 @@ f test_trace()
       c->query_offset = e->start
       CHECK(nc_trace_matches(c, e))
       c->query_generated = false
-    if !strcmp(e->name, "ct")
-      compile_time = true
+    if !strcmp(e->name, "tt")
+      translate_time = true
       CHECK(strstr(e->result, "int seed=1;"))
-  CHECK(statement && compile_time)
+  CHECK(statement && translate_time)
   CHECK(test_json(nc_trace_text(c, out)))
   nc_dispose(c)
   free(c)

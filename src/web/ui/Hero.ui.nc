@@ -17,7 +17,7 @@ section
   div
     Kicker NanoC · language version 1
     h1 Compact syntax.<br>Plain <em>C output.</em>
-    p A compact, self-hosted language that generates plain C11 or C++17. Indented blocks, macros that run, compile-time transformations, compact C preprocessing.
+    p A compact, self-hosted language that generates plain C11 or C++17. Indented blocks, macros that run, translate-time transformations, compact C preprocessing.
       css | font-size:18px;color:var(--mute);margin:24px 0 30px;max-width:520px
     div
       css | display:flex;gap:12px;flex-wrap:wrap
@@ -28,15 +28,15 @@ section
       position:relative
       & pre | font-size:13px
     Code [lang=nanoc]
-      | f clamp(x: int, lo: int, hi: int) int
+      | f clamp(int x,lo,hi) int
       |   if x&lt;lo
-      |     &lt; lo
+      |     lo
       |   elif x&gt;hi
-      |     &lt; hi
+      |     hi
       |   else
-      |     &lt; x
-      | f main()
+      |     x
+      | f main
       |   total:=0
       |   for i:=0; i&lt;10; i++
       |     total+=clamp(i,2,7)
-      |   &lt; total!=45
+      |   total!=45

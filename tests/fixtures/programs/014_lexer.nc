@@ -1,3 +1,3 @@
 $ R =
 f main()
-  @c { const char *s = R"@ct"; return s[0]!='@'; }
+  @c { const char *s = R"@tt"; return s[0]!='@'; }

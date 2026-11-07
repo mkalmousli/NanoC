@@ -1,0 +1,42 @@
+// Compact include lists: +stdio,stdlib or explicit <system.h> and "local.h" operands.
+@lang 1
++ "nanoc/nanoc.h"
+
+// Expands every include operand into one ordinary C include directive.
+f nc_includes(NcContext *c, NcTokens input, int line) char *
+  NcCursor cur = {c, input, 0}
+  nc_need(&cur, "+")
+  NcBuffer out = {0}
+  while !nc_end(&cur)
+    if nc_eat(&cur, ",")
+      nc_fail(c, line, "missing include before comma")
+    NcToken first = nc_take(&cur)
+    if first.kind == NC_LITERAL && first.s[0] == '"'
+      nc_printf(c, &out, "#include %s\n", nc_text(c, first))
+    elif nc_is(first, "<")
+      NcBuffer path = {0}
+      while !nc_end(&cur) && !nc_at(&cur, ">")
+        NcToken token = nc_take(&cur)
+        nc_addn(c, &path, token.s, token.n)
+      nc_need(&cur, ">")
+      if !path.n
+        nc_fail(c, line, "empty include path")
+      nc_printf(c, &out, "#include <%s>\n", path.v)
+    else
+      if first.kind != NC_WORD
+        nc_fail(c, line, "expected a header name")
+      const char *start = first.s
+      const char *end = first.s + first.n
+      while cur.pos < cur.ts.n && cur.ts.v[cur.pos].s == end && cur.ts.v[cur.pos].kind != NC_SPACE && !nc_is(cur.ts.v[cur.pos], ",")
+        NcToken token = cur.ts.v[cur.pos++]
+        for size_t j = 0; j < token.n; ++j
+          if !isalnum((unsigned char)token.s[j]) && !strchr("_./-", token.s[j])
+            nc_fail(c, line, "invalid compact header name")
+        end = token.s + token.n
+      char *path = nc_string(c, start, (size_t)(end - start))
+      nc_printf(c, &out, "#include <%s%s>\n", path, strchr(path, '.') ? "" : ".h")
+    if nc_eat(&cur, ",") && nc_end(&cur)
+      nc_fail(c, line, "missing include after comma")
+  if !out.n
+    nc_fail(c, line, "missing include operand")
+  < out.v

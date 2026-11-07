@@ -28,6 +28,6 @@ f nc_arithmetic(NcContext *c, const char *op, int64_t x, int64_t y, int line) in
     else
       < *op == '/' ? x / y : x % y
   if overflow
-    nc_fail(c, line, "compile-time integer overflow")
+    nc_fail(c, line, "translate-time integer overflow")
   nc_fail(c, line, "unknown operator: %s", op)
   < (int64_t){0}

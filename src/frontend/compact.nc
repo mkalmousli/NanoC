@@ -62,7 +62,10 @@ f nc_directive_start(NcTokens ts, size_t at) bool
     < 0
   NcToken n = ts.v[at]
   if nc_is(t, "+")
-    < nc_is(n, "<") || n.kind == NC_LITERAL
+    for size_t k = at; k < ts.n && ts.v[k].line == t.line; ++k
+      if nc_is(ts.v[k], ";")
+        < 0
+    < nc_is(n, "<") || n.kind == NC_LITERAL || n.kind == NC_WORD
   if nc_is(t, "!")
     if !nc_is(n, "!") || t.s + t.n != n.s
       < 0

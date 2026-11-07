@@ -1,8 +1,8 @@
-// Bodies of @ct and @m blocks.
+// Bodies of @tt and @m blocks.
 @lang 1
 + "nanoc/nanoc.h"
 
-// Reads a @ct body.
+// Reads a @tt body.
 f nc_meta_body(NcCursor *c, NcHeader header, bool program, bool tail) NcTokens
   size_t next = c->pos
   while next < c->ts.n && c->ts.v[next].kind == NC_SPACE

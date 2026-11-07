@@ -3,7 +3,6 @@
 
 #include "nanoc/nanoc.h"
 #include <errno.h>
-#ifdef NC_TOOLING
 
 // Creates the parent directories.
 static void directories(NcContext *c, const char *path, int line) {
@@ -27,8 +26,6 @@ static void directories(NcContext *c, const char *path, int line) {
     }
 }
 
-#endif
-
 // Runs file builtins.
 NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) {
     NcContext *c = m->ctx;
@@ -48,7 +45,6 @@ NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) {
     if (!strcmp(name, "env")) {
         return nc_value_text(NC_STRING, getenv(path) ? getenv(path) : "");
     }
-#ifdef NC_TOOLING
     if (!strcmp(name, "write")) {
         nc_write(c, path, nc_meta_text(c, a.v[1], line));
     } else if (!strcmp(name, "mkdir")) {
@@ -56,8 +52,5 @@ NcValue nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) {
     } else if (!strcmp(name, "remove") && remove(path) && errno != ENOENT) {
         nc_fail(c, line, "cannot remove %s: %s", path, strerror(errno));
     }
-#else
-    nc_fail(c, line, "unknown compile-time file function: %s", name);
-#endif
     return nc_integer(0);
 }

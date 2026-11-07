@@ -1,4 +1,4 @@
-// Expansion driver: templates and compile-time source transformations.
+// Expansion driver: templates and translate-time source transformations.
 @lang 1
 + "nanoc/nanoc.h"
 
@@ -10,6 +10,10 @@ f nc_expand(NcContext *ctx, NcTokens ts, size_t depth) char *
   NcBuffer out = {0}
   while c.pos < ts.n
     NcToken t = ts.v[c.pos++]
+    NcTokens *origin = t.kind == NC_WORD ? nc_get(&ctx->tt_sources, nc_text(ctx, t)) : NULL
+    if origin
+      nc_add(ctx, &out, nc_expand(ctx, *origin, depth + 1))
+      ^
     if nc_trace_cursor(ctx, t)
       nc_addn(ctx, &out, t.s, t.n)
       ^
@@ -34,8 +38,10 @@ f nc_expand(NcContext *ctx, NcTokens ts, size_t depth) char *
       ctx->frames[at] = frame
       if !strcmp(name, "m")
         nc_define_macro(ctx, &c)
+      elif !strcmp(name, "tt")
+        generated = nc_translate_time(ctx, nc_meta_body(&c, nc_header(&c), 1, 0), depth + 1)
       elif !strcmp(name, "ct")
-        generated = nc_compile_time(ctx, nc_meta_body(&c, nc_header(&c), 1, 0), depth + 1)
+        nc_fail(ctx, t.line, "use @tt for translate-time programs")
       elif !strcmp(name, "bt")
         nc_fail(ctx, t.line, "@bt was removed; use an external build tool")
       elif !strcmp(name, "asm")

@@ -68,7 +68,7 @@ Page [title="NanoC playground: transpile in your browser" desc="Edit NanoC and w
         killer = setTimeout(() =>
           worker.terminate()
           spawn()
-          done({ ok: false, err: 'Timed out after 5 s: a macro or compile-time loop did not finish.', out: '', ms: 5000 })
+          done({ ok: false, err: 'Timed out after 5 s: a macro or translate-time loop did not finish.', out: '', ms: 5000 })
         , 5000)
         worker.postMessage({ id, src: src.value })
       function done(r)
@@ -80,7 +80,7 @@ Page [title="NanoC playground: transpile in your browser" desc="Edit NanoC and w
         out.textContent = r.out
         Prism.highlightElement(out)
         const nc = src.value
-        stats(A.stats, [['NanoC chars', nc.length], ['C chars', r.out.length], ['fewer chars', signed(nc.length, r.out.length), 1], ['NanoC lines', lines(nc)], ['C lines', lines(r.out)], ['compile time', r.ms < 1 ? '<1 ms' : Math.round(r.ms) + ' ms', 1]])
+        stats(A.stats, [['NanoC chars', nc.length], ['C chars', r.out.length], ['fewer chars', signed(nc.length, r.out.length), 1], ['NanoC lines', lines(nc)], ['C lines', lines(r.out)], ['translate time', r.ms < 1 ? '<1 ms' : Math.round(r.ms) + ' ms', 1]])
       function schedule()
         highlight()
         clearTimeout(timer)

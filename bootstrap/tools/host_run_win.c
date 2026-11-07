@@ -1,4 +1,4 @@
-// Runs host processes for BT on Windows: one quoted command line through the shell, output captured in temporary files.
+// Runs host processes for TT on Windows: one quoted command line through the shell, output captured in temporary files.
 
 #include "nanoc/nanoc.h"
 #ifdef _WIN32

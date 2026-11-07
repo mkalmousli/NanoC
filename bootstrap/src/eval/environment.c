@@ -25,7 +25,7 @@ NcValue nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) {
             return *p;
         }
     }
-    nc_fail(c, line, "unknown compile-time variable: %s", name);
+    nc_fail(c, line, "unknown translate-time variable: %s", name);
     return (NcValue){0};
 }
 
@@ -38,5 +38,5 @@ void nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line
             return;
         }
     }
-    nc_fail(c, line, "unknown compile-time variable: %s", name);
+    nc_fail(c, line, "unknown translate-time variable: %s", name);
 }

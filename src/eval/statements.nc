@@ -1,11 +1,11 @@
-// Statement execution for compile-time programs.
+// Statement execution for translate-time programs.
 @lang 1
 + "nanoc/nanoc.h"
 
 // Runs a statement sequence.
 f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) NcFlow
   NcContext *ctx = m->ctx
-  nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time")
+  nc_depth(ctx, depth, ts.n ? ts.v[0].line : 1, "translate-time")
   NcCursor c = {ctx, ts, 0}
   NcFlow out = {0}
   while !nc_end(&c)
@@ -18,7 +18,7 @@ f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) NcFlow
     if nc_is(t, ";")
       ^
     if define_f
-      nc_ct_define(m, &c, env)
+      nc_tt_define(m, &c, env)
     elif nc_is(t, "if")
       out = nc_conditional(m, &c, env, depth)
       if out.returning || out.breaking || out.continuing
@@ -43,9 +43,9 @@ f nc_run(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth) NcFlow
       nc_need(&c, ";")
   < out
 
-// Expands a compile-time block.
-f nc_compile_time(NcContext *ctx, NcTokens ts, size_t depth) char *
-  char *generated = nc_program(ctx, ts, NULL, NC_CT, depth)
+// Expands a translate-time block.
+f nc_translate_time(NcContext *ctx, NcTokens ts, size_t depth) char *
+  char *generated = nc_program(ctx, ts, NULL, NC_TT, depth)
   nc_trace_value(ctx, NULL, generated)
   ++ctx->trace_virtual
   char *expanded = nc_expand(ctx, nc_lex(ctx, generated, ts.n ? ts.v[0].line : 1), depth)

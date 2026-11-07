@@ -1,10 +1,8 @@
-// Builtin catalog and metadata. Host commands are linked only into the external tool runner.
+// Builtin catalog shared by native translate-time programs and repository tools.
 @lang 1
 + "nanoc/nanoc.h"
 
-#ifdef NC_TOOLING
 extern NcValue nc_meta_process(NcMachine *, const char *, NcValues, int);
-#endif
 const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"str", "str(value)", "all", NULL}, {"tokens", "tokens(text)", "all", NULL},
   {"ident", "ident(text)", "all", NULL}, {"fresh", "fresh(hint)", "all", NULL},
@@ -27,14 +25,17 @@ const NcSpec nc_specs[] = {{"emit", "emit(text|tokens)", "all", NULL},
   {"assert", "assert(condition[,message])", "all", nc_meta_control},
   {"log", "log(message)", "all", nc_meta_control}, {"read", "read(path)", "all", nc_meta_files},
   {"exists", "exists(path)", "all", nc_meta_files}, {"env", "env(name)", "all", nc_meta_files},
-  {"file", "file()", "all", nc_meta_files},
-#ifdef NC_TOOLING
-  {"write", "write(path,text)", "tool", nc_meta_files},
-  {"mkdir", "mkdir(path)", "tool", nc_meta_files}, {"remove", "remove(path)", "tool", nc_meta_files},
-  {"run", "run(argv[,cwd]) [status,out,err]", "tool", nc_meta_process},
-  {"exec", "exec(argv[,cwd]) stdout; fails on nonzero", "tool", nc_meta_process},
-  {"sh", "sh(command) [status,out,err]", "tool", nc_meta_process},
-#endif
+  {"file", "file()", "all", nc_meta_context},
+  {"path", "path()", "all", nc_meta_context},
+  {"line", "line()", "all", nc_meta_context},
+  {"name", "name()", "all", nc_meta_context},
+  {"cycle", "cycle()", "all", nc_meta_context},
+  {"target", "target()", "all", nc_meta_context},
+  {"write", "write(path,text)", "tt", nc_meta_files},
+  {"mkdir", "mkdir(path)", "tt", nc_meta_files}, {"remove", "remove(path)", "tt", nc_meta_files},
+  {"run", "run(argv[,cwd]) [status,out,err]", "tt", nc_meta_process},
+  {"exec", "exec(argv[,cwd]) stdout; fails on nonzero", "tt", nc_meta_process},
+  {"sh", "sh(command) [status,out,err]", "tt", nc_meta_process},
 };
 const size_t nc_spec_count = (sizeof nc_specs / sizeof *nc_specs);
 // Tells if a builtin exists.
@@ -49,8 +50,11 @@ f nc_extra_builtin(NcMachine *m, const char *name, NcValues args, int line) NcVa
   for size_t i = (0), nanoc_bound_2 = (nc_spec_count); i < nanoc_bound_2; ++i
     const NcSpec *s = &nc_specs[i]
     if !strcmp(name, s->name) && s->function
+      bool effect = !strcmp(name, "write") || !strcmp(name, "mkdir") || !strcmp(name, "remove") || !strcmp(name, "run") || !strcmp(name, "exec") || !strcmp(name, "sh")
+      if effect && m->ctx->check_only
+        nc_fail(m->ctx, line, "translation-time host effects are unavailable under --check")
       < s->function(m, name, args, line)
-  nc_fail(m->ctx, line, "unknown compile-time function: %s", name)
+  nc_fail(m->ctx, line, "unknown translate-time function: %s", name)
   < (NcValue){0}
 
 // Gets a value as text.

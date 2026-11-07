@@ -1,5 +1,5 @@
 + <string.h>
-@ct
+@tt
   name:=fresh("greet")
   message:="hello\nworld"
   emit("f "+str(name)+"() const char *\n  < "+str(quote($message))+"\n")

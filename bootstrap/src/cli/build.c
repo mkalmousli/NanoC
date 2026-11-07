@@ -7,7 +7,7 @@
 
 extern int nc_std;
 // Emits one input using an independent context and propagates its precise NanoC diagnostics.
-void build_unit(NcContext *c,const char *input,const char *file,bool lines) {
+void build_unit(NcContext *c, const char *input, const char *file, bool lines) {
     NcContext *unit=calloc(1,sizeof *unit);
     if (!unit) {
         nc_fail(c,0,"cannot allocate compilation context");
@@ -29,7 +29,7 @@ void build_unit(NcContext *c,const char *input,const char *file,bool lines) {
 }
 
 // Builds C and NanoC translation units with caller-selected linking flags, then optionally executes.
-int nc_build_command(NcContext *c,int argc,const char **argv) {
+int nc_build_command(NcContext *c, int argc, const char **argv) {
     const char *output="build/program", *compiler=getenv("CC"), *standard="c11";
     bool run=!strcmp(argv[1],"run"),json=0,lines=1,emit_only=0;
     NcStrings flags={0},arguments={0},inputs={0},sources={0};

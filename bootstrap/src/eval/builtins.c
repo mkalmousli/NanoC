@@ -46,6 +46,6 @@ NcValue nc_builtin(NcMachine *m, const char *name, NcValues args, int line) {
         }
         nc_fail(c, line, "len requires a list, string, or tokens");
     }
-    nc_fail(c, line, "unknown compile-time function: %s", name);
+    nc_fail(c, line, "unknown translate-time function: %s", name);
     return (NcValue){0};
 }

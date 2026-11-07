@@ -23,9 +23,9 @@ Self-hosted NanoC; C11 bootstrap; portable C11 + libc (Linux, macOS, BSD, Window
 | build.c, src/build.tool.nc | `build.c` compiles the C seed; the build workflow is NanoC |
 | src/tests, tests/ | NanoC test sources (built to C by ./builder test); corpus and fixtures data. Compiler behavior, real C, CLI/ABI/removal/install; `tests/corpus` is licensed upstream C |
 
-Tokens are immutable source slices; lookahead copies indices. A context owns translation allocations and persistent pass state. Error checkpoints release all owned memory; arena accounting and budgets bound work. Unmarked C passes through unless a statement-leading compact construct is recognized. Output files use same-directory temporary files + rename. Only the separate developer tool runner links host commands; compiler CT cannot activate them. Builtin signatures live in `src/meta/registry.nc`.
+Tokens are immutable source slices; lookahead copies indices. A context owns translation allocations and persistent pass state. Error checkpoints release all owned memory; arena accounting and budgets bound work. Unmarked C passes through unless a statement-leading compact construct is recognized. Output files use same-directory temporary files + rename. Native TT and the developer tool runner share host command capabilities; --check rejects host effects. Builtin signatures live in `src/meta/registry.nc`.
 
-Compact declarations are recognized in frontend/compact.nc; word controls lower through the layout tree. frontend/preprocessor.nc and layout/preprocessor.nc lower conditional chains without braces. The existing lexer, layout tree, macro capture/substitution and evaluator remain in use. Raw C bypasses expansion. Both @bt and NanoC asm must be rejected; host tooling is separate under src/tools.
+Compact declarations are recognized in frontend/compact.nc; word controls lower through the layout tree. frontend/preprocessor.nc and layout/preprocessor.nc lower conditional chains without braces. The existing lexer, layout tree, macro capture/substitution and evaluator remain in use. Raw C bypasses expansion. Both @bt and NanoC asm must be rejected; host implementations live under src/meta and src/tools.
 
 ## Style
 

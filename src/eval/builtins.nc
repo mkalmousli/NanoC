@@ -33,5 +33,5 @@ f nc_builtin(NcMachine *m, const char *name, NcValues args, int line) NcValue
     if v.kind == NC_STRING || v.kind == NC_CODE
       < nc_integer((int64_t)strlen(v.text))
     nc_fail(c, line, "len requires a list, string, or tokens")
-  nc_fail(c, line, "unknown compile-time function: %s", name)
+  nc_fail(c, line, "unknown translate-time function: %s", name)
   < (NcValue){0}

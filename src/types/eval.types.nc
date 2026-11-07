@@ -9,12 +9,12 @@ s NcValues
   n,cap:size_t
 
 typedef struct NcEnv { struct NcEnv *parent; NcMap values; } NcEnv;
-s NcCtFunction
+s NcTtFunction
   params:NcStrings
   body:NcTokens
   closure:*NcEnv
 
-e NcPhase  NC_CT, NC_MACRO
+e NcPhase  NC_TT, NC_MACRO
 
 s NcMachine
   ctx:*NcContext

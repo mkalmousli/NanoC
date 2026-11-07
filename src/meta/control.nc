@@ -29,7 +29,7 @@ f nc_meta_control(NcMachine *m, const char *name, NcValues a, int line) NcValue
       nc_fail(c, line, "assert expects condition[,message]")
     if !nc_truth(a.v[0])
       nc_fail(c, line, "%s",
-                          a.n == 2 ? nc_meta_text(c, a.v[1], line) : "compile-time assertion failed")
+                          a.n == 2 ? nc_meta_text(c, a.v[1], line) : "translate-time assertion failed")
     < a.v[0]
   nc_arity(c, a, 1, line)
   const char * text = nc_meta_text(c, a.v[0], line)

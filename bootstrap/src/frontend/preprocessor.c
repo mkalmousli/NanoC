@@ -56,8 +56,8 @@ char *nc_pp_simple(NcContext *c, NcTokens input, int line) {
     NcCursor cur = {c, input, 0};
     NcToken first = nc_take(&cur);
     char *name = NULL;
-    if (nc_is(first, "+") && ts.n > 1 && (nc_is(ts.v[1], "<") || ts.v[1].kind == NC_LITERAL)) {
-        name = "include";
+    if (nc_is(first, "+") && ts.n > 1 && (nc_is(ts.v[1], "<") || ts.v[1].kind == NC_LITERAL || ts.v[1].kind == NC_WORD)) {
+        return nc_includes(c, input, line);
     } else if (nc_is(first, "$")) {
         name = nc_eat(&cur, "-") ? "undef" : nc_eat(&cur, "!") ? "pragma" : "define";
     } else if (nc_is(first, "!") && ts.n >= 3 && nc_is(ts.v[1], "!") && first.s + first.n == ts.v[1].s && ts.v[2].kind == NC_LITERAL && ts.v[2].s[0] == '"') {

@@ -12,7 +12,8 @@ struct NcContext {
     const char *file, *executable, *next_error_code;
     NcToken last_token;
     NcSpan error_span;
-    bool cpp, tracing;
+    bool cpp, tracing, check_only;
+    const char *function_name;
     NcTraces traces;
     size_t trace_parent, trace_virtual;
     NcStrings trace_sources;
@@ -27,8 +28,8 @@ struct NcContext {
     NcMap state;
     NcStrings logs;
     NcAllocation *allocations;
-    NcMap names, macros, raw;
-    size_t raw_serial;
+    NcMap names, macros, raw, tt_sources;
+    size_t raw_serial, tt_serial;
     NcSymbols symbols;
     jmp_buf trap;
     char error[16384], detail[2048];

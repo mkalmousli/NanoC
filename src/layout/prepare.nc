@@ -12,7 +12,7 @@ f nc_meta_line(NcLayoutLine line) bool
     < 0
   while i < tokens.n && tokens.v[i].kind == NC_SPACE
     ++i
-  < i < tokens.n && (nc_is(tokens.v[i], "m") || nc_is(tokens.v[i], "ct") || nc_is(tokens.v[i], "c"))
+  < i < tokens.n && (nc_is(tokens.v[i], "m") || nc_is(tokens.v[i], "tt") || nc_is(tokens.v[i], "c"))
 
 // Prepares internal tree delimiters while retaining original source spans.
 f nc_prepare_lines(NcContext *ctx, NcLines input, bool program) NcLines
@@ -26,10 +26,23 @@ f nc_prepare_lines(NcContext *ctx, NcLines input, bool program) NcLines
       extension = block && nc_is(significant.v[0], "@") && significant.v[1].kind == NC_WORD
     if !program && (line.raw || nc_meta_line(line) || extension)
       NcBuffer raw = {0}
-      nc_printf(ctx, &raw, "%s\n", nc_join(ctx, line.ts))
+      char *text = nc_join(ctx, line.ts)
+      nc_printf(ctx, &raw, "%s\n", text)
+      int next_line = line.line + 1
+      for const char *p = text; *p; ++p
+        if *p == '\n'
+          ++next_line
       while i + 1 < input.n && input.v[i + 1].indent > line.indent
         NcLayoutLine child = input.v[++i]
-        nc_printf(ctx, &raw, "%*s%s\n", child.indent - line.indent, "", nc_join(ctx, child.ts))
+        while next_line < child.line
+          nc_add(ctx, &raw, "\n")
+          ++next_line
+        text = nc_join(ctx, child.ts)
+        nc_printf(ctx, &raw, "%*s%s\n", child.indent - line.indent, "", text)
+        next_line = child.line + 1
+        for const char *p = text; *p; ++p
+          if *p == '\n'
+            ++next_line
       line.ts = nc_lex(ctx, raw.v, line.line)
       line.raw = 1
       NC_PUSH(ctx, out, line)

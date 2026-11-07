@@ -1,4 +1,4 @@
-@ct
+@tt
   f factorial(n)
     if n <= 1
       1

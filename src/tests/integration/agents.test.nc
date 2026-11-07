@@ -1,7 +1,7 @@
 // Structured discovery and diagnostic streams used by coding agents.
 @lang 1
 + "test.h"
-// Checks deterministic JSON, explicit functions, source ranges and bounded CT.
+// Checks deterministic JSON, explicit functions, source ranges and bounded TT.
 f test_agents()
   const char *describe[] = {"build/nanoc", "--describe", NULL}
   char *data = test_command(describe).out
@@ -20,7 +20,7 @@ f test_agents()
   r = test_run(args)
   CHECK(r.status != 0 && !*r.out && test_json(r.err))
   CHECK(strstr(r.err, "NC_SYNTAX") && strstr(r.err, "\"line\":2"))
-  test_write(input, "@ct { while (true) {} }")
+  test_write(input, "@tt { while (true) {} }")
   const char *limits[] = {"build/nanoc", input, "--max-steps", "40", "--diagnostics", "json", NULL}
   r = test_run(limits)
   CHECK(r.status != 0 && test_json(r.err) && strstr(r.err, "NC_LIMIT"))

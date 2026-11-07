@@ -7,7 +7,7 @@
 NcValue nc_expression(NcExpr *e, int minimum, bool active) {
     ++e->depth;
     NcContext *c = e->m->ctx;
-    nc_depth(c, e->depth, nc_line(&e->c), "compile-time");
+    nc_depth(c, e->depth, nc_line(&e->c), "translate-time");
     NcValue out = nc_integer(0);
     if (nc_at(&e->c, "!") || nc_at(&e->c, "-") || nc_at(&e->c, "+")) {
         NcToken op = nc_take(&e->c);
@@ -58,7 +58,7 @@ NcValue nc_expression(NcExpr *e, int minimum, bool active) {
 
 // Evaluates an expression.
 NcValue nc_eval(NcMachine *m, NcTokens ts, NcEnv *env, size_t depth, bool active) {
-    nc_depth(m->ctx, depth, ts.n ? ts.v[0].line : 1, "compile-time");
+    nc_depth(m->ctx, depth, ts.n ? ts.v[0].line : 1, "translate-time");
     NcExpr e = {{m->ctx, ts, 0}, m, env, depth};
     NcValue out = nc_expression(&e, 0, active);
     if (!nc_end(&e.c)) {

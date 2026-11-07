@@ -17,6 +17,7 @@ char *nc_pipeline(NcContext *ctx, const char *input) {
         ctx->again = 0;
         ctx->next_source = NULL;
         ctx->macros = (NcMap){0};
+        ctx->tt_sources = (NcMap){0};
         ctx->symbols = (NcSymbols){0};
         const char * prepared = current;
         ctx->source = prepared;

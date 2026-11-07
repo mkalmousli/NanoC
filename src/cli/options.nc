@@ -99,4 +99,5 @@ f nc_options(NcContext *c, int argc, char **argv) NcOptions
       c->file = arg
   if !*o.action && !*o.input
     nc_fail(c, 0, "missing input file; use --help")
+  c->check_only = o.check
   < o

@@ -120,5 +120,6 @@ NcOptions nc_options(NcContext *c, int argc, char **argv) {
     if (!*o.action && !*o.input) {
         nc_fail(c, 0, "missing input file; use --help");
     }
+    c->check_only = o.check;
     return o;
 }

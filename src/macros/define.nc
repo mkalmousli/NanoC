@@ -6,7 +6,7 @@
 f nc_define_macro(NcContext *ctx, NcCursor *c)
   NcHeader header = nc_header(c)
   char *name = nc_name(c)
-  if !strcmp(name, "m") || !strcmp(name, "ct") || !strcmp(name, "c") || !strcmp(name, "bt") || !strcmp(name, "asm")
+  if !strcmp(name, "m") || (!strcmp(name, "ct") || !strcmp(name, "tt")) || !strcmp(name, "c") || !strcmp(name, "bt") || !strcmp(name, "asm")
     nc_fail(ctx, nc_line(c), "reserved transformation name")
   if nc_get(&ctx->macros, name)
     nc_fail(ctx, nc_line(c), "duplicate macro: %s", name)

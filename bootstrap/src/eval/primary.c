@@ -56,7 +56,7 @@ NcValue nc_primary(NcExpr *e, bool active) {
             out = nc_lookup(c, e->env, nc_text(c, t), t.line);
         }
     } else {
-        nc_fail(c, t.line, "expected a compile-time expression");
+        nc_fail(c, t.line, "expected a translate-time expression");
     }
     while (nc_at(&e->c, "[")) {
         NcValue index = nc_eval(e->m, nc_group(&e->c, "[", "]"), e->env, e->depth + 1, active);
@@ -66,7 +66,7 @@ NcValue nc_primary(NcExpr *e, bool active) {
         int64_t n = nc_numeric(c, index, t.line);
         size_t size = out.kind == NC_LIST ? out.count : out.kind == NC_STRING ? strlen(out.text) : 0;
         if (n < 0 || (uint64_t)n >= size) {
-            nc_fail(c, t.line, "invalid compile-time index");
+            nc_fail(c, t.line, "invalid translate-time index");
         }
         if (out.kind == NC_LIST) {
             out = out.items[n];

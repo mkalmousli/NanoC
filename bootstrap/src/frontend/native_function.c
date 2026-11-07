@@ -22,11 +22,11 @@ char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
         ctx->traces.v[ctx->trace_parent - 1].name = name;
         ctx->traces.v[ctx->trace_parent - 1].rule = "function";
     }
-    if (!nc_header_at(c, "(", header.line)) {
-        nc_fail(ctx, header.line, "function signatures require parentheses");
+    char *params = ctx->cpp ? "" : "void";
+    if (nc_header_at(c, "(", header.line)) {
+        params = nc_native_parameters(ctx, nc_group(c, "(", ")"));
+        header.line = c->ts.v[c->pos - 1].line;
     }
-    char *params = nc_native_parameters(ctx, nc_group(c, "(", ")"));
-    header.line = c->ts.v[c->pos - 1].line;
     if (nc_header_at(c, "->", header.line)) {
         nc_fail(ctx, header.line, "write the return type directly after the parameter list; omit ->");
     }
@@ -47,7 +47,14 @@ char *nc_native_function(NcContext *ctx, NcCursor *c, size_t depth) {
     if (nc_header_at(c, "{", header.line)) {
         nc_fail(ctx, header.line, "function bodies use indentation; C blocks use @c");
     }
-    char *body = nc_emit_block(ctx, nc_indented_nodes(c, header, 0), 0);
+    NcNodes nodes = nc_indented_nodes(c, header, 0);
+    const char *previous_name = ctx->function_name;
+    ctx->function_name = name;
+    if (!nc_void_type(ctx, type)) {
+        nc_runtime_tail(ctx, nodes);
+    }
+    char *body = nc_emit_block(ctx, nodes, 0);
     char *expanded = nc_expand(ctx, nc_lex(ctx, body, header.line), depth);
+    ctx->function_name = previous_name;
     return nc_format(ctx, "%s%s%s(%s) {%s}", type, nc_sep(type), name, params, expanded);
 }

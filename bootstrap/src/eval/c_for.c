@@ -26,7 +26,7 @@ NcFlow nc_c_for(NcMachine *m, NcCursor *c, NcEnv *parent, size_t depth) {
         if (!nc_end(&condition) && !nc_truth(nc_eval(m, parts.v[1], env, depth + 1, 1))) {
             break;
         }
-        nc_depth(ctx, depth, nc_line(c), "compile-time");
+        nc_depth(ctx, depth, nc_line(c), "translate-time");
         NcFlow flow = nc_run(m, body, nc_env(ctx, env), depth + 1);
         if (flow.returning) {
             return flow;

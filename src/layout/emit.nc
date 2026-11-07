@@ -46,7 +46,8 @@ f nc_emit_block(NcContext *c, NcNodes nodes, size_t depth) char *
     if !node.children.n
       nc_marker(c, &out, node.head.line)
       if node.head.raw || nc_meta_line(node.head)
-        nc_add(c, &out, nc_join(c, node.head.ts))
+        char *island = nc_tt_island(c, node.head)
+        nc_add(c, &out, island ? island : nc_join(c, node.head.ts))
         nc_add(c, &out, "\n")
       else
         nc_add(c, &out, nc_statement(c, node.head))

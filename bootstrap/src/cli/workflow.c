@@ -125,7 +125,7 @@ int nc_convert_command(NcContext *c, int argc, const char * *argv) {
 }
 
 // Invokes optional reproducible wall-time measurements with the exact current compiler executable.
-int nc_bench_command(NcContext *c,int argc,const char **argv) {
+int nc_bench_command(NcContext *c, int argc, const char **argv) {
     if (argc<3) {
         nc_fail(c,0,"bench requires an input file");
     }

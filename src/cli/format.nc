@@ -1,4 +1,4 @@
-// Canonical source formatting is lexical and never executes macros or CT programs.
+// Canonical source formatting is lexical and never executes macros or TT programs.
 @lang 1
 + "nanoc/nanoc.h"
 // Writes canonical indentation while retaining raw-island contents and literal token bytes.

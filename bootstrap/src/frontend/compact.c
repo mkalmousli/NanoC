@@ -85,7 +85,12 @@ bool nc_directive_start(NcTokens ts, size_t at) {
     }
     NcToken n = ts.v[at];
     if (nc_is(t, "+")) {
-        return nc_is(n, "<") || n.kind == NC_LITERAL;
+        for (size_t k = at; k < ts.n && ts.v[k].line == t.line; ++k) {
+            if (nc_is(ts.v[k], ";")) {
+                return 0;
+            }
+        }
+        return nc_is(n, "<") || n.kind == NC_LITERAL || n.kind == NC_WORD;
     }
     if (nc_is(t, "!")) {
         if (!nc_is(n, "!") || t.s + t.n != n.s) {

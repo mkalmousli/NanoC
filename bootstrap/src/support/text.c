@@ -76,7 +76,7 @@ char *nc_unquote(NcContext *c, const char *s, int line) {
                 }
                 ch = (char)value;
             } else if (ch != '\\' && ch != '"') {
-                nc_fail(c, line, "unsupported compile-time string escape");
+                nc_fail(c, line, "unsupported translate-time string escape");
             }
         }
         nc_addn(c, &b, &ch, 1);

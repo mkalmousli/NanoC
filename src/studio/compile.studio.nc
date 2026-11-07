@@ -1,7 +1,7 @@
 // Explicit compiler operations, expansion navigation and exportable review artifacts.
 @lang 1
 + "studio.h"
-// Expands a snapshot on request; compiler CT has no command or write builtins.
+// Expands a snapshot on request; compiler TT has no command or write builtins.
 f st_expand(StApp *a)
   StFile *f=&a->files[a->active]
   st_cache(f)

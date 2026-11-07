@@ -5,7 +5,7 @@
 #include "nanoc/manage.h"
 
 // Reports actual compiler availability and optional dependency boundaries.
-int nc_doctor(NcContext *c,int argc,char **argv) {
+int nc_doctor(NcContext *c, int argc, char **argv) {
     const char *compiler=getenv("CC");
     if (!compiler || !*compiler) {
         compiler="cc";
@@ -37,7 +37,7 @@ int nc_doctor(NcContext *c,int argc,char **argv) {
 }
 
 // Runs explicit test translation units independently and emits a deterministic JSON summary.
-int nc_test_command(NcContext *c,int argc,char **argv) {
+int nc_test_command(NcContext *c, int argc, char **argv) {
     NcStrings files={0};
     for (int i=2; i<argc; ++i) {
         if (strcmp(argv[i],"--json")) {

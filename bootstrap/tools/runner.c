@@ -2,7 +2,7 @@
 
 #include "nanoc/nanoc.h"
 
-// Executes a developer script; only this binary links the host command capabilities.
+// Executes a developer script; host capabilities are shared with native TT.
 int main(int argc, char **argv) {
     if (argc != 2) {
         fputs("usage: nctool script.tool.nc\n", stderr);
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         status = 1;
     } else {
         c->source = nc_read(c, argv[1]);
-        char *text = nc_program(c, nc_program_text(c, c->source, 1), NULL, NC_CT, 0);
+        char *text = nc_program(c, nc_program_text(c, c->source, 1), NULL, NC_TT, 0);
         if (*text) {
             fputs(text, stdout);
         }

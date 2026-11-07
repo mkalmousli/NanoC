@@ -1,9 +1,9 @@
 // Site step 2: compile examples/*.nc, write examples.json and the ex-table block.
 compiler:="build/nanoc"
-tracked:=split(exec(["git","ls-files"]),"\n")
+tracked:=split(exec(["git","ls-files","-co","--exclude-standard"]),"\n")
 ex:=[]
 for f tracked
-  if len(f)>9
+  if exists(f) && len(f)>9
     if slice(f,0,9)=="examples/"
       if slice(f,len(f)-3,len(f))==".nc"
         ex=push(ex,f)

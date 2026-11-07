@@ -25,7 +25,7 @@ f nc_fail(NcContext *c, int line, const char *format, ...) _Noreturn void
 // Counts a step against the limit.
 f nc_step(NcContext *c, int line)
   if c->max_steps && c->steps == c->max_steps
-    nc_fail(c, line, "compile-time step limit exceeded")
+    nc_fail(c, line, "translate-time step limit exceeded")
   if c->steps != SIZE_MAX
     ++c->steps
 

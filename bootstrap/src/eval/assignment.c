@@ -31,7 +31,7 @@ bool nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken 
     }
     if (bind) {
         if (nc_get(&env->values, id)) {
-            nc_fail(ctx, name.line, "duplicate compile-time variable: %s", id);
+            nc_fail(ctx, name.line, "duplicate translate-time variable: %s", id);
         }
         nc_bind(ctx, env, id, value);
     } else {

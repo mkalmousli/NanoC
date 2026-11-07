@@ -26,7 +26,7 @@ f nc_assignment(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, NcToken nam
     value = nc_binary(ctx, binary, nc_lookup(ctx, env, id, name.line), value, name.line)
   if bind
     if nc_get(&env->values, id)
-      nc_fail(ctx, name.line, "duplicate compile-time variable: %s", id)
+      nc_fail(ctx, name.line, "duplicate translate-time variable: %s", id)
     nc_bind(ctx, env, id, value)
   else
     nc_assign(ctx, env, id, value, name.line)

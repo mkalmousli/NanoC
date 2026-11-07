@@ -9,4 +9,24 @@ f nc_native_parameters(NcContext *ctx, NcTokens ts) char *
   for size_t i = 0; i < ts.n; ++i
     if nc_is(ts.v[i], ":") && (!i || !nc_is(ts.v[i - 1], ":")) && (i + 1 == ts.n || !nc_is(ts.v[i + 1], ":"))
       < nc_parameters(ctx, ts)
-  < nc_join(ctx, ts)
+  NcGroups groups = nc_split(ctx, ts, ",")
+  NcBuffer out = {0}
+  char *type = NULL
+  for size_t i = 0; i < groups.n; ++i
+    NcTokens part = groups.v[i]
+    NcTokens sig = nc_significant(ctx, part)
+    if i
+      nc_add(ctx, &out, ", ")
+    if sig.n == 1 && sig.v[0].kind == NC_WORD && type
+      nc_printf(ctx, &out, "%s%s%s", type, nc_sep(type), nc_text(ctx, sig.v[0]))
+    else
+      nc_add(ctx, &out, nc_trim(ctx, nc_join(ctx, part)))
+      type = NULL
+      if sig.n > 1 && sig.v[sig.n - 1].kind == NC_WORD
+        NcToken last = sig.v[sig.n - 1]
+        size_t end = part.n
+        while end && part.v[end - 1].s >= last.s
+          --end
+        type = nc_trim(ctx, nc_join(ctx, nc_slice(part, 0, end)))
+  nc_add(ctx, &out, "")
+  < out.v

@@ -25,7 +25,10 @@ char *nc_program_control(NcContext *ctx, NcTokens ts, int line) {
     if (!strcmp(name, "f")) {
         char *id = nc_name(&c);
         if (!nc_at(&c, "(")) {
-            nc_fail(ctx, line, "CT functions require parentheses");
+            if (!nc_end(&c)) {
+                nc_fail(ctx, line, "TT functions have dynamic results; omit the result type");
+            }
+            return nc_format(ctx, "f %s()", id);
         }
         return nc_format(ctx, "f %s%s", id, nc_join(ctx, nc_slice(sig, c.pos, sig.n)));
     }

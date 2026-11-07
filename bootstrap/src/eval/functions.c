@@ -4,19 +4,21 @@
 #include "nanoc/nanoc.h"
 
 // Defines a meta function.
-void nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) {
+void nc_tt_define(NcMachine *m, NcCursor *c, NcEnv *env) {
     NcContext *ctx = m->ctx;
     char *name = nc_name(c);
     if (nc_builtin_known(name) || !strcmp(name, "quote")) {
-        nc_fail(ctx, nc_line(c), "reserved compile-time function name");
+        nc_fail(ctx, nc_line(c), "reserved translate-time function name");
     }
     if (nc_get(&m->functions, name)) {
-        nc_fail(ctx, nc_line(c), "duplicate compile-time function: %s", name);
+        nc_fail(ctx, nc_line(c), "duplicate translate-time function: %s", name);
     }
-    NcCtFunction *f = nc_alloc(ctx, sizeof *f);
+    NcTtFunction *f = nc_alloc(ctx, sizeof *f);
     f->closure = env;
     NcGroups params = {0};
-    params = nc_split(ctx, nc_group(c, "(", ")"), ",");
+    if (nc_at(c, "(")) {
+        params = nc_split(ctx, nc_group(c, "(", ")"), ",");
+    }
     NcMap names = {0};
     for (size_t i = (0), nanoc_bound_1 = (params.n); i < nanoc_bound_1; ++i) {
         NcCursor p = {ctx, params.v[i], 0};
@@ -41,8 +43,8 @@ void nc_ct_define(NcMachine *m, NcCursor *c, NcEnv *env) {
 // Calls a meta function.
 NcValue nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int line) {
     NcContext *c = m->ctx;
-    nc_depth(c, depth, line, "compile-time");
-    NcCtFunction *f = nc_get(&m->functions, name);
+    nc_depth(c, depth, line, "translate-time");
+    NcTtFunction *f = nc_get(&m->functions, name);
     if (! f) {
         return nc_builtin(m, name, args, line);
     }
@@ -54,9 +56,9 @@ NcValue nc_call(NcMachine *m, const char *name, NcValues args, size_t depth, int
         nc_bind(c, env, f->params.v[i], args.v[i]);
     }
     if (c->frame_count == 256) {
-        nc_fail(c, line, "compile-time depth limit exceeded");
+        nc_fail(c, line, "translate-time depth limit exceeded");
     }
-    char *frame = nc_format(c, "in compile-time function %s at %s:%d", name, c->file, line);
+    char *frame = nc_format(c, "in translate-time function %s at %s:%d", name, c->file, line);
     c->frames[c->frame_count++] = frame;
     NcFlow result = nc_run(m, f->body, env, depth + 1);
     --c->frame_count;

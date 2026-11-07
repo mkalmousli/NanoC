@@ -1,4 +1,4 @@
-// CLI process results are separate from compile-time evaluation capabilities.
+// CLI process results are separate from translate-time evaluation capabilities.
 @lang 1
 s NcProcess
   status: int

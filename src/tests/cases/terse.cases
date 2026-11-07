@@ -36,7 +36,7 @@ case pointers, records, unions and enums
       Number n={3}
       ptr: Pair * = &p
       < ptr->a+ptr->b!=n.n || SECOND!=1
-reject require
+reject omit ->
   nanoc
     f missing -> int
       < 0

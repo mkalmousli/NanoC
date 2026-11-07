@@ -20,7 +20,7 @@ f nc_lookup(NcContext *c, NcEnv *e, const char *name, int line) NcValue
     NcValue *p = nc_get(&e->values, name)
     if p
       < *p
-  nc_fail(c, line, "unknown compile-time variable: %s", name)
+  nc_fail(c, line, "unknown translate-time variable: %s", name)
   < (NcValue){0}
 
 // Updates an existing variable.
@@ -30,4 +30,4 @@ f nc_assign(NcContext *c, NcEnv *e, const char *name, NcValue value, int line)
     if p
       *p = value
       <
-  nc_fail(c, line, "unknown compile-time variable: %s", name)
+  nc_fail(c, line, "unknown translate-time variable: %s", name)

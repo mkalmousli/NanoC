@@ -1,6 +1,6 @@
 + <stdio.h>
 // Runs while compiling: the table below is computed by the compiler, not at run time.
-@ct
+@tt
   vals:=[]
   for i 0..8
     vals = push(vals, str(i * i))

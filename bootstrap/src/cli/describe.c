@@ -3,8 +3,8 @@
 
 #include "nanoc/nanoc.h"
 
-// The static cards are written once, with the JSON DSL, and baked in as C strings at compile time.
-static const char SYNTAX[] = "{\"version\":1,\"function\":\"f add(int a, int b) int\\n  < a+b\",\"returns\":\"optional CType after ); void by default, int for main; no arrow\",\"parameters\":\"name: CType or exact C declarators\",\"declarations\":\"n := 0; name: CType = expression; C declarations\",\"runtime\":\"if/elif/else; while; for init; condition; step; < value; ! break; ^ continue\",\"preprocessor\":\"+ include; $ define; $- undef; ?+ ifdef; ?- ifndef; ?# if; :# elif; : else; !! error; $! pragma; dedent endif\",\"macro\":\"@m twice($x)\\n  (($x)*2)\",\"program\":\"@ct\\n  n:=42\\n  emit(quote(int answer=$n;))\",\"rawC\":\"@c indented-body, balanced {tokens}, or quoted C source\",\"layout\":\"spaces; indented blocks; no then or block-colon spellings\",\"emit\":\"emit file.nc --to c --map file.map.json\",\"trace\":\"expand file.nc --json; explain file.nc --line N|--symbol NAME|--generated-offset BYTE\"}";
+// The static cards are written once, with the JSON DSL, and baked in as C strings at translate time.
+static const char SYNTAX[] = "{\"version\":1,\"function\":\"f add(int a,b) int\\n  a+b\",\"returns\":\"optional CType after name or parameter list; void by default, int for main; final expression returns\",\"parameters\":\"name: CType or C declarators; bare names share the preceding C type; zero arguments may omit ()\",\"declarations\":\"n := 0; name: CType = expression; C declarations\",\"runtime\":\"if/elif/else; while; for init; condition; step; < value; ! break; ^ continue\",\"preprocessor\":\"+stdio,stdlib or explicit headers; $ define; $- undef; ?+ ifdef; ?- ifndef; ?# if; :# elif; : else; !! error; $! pragma; dedent endif\",\"macro\":\"@m twice($x)\\n  (($x)*2)\",\"program\":\"@tt\\n  n:=42\\n  emit(quote(int answer=$n;))\",\"rawC\":\"@c indented-body, balanced {tokens}, or quoted C source\",\"layout\":\"spaces; indented blocks; no then or block-colon spellings\",\"emit\":\"emit file.nc --to c --map file.map.json\",\"trace\":\"expand file.nc --json; explain file.nc --line N|--symbol NAME|--generated-offset BYTE\"}";
 static const char LIMITS[] = "{\"passes\":32,\"steps\":1000000,\"zeroMeansUnlimited\":[\"passes\",\"steps\"],\"depth\":128,\"depthCap\":512,\"bytes\":16777216}";
 
 // Writes one builtin.
@@ -50,7 +50,7 @@ bool nc_describe(FILE *out, const char *topic) {
             jw_kr(&w, "commands", "[\"emit\",\"check\",\"build\",\"run\",\"test\",\"convert\",\"expand\",\"explain\",\"inspect\",\"describe\",\"tokens\",\"fmt\",\"doctor\",\"bench\"]");
         }
         jw_kr(&w, "syntax", SYNTAX);
-        jw_ks(&w, "phases", "ct/macros during expansion; rewrite/again repeat");
+        jw_ks(&w, "phases", "tt/macros during expansion; rewrite/again repeat");
         jw_ks(&w, "checks", "expansion only; no host writes or commands");
         jw_kr(&w, "limits", LIMITS);
     }

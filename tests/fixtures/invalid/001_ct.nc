@@ -1,1 +1,1 @@
-@ct { while (true) {} }
+@tt { while (true) {} }

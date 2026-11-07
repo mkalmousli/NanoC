@@ -1,1 +1,1 @@
-@ct { shell("true"); }
+@tt { shell("true"); }

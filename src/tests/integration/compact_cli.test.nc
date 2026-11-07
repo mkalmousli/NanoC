@@ -22,8 +22,8 @@ f test_compact_cli(void)
   CHECK(test_run(removed).status != 0)
   const char *catalog[] = {"build/nanoc", "--describe", "builtins", NULL}
   char *card = test_command(catalog).out
-  CHECK(!strstr(card, "\"name\":\"run\"") && !strstr(card, "\"name\":\"write\""))
+  CHECK(strstr(card, "\"name\":\"run\"") && strstr(card, "\"name\":\"write\""))
   const char *assembly[] = {"build/nanoc", "--describe", "asm", NULL}
   CHECK(test_run(assembly).status != 0)
-  puts("[OK] compact CLI source tracing and removed execution/assembly capabilities")
+  puts("[OK] compact CLI source tracing and TT host discovery and removed assembly capabilities")
 

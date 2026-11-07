@@ -3,7 +3,7 @@
 
 <h1 align="center">NanoC</h1>
 
-<p align="center"><b>Less syntax, full control.</b> A compact, self-hosted language that generates plain C11 or C++17.<br>Indented blocks, programmable macros, compile-time source transformations, compact C preprocessing.</p>
+<p align="center"><b>Less syntax, full control.</b> A compact, self-hosted language that generates plain C11 or C++17.<br>Indented blocks, programmable macros, translate-time source transformations, compact C preprocessing.</p>
 
 <p align="center"><a href="https://mkalmousli.github.io/NanoC/">Website</a> · <a href="docs/language.md">Language card</a> · <a href="docs/architecture.md">Architecture</a> · <a href="src/editors.tool.nc">Editors</a></p>
 
@@ -31,16 +31,17 @@ Installs only the files it created; it refuses to overwrite unrelated files.
 + <stdio.h>
 f main()
   printf("Hello from NanoC! %d %g\n", 6 * 7, 1.5)
+  0
 
 ```
 
-- **Layout:** indentation defines blocks; `f name(args)` with an optional result type (void by default, int for main); explicit `<` returns; `if/elif/else`, `while` and `for` controls.
+- **Layout:** indentation defines blocks; `f name` or `f name(args)` with an optional result type; shared C parameter types and implicit final results; `if/elif/else`, `while` and `for` controls.
 - **Macros:** `@m` token templates with `$` captures, repetition and `$fresh(name)`.
-- **Compile time:** `@ct` programs generate code during expansion (`emit`, `quote`, loops).
+- **Translate time:** `@tt` programs generate code during expansion (`emit`, `quote`, loops).
 - **Interop:** C headers and C++17 APIs work unchanged (`--lang c++`).
 - **Agent-friendly:** `nanoc --describe syntax|builtins`, `nanoc file.nc --check --diagnostics json`.
 
-Output is ordinary C with no NanoC runtime. `@bt` and NanoC assembly were removed; host commands belong in external build tools and compiler extensions in `@c`. Full reference: [language card](docs/language.md) or `nanoc --describe syntax`.
+Output is ordinary C with no NanoC runtime. `@bt` and NanoC assembly were removed; native `@tt` supports host commands and filesystem operations; `--check` rejects host effects. Use `@c` for C compiler extensions. Full reference: [language card](docs/language.md) or `nanoc --describe syntax`.
 
 ## Runs wherever C runs
 

@@ -63,7 +63,7 @@ f nc_unquote(NcContext *c, const char *s, int line) char *
           value = value * 8 + s[++i] - '0'
         ch = (char)value
       elif ch != '\\' && ch != '"'
-        nc_fail(c, line, "unsupported compile-time string escape")
+        nc_fail(c, line, "unsupported translate-time string escape")
     nc_addn(c, &b, &ch, 1)
   nc_add(c, &b, "")
   < b.v

@@ -17,9 +17,9 @@ case executable variadic macros
     @m id($x) = quote($x)
     f main()
       < @id(value2)!=5
-case CT libraries and collections
+case TT libraries and collections
   nanoc
-    @ct
+    @tt
       f square(x) = x*x
       total:=0
       for i range(10)
@@ -40,7 +40,7 @@ case CT libraries and collections
 case source rewriting
   nanoc
     @m id($x) { $x }
-    @ct
+    @tt
       key:="PLACE"+"HOLDER"
       if contains(source(),key)
         rewrite(replace(source(),key,"41"))
@@ -48,21 +48,21 @@ case source rewriting
       < @id(PLACEHOLDER)!=41
 case repeated passes
   nanoc
-    @ct {n:=get("n",0);put("n",n+1);if(n<2){again();}emit(quote(enum {n=$n};));}
+    @tt {n:=get("n",0);put("n",n+1);if(n<2){again();}emit(quote(enum {n=$n};));}
     f main()
       < n!=2
 case token aware rename
   nanoc
-    @ct {rewrite(rename(source(),"old","renamed"));}
+    @tt {rewrite(rename(source(),"old","renamed"));}
     int old=42;
     const char *message="old";
     // old stays in comments
     f main()
       < renamed!=42 || message[0]!='o'
-case local compile time generation
+case local translate time generation
   nanoc
     f main()
-      @ct
+      @tt
         f square(x) = x*x
         n:=square(7)
         emit(quote(int n=$n;))
@@ -71,16 +71,18 @@ case local compile time generation
       @finish(n!=49)
 reject pass limit
   nanoc
-    @ct {again();}
+    @tt {again();}
 reject loop control
   nanoc
-    @ct {!;}
+    @tt {!;}
 reject slice bounds
   nanoc
-    @ct {slice("x",-1);}
+    @tt {slice("x",-1);}
 reject must not be empty
   nanoc
-    @ct {replace("x","","y");}
-reject unknown compile-time function
+    @tt {replace("x","","y");}
+case translate-time host command
   nanoc
-    @ct {run(["true"]);}
+    @tt {assert(run(["true"])[0]==0);}
+    f main
+      0

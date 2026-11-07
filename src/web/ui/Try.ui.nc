@@ -3,7 +3,7 @@ Section [id=try kicker="Try it" title="Run the compiler <em>right here.</em>"]
     css | margin-bottom:28px
   Panel
     css | margin-bottom:56px
-    p Macros, generics, compile-time code and more, all transpiled live in your tab.
+    p Macros, generics, translate-time code and more, all transpiled live in your tab.
     Solid [href=play.html] Open the playground →
   Kicker Or with your AI
   h2 One prompt. <em>Any model.</em>
@@ -18,7 +18,7 @@ Section [id=try kicker="Try it" title="Run the compiler <em>right here.</em>"]
   js
     const PROMPT = 'Project: ' + REPO + ' (README.md and docs/language.md describe the language; ' +
       'the compiler is in src/**/*.nc).\n\n' +
-      'Write a small NanoC program that [goal]. Use f name(args) CType functions, < value returns, C expression operators and ' +
+      'Write a small NanoC program that [goal]. Use f name CType or f name(args) CType functions, shared parameter types, implicit final results, < for early returns, @tt for translate-time programs, C expression operators and ' +
       'indented blocks, no braces or semicolons. Show the file, the nanoc command that emits C, ' +
       'and the cc command that builds it.'
     A.prompt.textContent = PROMPT

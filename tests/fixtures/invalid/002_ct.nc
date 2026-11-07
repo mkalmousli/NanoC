@@ -1,1 +1,1 @@
-@ct { for i in range(100) { emit("0123456789"); } }
+@tt { for i in range(100) { emit("0123456789"); } }

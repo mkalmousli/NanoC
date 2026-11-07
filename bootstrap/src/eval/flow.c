@@ -45,7 +45,7 @@ NcFlow nc_loop(NcMachine *m, NcCursor *c, NcEnv *env, size_t depth, const char *
     if (!strcmp(name, "while")) {
         NcTokens cond = nc_group(c, "(", ")"), body = nc_group(c, "{", "}");
         while (nc_truth(nc_eval(m, cond, env, depth, 1))) {
-            nc_depth(ctx, depth, nc_line(c), "compile-time");
+            nc_depth(ctx, depth, nc_line(c), "translate-time");
             out = nc_run(m, body, nc_env(ctx, env), depth + 1);
             if (out.returning) {
                 return out;

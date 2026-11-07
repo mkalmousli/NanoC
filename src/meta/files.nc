@@ -4,7 +4,6 @@
 
 + <errno.h>
 
-#ifdef NC_TOOLING
 // Creates the parent directories.
 f directories(NcContext *c, const char *path, int line) static void
   char *copy = nc_string(c, path, strlen(path))
@@ -21,7 +20,6 @@ f directories(NcContext *c, const char *path, int line) static void
     if ! last
       !
 
-#endif
 // Runs file builtins.
 f nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) NcValue
   NcContext *c = m->ctx
@@ -37,14 +35,10 @@ f nc_meta_files(NcMachine *m, const char *name, NcValues a, int line) NcValue
     < nc_boolean(stat(path, &st) == 0)
   if !strcmp(name, "env")
     < nc_value_text(NC_STRING, getenv(path) ? getenv(path) : "")
-  #ifdef NC_TOOLING
   if !strcmp(name, "write")
     nc_write(c, path, nc_meta_text(c, a.v[1], line))
   elif !strcmp(name, "mkdir")
     directories(c, path, line)
   elif !strcmp(name, "remove") && remove(path) && errno != ENOENT
     nc_fail(c, line, "cannot remove %s: %s", path, strerror(errno))
-  #else
-  nc_fail(c, line, "unknown compile-time file function: %s", name)
-  #endif
   < nc_integer(0)

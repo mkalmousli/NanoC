@@ -1,5 +1,5 @@
 @m constant($name:ident,$value:tokens)
-  @ct
+  @tt
     id:=quote($name)
     n:=$value
     emit(quote(enum { $$id=$$n };))
